@@ -417,6 +417,25 @@
       }
       results.hidden = shown === 0;
     });
+    // Close the box on an outside click / Escape (JS enhancement of the CSS :checked toggle):
+    // uncheck the toggle AND clear/hide the live results so neither lingers. Scoped to the
+    // search widget -- it does NOT cover the page, so the mobile nav's own outside-tap close
+    // still fires. TT-safe: only checkbox.checked + removeChild, no HTML sinks.
+    var toggle = document.getElementById("search-toggle");
+    var box = input.closest(".site-search");
+    function closeSearch() {
+      if (toggle) toggle.checked = false;
+      results.hidden = true;
+      while (results.firstChild) results.removeChild(results.firstChild);
+    }
+    document.addEventListener("click", function (e) {
+      if (toggle && !toggle.checked && results.hidden) return;
+      if (box && box.contains(e.target)) return;
+      closeSearch();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeSearch();
+    });
   }
 
   // Fixed bottom stack (consent + stage banners) overlaps the footer, so reserve its

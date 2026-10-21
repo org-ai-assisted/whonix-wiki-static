@@ -539,12 +539,9 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 /* Open-state affordance on the magnifier so open vs closed is visually distinct (not a
    "stuck" look): the icon carries the active surface while the box is open. */
 .search-toggle:checked ~ .search-icon { background: var(--surface-2); }
-/* Outside-click close (pure CSS): transparent full-viewport overlay present only while open;
-   it sits below the field (z 50) but above the page, so a click outside the field closes. */
-.search-backdrop { display: none; }
-.search-toggle:checked ~ .search-backdrop {
-  display: block; position: fixed; inset: 0; z-index: 40; background: transparent; cursor: default;
-}
+/* Outside-click close is handled in app.js (initSearch): it unchecks #search-toggle AND
+   hides the live .search-results, and -- unlike a header-nested full-viewport label -- does
+   not swallow the mobile nav's own outside-tap close. No-JS still closes via the lens. */
 .search-field:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 1px;
@@ -1618,7 +1615,13 @@ code:empty { display: none; }
   vertical-align: middle; white-space: nowrap; user-select: none;
 }
 .mw-editsection { color: var(--muted); }
-.mw-editsection a { color: var(--muted); text-decoration: none; padding: 0 0.15em; }
+.mw-editsection a {
+  /* >=24x24 touch target (WCAG 2.5.8 / lighthouse target-size): the pencil glyph is tiny,
+     so pad the hit area out to 24px without enlarging the visible icon. */
+  color: var(--muted); text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 24px; min-height: 24px; padding: 0 0.15em; vertical-align: middle;
+}
 .mw-editsection a:hover { color: var(--link); text-decoration: none; }
 .share-tooltip { position: relative; display: inline-block; margin-left: 0.45rem;
   font-size: 0.72em; vertical-align: middle; }
