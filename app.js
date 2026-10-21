@@ -250,7 +250,9 @@
           var li = document.createElement("li");
           var a = document.createElement("a");
           a.className = "tcc-tab";
-          a.href = hid ? ("#" + hid) : "#";
+          // encodeURIComponent so a raw %/space in the id survives an Open-in-new-tab / copy-link
+          // (the href is the shared URL); syncTabsFromHash decodeURIComponent's it back on load.
+          a.href = hid ? ("#" + encodeURIComponent(hid)) : "#";
           var img = sec.querySelector(".tcc-image img");
           if (img) a.appendChild(img);
           // Label from the title text ONLY -- a section title is also a real heading, so it

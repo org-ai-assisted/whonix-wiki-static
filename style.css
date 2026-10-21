@@ -301,7 +301,9 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
    best-practices image-aspect-ratio regression); object-fit:contain is belt-and-suspenders. */
 @media (max-width: 480px) {
   .download-button-v2 .dbutton { white-space: normal; }
-  .download-button-v2 .op-sys { width: 1px; white-space: nowrap; }
+  /* width:1px makes the anonymous-table OS-icon cell shrink to its content (no nowrap -- that
+     could push a multi-icon list past a narrow viewport); object-fit keeps the icon undistorted. */
+  .download-button-v2 .op-sys { width: 1px; }
   .download-button-v2 .op-sys > img { object-fit: contain; }
 }
 
