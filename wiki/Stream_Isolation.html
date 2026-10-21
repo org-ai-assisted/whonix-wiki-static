@@ -59,7 +59,7 @@ Tor without Whonix such as when using the Tor Browser Bundle on a host
 operating system such as Windows or Debian, only the Tor Browser Bundle
 connects over Tor. All other applications are still using clearnet.</li>
 <li><u>Whonix torifies system traffic via the gateway:</u> In case of
-Whonix: All traffic originating from <a href="Whonix-Workstation">Whonix-Workstation<sup>&#8482;</sup></a> and <a href="Whonix-Gateway">Whonix-Gateway<sup>&#8482;</sup></a> is
+Whonix: All traffic originating from <a href="Whonix-Workstation"><span class="nowrap">Whonix-Workstation<sup>&#8482;</sup></span></a> and <a href="Whonix-Gateway"><span class="nowrap">Whonix-Gateway<sup>&#8482;</sup></span></a> is
 routed to the <a href="Tor">Tor</a> software.</li>
 </ul>
 <div class="toccolours mw-collapsible mw-collapsed mwc-headline-normal-text-size">
@@ -182,7 +182,7 @@ enabling <code>transparent proxying</code> by default would be confusing
 for most users.</li>
 <li><u>Whonix-Gateway acts as a Tor Transparent Proxy:</u> In other
 words, Whonix-Gateway by default can be used as a Tor Transparent Proxy.
-Connections from Whonix-Workstation<sup>&#8482;</sup> to Whonix-Gateway are
+Connections from <span class="nowrap">Whonix-Workstation<sup>&#8482;</sup></span> to Whonix-Gateway are
 transparently proxied through Tor.</li>
 <li><u>Example application:</u> For example if using <a href="Telegram">Telegram</a> in Whonix: Uses transparent proxying
 because it is not pre-configured by default to use Tor proxy
@@ -490,7 +490,7 @@ pre-installed</p></td>
 <ul>
 <li><u>How stream isolation is implemented:</u> The required socks proxy
 settings are set up by various Whonix configuration packages or uwt
-wrappers, which are set up on Whonix-Gateway<sup>&#8482;</sup> and on
+wrappers, which are set up on <span class="nowrap">Whonix-Gateway<sup>&#8482;</sup></span> and on
 Whonix-Workstation.</li>
 <li><u>What uwt is:</u> uwt is a wrapper around <a href="https://gitlab.torproject.org/legacy/trac/-/wikis/doc/torsocks">torsocks</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://gitlab.torproject.org/legacy/trac/-/wikis/doc/torsocks" aria-label="Archived version on web.archive.org"><i class="fa-solid fa-box-archive"></i></a></sup>,
 which is also already installed to
@@ -971,7 +971,7 @@ instructions.</p>
 <p>Following these steps will disable the Whonix-Gateway <a href="#Transparent_Proxy">transparent proxying</a>
 feature and transform Whonix-Gateway into an <a href="https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/IsolatingProxy">IsolatingProxy</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/IsolatingProxy" aria-label="Archived version on web.archive.org"><i class="fa-solid fa-box-archive"></i></a></sup>.</p>
 <p><strong>Note:</strong> The following instructions should be applied
-in Whonix-Gateway (<a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a>: In App Qubes
+in Whonix-Gateway (<a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a>: In App Qubes
 <code>sys-whonix</code>).</p>
 <p><strong>1.</strong> <strong>Modify Whonix-Gateway User Firewall
 Settings.</strong></p>
@@ -1186,9 +1186,9 @@ revert to the default system networking configuration.</p>
 <div class="info-box ">
 <p><strong>1.</strong> Platform specific notice:</p>
 <ul>
-<li><a href="Non-Qubes-Whonix">Non-Qubes-Whonix<sup>&#8482;</sup></a>: No platform specific
+<li><a href="Non-Qubes-Whonix"><span class="nowrap">Non-Qubes-Whonix<sup>&#8482;</sup></span></a>: No platform specific
 notice.</li>
-<li><a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a>: In
+<li><a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a>: In
 Template. (<code>whonix-workstation-18</code>) <sup id="cite_ref-17" class="reference"><a href="#cite_note-17"><span class="cite-bracket">[</span>17<span class="cite-bracket">]</span></a></sup></li>
 </ul>
 <p><strong>2.</strong> Open file <code>/etc/uwt.d/50_user.conf</code> in
@@ -1284,9 +1284,9 @@ the application's settings.</p>
 <p><strong>Remove proxy settings for APT repository files.</strong></p>
 <p><strong>1.</strong> Platform specific notice:</p>
 <ul>
-<li><a href="Non-Qubes-Whonix">Non-Qubes-Whonix<sup>&#8482;</sup></a>: No platform specific
+<li><a href="Non-Qubes-Whonix"><span class="nowrap">Non-Qubes-Whonix<sup>&#8482;</sup></span></a>: No platform specific
 notice.</li>
-<li><a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a>: In
+<li><a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a>: In
 Template. (<code>whonix-workstation-18</code>)</li>
 </ul>
 <p><strong>2.</strong> If you previously onionized any repositories,
@@ -1474,7 +1474,7 @@ below.</p>
 <p>This configuration results in Tor Browser no longer using proxy
 settings. With no proxy set, Tor Browser uses the (VM) system's default
 networking. This is identical to any other application inside
-Whonix-Workstation<sup>&#8482;</sup> that has not been explicitly configured
+<span class="nowrap">Whonix-Workstation<sup>&#8482;</sup></span> that has not been explicitly configured
 to use Tor via socks proxy settings or a socksifier. This setting is
 also called transparent torification. <sup id="cite_ref-21" class="reference"><a href="#cite_note-21"><span class="cite-bracket">[</span>21<span class="cite-bracket">]</span></a></sup>
 <sup id="cite_ref-22" class="reference"><a href="#cite_note-22"><span class="cite-bracket">[</span>22<span class="cite-bracket">]</span></a></sup></p>
@@ -1513,7 +1513,7 @@ already running Tor on a different computer in their LAN. Only a
 minority of users is using such configurations.</p>
 <p>Because of this organisational and technical background, the highly
 specialized use case of configuring Tor Browser running inside
-Whonix-Workstation<sup>&#8482;</sup> to use an additional proxy
+<span class="nowrap">Whonix-Workstation<sup>&#8482;</sup></span> to use an additional proxy
 (<code>user</code> -&gt; <code>Tor</code> -&gt; <code>proxy</code> -&gt;
 <code>destination</code>) is difficult to accomplish.</p>
 <p>To learn more about this organisational and technical background see
@@ -1538,7 +1538,7 @@ Browser's SOCKS username for a request based on first party domain</a><sup class
 feature. This worsens the <a href="Fingerprint#web_fingerprint">web fingerprint</a> and leads to <a href="Tips_on_Remaining_Anonymous#Study:_Anonymity_and_Pseudonymity_are_not_the_same">pseudonymous (not anonymous) connections</a>. To
 mitigate these risks, consider using <a href="Whonix-Workstation_Security_Hardening#Multiple_Tor_Browser_Instances">More than one Tor Browser in Whonix</a>, or preferably
 <a href="Multiple_Whonix-Workstation">Multiple
-Whonix-Workstation<sup>&#8482;</sup></a>.</p>
+<span class="nowrap">Whonix-Workstation<sup>&#8482;</sup></span></a>.</p>
 <div class="toccolours mw-collapsible mw-collapsed">
 <p><u>Local socks proxy Method'''</u></p>
 <p>This method works for removal of proxy settings but is rather lengthy
@@ -1548,13 +1548,13 @@ press on Expand on the right.</p>
 <p>Since other methods to configure Tor Browser to use system default
 networking are broken due to Tor Browser changes by upstream, this new
 local socks proxy method stops <a href="Dev/anon-ws-disable-stacked-tor">anon-ws-disable-stacked-tor</a> local port
-<code>9150</code> redirection to Whonix-Gateway<sup>&#8482;</sup>
+<code>9150</code> redirection to <span class="nowrap">Whonix-Gateway<sup>&#8482;</sup></span>
 <code>9150</code> (where a Tor <code>SocksPort</code> is listening). As
 a replacement, a local socks proxy listens on Whonix-Workstation local
 port <code>9150</code> which then forwards the traffic using system
 default networking. In result, if the user is using a VPN inside
 Whonix-Workstation or in a VPN-Gateway wretched between
-Whonix-Gateway<sup>&#8482;</sup> and Whonix-Workstation, Tor Browser would use
+<span class="nowrap">Whonix-Gateway<sup>&#8482;</sup></span> and Whonix-Workstation, Tor Browser would use
 the VPN.</p>
 <p>In this documentation, Dante is used as a local socks proxy.
 Development notes are kept on <a href="Dev/Dante">Dev/Dante</a>.</p>
@@ -2354,9 +2354,9 @@ custom locations of Tor Browser installation folders.
 <sup id="cite_ref-23" class="reference"><a href="#cite_note-23"><span class="cite-bracket">[</span>23<span class="cite-bracket">]</span></a></sup></p>
 <p><strong>1.</strong> Platform specific notice.</p>
 <ul>
-<li><a href="Non-Qubes-Whonix">Non-Qubes-Whonix<sup>&#8482;</sup></a>: No platform specific
+<li><a href="Non-Qubes-Whonix"><span class="nowrap">Non-Qubes-Whonix<sup>&#8482;</sup></span></a>: No platform specific
 notice.</li>
-<li><a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a>: In
+<li><a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a>: In
 Template. (<code>whonix-workstation-18</code>)</li>
 </ul>
 <p><strong>2.</strong> Open file <code>/etc/environment</code> in an
@@ -2895,12 +2895,12 @@ unrestricted admin mode, take the following step.
 <a href="https://www.kicksecure.com/wiki/unrestricted_admin_mode"><img src="../media/Kicksecure-wiki-link-icon.png.webp?h=bfb13876" width="50" height="50" alt="Kicksecure logo" class="kicksecure-wiki-link-icon" /></a>
 unrestricted admin mode.</p>
 </div>
-<p><div class="tab-content-controller "><div class="mininav"></div><div class="tcc-content"><div class="tcc-section "><div class="tcc-image"><a href="./File:Qubes-logo-icon.png"><img src="../media/Qubes-logo-icon.png.webp?h=c44b2eef" width="25" height="27" alt="Qubes-logo-icon.png" /></a></div><div class="tcc-title"><h5 id="Graphical_Qubes-Whonix">Graphical Qubes-Whonix</h5></div><div class="tcc-content"><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a> with a graphical
+<p><div class="tab-content-controller "><div class="mininav"></div><div class="tcc-content"><div class="tcc-section "><div class="tcc-image"><a href="./File:Qubes-logo-icon.png"><img src="../media/Qubes-logo-icon.png.webp?h=c44b2eef" width="25" height="27" alt="Qubes-logo-icon.png" /></a></div><div class="tcc-title"><h5 id="Graphical_Qubes-Whonix">Graphical Qubes-Whonix</h5></div><div class="tcc-content"><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a> with a graphical
 desktop</u>, take the following step.
 <code>Qubes App Launcher (blue/grey "Q")</code> -&gt;
 <code>Service</code> -&gt;
 <code>Whonix-Gateway</code><sup><code>&#8482;</code></sup><code> ProxyVM (commonly named sys-whonix)</code>
--&gt; <code>Tor User Config</code></div></div> <div class="tcc-section "><div class="tcc-image"><a href="./File:Utilities-terminal.png"><img src="../media/Utilities-terminal.png.webp?h=297dcd1f" width="25" height="25" srcset="../media/thumb/Utilities-terminal.png-360.webp?h=297dcd1f 360w, ../media/Utilities-terminal.png.webp?h=297dcd1f 513w" sizes="(max-width: 25px) 100vw, 25px" alt="Utilities-terminal.png" /></a></div><div class="tcc-title"><h5 id="Terminal_Qubes-Whonix">Terminal Qubes-Whonix</h5></div><div class="tcc-content"><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a> with a terminal</u>, open
+-&gt; <code>Tor User Config</code></div></div> <div class="tcc-section "><div class="tcc-image"><a href="./File:Utilities-terminal.png"><img src="../media/Utilities-terminal.png.webp?h=297dcd1f" width="25" height="25" srcset="../media/thumb/Utilities-terminal.png-360.webp?h=297dcd1f 360w, ../media/Utilities-terminal.png.webp?h=297dcd1f 513w" sizes="(max-width: 25px) 100vw, 25px" alt="Utilities-terminal.png" /></a></div><div class="tcc-title"><h5 id="Terminal_Qubes-Whonix">Terminal Qubes-Whonix</h5></div><div class="tcc-content"><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a> with a terminal</u>, open
 a terminal in <code>sys-whonix</code> and run the following command.
 <span class="code-select" data-code="sudoedit /usr/local/etc/torrc.d/50_user.conf">sudoedit
 /usr/local/etc/torrc.d/50_user.conf</span></div></div></div></div></p></div></div></div></div></p>
@@ -2915,7 +2915,7 @@ completing all these steps, then a user mistake is the most likely
 explanation. Recheck <code>/usr/local/etc/torrc.d/50_user.conf</code>
 and repeat the steps outlined in the sections above. If Tor then
 connects successfully, all the necessary changes have been made. <u>If
-you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a></u>, complete the
+you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a></u>, complete the
 following steps. <code>Qubes App Launcher (blue/grey "Q")</code> &#8594;
 <code>Service</code> &#8594;
 <code>Whonix-Gateway</code><sup><code>&#8482;</code></sup><code> ProxyVM (commonly named 'sys-whonix')</code>
@@ -3022,7 +3022,7 @@ tunnel firewall is enabled, which would break tb-updater's Tor
 connectivity check.</span></li>
 <li id="cite_note-20"><span class="mw-cite-backlink"><a href="#cite_ref-20" aria-label="Jump up" title="Jump up">&#8593;</a></span> <span class="reference-text">By tb-updater default, if unset, variable
 <code>CURL_PROXY</code> will be dynamically set to a Tor SocksPort on
-Whonix-Gateway<sup>&#8482;</sup>. For example to
+<span class="nowrap">Whonix-Gateway<sup>&#8482;</sup></span>. For example to
 <code>CURL_PROXY="--proxy socks5h://user:password@10.137.6.1:9115"</code>.<br />
 By utilizing a curl parameter we are using anyhow --
 <code>CURL_PROXY="--fail"</code> -- the environment variable can be

@@ -130,13 +130,13 @@ unrestricted admin mode, take the following step.</p>
 <a href="https://www.kicksecure.com/wiki/unrestricted_admin_mode"><img src="../media/Kicksecure-wiki-link-icon.png.webp?h=bfb13876" width="50" height="50" alt="Kicksecure logo" class="kicksecure-wiki-link-icon" /></a>
 unrestricted admin mode.</p>
 </div>
-<p><div class="tab-content-controller "><div class="mininav"></div><div class="tcc-content"><p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Qubes-logo-icon.png"><img src="../media/Qubes-logo-icon.png.webp?h=c44b2eef" width="25" height="27" alt="Qubes-logo-icon.png" /></a></div><div class="tcc-title"><h5 id="Graphical_Qubes-Whonix">Graphical Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a> with a graphical
+<p><div class="tab-content-controller "><div class="mininav"></div><div class="tcc-content"><p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Qubes-logo-icon.png"><img src="../media/Qubes-logo-icon.png.webp?h=c44b2eef" width="25" height="27" alt="Qubes-logo-icon.png" /></a></div><div class="tcc-title"><h5 id="Graphical_Qubes-Whonix">Graphical Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a> with a graphical
 desktop</u>, take the following step.</p>
 <p><code>Qubes App Launcher (blue/grey "Q")</code> -&gt;
 <code>Service</code> -&gt;
 <code>Whonix-Gateway</code><sup><code>&#8482;</code></sup><code> ProxyVM (commonly named sys-whonix)</code>
 -&gt; <code>Tor User Config</code></p></div></div></p>
-<p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Utilities-terminal.png"><img src="../media/Utilities-terminal.png.webp?h=297dcd1f" width="25" height="25" srcset="../media/thumb/Utilities-terminal.png-360.webp?h=297dcd1f 360w, ../media/Utilities-terminal.png.webp?h=297dcd1f 513w" sizes="(max-width: 25px) 100vw, 25px" alt="Utilities-terminal.png" /></a></div><div class="tcc-title"><h5 id="Terminal_Qubes-Whonix">Terminal Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a> with a terminal</u>, open
+<p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Utilities-terminal.png"><img src="../media/Utilities-terminal.png.webp?h=297dcd1f" width="25" height="25" srcset="../media/thumb/Utilities-terminal.png-360.webp?h=297dcd1f 360w, ../media/Utilities-terminal.png.webp?h=297dcd1f 513w" sizes="(max-width: 25px) 100vw, 25px" alt="Utilities-terminal.png" /></a></div><div class="tcc-title"><h5 id="Terminal_Qubes-Whonix">Terminal Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a> with a terminal</u>, open
 a terminal in <code>sys-whonix</code> and run the following command.</p>
 <p><span class="code-select" data-code="sudoedit /usr/local/etc/torrc.d/50_user.conf">sudoedit
 /usr/local/etc/torrc.d/50_user.conf</span></p></div></div></p></div></div></p></div></div></p></div></div></p>
@@ -148,9 +148,9 @@ see which Tor configuration files are processed in which order,
 <p><strong>1.</strong> Platform specific.</p>
 <ul>
 <li><a href="Non-Qubes-Whonix">Non-Qubes-Whonix</a>: On
-Whonix-Gateway<sup>&#8482;</sup>.</li>
-<li><a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a>:
-Inside Whonix-Gateway<sup>&#8482;</sup> (<code>sys-whonix</code>)</li>
+<span class="nowrap">Whonix-Gateway<sup>&#8482;</sup></span>.</li>
+<li><a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a>:
+Inside <span class="nowrap">Whonix-Gateway<sup>&#8482;</sup></span> (<code>sys-whonix</code>)</li>
 </ul>
 <p><strong>2.</strong> Run <code>anon-verify</code>.</p>
 <p><span class="code-select" data-code="anon-verify">anon-verify</span></p>
@@ -308,7 +308,7 @@ and <a href="#Log_Analysis">#Log Analysis</a>.</p>
 <div class="info-box ">
 <p><strong>1.</strong> Open a terminal.</p>
 <div class="info-box ">
-<p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a></u>, complete the
+<p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a></u>, complete the
 following steps.</p>
 <p><code>Qubes App Launcher (blue/grey "Q")</code> &#8594;
 <code>Service</code> &#8594;
@@ -394,7 +394,7 @@ DnsPort or TransPort.</p></td>
 <td><p>This notice is not a concern because Tor really listens on that
 IP/port - it is the internal network interface for Whonix-Gateway
 (<code>sys-whonix</code>) that is only available to
-Whonix-Workstation<sup>&#8482;</sup> because Whonix-Gateway
+<span class="nowrap">Whonix-Workstation<sup>&#8482;</sup></span> because Whonix-Gateway
 (<code>sys-whonix</code>) is firewalled. See
 <em>/usr/bin/whonix_firewall</em> or the Whonix source code for further
 information.</p></td>
@@ -821,13 +821,13 @@ unrestricted admin mode, take the following step.</p>
 <a href="https://www.kicksecure.com/wiki/unrestricted_admin_mode"><img src="../media/Kicksecure-wiki-link-icon.png.webp?h=bfb13876" width="50" height="50" alt="Kicksecure logo" class="kicksecure-wiki-link-icon" /></a>
 unrestricted admin mode.</p>
 </div>
-<p><div class="tab-content-controller "><div class="mininav"></div><div class="tcc-content"><p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Qubes-logo-icon.png"><img src="../media/Qubes-logo-icon.png.webp?h=c44b2eef" width="25" height="27" alt="Qubes-logo-icon.png" /></a></div><div class="tcc-title"><h5 id="Graphical_Qubes-Whonix_2">Graphical Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a> with a graphical
+<p><div class="tab-content-controller "><div class="mininav"></div><div class="tcc-content"><p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Qubes-logo-icon.png"><img src="../media/Qubes-logo-icon.png.webp?h=c44b2eef" width="25" height="27" alt="Qubes-logo-icon.png" /></a></div><div class="tcc-title"><h5 id="Graphical_Qubes-Whonix_2">Graphical Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a> with a graphical
 desktop</u>, take the following step.</p>
 <p><code>Qubes App Launcher (blue/grey "Q")</code> -&gt;
 <code>Service</code> -&gt;
 <code>Whonix-Gateway</code><sup><code>&#8482;</code></sup><code> ProxyVM (commonly named sys-whonix)</code>
 -&gt; <code>Tor User Config</code></p></div></div></p>
-<p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Utilities-terminal.png"><img src="../media/Utilities-terminal.png.webp?h=297dcd1f" width="25" height="25" srcset="../media/thumb/Utilities-terminal.png-360.webp?h=297dcd1f 360w, ../media/Utilities-terminal.png.webp?h=297dcd1f 513w" sizes="(max-width: 25px) 100vw, 25px" alt="Utilities-terminal.png" /></a></div><div class="tcc-title"><h5 id="Terminal_Qubes-Whonix_2">Terminal Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a> with a terminal</u>, open
+<p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Utilities-terminal.png"><img src="../media/Utilities-terminal.png.webp?h=297dcd1f" width="25" height="25" srcset="../media/thumb/Utilities-terminal.png-360.webp?h=297dcd1f 360w, ../media/Utilities-terminal.png.webp?h=297dcd1f 513w" sizes="(max-width: 25px) 100vw, 25px" alt="Utilities-terminal.png" /></a></div><div class="tcc-title"><h5 id="Terminal_Qubes-Whonix_2">Terminal Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a> with a terminal</u>, open
 a terminal in <code>sys-whonix</code> and run the following command.</p>
 <p><span class="code-select" data-code="sudoedit /usr/local/etc/torrc.d/50_user.conf">sudoedit
 /usr/local/etc/torrc.d/50_user.conf</span></p></div></div></p></div></div></p></div></div></p></div></div></p>
@@ -855,7 +855,7 @@ these steps, then a user mistake is the most likely explanation. Recheck
 <code>/usr/local/etc/torrc.d/50_user.conf</code> and repeat the steps
 outlined in the sections above. If Tor then connects successfully, all
 the necessary changes have been made.</p>
-<p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a></u>, complete the
+<p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a></u>, complete the
 following steps.</p>
 <p><code>Qubes App Launcher (blue/grey "Q")</code> &#8594;
 <code>Service</code> &#8594;
@@ -955,13 +955,13 @@ unrestricted admin mode, take the following step.</p>
 <a href="https://www.kicksecure.com/wiki/unrestricted_admin_mode"><img src="../media/Kicksecure-wiki-link-icon.png.webp?h=bfb13876" width="50" height="50" alt="Kicksecure logo" class="kicksecure-wiki-link-icon" /></a>
 unrestricted admin mode.</p>
 </div>
-<p><div class="tab-content-controller "><div class="mininav"></div><div class="tcc-content"><p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Qubes-logo-icon.png"><img src="../media/Qubes-logo-icon.png.webp?h=c44b2eef" width="25" height="27" alt="Qubes-logo-icon.png" /></a></div><div class="tcc-title"><h5 id="Graphical_Qubes-Whonix_3">Graphical Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a> with a graphical
+<p><div class="tab-content-controller "><div class="mininav"></div><div class="tcc-content"><p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Qubes-logo-icon.png"><img src="../media/Qubes-logo-icon.png.webp?h=c44b2eef" width="25" height="27" alt="Qubes-logo-icon.png" /></a></div><div class="tcc-title"><h5 id="Graphical_Qubes-Whonix_3">Graphical Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a> with a graphical
 desktop</u>, take the following step.</p>
 <p><code>Qubes App Launcher (blue/grey "Q")</code> -&gt;
 <code>Service</code> -&gt;
 <code>Whonix-Gateway</code><sup><code>&#8482;</code></sup><code> ProxyVM (commonly named sys-whonix)</code>
 -&gt; <code>Tor User Config</code></p></div></div></p>
-<p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Utilities-terminal.png"><img src="../media/Utilities-terminal.png.webp?h=297dcd1f" width="25" height="25" srcset="../media/thumb/Utilities-terminal.png-360.webp?h=297dcd1f 360w, ../media/Utilities-terminal.png.webp?h=297dcd1f 513w" sizes="(max-width: 25px) 100vw, 25px" alt="Utilities-terminal.png" /></a></div><div class="tcc-title"><h5 id="Terminal_Qubes-Whonix_3">Terminal Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a> with a terminal</u>, open
+<p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Utilities-terminal.png"><img src="../media/Utilities-terminal.png.webp?h=297dcd1f" width="25" height="25" srcset="../media/thumb/Utilities-terminal.png-360.webp?h=297dcd1f 360w, ../media/Utilities-terminal.png.webp?h=297dcd1f 513w" sizes="(max-width: 25px) 100vw, 25px" alt="Utilities-terminal.png" /></a></div><div class="tcc-title"><h5 id="Terminal_Qubes-Whonix_3">Terminal Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a> with a terminal</u>, open
 a terminal in <code>sys-whonix</code> and run the following command.</p>
 <p><span class="code-select" data-code="sudoedit /usr/local/etc/torrc.d/50_user.conf">sudoedit
 /usr/local/etc/torrc.d/50_user.conf</span></p></div></div></p></div></div></p></div></div></p></div></div></p>
@@ -1093,7 +1093,7 @@ editing is finished, save and exit.</p>
 <p>Enable Tor using Anon Connection Wizard (easiest option).</p>
 <p>Start Anon Connection Wizard.</p>
 <div class="info-box ">
-<p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a></u>, complete the
+<p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a></u>, complete the
 following steps.</p>
 <p><code>Qubes App Launcher (blue/grey "Q")</code> &#8594;
 <code>Whonix-Gateway</code><sup><code>&#8482;</code></sup><code> ProxyVM (commonly named sys-whonix)</code>
@@ -1141,7 +1141,7 @@ these steps, then a user mistake is the most likely explanation. Recheck
 <code>/usr/local/etc/torrc.d/50_user.conf</code> and repeat the steps
 outlined in the sections above. If Tor then connects successfully, all
 the necessary changes have been made.</p>
-<p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a></u>, complete the
+<p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a></u>, complete the
 following steps.</p>
 <p><code>Qubes App Launcher (blue/grey "Q")</code> &#8594;
 <code>Service</code> &#8594;
@@ -1178,7 +1178,7 @@ Configuration was valid</code></pre>
 <p>Disable Tor using Anon Connection Wizard (safest option).</p>
 <p>Start Anon Connection Wizard.</p>
 <div class="info-box ">
-<p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a></u>, complete the
+<p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a></u>, complete the
 following steps.</p>
 <p><code>Qubes App Launcher (blue/grey "Q")</code> &#8594;
 <code>Whonix-Gateway</code><sup><code>&#8482;</code></sup><code> ProxyVM (commonly named sys-whonix)</code>
@@ -1205,7 +1205,7 @@ these steps, then a user mistake is the most likely explanation. Recheck
 <code>/usr/local/etc/torrc.d/50_user.conf</code> and repeat the steps
 outlined in the sections above. If Tor then connects successfully, all
 the necessary changes have been made.</p>
-<p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a></u>, complete the
+<p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a></u>, complete the
 following steps.</p>
 <p><code>Qubes App Launcher (blue/grey "Q")</code> &#8594;
 <code>Service</code> &#8594;

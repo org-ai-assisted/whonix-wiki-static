@@ -73,7 +73,7 @@ likely unavoidable to have an IP leak. Additionally:</p>
 <code>micro-httpd</code>, <code>nginx</code>, or <code>apache</code> --
 the attacker cannot steal the onion service key or bypass Tor; see <a href="Comparison_with_Others#Attacks">Attack on
 Whonix</a>. The reason is that the key is stored on the
-Whonix-Gateway<sup>&#8482;</sup>. Once the Whonix-Workstation<sup>&#8482;</sup> is
+<span class="nowrap">Whonix-Gateway<sup>&#8482;</sup></span>. Once the <span class="nowrap">Whonix-Workstation<sup>&#8482;</sup></span> is
 cleaned, it is no longer possible for an adversary to impersonate the
 onion service.
 <ul>
@@ -383,13 +383,13 @@ unrestricted admin mode, take the following step.</p>
 <a href="https://www.kicksecure.com/wiki/unrestricted_admin_mode"><img src="../media/Kicksecure-wiki-link-icon.png.webp?h=bfb13876" width="50" height="50" alt="Kicksecure logo" class="kicksecure-wiki-link-icon" /></a>
 unrestricted admin mode.</p>
 </div>
-<p><div class="tab-content-controller "><div class="mininav"></div><div class="tcc-content"><p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Qubes-logo-icon.png"><img src="../media/Qubes-logo-icon.png.webp?h=c44b2eef" width="25" height="27" alt="Qubes-logo-icon.png" /></a></div><div class="tcc-title"><h5 id="Graphical_Qubes-Whonix">Graphical Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a> with a graphical
+<p><div class="tab-content-controller "><div class="mininav"></div><div class="tcc-content"><p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Qubes-logo-icon.png"><img src="../media/Qubes-logo-icon.png.webp?h=c44b2eef" width="25" height="27" alt="Qubes-logo-icon.png" /></a></div><div class="tcc-title"><h5 id="Graphical_Qubes-Whonix">Graphical Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a> with a graphical
 desktop</u>, take the following step.</p>
 <p><code>Qubes App Launcher (blue/grey "Q")</code> -&gt;
 <code>Service</code> -&gt;
 <code>Whonix-Gateway</code><sup><code>&#8482;</code></sup><code> ProxyVM (commonly named sys-whonix)</code>
 -&gt; <code>Tor User Config</code></p></div></div></p>
-<p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Utilities-terminal.png"><img src="../media/Utilities-terminal.png.webp?h=297dcd1f" width="25" height="25" srcset="../media/thumb/Utilities-terminal.png-360.webp?h=297dcd1f 360w, ../media/Utilities-terminal.png.webp?h=297dcd1f 513w" sizes="(max-width: 25px) 100vw, 25px" alt="Utilities-terminal.png" /></a></div><div class="tcc-title"><h5 id="Terminal_Qubes-Whonix">Terminal Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a> with a terminal</u>, open
+<p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Utilities-terminal.png"><img src="../media/Utilities-terminal.png.webp?h=297dcd1f" width="25" height="25" srcset="../media/thumb/Utilities-terminal.png-360.webp?h=297dcd1f 360w, ../media/Utilities-terminal.png.webp?h=297dcd1f 513w" sizes="(max-width: 25px) 100vw, 25px" alt="Utilities-terminal.png" /></a></div><div class="tcc-title"><h5 id="Terminal_Qubes-Whonix">Terminal Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a> with a terminal</u>, open
 a terminal in <code>sys-whonix</code> and run the following command.</p>
 <p><span class="code-select" data-code="sudoedit /usr/local/etc/torrc.d/50_user.conf">sudoedit
 /usr/local/etc/torrc.d/50_user.conf</span></p></div></div></p></div></div></p></div></div></p></div></div></p>
@@ -439,15 +439,15 @@ target port number in this example <code>80</code> can be set to
 something else, depending on the server service to be provided.</li>
 </ul>
 <div class="info-box ">
-<p><a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a>:</p>
+<p><a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a>:</p>
 <p>Make sure to replace <code>IP-of-q-ws-AppVM</code> with the actual IP
 address of the Whonix-Workstation.</p>
-<p><a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a> note:
-The <em><span>IP of <a href="Whonix-Workstation">Whonix-Workstation<sup>&#8482;</sup></a> AppVM</span></em>
+<p><a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a> note:
+The <em><span>IP of <a href="Whonix-Workstation"><span class="nowrap">Whonix-Workstation<sup>&#8482;</sup></span></a> AppVM</span></em>
 needs to be replaced with the actual IP address. To find out the IP
-address of the Qubes-Whonix<sup>&#8482;</sup> Whonix-Workstation<sup>&#8482;</sup>
+address of the <span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span> <span class="nowrap">Whonix-Workstation<sup>&#8482;</sup></span>
 AppVM, the following command can be run within the
-Qubes-Whonix<sup>&#8482;</sup> Whonix-Workstation<sup>&#8482;</sup> AppVM.</p>
+<span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span> <span class="nowrap">Whonix-Workstation<sup>&#8482;</sup></span> AppVM.</p>
 <p><span class="code-select" data-code="qubesdb-read /qubes-ip">qubesdb-read
 /qubes-ip</span></p>
 <p>Do not use IP <code>10.152.152.11</code> because that only works with
@@ -560,7 +560,7 @@ these steps, then a user mistake is the most likely explanation. Recheck
 <code>/usr/local/etc/torrc.d/50_user.conf</code> and repeat the steps
 outlined in the sections above. If Tor then connects successfully, all
 the necessary changes have been made.</p>
-<p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a></u>, complete the
+<p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a></u>, complete the
 following steps.</p>
 <p><code>Qubes App Launcher (blue/grey "Q")</code> &#8594;
 <code>Service</code> &#8594;
@@ -608,12 +608,12 @@ the Tor Onion Service Private Key</h4>
 <p>On the Whonix-Gateway.</p>
 <p>Reminder: Always backup the onion service key. This is necessary in
 order to restore it on another machine, on a newer
-Whonix-Gateway<sup>&#8482;</sup>, after HDD/SSD failure, etc. Follow the
+<span class="nowrap">Whonix-Gateway<sup>&#8482;</sup></span>, after HDD/SSD failure, etc. Follow the
 instructions below to find its location; root permission is required to
 access it.</p>
 <p><code>/var/lib/tor/hidden_service/hs_ed25519_secret_key</code></p>
 <div class="info-box ">
-<p><u><a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a></u></p>
+<p><u><a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a></u></p>
 <p>The following example shows how to copy the
 <em><span>/var/lib/tor/hidden_service/hs_ed25519_secret_key</span></em>
 from the
@@ -1132,7 +1132,7 @@ Setup Part One[/url]</span><span class="share-note">We don't use embedded script
 <p>On the Whonix-Gateway OnionBalance frontend server.</p>
 <p><strong>1.</strong> OnionBalance Package Installation</p>
 <ul>
-<li>Non-Qubes-Whonix<sup>&#8482;</sup>: Inside Whonix-Gateway.</li>
+<li><span class="nowrap">Non-Qubes-Whonix<sup>&#8482;</sup></span>: Inside Whonix-Gateway.</li>
 <li>Qubes-Whonix: Inside Template (<code>whonix-gateway-18</code>).</li>
 </ul>
 <div class="info-box ">
@@ -1361,13 +1361,13 @@ unrestricted admin mode, take the following step.</p>
 <a href="https://www.kicksecure.com/wiki/unrestricted_admin_mode"><img src="../media/Kicksecure-wiki-link-icon.png.webp?h=bfb13876" width="50" height="50" alt="Kicksecure logo" class="kicksecure-wiki-link-icon" /></a>
 unrestricted admin mode.</p>
 </div>
-<p><div class="tab-content-controller "><div class="mininav"></div><div class="tcc-content"><p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Qubes-logo-icon.png"><img src="../media/Qubes-logo-icon.png.webp?h=c44b2eef" width="25" height="27" alt="Qubes-logo-icon.png" /></a></div><div class="tcc-title"><h5 id="Graphical_Qubes-Whonix_2">Graphical Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a> with a graphical
+<p><div class="tab-content-controller "><div class="mininav"></div><div class="tcc-content"><p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Qubes-logo-icon.png"><img src="../media/Qubes-logo-icon.png.webp?h=c44b2eef" width="25" height="27" alt="Qubes-logo-icon.png" /></a></div><div class="tcc-title"><h5 id="Graphical_Qubes-Whonix_2">Graphical Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a> with a graphical
 desktop</u>, take the following step.</p>
 <p><code>Qubes App Launcher (blue/grey "Q")</code> -&gt;
 <code>Service</code> -&gt;
 <code>Whonix-Gateway</code><sup><code>&#8482;</code></sup><code> ProxyVM (commonly named sys-whonix)</code>
 -&gt; <code>Tor User Config</code></p></div></div></p>
-<p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Utilities-terminal.png"><img src="../media/Utilities-terminal.png.webp?h=297dcd1f" width="25" height="25" srcset="../media/thumb/Utilities-terminal.png-360.webp?h=297dcd1f 360w, ../media/Utilities-terminal.png.webp?h=297dcd1f 513w" sizes="(max-width: 25px) 100vw, 25px" alt="Utilities-terminal.png" /></a></div><div class="tcc-title"><h5 id="Terminal_Qubes-Whonix_2">Terminal Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a> with a terminal</u>, open
+<p><div class="tcc-section  "><div class="tcc-image"><a href="./File:Utilities-terminal.png"><img src="../media/Utilities-terminal.png.webp?h=297dcd1f" width="25" height="25" srcset="../media/thumb/Utilities-terminal.png-360.webp?h=297dcd1f 360w, ../media/Utilities-terminal.png.webp?h=297dcd1f 513w" sizes="(max-width: 25px) 100vw, 25px" alt="Utilities-terminal.png" /></a></div><div class="tcc-title"><h5 id="Terminal_Qubes-Whonix_2">Terminal Qubes-Whonix</h5></div><div class="tcc-content"><p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a> with a terminal</u>, open
 a terminal in <code>sys-whonix</code> and run the following command.</p>
 <p><span class="code-select" data-code="sudoedit /usr/local/etc/torrc.d/50_user.conf">sudoedit
 /usr/local/etc/torrc.d/50_user.conf</span></p></div></div></p></div></div></p></div></div></p></div></div></p>
@@ -1471,7 +1471,7 @@ these steps, then a user mistake is the most likely explanation. Recheck
 <code>/usr/local/etc/torrc.d/50_user.conf</code> and repeat the steps
 outlined in the sections above. If Tor then connects successfully, all
 the necessary changes have been made.</p>
-<p><u>If you are using <a href="Qubes">Qubes-Whonix<sup>&#8482;</sup></a></u>, complete the
+<p><u>If you are using <a href="Qubes"><span class="nowrap">Qubes-Whonix<sup>&#8482;</sup></span></a></u>, complete the
 following steps.</p>
 <p><code>Qubes App Launcher (blue/grey "Q")</code> &#8594;
 <code>Service</code> &#8594;

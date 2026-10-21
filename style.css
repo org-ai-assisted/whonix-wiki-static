@@ -165,6 +165,15 @@ body {
    its content (a long <pre>/<code> line) in the flex column and overflow the viewport. */
 .wiki-content { flex: 1 0 auto; width: 100%; min-width: 0; }
 img { max-width: 100%; height: auto; }
+/* Keep a token together across a line wrap (e.g. a project name + its trailing TM/R sup, so
+   the mark never orphans onto its own line -- see render/pipeline._bind_trademarks). */
+.nowrap { white-space: nowrap; }
+/* Inline wiki cross-link icon ({{kicksecure_wiki}} etc.): the source File is a bare 50x50 px
+   image placed inline before a link, so cap it to a text-sized inline glyph instead of a giant
+   block (overrides the presentational width/height attrs). */
+.kicksecure-wiki-link-icon {
+  display: inline; width: auto; height: 1.15em; vertical-align: -0.18em;
+}
 hr {
   height: 0;
   border: 0;
@@ -284,6 +293,17 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
 }
 .download-button-v2 .op-sys > img { height: 16px; margin-right: 6px; }
 .download-button-v2 .op-sys > img:last-child { margin-right: 0; }
+/* Narrow phones: a long label ("Download Whonix LXQt (VirtualBox) (stable) (FREE!)") in a
+   nowrap table-cell capped at max-width:100% is clipped by the pill. Let it wrap to 2 lines
+   (the left icon is absolutely positioned, so multi-line text keeps its gutter). Keep the
+   OS-icon cell SHRINK-TO-FIT (width:1px in the anonymous table) so the now-wrapping label
+   cannot steal its width and squeeze the icon into a distorted sliver (a Lighthouse
+   best-practices image-aspect-ratio regression); object-fit:contain is belt-and-suspenders. */
+@media (max-width: 480px) {
+  .download-button-v2 .dbutton { white-space: normal; }
+  .download-button-v2 .op-sys { width: 1px; white-space: nowrap; }
+  .download-button-v2 .op-sys > img { object-fit: contain; }
+}
 
 /* ---- chrome: header + nav (pure-CSS toggle) ---- */
 .site-header {
@@ -563,7 +583,12 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
   position: absolute;
   z-index: 40;
   margin-top: 0.25rem;
-  max-width: 22rem;
+  /* Anchor to the search box's RIGHT edge (it sits at the header's right) and never exceed
+     the viewport, so a long result title cannot push the page horizontally scrollable on a
+     narrow phone (left:auto defeats the default static-left placement). */
+  right: 0;
+  left: auto;
+  max-width: min(22rem, calc(100vw - 2rem));
   max-height: 60vh;
   overflow-y: auto;
   background: var(--bg);
@@ -1331,6 +1356,10 @@ code:empty { display: none; }
    no-JS shows every section (progressive enhancement). */
 .tab-content-controller.mininav-ready .tcc-section:not(.active) { display: none; }
 .tab-content-controller.mininav-ready .tcc-section { border: none; margin: 0; }
+/* With the pill switcher built + the title sr-only, the content's own top border becomes a
+   redundant separator line DIRECTLY under the pill bar -- an extra bordered level prod does
+   not show. Drop it so a tabbed section reads as one mininav bar + one expand box (prod). */
+.tab-content-controller.mininav-ready .tcc-content { border-top: none; }
 /* The mininav MOVES each section's logo <img> into its nav pill, leaving the original
    .tcc-image > a an EMPTY focusable anchor (href to the File: page, no content) -- an
    a11y link-name failure. The logo now lives in the pill, so hide the redundant original
@@ -1609,6 +1638,16 @@ code:empty { display: none; }
   padding: 0.15rem 0.4rem;
   scroll-margin-top: 4.5rem;
 }
+/* The reverse jump: clicking a footnote's back-reference (^) targets the in-text citation
+   marker (sup.reference#cite_ref-N). Give it the SAME scroll-margin (so the sticky header
+   does not hide it) and highlight as the note target, so the round trip is symmetric. */
+sup.reference:target {
+  scroll-margin-top: 4.5rem;
+  background: var(--surface-2);
+  outline: 2px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 0 0.2rem;
+}
 /* section-heading permalink + share menu (production ShareTooltip): a small share
    icon linking to the section #id, with a hover menu holding the copyable direct URL
    (app.js adds a Copy button to the inner .code-select). CSP-safe: pure-CSS hover. */
@@ -1809,7 +1848,9 @@ code:empty { display: none; }
    layout classes (thumb-gallery-style / gallery-white / justify-*). A See-Also gallery
    is thumb-gallery-style (framed cards); a bare gallery is a simple centered icon row. */
 .gallery {
-  margin: 1rem 0; display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: flex-start;
+  /* center the wrapped icon/thumbnail grid so a partial last row stays balanced + symmetric
+     (an explicit .justify-left/right still overrides via the gallery-tag `justify=` classes). */
+  margin: 1rem 0; display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center;
 }
 /* pandoc wraps the inline galleryboxes in a <p>; make it transparent so the boxes are
    the gallery's flex items (else the lone <p> is the only flex child -> vertical stack). */
@@ -1894,8 +1935,14 @@ code:empty { display: none; }
 .mininav.mn-switcher li > *.active { background-color: white; color: #36b; }
 /* pills are buttons, not prose links: no underline (overrides .wiki-content li a + a:hover). */
 .mininav.mn-switcher a, .mininav.mn-switcher a:hover { text-decoration: none; }
-/* width:auto so a square icon keeps its ratio (a bare height + an HTML width attr squish it). */
-.mininav.mn-switcher li > * > img { height: 1.2em; width: auto; vertical-align: middle; margin-right: 6px; }
+/* width:auto so a square icon keeps its ratio (a bare height + an HTML width attr squish it).
+   min-width + object-fit give a 1.2em SQUARE fallback box so an SVG with NO intrinsic width
+   (GnuPG/Signify/Ubuntu logos) is scaled into it instead of collapsing to 0 (a tiny dot); a
+   raster whose auto width already exceeds 1.2em is untouched (min-width inert), so no squish. */
+.mininav.mn-switcher li > * > img {
+  height: 1.2em; width: auto; min-width: 1.2em; object-fit: contain;
+  vertical-align: middle; margin-right: 6px;
+}
 .mininav:empty { display: none; }
 /* Hide the tab-title visually but KEEP it in the a11y tree (sr-only, not display:none):
    the pill nav shows the label, but the section's heading must stay so screen readers get
@@ -2004,6 +2051,10 @@ code:empty { display: none; }
 .mininav:not(.mn-switcher) li > a:first-child:has(> img:only-child) {
   position: absolute; left: 10px; top: 8px;
   width: 25px; height: 25px; object-fit: contain;
+  /* reset the inherited chip padding (`li a` = 9px 15px): with box-sizing:border-box the 30px
+     horizontal padding collapses the gutter anchor's content box to 0, so the inner img's
+     max-width:100% clamps it to 0 (the Raspberry-Pi / Apple-Mac logos vanished). */
+  padding: 0;
 }
 .mininav:not(.mn-switcher) li > a:first-child:has(> img:only-child) > img {
   width: 25px; height: 25px; object-fit: contain; display: block;
