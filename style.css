@@ -1680,8 +1680,16 @@ code:empty { display: none; }
 .info-tooltip:hover > span, .info-tooltip:focus-within > span { display: block; }
 /* comparison Yes/No cells (green check / red cross). Unscoped: pandoc drops the
    wikitable's own class, so these are keyed on the inline span classes that survive. */
-.cmp-yes { color: #1a8a1a; font-weight: 600; white-space: nowrap; }
+.cmp-yes { color: #157f15; font-weight: 600; white-space: nowrap; }
 .cmp-no { color: #c0392b; font-weight: 600; white-space: nowrap; }
+/* dark mode: the darker light-mode green/red fail WCAG AA contrast on the dark cell bg
+   (and the old #1a8a1a green was already ~4.48:1 on white, under AA) -- lighten for dark. */
+:root[data-theme="dark"] .cmp-yes { color: #5cc95c; }
+:root[data-theme="dark"] .cmp-no { color: #ff6b5e; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .cmp-yes { color: #5cc95c; }
+  :root:not([data-theme="light"]) .cmp-no { color: #ff6b5e; }
+}
 /* Status icon/text colors rescued from inline color: by sanitize (strict CSP strips the
    inline style) -- {{Check-yes}} green check, {{Check-no}} red cross, {{Check-todo}} orange
    clock. Dark-mode gets brighter variants for contrast. */
