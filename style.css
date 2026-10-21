@@ -1509,15 +1509,16 @@ code:empty { display: none; }
 /* section-heading permalink + share menu (production ShareTooltip): a small share
    icon linking to the section #id, with a hover menu holding the copyable direct URL
    (app.js adds a Copy button to the inner .code-select). CSP-safe: pure-CSS hover. */
-/* #163 per-section [edit] source link (prod mw-editsection): a small, muted, CSP-safe plain
-   <a> at the end of the heading line, beside the share icon. Themed -> dark-mode safe. */
+/* #163 per-section edit source link (prod mw-editsection): a small muted PENCIL ICON (prod-like,
+   not "[edit]" text) at the end of the heading line, beside the share icon. Deep-links to the
+   section's source line on GitHub. Themed -> dark-mode safe. */
 .mw-editsection {
-  font-size: 0.62em; font-weight: normal; margin-left: 0.5rem;
+  font-size: 0.78em; font-weight: normal; margin-left: 0.5rem;
   vertical-align: middle; white-space: nowrap; user-select: none;
 }
-.mw-editsection, .mw-editsection-bracket { color: var(--muted); }
+.mw-editsection { color: var(--muted); }
 .mw-editsection a { color: var(--muted); text-decoration: none; padding: 0 0.15em; }
-.mw-editsection a:hover { color: var(--link); text-decoration: underline; }
+.mw-editsection a:hover { color: var(--link); text-decoration: none; }
 .share-tooltip { position: relative; display: inline-block; margin-left: 0.45rem;
   font-size: 0.72em; vertical-align: middle; }
 .share-tooltip .headline-anchor { color: var(--muted); }

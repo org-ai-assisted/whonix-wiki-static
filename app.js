@@ -255,7 +255,7 @@
           if (img) a.appendChild(img);
           // Label from the title text ONLY -- a section title is also a real heading, so it
           // carries BOTH injected affordances (.share-tooltip permalink menu + .mw-editsection
-          // [edit] link); strip both, else textContent yields "Windows[edit]".
+          // edit-icon link); strip both by element so neither leaks into the tab label.
           var label = "Tab " + (j + 1);
           if (title) {
             var tclone = title.cloneNode(true);
