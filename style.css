@@ -1331,6 +1331,11 @@ code:empty { display: none; }
    no-JS shows every section (progressive enhancement). */
 .tab-content-controller.mininav-ready .tcc-section:not(.active) { display: none; }
 .tab-content-controller.mininav-ready .tcc-section { border: none; margin: 0; }
+/* The mininav MOVES each section's logo <img> into its nav pill, leaving the original
+   .tcc-image > a an EMPTY focusable anchor (href to the File: page, no content) -- an
+   a11y link-name failure. The logo now lives in the pill, so hide the redundant original
+   once the switcher is built; no-JS keeps the inline logo (img present -> link named). */
+.tab-content-controller.mininav-ready .tcc-image { display: none; }
 
 /* ---- collapsibles: rendered expanded no-JS; JS adds the toggle button ---- */
 .mw-collapsible, .toccolours {
