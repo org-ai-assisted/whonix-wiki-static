@@ -1498,6 +1498,29 @@ code:empty { display: none; }
   :root:not([data-theme="light"]) .slogan-pills .pill a { background: #2b6fd6; }
   :root:not([data-theme="light"]) .slogan-pills .pill a:hover { background: #3f80e2; }
 }
+/* HOMEPAGE ONLY: the slogan-pills recede to an OUTLINE (secondary) style so the solid prod
+   Download button reads as the clear primary CTA. Other pages keep the solid B4 pill above.
+   Text colors are AA-contrast (light #0b57d0 ~6.4:1, dark #7fb0f0 ~7.6:1). */
+.page-home .slogan-pills .pill a {
+  background: transparent; color: #0b57d0; border: 1.5px solid #9dc0f5; box-shadow: none;
+}
+.page-home .slogan-pills .pill a:hover {
+  background: #eef4fe; color: #0a4cb8; border-color: #0b57d0; box-shadow: none;
+}
+:root[data-theme="dark"] .page-home .slogan-pills .pill a {
+  background: transparent; color: #7fb0f0; border-color: #39506f;
+}
+:root[data-theme="dark"] .page-home .slogan-pills .pill a:hover {
+  background: #15233b; color: #a9cbf7; border-color: #2b6fd6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .page-home .slogan-pills .pill a {
+    background: transparent; color: #7fb0f0; border-color: #39506f;
+  }
+  :root:not([data-theme="light"]) .page-home .slogan-pills .pill a:hover {
+    background: #15233b; color: #a9cbf7; border-color: #2b6fd6;
+  }
+}
 /* IntroLike: production lead callout (Utility.css) -- a soft italic gray box. Two markups
    get it: a .intro-like div ({{IntroLike}}), AND the content {{Intro}} emits between empty
    .pre-intro-p / .post-intro-p markers (so the ACTUAL page-lead text is the box, not just a
@@ -2211,11 +2234,17 @@ html.client-js .show-for-nojs-only { display: none; }
 #siteNotice + main.wiki-content > .first-heading { margin-top: 0.4rem; }
 .sitenotice { position: relative; display: inline-block; max-width: 100%; }
 .sitenotice-close {
-  width: 30px; height: 30px; position: absolute; top: 4px; right: 4px; z-index: 10;
-  cursor: pointer; border: 0; border-radius: 100px; background: #111; color: #fff;
-  line-height: 1; padding: 0; font-size: 15px;
+  /* a refined inside close (kept inside per the #89/#91 guard): a soft translucent badge,
+     centered glyph, subtle shadow + gentle hover -- less harsh than the old solid-black
+     circle with its abrupt 1.2 scale jump. */
+  width: 28px; height: 28px; position: absolute; top: 6px; right: 6px; z-index: 10;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; border: 0; border-radius: 50%;
+  background: rgba(17, 17, 17, 0.55); color: #fff; padding: 0; font-size: 13px; line-height: 1;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
+  transition: background 0.12s ease, transform 0.12s ease;
 }
-.sitenotice-close:hover { transform: scale(1.2); }
+.sitenotice-close:hover { background: rgba(17, 17, 17, 0.82); transform: scale(1.08); }
 .sitenotice-banner[data-banner-id="38"] > a {
   /* right padding reserves room for the absolute 30px close button (top/right:4px) so
      it never overlaps the banner text. */
