@@ -213,6 +213,7 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
 .expand-or-collapse-all-button,
 .github-link-widget,
 .darkmode-toggle,
+.footer-settings,
 .collapsible-toggle,
 .copy-button {
   display: inline-block;
@@ -233,6 +234,7 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
 .expand-or-collapse-all-button:hover,
 .github-link-widget:hover,
 .darkmode-toggle:hover,
+.footer-settings:hover,
 .collapsible-toggle:hover,
 .copy-button:hover {
   background: var(--surface-2);
@@ -294,7 +296,7 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
   box-shadow: var(--shadow-sm);
 }
 /* Whonix production draws a 2px brand-blue rule under the nav; Kicksecure does not. */
-body.site-whonix .site-header { border-bottom: 2px solid #22a7df; }
+body.site-whonix .site-header { border-bottom: 1px solid rgb(34 167 223 / 40%); }
 /* Whonix header mark is a PORTRAIT padlock (377x500); size it by height, auto width, so it
    is not squished into the square box the Kicksecure (rectangle) logo uses. */
 body.site-whonix .site-logo-img { width: auto; }
@@ -318,7 +320,7 @@ body.site-whonix .site-logo-img { width: auto; }
   align-items: center;
   gap: 0.4rem;
 }
-.site-logo:hover { color: var(--fg); text-decoration: none; }
+.site-logo:hover { color: var(--link); text-decoration: none; }
 /* Shield logo: production renders the rectangle SVG at a fixed 44x44 square. */
 .site-logo-img { display: block; height: 44px; width: 44px; }
 .header-cta { display: flex; align-items: center; }
@@ -433,9 +435,15 @@ body.site-whonix .site-logo-img { width: auto; }
   color: var(--fg);
   font-size: 1.2rem;
   vertical-align: super;
-  margin-left: -0.2rem;
+  margin-left: -0.3rem;   /* sit the mark close to the wordmark (prod is tight) */
 }
-.site-tm:hover { color: var(--fg); text-decoration: none; }
+/* Whonix uses the REGISTERED (R) glyph -- a full-size circled R on the baseline, unlike the
+   Kicksecure (TM) which the font already draws small+high. Shrink the (R) so it reads as a
+   raised superscript mark to match. */
+body.site-whonix .site-tm { font-size: 0.72rem; }
+/* Logo and mark are SEPARATE links; the mark gets its own visible hover (the logo's is below)
+   so both read as independently clickable. */
+.site-tm:hover { color: var(--link); text-decoration: none; }
 /* grouped nav dropdowns (production mega-menu): pure-CSS reveal on hover/focus */
 .nav-group { position: relative; }
 .nav-submenu {
@@ -491,6 +499,7 @@ body.site-whonix .site-logo-img { width: auto; }
   display: flex;
   gap: 0.25rem;
   align-items: center;
+  position: relative;   /* anchor the open search overlay under the magnifier */
 }
 /* visually hidden yet focusable (screen readers + keyboard): NOT display:none, so the
    search toggle stays in the tab order -- tab to it, Space opens the box. */
@@ -519,9 +528,13 @@ body.site-whonix .site-logo-img { width: auto; }
   border-radius: var(--radius-sm);
   transition: width 0.18s ease, opacity 0.18s ease, padding 0.18s ease, visibility 0.18s ease;
 }
+/* Open = a floating overlay panel anchored under the magnifier, NOT an inline field that
+   grows the header row (prod opens a search popover/modal; the header stays one fixed row). */
 .search-toggle:checked ~ .search-field {
-  width: 12rem; padding: 0.4rem 0.65rem; border: 1px solid var(--border);
-  opacity: 1; pointer-events: auto; visibility: visible;
+  position: absolute; top: calc(100% + 0.3rem); right: 0;
+  width: min(92vw, 22rem); padding: 0.55rem 0.8rem; border: 1px solid var(--border);
+  opacity: 1; pointer-events: auto; visibility: visible; z-index: 50;
+  box-shadow: var(--shadow-md);
 }
 .search-field:focus-visible {
   outline: 2px solid var(--focus);
@@ -535,8 +548,9 @@ body.site-whonix .site-logo-img { width: auto; }
   color: var(--fg); font-size: 0.9rem; font-weight: 600; white-space: nowrap;
   text-decoration: none;
 }
-.header-donate:hover { text-decoration: underline; }
-.header-donate .fa-heart { color: #f80000; font-size: 20px; line-height: 1; }   /* prod Donate heart; flex-centered with the label */
+.header-donate:hover { text-decoration: none; }
+.header-donate:hover .fa-heart { transform: scale(1.18); }   /* subtle clickability cue (prod parity) */
+.header-donate .fa-heart { color: #f80000; font-size: 20px; line-height: 1; transition: transform 0.12s ease; }   /* prod Donate heart; flex-centered with the label */
 
 /* JS-created search results dropdown */
 .search-results {
@@ -615,7 +629,7 @@ body.site-whonix .site-logo-img { width: auto; }
   .site-search { order: 2; margin-left: auto; }
   .tools { order: 3; }
   .header-cta { order: 4; }
-  .search-toggle:checked ~ .search-field { width: min(55vw, 11rem); }
+  .search-toggle:checked ~ .search-field { width: min(80vw, 16rem); }   /* overlay, not inline */
 }
 /* Narrow phones: production drops the "Donate" word (heart glyph only) at <=382px, where
    the label would otherwise crowd the bar. font-size:0 hides the text node; the heart keeps
@@ -737,26 +751,65 @@ blockquote p:last-child { margin-bottom: 0; }
 }
 /* Template:Quotation card (prod blockquote.quotation): a quote card with an accent left bar +
    soft shadow, distinct from the generic indented blockquote. Themed surface/fg so it reads as a
-   content card in BOTH themes (dark mode too), not a jarring white box. The prod :before
-   quote-mark is an external PNG -- dropped under our no-external-image / monochrome divergence. */
+   content card in BOTH themes (dark mode too), not a jarring white box. A large decorative
+   hanging opening quote-mark replaces the prod external PNG (our no-external-image divergence);
+   attribution is structured into .nm (name) / .rl (role) / .src (source). */
 blockquote.quotation {
+  position: relative;
   background: var(--surface); color: var(--fg);
   border: none; border-left: 6px solid var(--link);
   box-shadow: 2px 2px 4px 1px rgba(0, 0, 0, 0.07);
-  padding: 18px 25px; border-radius: 2px;
+  padding: 18px 25px 18px 58px; border-radius: 2px;
+}
+/* decorative hanging opening quote-mark; generated content so screen readers skip it. Cyan is
+   decoration ONLY (fails contrast as text) -- low opacity in light, higher in dark. */
+blockquote.quotation::before {
+  content: "\201C";
+  position: absolute; left: 14px; top: 2px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 3.2rem; line-height: 1;
+  color: #22a7df; opacity: 0.30;
+  pointer-events: none;
 }
 blockquote.quotation p:last-child { margin-bottom: 0; }
+/* A1: stacked attribution by default (single column). */
 blockquote.quotation .blockquote-context {
-  position: relative; display: block; padding-left: 40px;
+  display: block;
   margin: 20px 0 10px; color: var(--fg); font-size: 0.9rem; font-style: normal;
 }
-blockquote.quotation .blockquote-context::before {
-  content: ""; position: absolute; left: 0; top: 50%;
-  width: 30px; height: 0; border-top: 2px solid var(--fg-soft);
+blockquote.quotation .blockquote-context .nm {
+  display: block; font-weight: 600; color: var(--fg);
+}
+blockquote.quotation .blockquote-context .rl {
+  display: block; color: var(--muted); font-size: 0.85rem;
+}
+blockquote.quotation .blockquote-context .src {
+  display: block; color: var(--link); margin-top: 6px;
+  overflow-wrap: anywhere; word-break: break-word;
+}
+/* A3: avatar-left grid ONLY when an avatar image exists; without one the :has() never matches
+   and the stacked A1 layout stands. Text spans forced into column 2 so they stack regardless
+   of how many are present. */
+blockquote.quotation .blockquote-context:has(img.author-image) {
+  display: grid; grid-template-columns: auto 1fr;
+  column-gap: 12px; align-items: center;
+}
+/* the File: avatar is wrapped in an <a> (links to the File: page), so the ANCHOR is the grid
+   item -- place it in column 1 spanning the rows; the <img> inside carries the circular sizing. */
+blockquote.quotation .blockquote-context > a:has(img.author-image) {
+  grid-column: 1; grid-row: 1 / span 3; align-self: center; display: block;
 }
 blockquote.quotation .blockquote-context img.author-image {
-  height: 40px; width: auto; margin-right: 8px;
-  display: block; float: left; position: relative; top: -9px;
+  height: 40px; width: 40px; object-fit: cover; border-radius: 50%; display: block;
+}
+blockquote.quotation .blockquote-context:has(img.author-image) .nm,
+blockquote.quotation .blockquote-context:has(img.author-image) .rl,
+blockquote.quotation .blockquote-context:has(img.author-image) .src {
+  grid-column: 2;
+}
+:root[data-theme="dark"] blockquote.quotation::before { opacity: 0.45; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) blockquote.quotation::before { opacity: 0.45; }
 }
 
 /* ---- code + pre ---- */
@@ -1416,10 +1469,26 @@ code:empty { display: none; }
 .footer-freedom a, .footer-links a { color: var(--link); }
 .footer-freedom a:hover, .footer-links a:hover { color: var(--link-hover); text-decoration: underline; }
 .darkmode-toggle { display: inline-block; margin: 0.9rem 0 0; }
+.footer-settings { display: inline-block; margin: 0.9rem 0 0 0.6rem; }
 .copyright { margin: 0.6rem 0 0; }
 
 /* ---- misc content hooks ---- */
 .tagline { color: var(--fg-soft); }
+/* Sub-slogan pills ({{#sloganpills}}): solid brand-button chips (homepage tagline row). */
+.slogan-pills { list-style: none; margin: 0.6rem 0 1rem; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.slogan-pills .pill { display: inline-block; }
+.slogan-pills .pill a {
+  display: block; background: #0b57d0; color: #fff; font-weight: 600; font-size: 0.9rem;
+  padding: 7px 16px; border-radius: 8px; text-decoration: none; box-shadow: 0 1px 2px rgb(0 0 0 / 18%);
+  transition: background 0.12s, transform 0.12s, box-shadow 0.12s;
+}
+.slogan-pills .pill a:hover { background: #0a4cb8; transform: translateY(-1px); box-shadow: 0 3px 7px rgb(11 87 208 / 30%); }
+:root[data-theme="dark"] .slogan-pills .pill a { background: #2b6fd6; }
+:root[data-theme="dark"] .slogan-pills .pill a:hover { background: #3f80e2; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .slogan-pills .pill a { background: #2b6fd6; }
+  :root:not([data-theme="light"]) .slogan-pills .pill a:hover { background: #3f80e2; }
+}
 /* IntroLike: production lead callout (Utility.css) -- a soft italic gray box. Two markups
    get it: a .intro-like div ({{IntroLike}}), AND the content {{Intro}} emits between empty
    .pre-intro-p / .post-intro-p markers (so the ACTUAL page-lead text is the box, not just a
@@ -2153,7 +2222,15 @@ html.client-js .show-for-nojs-only { display: none; }
 }
 #fly-in-notification-panel.flyin-shown { transform: translateX(0); }
 #fly-in-notification-panel .flyin-image { display: block; width: 100%; height: auto; }
-@media (max-width: 550px) { #fly-in-notification-panel { width: 230px; } }
+@media (max-width: 550px) {
+  /* Mobile: pin the TOP so the close control is always reachable, cap height to the viewport,
+     and scroll overflow. A tall panel (image + text) otherwise clips either its bottom (donate
+     button, with the original top:calc(50% - 160px)) or -- if bottom-anchored -- its top/close. */
+  #fly-in-notification-panel {
+    width: 230px; top: 10px; bottom: auto;
+    max-height: calc(100dvh - 20px); overflow-y: auto;
+  }
+}
 #fly-in-notification-panel .close-panel {
   color: #fff; font-size: 26px; padding: 10px; cursor: pointer; position: absolute;
   left: 3px; top: -1px; z-index: 10;
@@ -2171,7 +2248,10 @@ html.client-js .show-for-nojs-only { display: none; }
 
 /* End-of-year donation banner (sitenotice-end-of-year) -- shown when built with
    MW_STATIC_EOY; reuses the crypto panel. Ported from Sitenotice.css section 4. */
-.sitenotice-banner.sitenotice-end-of-year { width: 100%; display: block; text-align: left; }
+/* Cap the EOY banner to content width + center it (prod is ~936px, not full-viewport) so the
+   .eoy-left column -- and the image that fills it -- stay prod-sized instead of stretching across
+   the whole viewport. */
+.sitenotice-banner.sitenotice-end-of-year { width: 100%; max-width: 960px; margin: 0 auto; display: block; text-align: left; }
 .sitenotice-end-of-year > * { display: inline-block; vertical-align: top; }
 .sitenotice-end-of-year > .eoy-left { width: calc(100% - 330px); margin-right: 20px; }
 .sitenotice-end-of-year > .eoy-right { width: 100%; max-width: 300px; }
@@ -2241,8 +2321,10 @@ body.mini-modal-active { overflow: hidden; }
    (min-height) and SYMMETRIC side gutters (padding) -- the button sits in the left gutter and
    the title centers between the two, never overlapping it or bleeding into the first row. */
 .wiki-content table caption {
+  /* side gutters must clear the absolutely-positioned expand-table-button (~141px) on the
+     left; symmetric so the title stays centered between them. */
   position: relative; text-align: center;
-  min-height: 2em; padding: 0.35em 7em 0.35em 7em;
+  min-height: 2em; padding: 0.35em 10em 0.35em 10em;
 }
 .wiki-content table caption .expand-table-button {
   position: absolute; left: 0.3em; top: 0.3em;
