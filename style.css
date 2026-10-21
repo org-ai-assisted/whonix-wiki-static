@@ -518,7 +518,10 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
   outline: 2px solid var(--focus); outline-offset: 2px;
 }
 .search-field {
-  order: -1;                 /* box expands to the LEFT of the magnifier, as in prod */
+  /* ALWAYS absolute (collapsed + open), anchored under the magnifier -- so the field never
+     occupies header flow and toggling it can never reflow the row to a 2nd line (the flicker
+     on a fast double-click). Open = a floating overlay panel, like prod's search popover. */
+  position: absolute; top: calc(100% + 0.3rem); right: 0;
   width: 0; padding: 0; border: 0; opacity: 0; pointer-events: none;
   /* visibility:hidden keeps the collapsed zero-width field OUT of the tab order (a
      keyboard user never lands on an invisible input); it still animates open because
@@ -528,13 +531,19 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
   border-radius: var(--radius-sm);
   transition: width 0.18s ease, opacity 0.18s ease, padding 0.18s ease, visibility 0.18s ease;
 }
-/* Open = a floating overlay panel anchored under the magnifier, NOT an inline field that
-   grows the header row (prod opens a search popover/modal; the header stays one fixed row). */
 .search-toggle:checked ~ .search-field {
-  position: absolute; top: calc(100% + 0.3rem); right: 0;
   width: min(92vw, 22rem); padding: 0.55rem 0.8rem; border: 1px solid var(--border);
   opacity: 1; pointer-events: auto; visibility: visible; z-index: 50;
   box-shadow: var(--shadow-md);
+}
+/* Open-state affordance on the magnifier so open vs closed is visually distinct (not a
+   "stuck" look): the icon carries the active surface while the box is open. */
+.search-toggle:checked ~ .search-icon { background: var(--surface-2); }
+/* Outside-click close (pure CSS): transparent full-viewport overlay present only while open;
+   it sits below the field (z 50) but above the page, so a click outside the field closes. */
+.search-backdrop { display: none; }
+.search-toggle:checked ~ .search-backdrop {
+  display: block; position: fixed; inset: 0; z-index: 40; background: transparent; cursor: default;
 }
 .search-field:focus-visible {
   outline: 2px solid var(--focus);
@@ -972,10 +981,10 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
 .more .expand-checkbox:focus-visible ~ .more-button {
   outline: 2px solid var(--link); outline-offset: 2px;
 }
-/* Constrain the expanded QR + long address so an open row never forces horizontal scroll. */
+/* Constrain the expanded QR + long address so an open row never forces horizontal scroll.
+   100% (not a small px cap) so the QR fills the expanded row width like production -- a 300px
+   native QR renders full under both the coin name and the address, shrinking to fit on mobile. */
 .payitem > .expand .qr-code-image { max-width: 100%; height: auto; }
-/* keep the Donate page's smaller 180px QR cap (more specific than the 100% safety cap). */
-.donate-area .payitem > .expand .qr-code-image { max-width: 180px; }
 .payitem > .expand code { overflow-wrap: anywhere; word-break: break-all; white-space: pre-wrap; }
 /* "More Payment Options": same checkbox-hack; collapsed by default (prod). */
 .more-button {
@@ -2390,13 +2399,14 @@ body.mini-modal-active { overflow: hidden; }
 .hovercard .hovercard-extract { margin: 0; }
 .hovercard .hovercard-ref { font-size: .85rem; }
 
-/* Donate page (#donate) -- the crypto coin logos, payment/IBAN/card logos and QR
-   codes are source File: images at native resolution (e.g. 1280px). Without a size
-   they render column-wide; constrain them to small icons like the production page. */
+/* Donate page (#donate) -- the crypto coin logos and payment/IBAN/card logos are source
+   File: images at native resolution (e.g. 1280px). Without a size they render column-wide;
+   constrain the LOGOS to small icons like production. The QR codes are NOT small on prod --
+   they fill the coin's expanded row (native 300px), so cap only to the container width. */
 .donate-area img.icon {
   width: auto; height: 40px; max-width: 100%; vertical-align: middle;
 }
-.donate-area .qr-code-image { max-width: 180px; height: auto; }
+.donate-area .qr-code-image { max-width: 100%; height: auto; }
 .donate-area .pp-logo { max-width: 200px; height: auto; }
 
 /* Visible marker for an unexpanded {{...}} that reached the output (pandoc would
