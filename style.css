@@ -637,7 +637,10 @@ body.site-whonix .site-logo-img { width: auto; }
 }
 .wiki-content {
   max-width: var(--maxw);
-  margin: 28px auto 3rem;   /* prod .mw-body margin-top is 28px (header->content gap) */
+  /* prod's VISIBLE header->content gap is 23px (its .mw-body 28px margin-top collapses with the
+     skin page-base above it; our flex main does NOT collapse, so set the measured 23 directly --
+     with the title margin-top zeroed below this is also the header->title gap). */
+  margin: 23px auto 3rem;
   padding: 0 12px;   /* prod body text sits 12px inside the 960 content column */
   /* Break an over-long word/URL/badge instead of letting it force a horizontally
      scrolling page on narrow (mobile) viewports. */
@@ -676,13 +679,15 @@ body.site-whonix .site-logo-img { width: auto; }
   background: var(--surface);
   max-width: 100%;
   padding: 10px 17px 11px;
-  margin: 25px 0 25px -2px;
+  /* top margin is 0: the content box above already sets the 23px header->title gap (prod's title
+     sits flush at the top of .mw-body). bottom 25 = prod title->mininav/intro gap. */
+  margin: 0 0 25px -2px;
   color: var(--heading);
   border: none;
   position: relative;
   font-size: 28px;
   font-weight: 400;   /* prod page title is normal-weight Roboto, not bold */
-  line-height: 1.25;
+  line-height: 1.6;   /* prod title box is 28px/1.6 = ~66px tall (was 1.25 -> 56px, 10px short) */
   /* title on the LEFT, book-nav on the RIGHT (prod) -- flex, not a float, so the book-nav
      stays right even when the title wraps to several lines on mobile. */
   display: flex;
@@ -1868,12 +1873,21 @@ code:empty { display: none; }
   align-items: center; background: var(--surface); color: var(--link);
   padding: 9px 15px; font-size: 17px; border-bottom: 4px solid var(--bg); white-space: nowrap;
 }
-/* leading icon forced into a 25x25 gutter (overrides the markup width); label cleared. */
-.mininav:not(.mn-switcher) li > img:first-child {
+/* Leading icon forced into a 25x25 gutter (overrides the markup width so a 100px architecture
+   logo does not blow the row up). The icon is EITHER a direct li child OR wrapped in its own
+   leading <a> (both shapes occur in the SAME book-nav markup) -- match both, else the wrapped
+   ones (Raspberry Pi, Apple Mac, ...) escape the gutter and render full-size (the ARM64 bug). */
+.mininav:not(.mn-switcher) li > img:first-child,
+.mininav:not(.mn-switcher) li > a:first-child:has(> img:only-child) {
   position: absolute; left: 10px; top: 8px;
   width: 25px; height: 25px; object-fit: contain;
 }
-.mininav:not(.mn-switcher) li > img:first-child + a { padding-left: 46px; }
+.mininav:not(.mn-switcher) li > a:first-child:has(> img:only-child) > img {
+  width: 25px; height: 25px; object-fit: contain; display: block;
+}
+/* label text (the anchor AFTER the icon) cleared of the gutter -- both icon shapes. */
+.mininav:not(.mn-switcher) li > img:first-child + a,
+.mininav:not(.mn-switcher) li > a:first-child:has(> img:only-child) + a { padding-left: 46px; }
 /* Prod Mininav.css shrinks book-nav chips on narrow screens (<=420px). The desktop
    white-space:nowrap (packs chips 2-per-row) must RELAX here: a long label (e.g.
    "Transparency, Sponsors / ...") is wider than the phone viewport and, kept on one
