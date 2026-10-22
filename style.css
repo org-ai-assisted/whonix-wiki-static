@@ -1377,7 +1377,12 @@ code:empty { display: none; }
 /* With the pill switcher built + the title sr-only, the content's own top border becomes a
    redundant separator line DIRECTLY under the pill bar -- an extra bordered level prod does
    not show. Drop it so a tabbed section reads as one mininav bar + one expand box (prod). */
-.tab-content-controller.mininav-ready .tcc-content { border-top: none; padding-top: 0.3rem; }
+.tab-content-controller.mininav-ready .tcc-content { border-top: none; padding-top: 0.3rem; padding-bottom: 0; }
+/* A short/collapsed box ending a (possibly nested) tab pane stacked each pane's bottom padding
+   + the box's own bottom margin into a big empty gap under it inside a numbered-step box (vs a
+   normally-filled step). The enclosing box's padding is the only bottom spacing wanted, so the
+   pane adds none (above) and its last flow child carries no bottom margin. */
+.tcc-content > :last-child { margin-bottom: 0; }
 /* Match production's tight switcher->pane spacing (was a ~46px gap under the GUI/CLI switcher,
    prod ~16px): drop pandoc's junk leading empty <p>, and do not stack the first content's own
    top margin on the pane padding. The pane's real first child is the sr-only .tcc-title /
