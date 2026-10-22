@@ -1240,8 +1240,11 @@ code:empty { display: none; }
   display: inline-block; max-width: 100%; overflow-wrap: anywhere;
   padding: 0.1em 0.45em; border-radius: var(--radius-md, 6px);
 }
+/* Prod's numbered step badge is a coloured circle with a WHITE ring, which insets the fill so it
+   reads crisp and compact; stage's translucent-coloured border blended into the page so the badge
+   looked heavier/larger. Match prod's white ring (the badge keeps its existing soft shadow). */
 .padded-content-icon.pci-border-thick {
-  border: 2px solid color-mix(in srgb, var(--callout, var(--accent)) 55%, transparent);
+  border: 3px solid #fff;
 }
 /* keyboard keycap (boot keys F2/F7/ESC/NOVO via {{IconSet|keyboard|X}}): a white cap with a
    dark 1px frame, like prod. pci-style-rounded gives the padding/radius; this adds the frame
