@@ -1312,6 +1312,11 @@ code:empty { display: none; }
   border: 1px solid var(--border-soft);
   border-radius: 2rem;
 }
+/* The text beside the icon is a flex child with the default min-width:auto, so it cannot
+   shrink below its content's min-content width -- in a narrow box (e.g. inside a collapsible
+   with phone padding) that spills the row past its edge. min-width:0 lets it shrink and wrap;
+   overflow-wrap breaks an over-long token. Keeps the pill list fitting any container width. */
+.icon-bullet-list > * > :not(i) { min-width: 0; overflow-wrap: anywhere; }
 .icon-bullet-list > * > i {
   flex: 0 0 auto;
   width: 1.9em;
@@ -1451,17 +1456,20 @@ details.mw-collapsible > summary > p { margin: 0; }
   padding: 4px 17px 5px 10px;
 }
 .mwc-toggle::before { content: "\25BC"; margin-right: 0.4rem; font-size: 0.8em; }
-details[open] > summary .mwc-toggle::before { content: "\25B2"; }
 .mwc-less { display: none; }
-details[open] > summary .mwc-more { display: none; }
-details[open] > summary .mwc-less { display: inline; }
+/* Child combinators throughout: an outer box's [open] must NOT restyle a nested box's pill
+   (a nested collapsible's summary is never a direct child of the outer details). */
+details[open] > summary > .mwc-toggle::before { content: "\25B2"; }
+details[open] > summary > .mwc-toggle > .mwc-more { display: none; }
+details[open] > summary > .mwc-toggle > .mwc-less { display: inline; }
 
 /* ---- headings from #headline widget ---- */
 .widget-headline { padding: 0; }
 
 /* ---- back-to-top floating button ---- */
-/* Round translucent overlay with a chevron glyph, matching production's
-   #back-to-top-button (app.js shows it while scrolling, auto-hides when idle). */
+/* Static <a href="#top"> (page.py). No-JS floor: on browsers with scroll-driven
+   animations it reveals itself past ~400px (see @supports below); elsewhere it stays
+   always-visible. With JS, app.js drives [hidden] for the exact threshold + idle-hide. */
 .back-to-top {
   position: fixed;
   right: 20px;
@@ -1479,10 +1487,27 @@ details[open] > summary .mwc-less { display: inline; }
   color: #fff;
   font-size: 20px;
   cursor: pointer;
+  text-decoration: none;
   box-shadow: var(--shadow-md);
-  transition: background 0.12s ease, opacity 0.2s ease;
+  transition: background 0.12s ease;
 }
 .back-to-top:hover { background: rgba(0, 0, 0, 0.55); color: #fff; }
+/* No-JS reveal: hidden at the top, revealed in a narrow band at ~400px (a wide range
+   would fade in progressively instead of at the threshold). The @supports guard is
+   REQUIRED: without scroll timelines the animation would bind to the time timeline and
+   stick the button hidden -- so unsupported browsers fall through to the visible base. */
+@supports (animation-timeline: scroll()) {
+  .back-to-top {
+    opacity: 0;
+    animation: back-to-top-reveal linear both;
+    animation-timeline: scroll(root);
+    animation-range: 380px 400px;
+  }
+  @keyframes back-to-top-reveal {
+    from { opacity: 0; pointer-events: none; }
+    to { opacity: 1; pointer-events: auto; }
+  }
+}
 
 /* ---- footer (three columns, production #custom-footer) ---- */
 .site-footer {

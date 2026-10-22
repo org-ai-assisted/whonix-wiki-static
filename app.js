@@ -163,11 +163,13 @@
     }
   }
 
-  // Print button: the supermenu's [data-action="print"] triggers the browser print dialog
-  // (a print stylesheet strips chrome). window.print is the only static-safe "printable view".
+  // Print button: emitted `hidden` (no-JS users use native Ctrl+P, not a dead button), so
+  // unhide it here and wire window.print() -- the only static-safe "printable view" (a print
+  // stylesheet strips chrome).
   function initPagePrint() {
     var btns = document.querySelectorAll('[data-action="print"]');
     for (var i = 0; i < btns.length; i++) {
+      btns[i].hidden = false;
       btns[i].addEventListener("click", function (e) {
         e.preventDefault();
         try { window.print(); } catch (err) {}
@@ -192,6 +194,18 @@
         }
       });
     }
+  }
+
+  // Open a collapsible <details> when the URL fragment targets it (or an element inside it),
+  // so an in-page anchor to a closed box reveals its content instead of landing on a shut box.
+  // Runs on load + hashchange. TT-safe: only sets .open.
+  function openHashDetails() {
+    var id;
+    try { id = decodeURIComponent((location.hash || "").slice(1)); } catch (e) { return; }
+    if (!id) return;
+    var el = document.getElementById(id);
+    var d = el && el.closest ? el.closest("details") : null;
+    if (d) d.open = true;
   }
 
   // The crypto-panel QR reveal and the "More Payment Options" grid collapse are now pure-CSS
@@ -344,23 +358,18 @@
     });
   }
 
-  // Back-to-top button (created dynamically). Matches production: a chevron glyph
-  // that appears while scrolling past a threshold and auto-hides ~2s after scrolling
-  // stops; click scrolls smoothly to the top. TT-safe (createElement/classList only).
+  // Back-to-top is STATIC HTML (page.py) so it works with no JS (<a href="#top"> + a CSS
+  // scroll-reveal floor). JS enhances production's behavior on that same element: show past
+  // a scroll threshold, auto-hide ~2s after scrolling stops, smooth-scroll (no #top hash) on
+  // click. JS drives [hidden] (display); the CSS floor only governs the no-JS case.
   function initBackToTop() {
-    var btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "back-to-top";
-    btn.setAttribute("aria-label", "Back to top of the page");
-    var icon = document.createElement("i");
-    icon.className = "fa-solid fa-chevron-up";
-    icon.setAttribute("aria-hidden", "true");
-    btn.appendChild(icon);
+    var btn = document.querySelector(".back-to-top");
+    if (!btn) return;
     btn.hidden = true;
-    btn.addEventListener("click", function () {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
-    document.body.appendChild(btn);
     var idle = null;
     window.addEventListener("scroll", function () {
       if (window.scrollY < 400) { btn.hidden = true; return; }
@@ -1144,6 +1153,8 @@
     initDataCopy();
     initPagePrint();
     initExpandCollapseAll();
+    openHashDetails();
+    window.addEventListener("hashchange", openHashDetails);
     initTabs();
     window.addEventListener("hashchange", syncTabsFromHash);
     initNavToggle();
