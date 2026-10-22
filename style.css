@@ -164,8 +164,11 @@ body {
    container width -- WITHOUT width:100% the `margin: auto` centering makes it shrink to
    its content (a long <pre>/<code> line) in the flex column and overflow the viewport. */
 .wiki-content { flex: 1 0 auto; width: 100%; min-width: 0; }
-/* video shares img's responsive cap -- a File:-embedded video carries a fixed width= attr
-   (e.g. 500) that would overflow a narrow phone without this. */
+/* video shares img's responsive treatment: max-width stops a fixed width= attr overflowing a
+   phone, and height:auto preserves the intrinsic aspect ratio once the cap binds. Applied
+   uniformly, exactly like img (height:auto regardless of a height attr) -- a video with a
+   fixed height would otherwise distort when the width cap shrinks it. (Generated videos are
+   width-only anyway; an authored <video height> is rare and better scaled than distorted.) */
 img, video { max-width: 100%; height: auto; }
 /* Keep a token together across a line wrap (e.g. a project name + its trailing TM/R sup, so
    the mark never orphans onto its own line -- see render/pipeline._bind_trademarks). */
@@ -589,6 +592,9 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 .search-results {
   position: absolute;
   z-index: 40;
+  /* Reset the browser's default <ul> margin: it is ~1em, and on an absolute element it
+     offsets the box below the JS-set `top`, so the panel would sit ~1em too low. */
+  margin: 0;
   /* `top` is set in app.js initSearch: the open field is an absolute overlay, so the panel
      is anchored just below the field's rendered box (a static-top ul overlapped it). */
   /* Anchor to the search box's RIGHT edge (it sits at the header's right) and never exceed
@@ -1422,7 +1428,7 @@ code:empty { display: none; }
    once the switcher is built; no-JS keeps the inline logo (img present -> link named). */
 .tab-content-controller.mininav-ready .tcc-image { display: none; }
 
-/* ---- collapsibles: rendered expanded no-JS; JS adds the toggle button ---- */
+/* ---- collapsibles: native <details>, collapses with no JS ---- */
 .mw-collapsible, .toccolours {
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -1430,25 +1436,25 @@ code:empty { display: none; }
   padding: 0.6rem 0.9rem;
   background: var(--surface);
 }
-/* collapse/expand toggle: top-right blue pill with a direction triangle, matching
-   production's .mw-collapsible-toggle (was a plain gray "Toggle" at the top-left). */
-.collapsible-toggle {
+/* <summary> is the always-visible header: drop the native disclosure marker and add a
+   top-right blue pill (.mwc-toggle) with a direction triangle + a Learn More / Show Less
+   label that follows the open state. --link (not the teal accent), matching production. */
+details.mw-collapsible > summary {
+  cursor: pointer;
+  list-style: none;
+}
+details.mw-collapsible > summary::-webkit-details-marker { display: none; }
+details.mw-collapsible > summary > p { margin: 0; }
+.mwc-toggle {
   float: right; margin: 0 0 0.5rem 0.5rem;
-  /* prod's collapsible toggle is a BORDERLESS blue pill, padded wider on the right for the
-     direction arrow (prod 4px 17px 5px 10px); use --link, not the teal site accent. */
-  background: var(--link); border: none; color: #fff; font-weight: 700;
+  background: var(--link); color: #fff; font-weight: 700;
   padding: 4px 17px 5px 10px;
 }
-.collapsible-toggle:hover {
-  background: var(--link-hover);
-  border: none; color: #fff;
-}
-.collapsible-toggle::before { content: "\25B2"; margin-right: 0.4rem; font-size: 0.8em; }
-.mw-collapsed > .collapsible-toggle::before { content: "\25BC"; }
-/* only collapse when the JS toggle exists (no-JS stays open) */
-.mw-collapsible:has(> .collapsible-toggle).mw-collapsed .mw-collapsible-content {
-  display: none;
-}
+.mwc-toggle::before { content: "\25BC"; margin-right: 0.4rem; font-size: 0.8em; }
+details[open] > summary .mwc-toggle::before { content: "\25B2"; }
+.mwc-less { display: none; }
+details[open] > summary .mwc-more { display: none; }
+details[open] > summary .mwc-less { display: inline; }
 
 /* ---- headings from #headline widget ---- */
 .widget-headline { padding: 0; }

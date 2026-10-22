@@ -175,42 +175,20 @@
     }
   }
 
-  // Collapsibles: a top-right toggle collapses/expands the box (rendered expanded
-  // no-JS). Matches production: the label reflects state (Collapse/Expand) and a CSS
-  // triangle (::before) points up when expanded, down when collapsed.
-  function initCollapsibles() {
-    var items = document.querySelectorAll(".mw-collapsible");
-    for (var i = 0; i < items.length; i++) {
-      (function (item) {
-        var toggle = document.createElement("button");
-        toggle.type = "button";
-        toggle.className = "collapsible-toggle";
-        function label() {
-          toggle.textContent = item.classList.contains("mw-collapsed") ? "Learn More" : "Collapse";
-        }
-        label();
-        toggle.addEventListener("click", function () {
-          item.classList.toggle("mw-collapsed");
-          label();
-        });
-        item.insertBefore(toggle, item.firstChild);
-      })(items[i]);
-    }
-  }
-
-  // #expandcollapseall button: expand all collapsibles if any is collapsed, else
-  // collapse all. Works with initCollapsibles (which owns the .mw-collapsed class).
+  // Collapsibles are native <details class="mw-collapsible"> (render/collapsibles.py), so
+  // they open/close with NO JS. #expandcollapseall is the only part needing JS: open all
+  // boxes if any is closed, else close all.
   function initExpandCollapseAll() {
     var btns = document.querySelectorAll(".expand-or-collapse-all-button");
     for (var i = 0; i < btns.length; i++) {
       btns[i].addEventListener("click", function () {
-        var items = document.querySelectorAll(".mw-collapsible");
-        var anyCollapsed = false;
+        var items = document.querySelectorAll("details.mw-collapsible");
+        var anyClosed = false;
         for (var k = 0; k < items.length; k++) {
-          if (items[k].classList.contains("mw-collapsed")) { anyCollapsed = true; break; }
+          if (!items[k].open) { anyClosed = true; break; }
         }
         for (var j = 0; j < items.length; j++) {
-          items[j].classList.toggle("mw-collapsed", !anyCollapsed);
+          items[j].open = anyClosed;
         }
       });
     }
@@ -420,12 +398,15 @@
     // (e.g. "...API...") also contain the term. Scans the whole index, not just the
     // rendered top 20. Returns the root-relative href or "".
     function bestMatch(q) {
-      var first = "";
+      // null (not "") is the no-match sentinel: the Homepage index entry has u="" and,
+      // on the root page, root="" too, so a valid homepage href is the empty string --
+      // treating "" as "no match" would skip it and mis-pick a later substring hit.
+      var first = null;
       for (var i = 0; i < window.MWSEARCH.length; i++) {
         var e = window.MWSEARCH[i];
         var t = e.t.toLowerCase();
         if (t === q) return root + e.u;
-        if (!first && t.indexOf(q) !== -1) first = root + e.u;
+        if (first === null && t.indexOf(q) !== -1) first = root + e.u;
       }
       return first;
     }
@@ -460,11 +441,15 @@
     // always internal "root + e.u" pages, so a same-origin Referer is normal and harmless.
     input.addEventListener("keydown", function (e) {
       if (e.key !== "Enter") return;
+      // Ignore the Enter that CONFIRMS an IME candidate (CJK etc.), else a provisional
+      // query navigates away mid-composition. isComposing covers most engines; keyCode
+      // 229 is the Safari fallback where isComposing is not set on this keydown.
+      if (e.isComposing || e.keyCode === 229) return;
       e.preventDefault();
       var q = input.value.trim().toLowerCase();
       if (q.length < 2) return;   // empty query matches everything via indexOf("")
       var href = bestMatch(q);
-      if (href) window.location.assign(href);
+      if (href !== null) window.location.assign(href);
     });
     // Close the box on an outside click / Escape (JS enhancement of the CSS :checked toggle):
     // uncheck the toggle AND clear/hide the live results so neither lingers. Scoped to the
@@ -1158,7 +1143,6 @@
     initCopyButtons();
     initDataCopy();
     initPagePrint();
-    initCollapsibles();
     initExpandCollapseAll();
     initTabs();
     window.addEventListener("hashchange", syncTabsFromHash);

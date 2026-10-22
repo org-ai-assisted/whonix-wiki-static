@@ -185,7 +185,7 @@ following steps.</p>
 <p><u>If you are using a terminal Whonix-Gateway</u>, click
 <span class="mw-customtoggle-myDivision"><u><code>HERE</code></u></span>
 for instructions.</p>
-<div id="mw-customcollapsible-myDivision" class="mw-collapsible mw-collapsed">
+<details class="mw-collapsible" id="mw-customcollapsible-myDivision"><summary>
 <p>Complete the following steps.</p>
 <p>Reload Tor.</p>
 <p><span class="code-select" data-code="sudo systemctl reload tor@default.service">sudo
@@ -202,7 +202,7 @@ systemctl status tor@default.service</span></p>
 <p>The output should be similar to the following.</p>
 <pre><code>Sep 17 17:40:41.416 [notice] Read configuration file &quot;/usr/local/etc/torrc.d/50_user.conf&quot;.
 Configuration was valid</code></pre>
-</div>
+<span class="mwc-toggle"><span class="mwc-more">Learn More</span><span class="mwc-less">Show Less</span></span></summary></details>
 </div>
 <p><sup id="cite_ref-1" class="reference"><a href="#cite_note-1"><span class="cite-bracket">[</span>1<span class="cite-bracket">]</span></a></sup></p>
 <p><strong>Modify Whonix-Gateway User Firewall Settings.</strong></p>
@@ -220,9 +220,9 @@ editor.</p>
 <p><div class="tcc-section  info-box"><div class="tcc-image"><a href="./File:Qubes-logo-icon.png"><img src="../media/Qubes-logo-icon.png.webp?h=c44b2eef" width="200" height="215" alt="25x" /></a></div><div class="tcc-title"><h4 id="Qubes-Whonix_2"><a href="Qubes">Qubes-Whonix</a></h4></div><div class="tcc-content"><code>Qubes App Launcher (blue/grey "Q")</code> &#8594;
 <code>Whonix-Gateway App Qube (commonly called </code><em><span><code>sys-whonix</code></span></em><code>)</code>
 &#8594; <code>User Firewall Settings</code></div></div></p></div></div></p>
-<div class="toccolours mw-collapsible mw-collapsed">
+<details class="toccolours mw-collapsible"><summary>
 <p>For more help, press on Expand on the right.</p>
-<div class="mw-collapsible-content">
+<span class="mwc-toggle"><span class="mwc-more">Learn More</span><span class="mwc-less">Show Less</span></span></summary><div class="mw-collapsible-content">
 <div class="info-box ">
 <p><strong>Note: This is for informational purposes only!</strong> Do
 not edit
@@ -257,7 +257,7 @@ editor.
 </div>
 </div>
 </div>
-</div>
+</details>
 <p>Add.</p>
 <p><span class="code-select" data-code="EXTERNAL_OPEN_PORTS+=&quot; 9050 &quot;
 EXTERNAL_UDP_OPEN_PORTS+=&quot; 9050 &quot;">EXTERNAL_OPEN_PORTS+=" 9050

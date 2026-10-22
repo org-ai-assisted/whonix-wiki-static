@@ -239,7 +239,7 @@ following steps.</p>
 <p><u>If you are using a terminal Whonix-Gateway</u>, click
 <span class="mw-customtoggle-myDivision"><u><code>HERE</code></u></span>
 for instructions.</p>
-<div id="mw-customcollapsible-myDivision" class="mw-collapsible mw-collapsed">
+<details class="mw-collapsible" id="mw-customcollapsible-myDivision"><summary>
 <p>Complete the following steps.</p>
 <p>Reload Tor.</p>
 <p><span class="code-select" data-code="sudo systemctl reload tor@default.service">sudo
@@ -256,7 +256,7 @@ systemctl status tor@default.service</span></p>
 <p>The output should be similar to the following.</p>
 <pre><code>Sep 17 17:40:41.416 [notice] Read configuration file &quot;/usr/local/etc/torrc.d/50_user.conf&quot;.
 Configuration was valid</code></pre>
-</div>
+<span class="mwc-toggle"><span class="mwc-more">Learn More</span><span class="mwc-less">Show Less</span></span></summary></details>
 </div>
 <p><strong>5.</strong> Retrieve the Tor onion service url.</p>
 <p><span class="code-select" data-code="sudo cat /var/lib/tor/gateway_ssh_service/hostname">sudo
@@ -408,7 +408,7 @@ following steps.</p>
 <p><u>If you are using a terminal Whonix-Gateway</u>, click
 <span class="mw-customtoggle-myDivision"><u><code>HERE</code></u></span>
 for instructions.</p>
-<div id="mw-customcollapsible-myDivision" class="mw-collapsible mw-collapsed">
+<details class="mw-collapsible" id="mw-customcollapsible-myDivision"><summary>
 <p>Complete the following steps.</p>
 <p>Reload Tor.</p>
 <p><span class="code-select" data-code="sudo systemctl reload tor@default.service">sudo
@@ -425,7 +425,7 @@ systemctl status tor@default.service</span></p>
 <p>The output should be similar to the following.</p>
 <pre><code>Sep 17 17:40:41.416 [notice] Read configuration file &quot;/usr/local/etc/torrc.d/50_user.conf&quot;.
 Configuration was valid</code></pre>
-</div>
+<span class="mwc-toggle"><span class="mwc-more">Learn More</span><span class="mwc-less">Show Less</span></span></summary></details>
 </div>
 <p><strong>5.</strong> Retrieve the Tor onion service url.</p>
 <p><span class="code-select" data-code="sudo cat /var/lib/tor/workstation_ssh_service/hostname">sudo
@@ -501,9 +501,9 @@ run <code>/usr/libexec/whonix-firewall/firewall50user</code></div></div></p>
 with root rights.</p>
 <p><span class="code-select" data-code="sudoedit /usr/local/etc/whonix_firewall.d/50_user.conf">sudoedit
 /usr/local/etc/whonix_firewall.d/50_user.conf</span></p></div></div></p></div></div></p>
-<div class="toccolours mw-collapsible mw-collapsed">
+<details class="toccolours mw-collapsible"><summary>
 <p>For more help, press on Learn More on the right.</p>
-<div class="mw-collapsible-content">
+<span class="mwc-toggle"><span class="mwc-more">Learn More</span><span class="mwc-less">Show Less</span></span></summary><div class="mw-collapsible-content">
 <div class="info-box ">
 <p><strong>Note: This is for informational purposes only!</strong> Do
 not edit
@@ -541,7 +541,7 @@ an editor.
 </div>
 </div>
 </div>
-</div>
+</details>
 <p>Add.</p>
 <p><span class="code-select" data-code="EXTERNAL_OPEN_PORTS+=&quot; 22 &quot;">EXTERNAL_OPEN_PORTS+="
 22 "</span></p>

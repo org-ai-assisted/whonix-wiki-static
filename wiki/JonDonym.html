@@ -648,7 +648,7 @@ following steps.</p>
 <p><u>If you are using a terminal Whonix-Gateway</u>, click
 <span class="mw-customtoggle-myDivision"><u><code>HERE</code></u></span>
 for instructions.</p>
-<div id="mw-customcollapsible-myDivision" class="mw-collapsible mw-collapsed">
+<details class="mw-collapsible" id="mw-customcollapsible-myDivision"><summary>
 <p>Complete the following steps.</p>
 <p>Reload Tor.</p>
 <p><span class="code-select" data-code="sudo systemctl reload tor@default.service">sudo
@@ -665,7 +665,7 @@ systemctl status tor@default.service</span></p>
 <p>The output should be similar to the following.</p>
 <pre><code>Sep 17 17:40:41.416 [notice] Read configuration file &quot;/usr/local/etc/torrc.d/50_user.conf&quot;.
 Configuration was valid</code></pre>
-</div>
+<span class="mwc-toggle"><span class="mwc-more">Learn More</span><span class="mwc-less">Show Less</span></span></summary></details>
 </div>
 <p><strong>11.</strong> In <code>sys-whonix</code>, test if Tor is able
 to use the https proxy that JonDonym is providing.</p>

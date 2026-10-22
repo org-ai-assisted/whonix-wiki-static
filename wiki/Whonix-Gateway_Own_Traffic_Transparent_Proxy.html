@@ -41,9 +41,9 @@ Whonix-Gateway itself.</p>
 <div class="info-box ">
 <p>All traffic originating from <a href="Whonix-Workstation"><span class="nowrap">Whonix-Workstation<sup>&#8482;</sup></span></a> and <a href="Whonix-Gateway"><span class="nowrap">Whonix-Gateway<sup>&#8482;</sup></span></a> is
 routed to the <a href="Tor">Tor</a> software.</p>
-<div class="toccolours mw-collapsible mw-collapsed mwc-headline-normal-text-size">
+<details class="toccolours mw-collapsible mwc-headline-normal-text-size"><summary>
 <p>For technical details, click on "Learn More" on the right side.</p>
-<div class="mw-collapsible-content">
+<span class="mwc-toggle"><span class="mwc-more">Learn More</span><span class="mwc-less">Show Less</span></span></summary><div class="mw-collapsible-content">
 <ul>
 <li><u>Traffic from Whonix-Gateway also routed over Tor:</u> Starting
 from Whonix version <code>0.2.1</code>, traffic from Whonix-Gateway is
@@ -104,7 +104,7 @@ snowflake's <code>-front</code>.</li>
 </ul></li>
 </ul>
 </div>
-</div>
+</details>
 </div>
 <div class="info-box ">
 <p><u><span class="nowrap">Whonix-Workstation<sup>&#8482;</sup></span> has the transparent proxying
@@ -146,9 +146,9 @@ editor.</p>
 <p><div class="tcc-section  info-box"><div class="tcc-image"><a href="./File:Qubes-logo-icon.png"><img src="../media/Qubes-logo-icon.png.webp?h=c44b2eef" width="200" height="215" alt="25x" /></a></div><div class="tcc-title"><h4 id="Qubes-Whonix"><a href="Qubes">Qubes-Whonix</a></h4></div><div class="tcc-content"><code>Qubes App Launcher (blue/grey "Q")</code> &#8594;
 <code>Whonix-Gateway App Qube (commonly called </code><em><span><code>sys-whonix</code></span></em><code>)</code>
 &#8594; <code>User Firewall Settings</code></div></div></p></div></div></p>
-<div class="toccolours mw-collapsible mw-collapsed">
+<details class="toccolours mw-collapsible"><summary>
 <p>For more help, press on Expand on the right.</p>
-<div class="mw-collapsible-content">
+<span class="mwc-toggle"><span class="mwc-more">Learn More</span><span class="mwc-less">Show Less</span></span></summary><div class="mw-collapsible-content">
 <div class="info-box ">
 <p><strong>Note: This is for informational purposes only!</strong> Do
 not edit
@@ -183,7 +183,7 @@ editor.
 </div>
 </div>
 </div>
-</div>
+</details>
 <p>Add the following content.</p>
 <p><span class="code-select" data-code="GATEWAY_TRANSPARENT_TCP=1
 GATEWAY_TRANSPARENT_DNS=1">GATEWAY_TRANSPARENT_TCP=1
@@ -277,7 +277,7 @@ following steps.</p>
 <p><u>If you are using a terminal Whonix-Gateway</u>, click
 <span class="mw-customtoggle-myDivision"><u><code>HERE</code></u></span>
 for instructions.</p>
-<div id="mw-customcollapsible-myDivision" class="mw-collapsible mw-collapsed">
+<details class="mw-collapsible" id="mw-customcollapsible-myDivision"><summary>
 <p>Complete the following steps.</p>
 <p>Reload Tor.</p>
 <p><span class="code-select" data-code="sudo systemctl reload tor@default.service">sudo
@@ -294,7 +294,7 @@ systemctl status tor@default.service</span></p>
 <p>The output should be similar to the following.</p>
 <pre><code>Sep 17 17:40:41.416 [notice] Read configuration file &quot;/usr/local/etc/torrc.d/50_user.conf&quot;.
 Configuration was valid</code></pre>
-</div>
+<span class="mwc-toggle"><span class="mwc-more">Learn More</span><span class="mwc-less">Show Less</span></span></summary></details>
 </div>
 <p>Test if you wish.</p>
 <p><span class="code-select" data-code="UWT_DEV_PASSTHROUGH=1 curl --tlsv1.3 -H &#x27;Host: check.torproject.org&#x27; -k https://116.202.120.181">UWT_DEV_PASSTHROUGH=1
