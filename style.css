@@ -164,7 +164,9 @@ body {
    container width -- WITHOUT width:100% the `margin: auto` centering makes it shrink to
    its content (a long <pre>/<code> line) in the flex column and overflow the viewport. */
 .wiki-content { flex: 1 0 auto; width: 100%; min-width: 0; }
-img { max-width: 100%; height: auto; }
+/* video shares img's responsive cap -- a File:-embedded video carries a fixed width= attr
+   (e.g. 500) that would overflow a narrow phone without this. */
+img, video { max-width: 100%; height: auto; }
 /* Keep a token together across a line wrap (e.g. a project name + its trailing TM/R sup, so
    the mark never orphans onto its own line -- see render/pipeline._bind_trademarks). */
 .nowrap { white-space: nowrap; }
@@ -587,7 +589,8 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 .search-results {
   position: absolute;
   z-index: 40;
-  margin-top: 0.25rem;
+  /* `top` is set in app.js initSearch: the open field is an absolute overlay, so the panel
+     is anchored just below the field's rendered box (a static-top ul overlapped it). */
   /* Anchor to the search box's RIGHT edge (it sits at the header's right) and never exceed
      the viewport, so a long result title cannot push the page horizontally scrollable on a
      narrow phone (left:auto defeats the default static-left placement). */
@@ -878,7 +881,13 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
 }
 .code-select, .code-select > *:not(.cbutton) { cursor: copy; }
 .code-select:hover { border-color: var(--border-soft); background: var(--surface-2); }
-.code-select.js-fully-loaded { overflow: visible; padding-left: 38px; white-space: unset; }
+/* Loaded state is overflow:visible so the absolute tooltip above the box is not clipped;
+   that removes the base state's internal scroll, so a long unbreakable token (e.g. a direct
+   link URL) would push the box past its max-width:100% and overflow a phone. overflow-wrap:
+   anywhere lowers the box's min-content width so max-width:100% wins and the URL wraps. */
+.code-select.js-fully-loaded {
+  overflow: visible; padding-left: 38px; white-space: unset; overflow-wrap: anywhere;
+}
 .code-select .tooltip2 {
   position: absolute; top: -39px; left: 6px; background: var(--surface); color: var(--link);
   border: 1px solid var(--link); padding: 6px 10px; border-radius: 6px; z-index: 1010;

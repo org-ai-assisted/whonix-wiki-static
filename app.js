@@ -415,6 +415,20 @@
     results.className = "search-results";
     results.hidden = true;
     input.parentNode.appendChild(results);
+    // Best page for a query: an EXACT (case-insensitive) title match wins over a mere
+    // substring hit, so "api" + Enter lands on the "API" page even when other titles
+    // (e.g. "...API...") also contain the term. Scans the whole index, not just the
+    // rendered top 20. Returns the root-relative href or "".
+    function bestMatch(q) {
+      var first = "";
+      for (var i = 0; i < window.MWSEARCH.length; i++) {
+        var e = window.MWSEARCH[i];
+        var t = e.t.toLowerCase();
+        if (t === q) return root + e.u;
+        if (!first && t.indexOf(q) !== -1) first = root + e.u;
+      }
+      return first;
+    }
     input.addEventListener("input", function () {
       var q = input.value.trim().toLowerCase();
       while (results.firstChild) results.removeChild(results.firstChild);
@@ -432,6 +446,25 @@
         shown++;
       }
       results.hidden = shown === 0;
+      // The open field is an ABSOLUTE overlay at top:calc(100%+0.3rem); the results share
+      // its offsetParent (.site-search), so anchor the panel just BELOW the field's rendered
+      // box rather than at the ul's static top (which overlapped the field). CSSOM .style is
+      // not gated by style-src, so this is CSP-safe (same as the bottom-stack spacer).
+      if (!results.hidden) {
+        results.style.top = (input.offsetTop + input.offsetHeight + 4) + "px";
+      }
+    });
+    // No <form> (CSP form-action 'none'), so Enter is inert by default: navigate to the
+    // best-matching page ourselves. preventDefault keeps a stray implicit submit from firing.
+    // location.assign (not a noreferrer anchor like the download path): search targets are
+    // always internal "root + e.u" pages, so a same-origin Referer is normal and harmless.
+    input.addEventListener("keydown", function (e) {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      var q = input.value.trim().toLowerCase();
+      if (q.length < 2) return;   // empty query matches everything via indexOf("")
+      var href = bestMatch(q);
+      if (href) window.location.assign(href);
     });
     // Close the box on an outside click / Escape (JS enhancement of the CSS :checked toggle):
     // uncheck the toggle AND clear/hide the live results so neither lingers. Scoped to the
