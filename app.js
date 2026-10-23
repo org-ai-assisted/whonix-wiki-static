@@ -83,10 +83,23 @@
         if (block.classList.contains("js-fully-loaded")) return;
         var text = block.getAttribute("data-code");
         if (text === null) text = block.textContent;
+        // A share copy-card carries a logo image src: the button is that logo (prod parity),
+        // not the generic clone glyph, and the raw text is hidden (CSS .cs-image).
+        var imgSrc = block.getAttribute("data-button-image-src");
         var btn = document.createElement("button");
         btn.type = "button";
-        btn.className = "fa-regular fa-clone fa-rotate-90 cbutton";
         btn.setAttribute("aria-label", "Copy code to clipboard");
+        if (imgSrc) {
+          btn.className = "cbutton cbutton-logo";
+          var bimg = document.createElement("img");
+          bimg.className = "cbutton-img";
+          bimg.alt = "";
+          bimg.setAttribute("aria-hidden", "true");
+          bimg.src = imgSrc;
+          btn.appendChild(bimg);
+        } else {
+          btn.className = "fa-regular fa-clone fa-rotate-90 cbutton";
+        }
         var tip = document.createElement("span");
         tip.className = "tooltip2 robots-nocontent";
         var hov = document.createElement("span");
@@ -117,13 +130,18 @@
         var timer;
         function markCopied() {
           block.classList.add("copied");
-          btn.classList.remove("fa-regular", "fa-clone", "fa-rotate-90");
-          btn.classList.add("fa-solid", "fa-check");
+          // the logo-button variant keeps its logo; only the glyph variant swaps to a check.
+          if (!imgSrc) {
+            btn.classList.remove("fa-regular", "fa-clone", "fa-rotate-90");
+            btn.classList.add("fa-solid", "fa-check");
+          }
           clearTimeout(timer);
           timer = setTimeout(function () {
             block.classList.remove("copied");
-            btn.classList.remove("fa-solid", "fa-check");
-            btn.classList.add("fa-regular", "fa-clone", "fa-rotate-90");
+            if (!imgSrc) {
+              btn.classList.remove("fa-solid", "fa-check");
+              btn.classList.add("fa-regular", "fa-clone", "fa-rotate-90");
+            }
           }, 3000);
         }
         btn.addEventListener("click", function () {
@@ -214,12 +232,19 @@
 
   // A controller's DIRECT sections (nested controllers are handled by their own pass).
   function tabSections(ctrl) { return ctrl.querySelectorAll(":scope > .tcc-content > .tcc-section"); }
-  // Activate section idx of ctrl (toggle both the section and its pill).
+  // Activate section idx of ctrl: toggle the section + its pill, and keep the ARIA tablist
+  // state in sync -- aria-selected on each tab and a roving tabindex (only the selected tab is
+  // in the tab sequence, per the WAI-ARIA tabs pattern).
   function activateTab(ctrl, idx) {
     var secs = tabSections(ctrl);
     var pills = ctrl.querySelectorAll(":scope > .mininav > ul > li > .tcc-tab");
     for (var k = 0; k < secs.length; k++) secs[k].classList.toggle("active", k === idx);
-    for (var b = 0; b < pills.length; b++) pills[b].classList.toggle("active", b === idx);
+    for (var b = 0; b < pills.length; b++) {
+      var on = b === idx;
+      pills[b].classList.toggle("active", on);
+      pills[b].setAttribute("aria-selected", on ? "true" : "false");
+      pills[b].tabIndex = on ? 0 : -1;
+    }
   }
 
   // Tab controllers: build the mininav switcher (one pill per section, labelled by the
@@ -227,6 +252,7 @@
   // sections. TT-safe: createElement/textContent/classList only.
   function initTabs() {
     var controllers = document.querySelectorAll(".tab-content-controller");
+    var tabSeq = 0;  // unique ids for the tab <-> panel ARIA relationship
     for (var i = 0; i < controllers.length; i++) {
       (function (ctrl) {
         var sections = tabSections(ctrl);
@@ -240,8 +266,28 @@
           var heading = title && title.querySelector("h1, h2, h3, h4, h5, h6");
           var hid = heading && heading.id;
           var li = document.createElement("li");
+          // The <li> wrapper must be transparent to AT: a role=tablist may only contain role=tab
+          // children, and a role=tab needs a tablist parent (APG). Without this, axe flags
+          // aria-required-children / aria-required-parent, and the li (whose <ul> is now a
+          // tablist, not a list) trips the listitem rule.
+          li.setAttribute("role", "presentation");
           var a = document.createElement("a");
           a.className = "tcc-tab";
+          // ARIA tabs pattern (injected only now that JS runs -- no-JS stays plain stacked
+          // sections, never a false "tab" promise): the tab controls its panel (the section),
+          // the panel is labelled back by the tab. Assign ids where missing.
+          a.setAttribute("role", "tab");
+          var uid = "tcc-" + (tabSeq++);
+          a.id = uid + "-tab";
+          if (!sec.id) sec.id = uid + "-panel";
+          a.setAttribute("aria-controls", sec.id);
+          sec.setAttribute("role", "tabpanel");
+          sec.setAttribute("aria-labelledby", a.id);
+          // A panel with no focusable descendant is itself made focusable so keyboard users can
+          // reach its content (APG); a panel with focusable content needs no extra tab stop.
+          if (!sec.querySelector("a[href], button, input, select, textarea, [tabindex]")) {
+            sec.tabIndex = 0;
+          }
           // encodeURIComponent so a raw %/space in the id survives an Open-in-new-tab / copy-link
           // (the href is the shared URL); syncTabsFromHash decodeURIComponent's it back on load.
           a.href = hid ? ("#" + encodeURIComponent(hid)) : "#";
@@ -280,6 +326,31 @@
           ul.appendChild(li);
         }
         nav.appendChild(ul);
+        ul.setAttribute("role", "tablist");
+        ul.setAttribute("aria-label", "Section tabs");
+        // Roving-tabindex keyboard model (WAI-ARIA tabs): Arrow/Home/End move focus AND activate
+        // (automatic activation -- the switch is an instant CSS toggle). Enter/Space fire the
+        // native <a> click (which also updates the hash). Scoped to THIS controller's tablist so
+        // a nested tablist's keys are not stolen by an ancestor (closest tablist wins).
+        ul.addEventListener("keydown", function (e) {
+          var k = e.key;
+          if (k !== "ArrowRight" && k !== "ArrowLeft" && k !== "Home" && k !== "End") return;
+          if (!e.target.closest || e.target.closest('[role="tablist"]') !== ul) return;
+          e.preventDefault();
+          var tabs = ul.querySelectorAll(":scope > li > .tcc-tab");
+          if (!tabs.length) return;
+          var cur = 0;
+          for (var t = 0; t < tabs.length; t++) {
+            if (tabs[t].getAttribute("aria-selected") === "true") { cur = t; break; }
+          }
+          var next = cur;
+          if (k === "ArrowRight") next = (cur + 1) % tabs.length;
+          else if (k === "ArrowLeft") next = (cur - 1 + tabs.length) % tabs.length;
+          else if (k === "Home") next = 0;
+          else if (k === "End") next = tabs.length - 1;
+          activateTab(ctrl, next);
+          tabs[next].focus();
+        });
         ctrl.classList.add("mininav-ready");
         var def = 0;
         for (var d = 0; d < sections.length; d++) {
@@ -388,7 +459,10 @@
     var scripts = document.getElementsByTagName("script");
     for (var i = 0; i < scripts.length; i++) {
       var src = scripts[i].getAttribute("src") || "";
-      var m = src.match(/^(.*?)app\.js$/);
+      // Match BOTH app.js (dev) and app.min.js (deployed/minified). Missing the minified name
+      // made this return "" on every deployed page, so search links on a /wiki/ page resolved
+      // against /wiki/ and doubled (/wiki/wiki/<target>).
+      var m = src.match(/^(.*?)app(?:\.min)?\.js$/);
       if (m) return m[1];
     }
     return "";
@@ -402,6 +476,17 @@
     results.className = "search-results";
     results.hidden = true;
     input.parentNode.appendChild(results);
+    // A namespaced page (n:1, e.g. "Template:Foo") is a candidate only for a query that
+    // TARGETS its namespace: the text before the query's first colon must equal the page's
+    // namespace. A plain query (no colon) stays in the main namespace. So "template:" surfaces
+    // Template pages, but "foo:bar" does NOT surface "Template:Foo:Bar". q is already lowercased.
+    function nsEligible(e, q) {
+      if (!e.n) return true;
+      var ci = q.indexOf(":");
+      if (ci === -1) return false;
+      var ti = e.t.indexOf(":");
+      return ti !== -1 && e.t.slice(0, ti).toLowerCase() === q.slice(0, ci);
+    }
     // Best page for a query: an EXACT (case-insensitive) title match wins over a mere
     // substring hit, so "api" + Enter lands on the "API" page even when other titles
     // (e.g. "...API...") also contain the term. Scans the whole index, not just the
@@ -413,6 +498,7 @@
       var first = null;
       for (var i = 0; i < window.MWSEARCH.length; i++) {
         var e = window.MWSEARCH[i];
+        if (!nsEligible(e, q)) continue;   // namespaced page: only for its own namespace query
         var t = e.t.toLowerCase();
         if (t === q) return root + e.u;
         if (first === null && t.indexOf(q) !== -1) first = root + e.u;
@@ -426,6 +512,7 @@
       var shown = 0;
       for (var i = 0; i < window.MWSEARCH.length && shown < 20; i++) {
         var e = window.MWSEARCH[i];
+        if (!nsEligible(e, q)) continue;   // namespaced page: only for its own namespace query
         if (e.t.toLowerCase().indexOf(q) === -1) continue;
         var li = document.createElement("li");
         var a = document.createElement("a");
@@ -489,6 +576,13 @@
   function remeasureBottomStack() {
     var stack = document.querySelector(".bottom-stack");
     if (stack) document.body.style.paddingBottom = stack.offsetHeight + "px";
+    // Lift the back-to-top button above the fixed bottom banner stack so they do not overlap;
+    // drops back to 20px once the stack collapses (banners dismissed). CSSOM, so CSP-safe.
+    var btt = document.querySelector(".back-to-top");
+    if (btt) {
+      var h = stack ? stack.offsetHeight : 0;
+      btt.style.bottom = (h ? h + 20 : 20) + "px";
+    }
   }
   function initBottomStackSpacer() {
     if (!document.querySelector(".bottom-stack")) return;
@@ -500,34 +594,37 @@
     });
   }
 
-  // Consent/privacy banner: shown by default (no-JS friendly); dismiss remembers
-  // via localStorage (no cookies). TT-safe: hidden attribute + classList only.
+  // Consent/privacy banner: shown by default. The dismiss is now a CSS checkbox-hack (the
+  // sr-only #consent-dismiss-cb + the OK <label>), so it works with NO JS (hides this page
+  // view). Here: reflect the persisted choice into the checkbox on load and persist a toggle
+  // across pages (the pre-paint legal-ack-hidden class already hides it flash-free when set).
+  // TT-safe: only reads/sets checkbox.checked + localStorage.
   function initConsentBanner() {
-    var banner = document.querySelector(".consent-banner");
-    if (!banner) return;
-    try {
-      if (localStorage.getItem(LS_LEGAL_ACK) === "1") { banner.hidden = true; return; }
-    } catch (err) {}
-    var btn = banner.querySelector("[data-consent-dismiss]");
-    if (btn) btn.addEventListener("click", function () {
-      banner.hidden = true;
-      try { localStorage.setItem(LS_LEGAL_ACK, "1"); } catch (err) {}
+    var cb = document.getElementById("consent-dismiss-cb");
+    if (!cb) return;
+    try { if (localStorage.getItem(LS_LEGAL_ACK) === "1") cb.checked = true; } catch (err) {}
+    cb.addEventListener("change", function () {
+      try {
+        if (cb.checked) localStorage.setItem(LS_LEGAL_ACK, "1");
+        else localStorage.removeItem(LS_LEGAL_ACK);
+      } catch (err) {}
       remeasureBottomStack();
     });
   }
 
   // Staging-server notice: shown by default on --stage builds; dismiss remembers via
   // localStorage (no cookies), like the consent banner. TT-safe (hidden attribute only).
+  // Staging notice: dismiss is a CSS checkbox-hack (sr-only #stage-dismiss-cb + OK label), so
+  // it hides with no JS for THIS page view (reappears next page). JS persists across pages.
   function initStageBanner() {
-    var banner = document.querySelector(".stage-banner");
-    if (!banner) return;
-    try {
-      if (localStorage.getItem(LS_STAGE) === "1") { banner.hidden = true; return; }
-    } catch (err) {}
-    var btn = banner.querySelector("[data-stage-dismiss]");
-    if (btn) btn.addEventListener("click", function () {
-      banner.hidden = true;
-      try { localStorage.setItem(LS_STAGE, "1"); } catch (err) {}
+    var cb = document.getElementById("stage-dismiss-cb");
+    if (!cb) return;
+    try { if (localStorage.getItem(LS_STAGE) === "1") cb.checked = true; } catch (err) {}
+    cb.addEventListener("change", function () {
+      try {
+        if (cb.checked) localStorage.setItem(LS_STAGE, "1");
+        else localStorage.removeItem(LS_STAGE);
+      } catch (err) {}
       remeasureBottomStack();
     });
   }
@@ -582,7 +679,10 @@
     }, waitMs);
     function close() {
       clearTimeout(timer);
-      try { localStorage.setItem(LS_FLYIN, String(now)); } catch (err) {}
+      // Privacy: store the dismissal DAY (midnight), not the exact millisecond -- the read
+      // above only compares at day granularity (Math.floor(diff / DAY) < dismissDays), so
+      // rounding down is lossless for the feature while revealing far less precise timing.
+      try { localStorage.setItem(LS_FLYIN, String(now - (now % DAY))); } catch (err) {}
       panel.classList.remove("flyin-shown");
       panel.addEventListener("transitionend", function te() {
         panel.hidden = true; panel.removeEventListener("transitionend", te);
@@ -802,12 +902,14 @@
           for (var k = 0; k < withId.length; k++) withId[k].removeAttribute("id");
           var cb = clone.querySelector(".expand-table-button");
           if (cb) cb.remove();
-          // cloneNode drops event listeners, so a cloned gallery thumb would keep the
-          // glb-thumb affordance (pointer cursor + role=button) with no working lightbox.
-          // Strip it: the expanded table is a read view, no lightbox needed.
-          var dead = clone.querySelectorAll(".glb-thumb");
+          // cloneNode drops event listeners, so a cloned gallery's a.glb-link would, on click,
+          // navigate to the raw image (its no-JS href) -- jarring inside the read-only expanded
+          // table. Neutralize: drop the lightbox class + href so the cloned thumbs are inert.
+          // (Also clears the legacy glb-thumb affordance on any unwrapped thumb.)
+          var dead = clone.querySelectorAll("a.glb-link, .glb-thumb");
           for (var d = 0; d < dead.length; d++) {
-            dead[d].classList.remove("glb-thumb");
+            dead[d].classList.remove("glb-link", "glb-thumb");
+            dead[d].removeAttribute("href");
             dead[d].removeAttribute("tabindex");
             dead[d].removeAttribute("role");
           }
@@ -1072,18 +1174,28 @@
         var items = [];  // {src, alt, cap} per lightbox-eligible thumb
         for (var b = 0; b < boxes.length; b++) {
           var img = boxes[b].querySelector(".thumb img");
-          if (!img || img.closest("a")) continue;  // link= opt-out: its own <a> navigates
+          if (!img) continue;
+          // The no-JS floor wraps a lightbox thumb in a.glb-link (href = the full image);
+          // enhance THAT. A link= opt-out is a plain <a> (navigates elsewhere) -- leave it.
+          var wrapA = img.closest("a");
+          if (wrapA && !wrapA.classList.contains("glb-link")) continue;
           var textEl = boxes[b].querySelector(".gallerytext");
           var cap = (textEl && textEl.textContent.trim()) || img.getAttribute("alt") || "";
-          (function (idx, imgEl) {
-            imgEl.classList.add("glb-thumb");  // CSS cursor affordance
-            imgEl.setAttribute("tabindex", "0");   // keyboard-reachable
-            imgEl.setAttribute("role", "button");
-            imgEl.addEventListener("click", function (e) { e.preventDefault(); openAt(idx); });
-            imgEl.addEventListener("keydown", function (e) {
-              if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openAt(idx); }
-            });
-          })(items.length, img);
+          (function (idx, trigger) {
+            if (trigger) {
+              // a.glb-link is focusable + Enter-activates natively; intercept its navigation.
+              trigger.addEventListener("click", function (e) { e.preventDefault(); openAt(idx); });
+            } else {
+              // Defensive (unwrapped thumb): make the img itself the trigger.
+              img.classList.add("glb-thumb");
+              img.setAttribute("tabindex", "0");
+              img.setAttribute("role", "button");
+              img.addEventListener("click", function (e) { e.preventDefault(); openAt(idx); });
+              img.addEventListener("keydown", function (e) {
+                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openAt(idx); }
+              });
+            }
+          })(items.length, wrapA);
           items.push({
             src: img.currentSrc || img.getAttribute("src") || "",
             alt: img.getAttribute("alt") || "", cap: cap

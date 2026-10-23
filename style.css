@@ -14,15 +14,15 @@
    deploy, where relativize_assets does not rewrite CSS url()s. */
 @font-face {
   font-family: Roboto; font-weight: 400; font-display: swap;
-  src: url(fonts/Roboto-Regular-webfont.woff) format("woff");
+  src: url(fonts/Roboto-Regular-webfont.woff2) format("woff2");
 }
 @font-face {
   font-family: Roboto; font-weight: 300; font-display: swap;
-  src: url(fonts/Roboto-Light-webfont.woff) format("woff");
+  src: url(fonts/Roboto-Light-webfont.woff2) format("woff2");
 }
 @font-face {
   font-family: Cousine; font-display: swap;
-  src: url(fonts/Cousine-Regular.woff) format("woff");
+  src: url(fonts/Cousine-Regular.woff2) format("woff2");
 }
 
 /* ---- design tokens: light (default) ---- */
@@ -43,7 +43,16 @@
   --pre-fg: #636363;
 
   /* interaction */
-  --link: #0b57d0;
+  /* --link must clear BOTH axe audits, so it is a balance:
+       - link-in-text-block (WCAG 1.4.1): link >=3:1 vs BODY TEXT. #1d70b8 = 3.3:1 vs --fg.
+       - color-contrast: link >=4.5:1 vs its BACKGROUND, incl the tinted mininav pill bar and
+         surface cards (~#f0f0ee), where #1d70b8 = ~4.6:1.
+     A brighter #1f6feb gains link-in-text-block margin but drops to ~3.5:1 on those surfaces
+     -> site-wide color-contrast FAIL (verified: mininav/card/admonition links). So #1d70b8 wins.
+     Dark theme cannot meet link-in-text-block (a link readable on the dark bg is too close in
+     lightness to near-white body text for 3:1) -- accepted known flag. link-in-text-block was
+     experimental until axe-core 4.5.0; its WCAG-A mapping is hedged and resting-only is debated. */
+  --link: #1d70b8;
   --link-hover: #08409b;
   --accent: #14866d;
   --accent-fg: #ffffff;
@@ -194,6 +203,9 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
 .wiki-content p a, .wiki-content li a, .wiki-content dd a, .info-box a {
   text-decoration: underline; text-underline-offset: 2px;
 }
+/* The TOC is navigation (a list of #anchors), not prose links -- it is inside .wiki-content so
+   the `.wiki-content li a` underline above hits it; override (higher specificity wins). */
+.wiki-content .toc a { text-decoration: none; }
 /* Touch devices report hover:none and keep the :hover state stuck on the last-tapped
    element, so an underline-on-hover leaves the link underlined after a tap (reported on
    the header Donate link). Drop every hover-underline for pointerless devices; the colour
@@ -212,8 +224,19 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
 /* External links are distinguished by the trailing archive <sup> (see _archive_links /
    .ext-link-to-archive below), matching production -- no separate arrow, to avoid a
    double affordance. */
-.ext-link-to-archive { margin-left: 0.15em; font-size: 0.75em; white-space: nowrap; }
-.ext-link-to-archive > a { color: var(--muted); }
+/* The marker is a >=24x24 tap target (WCAG 2.5.8 / Lighthouse target-size) with a larger,
+   centered glyph so the hit box is filled, not mostly empty padding. This deviates from
+   production's tiny superscript -- a deliberate a11y choice. */
+.ext-link-to-archive { margin-left: 0.15em; white-space: nowrap; vertical-align: middle; }
+.ext-link-to-archive > a {
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 1.5rem;   /* glyph nearly fills the 24px target (small inset) */
+}
 .ext-link-to-archive > a:hover { color: var(--link); text-decoration: none; }
 :focus-visible {
   outline: 2px solid var(--focus);
@@ -256,6 +279,10 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
   color: var(--fg);
   text-decoration: none;
 }
+/* GitHub link: the shared button block above gives it inline-block with NO gap, so the logo
+   butts against the text. inline-flex + gap (the icon-bullet-list idiom) spaces it and scales
+   with the font; this rule follows the group so it wins the display. */
+.github-link-widget { display: inline-flex; align-items: center; gap: 0.4em; }
 .mw-ui-progressive {
   background: var(--accent);
   border-color: var(--accent);
@@ -380,13 +407,30 @@ body.site-whonix .site-logo-img { width: auto; }
 }
 .tools-label:hover,
 .tools-toggle:checked ~ .tools-label { background: var(--surface-2); color: var(--fg); }
+/* Keyboard focus ring on the chevron: the toggle checkbox is sr-only (clipped
+   off-screen), so the global :focus-visible outline lands where no one sees it.
+   Mirror it onto the visible label, as search-toggle / toc-toggle do. */
+.tools-toggle:focus-visible ~ .tools-label {
+  outline: 2px solid var(--focus); outline-offset: 2px;
+}
 .tools-menu {
   display: none; position: absolute; top: 100%; right: 0; z-index: 50;
   min-width: 250px; margin-top: 0.4rem; padding: 0.35rem;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 0 0 10px 10px; box-shadow: var(--shadow-md);
+  /* Grouped sections + the share panel can exceed the viewport (esp. mobile); cap to the
+     screen and scroll instead of overflowing off-screen. */
+  max-height: calc(100vh - 4rem); overflow-y: auto; overscroll-behavior: contain;
 }
 .tools-toggle:checked ~ .tools-menu { display: block; }
+/* Hover bridge: the menu sits 0.4rem below the chevron (margin-top), and it opens on
+   `.tools:hover`. Without this, moving the pointer from the chevron DOWN into that gap leaves
+   `.tools` before reaching the panel, so `.tools:hover` drops and the menu closes under the
+   cursor. A transparent strip spanning the gap (a child of `.tools-menu`, hence of `.tools`)
+   keeps `.tools:hover` true across the whole chevron->panel path. */
+.tools-menu::before {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: 0.5rem;
+}
 /* Open supermenu swaps the chevron for an X (FA glyph override on the label's
    icon); the click toggle is the primary open/close on every device. */
 .tools-toggle:checked ~ .tools-label .fa-chevron-down::before { content: "\f00d"; }
@@ -406,6 +450,17 @@ body.site-whonix .site-logo-img { width: auto; }
 .tools-item i { color: var(--muted); }
 .tools-item.copied::after {
   content: attr(data-copied); margin-left: auto; color: #2e7d32; font-size: 0.85em;
+}
+/* Grouped page-tools sections (production-style): a small muted header per section, with a
+   hairline separator between sections. */
+.tools-section + .tools-section,
+.tools-menu .share-panel {
+  margin-top: 0.25rem; border-top: 1px solid var(--border); padding-top: 0.25rem;
+}
+.tools-section-label {
+  margin: 0; padding: 0.35rem 0.7rem 0.1rem;
+  font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--muted);
 }
 /* Header supermenu share section: holds the SHARED share menu (share_menu_inner, identical
    markup to the per-heading tooltip + footer). Separator from the tool items above; centre the
@@ -507,6 +562,10 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 }
 .nav-submenu a i { color: var(--muted); font-size: 0.95em; flex: none; }
 .nav-submenu a:hover { background: var(--surface-2); color: var(--fg); text-decoration: none; }
+/* The toggle checkbox is sr-only (focusable) in the markup; on desktop the nav is always
+   shown, so remove the checkbox from the tab order entirely (the mobile media query puts it
+   back). The hamburger label is likewise desktop-hidden below. */
+.nav-toggle { display: none; }
 .nav-toggle-label {
   display: none;
   cursor: pointer;
@@ -630,6 +689,12 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
   .site-tm { font-size: 0.85rem; margin-left: 0; }   /* keep the trademark mark, compact, on mobile */
   /* hamburger stays top-LEFT like prod (order -1), so it never wraps below the wide CTA */
   .nav-toggle-label { display: inline-flex; align-items: center; margin: 0 0.5rem 0 0; order: -1; }
+  /* Put the focusable checkbox back in the tab order on mobile (sr-only still clips it), and
+     ring the visible hamburger when it is keyboard-focused -- parity with the other toggles. */
+  .nav-toggle { display: block; }
+  .nav-toggle:focus-visible ~ .nav-toggle-label {
+    outline: 2px solid var(--focus); outline-offset: 2px;
+  }
   /* Open menu: a clean full-width panel with its OWN scroll and sectioned groups (bold
      label + separators), not a cramped wall of links. Collapsed by default; the hamburger
      plus outside-tap / Esc (app.js initNavToggle) toggle it. */
@@ -942,7 +1007,10 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
 }
 /* The two notes each drop to their OWN line below the title (3 lines total). */
 .paypal > .headline .account-info {
-  display: block; font-weight: 400; font-size: 0.85rem; color: var(--link);
+  /* >=24px tap height (Lighthouse target-size): two short links stacked in the headline were
+     each < 24px tall. Flex-center keeps the text visually where it was, full panel width. */
+  display: flex; align-items: center; justify-content: center; min-height: 24px;
+  font-weight: 400; font-size: 0.85rem; color: var(--link);
 }
 /* The DONATE button sits in .content, BELOW the box (outside it), centered, and reads as a real
    filled button (prod's light-blue "DONATE via PayPal"); prod's Once/Monthly/Yearly interval
@@ -1067,6 +1135,40 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
 }
 .code-select.inline-style .code, .code-select.inline-style { width: auto; white-space: unset; }
 .code-select.breaklines-style .code { white-space: pre-line; }
+/* Share copy-cards (prod parity): the Wikitext/Markdown/phpBB clipboard formats show as a
+   logo button over a caption instead of a raw code field. .cs-image hides the raw value (it
+   is still copied from data-code); the logo IS the copy control. */
+.copy-cards {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;
+  gap: 0.5rem 0.7rem; margin: 0.4rem 0 0.2rem;
+}
+.copy-card { display: flex; flex-direction: column; align-items: center; width: 66px; text-align: center; }
+.code-select.cs-image {
+  display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box;
+  width: 52px; height: 52px; min-height: 0; padding: 6px; overflow: visible; cursor: pointer;
+}
+.code-select.cs-image .viewport { display: none; }   /* raw value hidden; the logo is the control */
+.code-select.cs-image > .cbutton { display: flex; width: 100%; height: 100%; padding: 0; }
+.cbutton-img { display: block; width: 100%; height: 100%; max-width: 40px; max-height: 40px; object-fit: contain; }
+.copy-card .desc {
+  font-size: 0.72rem; color: var(--muted); line-height: 1.2; margin-top: 3px; overflow-wrap: anywhere;
+}
+/* Special:Version build-facts list */
+.version-info { margin: 0.6rem 0; }
+.version-info dt { font-weight: 600; margin-top: 0.5rem; }
+.version-info dd { margin: 0 0 0 1rem; color: var(--muted); }
+/* Special:RecentChanges rows + pager */
+.recent-changes { list-style: none; margin: 0.6rem 0; padding: 0; }
+.recent-changes li { margin: 0.25rem 0; line-height: 1.5; }
+.rc-date { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 0.3rem; }
+.rc-editor { color: var(--muted); }
+.rc-summary { color: var(--muted); font-style: italic; }
+.rc-diff { margin-left: 0.3rem; font-size: 0.85em; }
+.rc-pagenav {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem 1rem;
+  margin: 0.8rem 0; font-weight: 600;
+}
+.rc-pagenav .rc-pageof { color: var(--muted); font-weight: 400; }
 code {
   background: var(--code-bg);
   border: 1px solid var(--border-soft);
@@ -1153,6 +1255,14 @@ code:empty { display: none; }
 .wiki-content table:not(.toc):not(.storage-table) td.cell-gray,
 .wiki-content table:not(.toc):not(.storage-table) th.cell-gray {
   background: color-mix(in srgb, var(--callout) 32%, var(--surface)) !important;
+}
+/* Links inside a status tint: the body --fg passes on the 32% mix but the blue --link does not
+   (e.g. #0b57d0 on cell-red ~3.69:1). Inherit the cell's text color (keeps the underline
+   affordance) so a link -- e.g. a citation marker landing in a Yes/No cell -- meets contrast in
+   both themes. */
+.wiki-content table:not(.toc):not(.storage-table) :is(td, th):is(.cell-green, .cell-red, .cell-yellow, .cell-blue, .cell-gray) a {
+  color: currentColor;
+  text-decoration: underline;
 }
 
 /* ---- callouts / notice boxes ---- */
@@ -1492,6 +1602,15 @@ details[open] > summary > .mwc-toggle > .mwc-less { display: inline; }
   transition: background 0.12s ease;
 }
 .back-to-top:hover { background: rgba(0, 0, 0, 0.55); color: #fff; }
+/* No-JS floor: keep the back-to-top above the fixed bottom banner stack (consent/stage) so
+   they never overlap -- mirrors the body padding reservation. With JS, remeasureBottomStack
+   sets the exact offset (and drops it back to 20px once the banners are dismissed). */
+body:has(.bottom-stack .consent-banner) .back-to-top,
+body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px); }
+@media (max-width: 720px) {
+  body:has(.bottom-stack .consent-banner) .back-to-top,
+  body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(8rem + 20px); }
+}
 /* No-JS reveal: hidden at the top, revealed in a narrow band at ~400px (a wide range
    would fade in progressively instead of at the threshold). The @supports guard is
    REQUIRED: without scroll timelines the animation would bind to the time timeline and
@@ -1716,6 +1835,27 @@ details[open] > summary > .mwc-toggle > .mwc-less { display: inline; }
 }
 .references, .footnotes { font-size: 0.9rem; color: var(--fg-soft); }
 .reference { font-size: 0.85em; vertical-align: super; line-height: 0; }
+/* Footnote back-reference ("jump up" caret): a >=24px tap target (Lighthouse target-size) with
+   the caret enlarged to nearly fill it, so the larger hit area is a bigger visible control, not
+   wasted padding. In the references list each sits on its own line, so size does not crowd text. */
+.mw-cite-backlink a {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 24px; min-height: 24px; font-size: 1.3rem; line-height: 1;
+}
+/* link-in-text-block (axe 4.13 is pure 3:1 link-vs-surrounding and cannot see an underline): a
+   link inside a heading or the category bar sits on bold/grey text it cannot reach 3:1 against,
+   so match the surrounding colour -- axe treats a same-colour link as distinguished -- while the
+   hover underline still marks it as a link. Body-text links keep the --link blue. (The category
+   bar gets the same treatment at its own .catlinks a rule below.) */
+.wiki-content :is(h1, h2, h3, h4, h5, h6) a { color: inherit; }
+/* Dev/wikitest link-blue comparison demo: applied #1d70b8 vs the brighter #1f6feb candidate
+   (reverted -- it fails color-contrast on tinted surfaces). Scoped; used only on that test page. */
+.lk-applied a { color: #1d70b8; }
+.lk-brighter a { color: #1f6feb; }
+/* Citation [N] links inside a table cell/header inherit the cell's (contrast-compliant) text
+   colour: the link hue can fail 4.5:1 on a tinted <th> background, and the bracketed
+   superscript is already an unmistakable citation marker (link-colour-independent). */
+:is(td,th) .reference a { color: currentColor; }
 /* Jump-to-footnote target: box + tint the referenced note so a clicked [N] citation
    lands somewhere visible (scroll-margin clears any fixed chrome). */
 .references li:target, .footnotes li:target {
@@ -1811,9 +1951,6 @@ sup.reference:target {
 .menu-section {
   display: block; margin: 0.85rem 0 0.4rem; padding-top: 0.5rem; border-top: 1px solid #eee;
   font-weight: 600; font-size: 0.78rem; color: var(--muted); text-align: center;
-}
-.share-tooltip .menu-subhead, .share-panel .menu-subhead {
-  display: block; margin: 0.55rem 0 0.25rem; font-weight: 600; font-size: 0.8rem; color: var(--muted);
 }
 /* Footer share tooltip: the icon inherits the footer's own text colour. The white menu
    re-grounds --muted to a mid-grey so the glyph-only share icons + subheads stay legible on
@@ -1942,17 +2079,34 @@ sup.reference:target {
 /* inline-block + vertical padding gives each TOC link a >=24px tap target and spacing
    (a11y target-size, flagged on desktop). */
 .toc a { color: var(--link); display: inline-block; padding: 3px 0; }
-.toc a:hover { text-decoration: underline; }
+/* Production distinguishes TOC links by colour only -- no underline, even on hover. */
+.toc a:hover { text-decoration: none; }
 
 /* VideoLink: general icon + text link + a small inline row of platform icons. The
    source icons are 600px; width/height attrs (set in videolink()) size them, this just
    lays them out inline like production. */
+/* Prod groups the video link + platform icons in a subtle rounded box (not loose inline), with
+   smaller icons. Box = theme surface (white-ish in light, like prod); icons capped to ~1.1em. */
+.video-link {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  background: var(--surface); border: 1px solid var(--border-soft); border-radius: var(--radius-sm);
+  padding: 0.1rem 0.5rem;
+}
 .video-link .indicator img { vertical-align: text-bottom; margin-right: 0.3rem; }
 .video-link .icons {
   display: inline-flex; align-items: center; gap: 0.35rem; margin-left: 0.4rem;
   vertical-align: middle;
 }
 .video-link .icons img { vertical-align: middle; }
+/* Each platform-icon link is a >=24px square tap target (Lighthouse target-size). The square
+   600x600 logo renders small + centered inside it, flex:none so the inline-flex row cannot
+   shrink its width and distort it off 1:1 (which tripped image-aspect-ratio). */
+.video-link .icons a {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 24px; min-height: 24px;
+}
+.video-link .icons img { height: 1.1em; width: 1.1em; flex: none; }
+.video-link .indicator img { height: 1.1em; width: auto; }
 
 /* --- gallery (native image grid) --- */
 /* Galleries: production card grid (Utility.css). render_galleries emits
@@ -2074,7 +2228,8 @@ sup.reference:target {
   border-top: 1px solid var(--border); color: var(--muted);
 }
 .catlinks-label { font-weight: 600; }
-.catlinks a { color: var(--link); margin-right: 0.5rem; }
+/* Category links must LOOK like links (not grey bar text): link colour + underline. */
+.catlinks a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; margin-right: 0.5rem; }
 
 /* --- book prev/index/next nav (#wikibookindex) --- */
 /* Production shows this as a compact prev/index/next ICON cluster at the top-right of the title,
@@ -2098,10 +2253,15 @@ sup.reference:target {
 .wiki-book-index.wbi-for-footer {
   float: none; display: block; margin: 2.5rem 0 0; font-size: 1rem;
 }
+/* Prod renders each footer book-nav row as a filled BOX (subtle surface fill + border +
+   radius, dark text, no underline), not a thin underline-separated prose link. */
 .wiki-book-index.wbi-for-footer a {
   display: flex; width: 100%; gap: 0.6rem; align-items: center;
-  padding: 0.5rem 0.2rem; border-bottom: 1px solid var(--border-soft);
+  padding: 0.6rem 0.9rem; margin: 0.4rem 0;
+  background: var(--surface); border: 1px solid var(--border-soft); border-radius: var(--radius-sm);
+  color: var(--fg); text-decoration: none;
 }
+.wiki-book-index.wbi-for-footer a:hover { background: var(--surface-2); text-decoration: none; }
 .wiki-book-index.wbi-for-footer .text { display: inline; }   /* prod shows the page titles */
 .wiki-book-index.wbi-for-footer i { width: 1.2em; text-align: center; }
 
@@ -2240,6 +2400,19 @@ sup.reference:target {
   padding: 0.3rem 1rem; border-radius: var(--radius-sm, 4px); cursor: pointer; font: inherit; font-weight: 600;
 }
 .consent-dismiss:hover { background: rgba(255, 255, 255, 0.25); }
+/* No-JS dismiss: the sr-only checkbox before a banner hides it for THIS page view; JS
+   persists the choice across pages via the pre-paint hidden classes (page.py). The stage
+   banner reappears next page/reload with no JS, so stage stays hard to mistake for prod. */
+.banner-dismiss-cb:checked + .consent-banner,
+.banner-dismiss-cb:checked + .stage-banner { display: none; }
+/* Keyboard focus on the visually-hidden checkbox shows a ring on the visible OK label
+   (light on the dark consent banner, dark on the yellow stage banner). */
+.banner-dismiss-cb:focus-visible + .consent-banner .consent-dismiss {
+  outline: 2px solid #fff; outline-offset: 2px;
+}
+.banner-dismiss-cb:focus-visible + .stage-banner .stage-dismiss {
+  outline: 2px solid #3a2500; outline-offset: 2px;
+}
 
 /* Staging notice -- STAGE builds only; loud so stage is never mistaken for production.
    Fixed to the viewport BOTTOM so it is out of the header: the header then renders at
@@ -2248,7 +2421,8 @@ sup.reference:target {
 .stage-banner {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.4rem 0.9rem;
   padding: 0.5rem 1rem; font-size: 0.9rem; text-align: center;
-  color: #3a2500; background: #ffcf33;
+  /* Semi-transparent like the consent banner (rgba .9), not a solid fill -- still loud yellow. */
+  color: #3a2500; background: rgba(255, 207, 51, 0.9);
   border-top: 2px solid #e0a800;
 }
 .stage-banner strong { color: #7a1f00; }
@@ -2397,7 +2571,10 @@ html.stage-notice-hidden .stage-banner { display: none; }
 /* No-JS notice: the pre-paint marks <html class="client-js"> when JS is on, so the
    "works without JavaScript" callout only shows to actual no-JS visitors (no flash). */
 html.client-js .show-for-nojs-only { display: none; }
-#siteNotice { display: block; margin: 1rem 0 0.6rem; text-align: center; }
+/* Same horizontal gutter as .wiki-content (mobile: padding 0 1rem) so the rounded banner is
+   inset from the screen edges instead of bleeding edge-to-edge on phones. Invisible on wide
+   screens (the banner is centered + narrower than the viewport there). */
+#siteNotice { display: block; margin: 1rem 0 0.6rem; padding: 0 1rem; text-align: center; }
 /* When a sitenotice is present it already supplies the gap above the content; drop the
    .wiki-content 28px top margin so the sitenotice->headline gap is not doubled (a page
    WITHOUT a notice keeps the 28px header->content gap, matching production). */
