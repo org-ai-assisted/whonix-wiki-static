@@ -1192,51 +1192,71 @@
   function initWideTableScroll() {
     var tables = document.querySelectorAll(
       ".wiki-content table:not(.toc):not(.storage-table)");
+    // One controller per table, but a SINGLE batched sync across all of them: the per-table
+    // observer-and-sync shape read scrollWidth/clientWidth then wrote spacer/rail/margin in
+    // the same step, so the next table's read forced a synchronous relayout (read-write-read
+    // thrash -> the reported ~83ms forced reflow on a multi-table page).
+    var items = [];
     tables.forEach(function (table) {
-      var rail = null, spacer = null, lock = false;
-      function build() {
-        rail = document.createElement("div");
-        rail.className = "table-scroll-top";
-        rail.setAttribute("aria-hidden", "true");
-        spacer = document.createElement("div");
-        rail.appendChild(spacer);
-        table.parentNode.insertBefore(rail, table);
-        rail.addEventListener("scroll", function () {
-          if (lock) { return; }
-          lock = true; table.scrollLeft = rail.scrollLeft; lock = false;
-        });
-        table.addEventListener("scroll", function () {
-          if (lock) { return; }
-          lock = true; rail.scrollLeft = table.scrollLeft; lock = false;
-        });
+      items.push({ table: table, rail: null, spacer: null, lock: false });
+    });
+    function build(item) {
+      var table = item.table;
+      item.rail = document.createElement("div");
+      item.rail.className = "table-scroll-top";
+      item.rail.setAttribute("aria-hidden", "true");
+      item.spacer = document.createElement("div");
+      item.rail.appendChild(item.spacer);
+      table.parentNode.insertBefore(item.rail, table);
+      item.rail.addEventListener("scroll", function () {
+        if (item.lock) { return; }
+        item.lock = true; table.scrollLeft = item.rail.scrollLeft; item.lock = false;
+      });
+      table.addEventListener("scroll", function () {
+        if (item.lock) { return; }
+        item.lock = true; item.rail.scrollLeft = table.scrollLeft; item.lock = false;
+      });
+    }
+    // Re-evaluate whenever a table's box changes: it may start hidden (a collapsed
+    // mw-collapsible or an inactive tab measures 0), become wide only after an image
+    // loads, or cross the overflow threshold on a window resize -- a one-shot check at
+    // load would skip all three (the reported bug). Build each rail lazily, the first
+    // time its table is actually overwide; hide it again if it later fits.
+    //
+    // Batched: READ every table's geometry into `measures` FIRST, THEN apply every style
+    // write. No write sits between two reads, so layout is flushed at most once per sync.
+    function sync() {
+      var i, measures = [];
+      for (i = 0; i < items.length; i++) {
+        var t = items[i].table;
+        var sw = t.scrollWidth, cw = t.clientWidth;
+        measures.push({ overwide: sw > cw + 1, scrollWidth: sw });
       }
-      // Re-evaluate whenever the table's box changes: it may start hidden (a collapsed
-      // mw-collapsible or an inactive tab measures 0), become wide only after an image
-      // loads, or cross the overflow threshold on a window resize -- a one-shot check at
-      // load would skip all three (the reported bug). Build the rail lazily, the first
-      // time the table is actually overwide; hide it again if it later fits.
-      function sync() {
-        var overwide = table.scrollWidth > table.clientWidth + 1;
-        if (overwide && !rail) { build(); }
-        if (rail) {
-          spacer.style.width = table.scrollWidth + "px";
-          rail.style.display = overwide ? "" : "none";
-          table.style.marginTop = overwide ? "0" : "";
+      for (i = 0; i < items.length; i++) {
+        var item = items[i], m = measures[i];
+        if (m.overwide && !item.rail) { build(item); }
+        if (item.rail) {
+          item.spacer.style.width = m.scrollWidth + "px";
+          item.rail.style.display = m.overwide ? "" : "none";
+          item.table.style.marginTop = m.overwide ? "0" : "";
         }
       }
-      if (typeof ResizeObserver !== "undefined") {
-        new ResizeObserver(sync).observe(table);
-      } else {
-        sync();
-        var raf = 0;
-        window.addEventListener("resize", function () {
-          if (raf) { return; }
-          raf = requestAnimationFrame(function () { raf = 0; sync(); });
-        });
-      }
-      // A late image load can grow scrollWidth WITHOUT changing the (max-width:100%-capped)
-      // border box, so ResizeObserver never fires for it -- re-sync on each image load too.
-      table.querySelectorAll("img").forEach(function (img) {
+    }
+    if (typeof ResizeObserver !== "undefined") {
+      var ro = new ResizeObserver(sync);
+      items.forEach(function (item) { ro.observe(item.table); });
+    } else {
+      sync();
+      var raf = 0;
+      window.addEventListener("resize", function () {
+        if (raf) { return; }
+        raf = requestAnimationFrame(function () { raf = 0; sync(); });
+      });
+    }
+    // A late image load can grow scrollWidth WITHOUT changing the (max-width:100%-capped)
+    // border box, so ResizeObserver never fires for it -- re-sync on each image load too.
+    items.forEach(function (item) {
+      item.table.querySelectorAll("img").forEach(function (img) {
         if (!img.complete) {
           img.addEventListener("load", sync);
           img.addEventListener("error", sync);  // a broken image also changes layout

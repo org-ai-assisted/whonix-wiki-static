@@ -502,11 +502,16 @@ body.site-whonix .site-logo-img { width: auto; }
 .share-note { display: block; margin: 0; font-size: 0.75rem; color: var(--muted); }
 .share-note a { color: var(--link); }
 @media (max-width: 720px) {
-  /* Full-width dropped panel on phones. The 2-column Page|Tools layout keeps it short, so NO
-     routine scroll (#70 supersedes the #61 max-height/overflow-y). */
+  /* Full-width dropped panel on phones/tablets: pin it across the article column. */
   .tools-menu {
     position: fixed; left: 8px; right: 8px; top: 52px; width: auto; max-width: none;
   }
+}
+@media (max-width: 480px) {
+  /* The 2-col grid floor is 2 x minmax(12rem) + 1rem gap ~= 400px; below that the grid
+     overflows the fixed left:8/right:8 box (~374px on a 390px phone) and pushes the share
+     panel's rightmost social icon past the right edge. Collapse to one column on phones. */
+  .tools-menu { grid-template-columns: 1fr; }
 }
 /* Printable view: strip all chrome, print the article only (the supermenu Print action). */
 @media print {
@@ -1710,20 +1715,29 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   --border-soft: #4a4a4a;
   --surface: #424242;
   --surface-2: #4d4d4d;
-  /* Production footer ground: a horizontal charcoal gradient (Footer.css), not a flat
-     fill. The footer is body-width already, so it spans edge to edge without a vw
-     full-bleed trick (which would risk mobile horizontal overflow). The leading solid
-     #333 is a background-COLOR fallback: a gradient is a background-IMAGE with no color,
-     so a contrast checker (axe/Lighthouse) cannot read it and resolves footer links
-     against the body's LIGHT ground instead -- a false 1.9:1 fail. The solid dark color
-     (the gradient's own edge tone) gives the checker the real dark footer to measure
-     against; the opaque gradient paints over it, so it is visually identical. */
-  background: #333 linear-gradient(90deg, #333, #5a5a5a, #5a5a5a, #333);
+  /* Solid dark ground. A contrast checker (axe/Lighthouse) that meets a background-IMAGE on an
+     element SKIPS that element and resolves the footer links against the body's LIGHT ground --
+     a false ~1.9:1 fail -- so the gradient must NOT live here (a leading solid color in the same
+     shorthand does not help; the image still makes axe skip it). This solid color is what axe
+     reads: link #8ab4f8 on #333 ~= 6:1. The gradient moves to ::before. */
+  background-color: #333;
+  position: relative;
+  isolation: isolate;   /* own stacking context so the ::before gradient stays within the footer */
   padding: 30px 20px;
   margin-top: 60px;
   color: var(--muted);
   font-size: 0.9rem;
   flex-shrink: 0;   /* sticky-footer flex column: never shrink the footer */
+}
+.site-footer::before {
+  /* Production charcoal gradient (Footer.css), painted behind the footer content. Mid-stops are
+     #444 (not #5a5a5a) so the #8ab4f8 links keep AA contrast (>=4.5:1) across the FULL width, not
+     only at the #333 edges -- i.e. the checker and real pixels agree, no fabricated pass. */
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, #333, #444, #444, #333);
 }
 .footer-cols {
   display: flex;
@@ -1754,7 +1768,9 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 .footer-badges img { width: 56px; height: 56px; object-fit: contain; display: block; }
 .footer-badges a:hover { opacity: 0.85; }
 .footer-social-icons {
-  display: flex; flex-wrap: wrap; gap: 0.55rem;
+  /* >=0.6rem gap keeps each 34px round badge's tap target clear of its neighbours' when the row
+     wraps (WCAG 2.5.8 target-size: no partial obstruction below 24x24). */
+  display: flex; flex-wrap: wrap; gap: 0.7rem;
   margin: 0 0 0.75rem; font-size: 1rem;
 }
 /* Production look: round badges with a drop-shadow that zoom on hover (Footer.css .icon-link),
@@ -1771,11 +1787,15 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 }
 .footer-sponsor-head { margin: 0.9rem 0 0.3rem; font-weight: bold; color: var(--fg); }
 .footer-sponsor { margin: 0.3rem 0 0; font-size: 0.85rem; color: var(--muted); }
-.footer-sponsor a { color: var(--link); }
+/* Underlined: inline in muted prose, so color alone cannot distinguish the link (axe
+   link-in-text-block -- in a light-on-dark footer a link can't clear 3:1 vs the light text
+   AND 4.5:1 vs the dark ground, so a non-colour indicator is required). */
+.footer-sponsor a { color: var(--link); text-decoration: underline; }
 .footer-opensource-note { margin: 0 0 0.9rem; font-size: 0.85rem; color: var(--muted); }
 .footer-legal-intro { margin: 0 0 0.6rem; font-size: 0.85rem; color: var(--muted); }
-/* link-coloured like the other footer links so the copyright reads AS a link (was --muted). */
-.copyright a { color: var(--link); }
+/* link-coloured like the other footer links so the copyright reads AS a link (was --muted).
+   Underlined: inline in muted prose (link-in-text-block, same rationale as .footer-sponsor a). */
+.copyright a { color: var(--link); text-decoration: underline; }
 .copyright a:hover { color: var(--link-hover); text-decoration: underline; }
 /* Production flows these inline as a comma-separated disclaimer, NOT one link per line. */
 .footer-freedom ul, .footer-links ul {
@@ -2008,7 +2028,9 @@ sup.reference:target {
   .share-tooltip .menu-wrapper { left: auto; right: 0; }
 }
 @media (max-width: 440px) {
-  .share-tooltip .menu-wrapper { position: fixed; top: 55px; left: auto; right: 5px; }
+  /* Center the fixed 315px menu on phones. Right-pinning (right:5px) left a wide gap on the
+     left and pushed the rightmost social icon off the right edge. */
+  .share-tooltip .menu-wrapper { position: fixed; top: 55px; left: 50%; right: auto; transform: translateX(-50%); }
 }
 .share-tooltip .share-social, .share-panel .share-social {
   display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 0.5rem 0 0.2rem;
