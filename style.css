@@ -548,12 +548,15 @@ body.site-whonix .site-logo-img { width: auto; }
 .site-tm {
   color: var(--fg);
   font-size: 1.2rem;
-  vertical-align: super;
-  /* The TM is a SEPARATE link (Trademark Policy) and only ~12px wide, so WCAG target-size
-     (axe 'target-size', the Lighthouse a11y check) passes only via SPACING >= ~7px. -0.3rem left
-     a ~12.8px gap (too far right); fully neutralizing the 1.1rem flex column-gap overlapped the
-     wordmark (gap -4px -> target-size FAIL, the desktop a11y 98->97). -0.7rem = +7px gap: a tight
-     prod-like tuck that still passes target-size. Do NOT push it more negative than -0.7rem. */
+  /* >=24x24 hit target (WCAG 2.5.8 / axe 'target-size', a Lighthouse a11y check): the mark is
+     a SEPARATE link (Trademark Policy) only ~12px wide, so give it a real 24x24 flex-item box.
+     Size-based (not fragile spacing), so it holds for the smaller 0.72rem Whonix (R) too. The
+     box is shorter than the 44px logo, so align-items:center keeps the ~50px header height; the
+     glyph sits flush-left in the box, so margin-left keeps its prod-like tuck to the wordmark. */
+  display: inline-flex;
+  align-items: center;
+  min-width: 24px;
+  min-height: 24px;
   margin-left: -0.7rem;
 }
 /* Whonix uses the REGISTERED (R) glyph -- a full-size circled R on the baseline, unlike the
