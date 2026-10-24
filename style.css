@@ -850,6 +850,13 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
   font-size: inherit;
   font-weight: inherit;
   color: inherit;
+  /* The inner <h1 id="firstHeading"> also matches the #firstHeading box rule, inheriting its
+     opaque background + position:relative. On a book page the float:right .wiki-book-index
+     precedes this h1 in source; a POSITIONED (relative) + opaque h1 paints in the positioned
+     layer, ON TOP of the float, hiding the nav entirely. Reset both: the wrapper .first-heading
+     already draws the panel, and a static transparent h1 lets the floated nav show through. */
+  background: transparent;
+  position: static;
 }
 /* book-nav floats top-right of the BLOCK title (prod): the base .wiki-book-index{float:right}
    applies and the title text wraps around it at full width. */
@@ -2649,17 +2656,19 @@ html.client-js .show-for-nojs-only { display: none; }
 #siteNotice + main.wiki-content > .first-heading { margin-top: 0.4rem; }
 .sitenotice { position: relative; display: inline-block; max-width: 100%; }
 .sitenotice-close {
-  /* a refined inside close (kept inside per the #89/#91 guard): a soft translucent badge,
-     centered glyph, subtle shadow + gentle hover -- less harsh than the old solid-black
-     circle with its abrupt 1.2 scale jump. */
-  width: 28px; height: 28px; position: absolute; top: 6px; right: 6px; z-index: 10;
+  /* Solid dark circle, matching production's clearly-visible close button (the translucent
+     0.55-alpha badge read as washed-out over the donation image). Kept INSIDE the banner with
+     POSITIVE offsets: the #89/#91 guard forbids negative offsets, which poke past the viewport
+     right edge and cause mobile horizontal overflow -- so we match prod's SOLID look, not prod's
+     corner-overhang placement. Subtle shadow defines it against the photo it sits on. */
+  width: 30px; height: 30px; position: absolute; top: 4px; right: 4px; z-index: 10;
   display: inline-flex; align-items: center; justify-content: center;
   cursor: pointer; border: 0; border-radius: 50%;
-  background: rgba(17, 17, 17, 0.55); color: #fff; padding: 0; font-size: 13px; line-height: 1;
+  background: #111; color: #fff; padding: 0; font-size: 14px; line-height: 1;
   box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
   transition: background 0.12s ease, transform 0.12s ease;
 }
-.sitenotice-close:hover { background: rgba(17, 17, 17, 0.82); transform: scale(1.08); }
+.sitenotice-close:hover { background: #000; transform: scale(1.08); }
 .sitenotice-banner[data-banner-id="38"] > a {
   /* right padding reserves room for the absolute 30px close button (top/right:4px) so
      it never overlaps the banner text. */
