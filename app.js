@@ -470,8 +470,24 @@
     });
   }
 
-  // Live search over the prebuilt index (window.MWSEARCH, loaded as a script -- no
-  // fetch, so it works under connect-src 'none'). No-JS users get the Browse link.
+  // Read a lazily-fetched payload's URL from its inert <link rel> carrier in the head. The
+  // href was relativized + ?h=-fingerprinted at build time, so this is the final resolved URL
+  // (works online at domain root AND offline under file://).
+  function carrierHref(rel) {
+    var link = document.querySelector('link[rel="' + rel + '"]');
+    return link ? link.getAttribute("href") : "";
+  }
+  // Same-origin JSON fetch (connect-src 'self'), resolving null on any failure so the feature
+  // degrades quietly (never throws). Inert DATA -- no <script> injection, so no Trusted-Types
+  // script-URL policy is needed. Callers memoize so each payload is fetched at most once.
+  function loadJSON(url) {
+    if (!url || typeof fetch !== "function") return Promise.resolve(null);
+    return fetch(url).then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+  }
+
+  // Live search over the prebuilt index (search-index.min.json), fetched same-origin on first
+  // focus (connect-src 'self'; inert JSON, no code execution). No-JS users get the Browse link.
   // Index URLs are stored relative to the site root ("wiki/Foo/"). Derive this
   // page's path-to-root from app.js's own (already per-page relativized) src, so
   // search links resolve both online (served at domain root) and offline (file://).
@@ -491,12 +507,27 @@
 
   function initSearch() {
     var input = document.getElementById("search-input");
-    if (!input || !window.MWSEARCH) return;
+    if (!input) return;
     var root = rootPrefix();
     var results = document.createElement("ul");
     results.className = "search-results";
     results.hidden = true;
     input.parentNode.appendChild(results);
+    // The index is DATA fetched on first focus, memoized single-flight: a page view with no
+    // search pays nothing. Until it resolves, queries no-op (no-JS Browse link is the fallback);
+    // a late arrival is still honored -- the input/keydown handlers run their body after the
+    // fetch resolves, re-reading the current input value.
+    var index = null, loading = null;
+    function ensureIndex() {
+      if (!loading) {
+        loading = loadJSON(carrierHref("mw-search-index")).then(function (d) {
+          index = d || [];
+          return index;
+        });
+      }
+      return loading;
+    }
+    input.addEventListener("focus", ensureIndex);   // prime before the first keystroke
     // A namespaced page (n:1, e.g. "Template:Foo") is a candidate only for a query that
     // TARGETS its namespace: the text before the query's first colon must equal the page's
     // namespace. A plain query (no colon) stays in the main namespace. So "template:" surfaces
@@ -517,8 +548,8 @@
       // on the root page, root="" too, so a valid homepage href is the empty string --
       // treating "" as "no match" would skip it and mis-pick a later substring hit.
       var first = null;
-      for (var i = 0; i < window.MWSEARCH.length; i++) {
-        var e = window.MWSEARCH[i];
+      for (var i = 0; i < index.length; i++) {
+        var e = index[i];
         if (!nsEligible(e, q)) continue;   // namespaced page: only for its own namespace query
         var t = e.t.toLowerCase();
         if (t === q) return root + e.u;
@@ -527,30 +558,33 @@
       return first;
     }
     input.addEventListener("input", function () {
-      var q = input.value.trim().toLowerCase();
-      while (results.firstChild) results.removeChild(results.firstChild);
-      if (q.length < 2) { results.hidden = true; return; }
-      var shown = 0;
-      for (var i = 0; i < window.MWSEARCH.length && shown < 20; i++) {
-        var e = window.MWSEARCH[i];
-        if (!nsEligible(e, q)) continue;   // namespaced page: only for its own namespace query
-        if (e.t.toLowerCase().indexOf(q) === -1) continue;
-        var li = document.createElement("li");
-        var a = document.createElement("a");
-        a.setAttribute("href", root + e.u);
-        a.textContent = e.t;
-        li.appendChild(a);
-        results.appendChild(li);
-        shown++;
-      }
-      results.hidden = shown === 0;
-      // The open field is an ABSOLUTE overlay at top:calc(100%+0.3rem); the results share
-      // its offsetParent (.site-search), so anchor the panel just BELOW the field's rendered
-      // box rather than at the ul's static top (which overlapped the field). CSSOM .style is
-      // not gated by style-src, so this is CSP-safe (same as the bottom-stack spacer).
-      if (!results.hidden) {
-        results.style.top = (input.offsetTop + input.offsetHeight + 4) + "px";
-      }
+      // Render after the index resolves (a microtask once loaded); before then, no-op.
+      ensureIndex().then(function () {
+        var q = input.value.trim().toLowerCase();
+        while (results.firstChild) results.removeChild(results.firstChild);
+        if (q.length < 2) { results.hidden = true; return; }
+        var shown = 0;
+        for (var i = 0; i < index.length && shown < 20; i++) {
+          var e = index[i];
+          if (!nsEligible(e, q)) continue;   // namespaced page: only for its own namespace query
+          if (e.t.toLowerCase().indexOf(q) === -1) continue;
+          var li = document.createElement("li");
+          var a = document.createElement("a");
+          a.setAttribute("href", root + e.u);
+          a.textContent = e.t;
+          li.appendChild(a);
+          results.appendChild(li);
+          shown++;
+        }
+        results.hidden = shown === 0;
+        // The open field is an ABSOLUTE overlay at top:calc(100%+0.3rem); the results share
+        // its offsetParent (.site-search), so anchor the panel just BELOW the field's rendered
+        // box rather than at the ul's static top (which overlapped the field). CSSOM .style is
+        // not gated by style-src, so this is CSP-safe (same as the bottom-stack spacer).
+        if (!results.hidden) {
+          results.style.top = (input.offsetTop + input.offsetHeight + 4) + "px";
+        }
+      });
     });
     // No <form> (CSP form-action 'none'), so Enter is inert by default: navigate to the
     // best-matching page ourselves. preventDefault keeps a stray implicit submit from firing.
@@ -565,8 +599,10 @@
       e.preventDefault();
       var q = input.value.trim().toLowerCase();
       if (q.length < 2) return;   // empty query matches everything via indexOf("")
-      var href = bestMatch(q);
-      if (href !== null) window.location.assign(href);
+      ensureIndex().then(function () {
+        var href = bestMatch(q);
+        if (href !== null) window.location.assign(href);
+      });
     });
     // Close the box on an outside click / Escape (JS enhancement of the CSS :checked toggle):
     // uncheck the toggle AND clear/hide the live results so neither lingers. Scoped to the
@@ -946,13 +982,27 @@
 
   // Hovercards (the job of the old MediaWiki Popups): (1) reference previews --
   // hover a [n] citation to see the footnote; (2) page previews -- hover an internal
-  // link to see the target's title + summary from a prebuilt index (window.MWPREVIEWS;
-  // CSP connect-src 'none' forbids an on-hover fetch). JS-only enhancement; native
-  // title= tooltips still work with JS off. TT-safe DOM; positioned via el.style
-  // (CSSOM, not an inline style= attribute, so allowed under style-src 'self').
+  // link to see the target's title + summary from a prebuilt index (page-previews.min.json,
+  // fetched same-origin ONCE on first in-content hover; the index is the whole source, so no
+  // per-hover page fetch). JS-only enhancement; native title= tooltips still work with JS off.
+  // TT-safe DOM; positioned via el.style (CSSOM, not an inline style= attribute, so allowed
+  // under style-src 'self').
   function initHovercards() {
     var content = document.querySelector(".wiki-content");
     if (!content) return;
+    // Preview index: DATA fetched once on first in-content hover (memoized). Citation previews
+    // read the DOM and need no fetch; a page card only appears once the index has resolved
+    // (native title= covers the gap), so a no-interaction page view fetches nothing.
+    var previews = null, previewsLoading = null;
+    function ensurePreviews() {
+      if (!previewsLoading) {
+        previewsLoading = loadJSON(carrierHref("mw-page-previews")).then(function (d) {
+          previews = d || {};
+          return previews;
+        });
+      }
+      return previewsLoading;
+    }
     var card = null, hideTimer = null, showTimer = null;
     function ensure() {
       if (card) return card;
@@ -996,14 +1046,14 @@
       return [box];
     }
     function pageNodes(a) {
-      var idx = window.MWPREVIEWS;
-      if (!idx) return null;
+      var idx = previews;
+      if (!idx) return null;   // index not resolved yet -> no card (native title= covers the gap)
       var href = a.getAttribute("href") || "";
       // Only internal (relative) links have previews -- skip absolute/scheme and
       // protocol-relative links so an EXTERNAL url whose path happens to match an
       // index key never shows a spoofed card.
       if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.indexOf("//") === 0) return null;
-      // Key is ROOT-RELATIVE ("wiki/Foo/", the MWPREVIEWS key form). Resolve the
+      // Key is ROOT-RELATIVE ("wiki/Foo/", the page-previews key form). Resolve the
       // anchor against the site root computed from rootPrefix() -- the same path-to-
       // root the search box uses -- so it matches online AND offline via file://
       // (new URL(a.href).pathname would be the full filesystem path under file://).
@@ -1021,12 +1071,7 @@
       box.appendChild(el("p", "hovercard-extract", p.d));
       return [box];
     }
-    function onEnter(e) {
-      var a = e.target.closest && e.target.closest("a");
-      if (!a || !content.contains(a)) return;
-      var nodes = null;
-      if (a.closest("sup.reference")) nodes = refNodes(a);
-      else if (a.getAttribute("href") && a.getAttribute("href").indexOf("#") !== 0) nodes = pageNodes(a);
+    function scheduleCard(nodes, a) {
       if (!nodes) return;
       clearTimeout(showTimer);
       showTimer = setTimeout(function () {
@@ -1035,8 +1080,27 @@
         place(a);
       }, 200);
     }
+    // The link currently under the pointer (set on enter, cleared on leave) -- so a preview that
+    // finishes fetching AFTER the pointer moved away does not pop a stale card.
+    var hovered = null;
+    function onEnter(e) {
+      var a = e.target.closest && e.target.closest("a");
+      if (!a || !content.contains(a)) return;
+      hovered = a;
+      // Citations read the DOM -- synchronous, no fetch.
+      if (a.closest("sup.reference")) { scheduleCard(refNodes(a), a); return; }
+      // Page previews need the index: fetch it once (memoized), then show only if the pointer is
+      // still on this link. Once loaded the promise resolves on a microtask, so later hovers are
+      // immediate; the first hover before the fetch lands just shows the native title= instead.
+      if (a.getAttribute("href") && a.getAttribute("href").indexOf("#") !== 0) {
+        ensurePreviews().then(function () {
+          if (hovered !== a) return;   // pointer left this link during the fetch
+          scheduleCard(pageNodes(a), a);
+        });
+      }
+    }
     content.addEventListener("mouseover", onEnter);
-    content.addEventListener("mouseout", function () { clearTimeout(showTimer); hideSoon(); });
+    content.addEventListener("mouseout", function () { hovered = null; clearTimeout(showTimer); hideSoon(); });
   }
 
   // Browser-storage viewer (the Special:BrowserStorage page): list what this site

@@ -1,4 +1,4 @@
-window.MWPREVIEWS={
+{
   "": {
     "d": "Whonix can anonymize everything you do online! It runs like an App, is a Free, Open Source and Kicksecure<sup>&trade;</sup> hardened Linux distribution.",
     "t": "Homepage"
@@ -1791,4 +1791,4 @@ window.MWPREVIEWS={
     "d": "Combining Whonix with ZeroNet. ZeroNet over Tor. Connecting to Tor before ZeroNet (User &rarr; Tor &rarr; ZeroNet &rarr; Internet).",
     "t": "ZeroNet"
   }
-};
+}

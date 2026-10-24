@@ -836,11 +836,9 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
   font-size: 28px;
   font-weight: 400;   /* prod page title is normal-weight Roboto, not bold */
   line-height: 1.6;   /* prod title box is 28px/1.6 = ~66px tall (was 1.25 -> 56px, 10px short) */
-  /* title on the LEFT, book-nav on the RIGHT (prod) -- flex, not a float, so the book-nav
-     stays right even when the title wraps to several lines on mobile. */
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
+  /* prod .first-heading is a BLOCK: the book-nav floats top-right and the title text wraps
+     around/below it at FULL width. A flex row instead steals column width from the title and
+     wraps it to more lines than prod (the "stage title breaks to more lines" bug). */
 }
 /* `.first-heading > #firstHeading` (id specificity) is REQUIRED: on a book page the inner
    <h1 id="firstHeading"> also matches the `#firstHeading` box rule above and would get a
@@ -852,11 +850,9 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
   font-size: inherit;
   font-weight: inherit;
   color: inherit;
-  flex: 1 1 auto;
 }
-.first-heading > .wiki-book-index {
-  float: none; order: 2; margin-left: auto; flex: none;
-}
+/* book-nav floats top-right of the BLOCK title (prod): the base .wiki-book-index{float:right}
+   applies and the title text wraps around it at full width. */
 @media (max-width: 600px) {
   #firstHeading, .first-heading { font-size: 25px; }
 }
@@ -2299,13 +2295,17 @@ sup.reference:target {
    FontAwesome chevron-left / list / chevron-right glyphs), no labels, no box. */
 .wiki-book-index {
   float: right;
-  display: inline-flex; gap: 0.55rem; align-items: center;
-  margin: 0.15rem 0 0 1rem; padding: 0; font-size: 1.05rem;
+  display: inline-flex; gap: 0.3rem; align-items: center;
+  margin: 0.15rem 0 0 1rem; padding: 0; font-size: 1.4rem;   /* prod top-cluster icons ~22.5px */
 }
+/* Prod (Mininav.css) renders each top-cluster prev/index/next as a filled GRAY box: subtle
+   surface fill, dark glyph, prod padding 0 6.75 2.25 -> ~42x32 (vs the old transparent ~21x17). */
 .wiki-book-index a, .wiki-book-index a:hover {
-  display: inline-flex; align-items: center; color: var(--muted); text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--surface-2); color: var(--heading); text-decoration: none;
+  padding: 0 6.75px 2.25px;
 }
-.wiki-book-index a:hover { color: var(--link); }
+.wiki-book-index a:hover { color: var(--link); background: var(--surface); }
 .wiki-book-index i { display: inline-block; }   /* SHOW the FA prev/index/next icons */
 .wiki-book-index .text { display: none; }        /* icon-only, like prod */
 .wiki-book-index .info { display: none; }
