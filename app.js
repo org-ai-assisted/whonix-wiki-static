@@ -632,14 +632,15 @@
   // banners are never dismissable, so a fixed reservation is always correct there.
   function remeasureBottomStack() {
     var stack = document.querySelector(".bottom-stack");
-    if (stack) document.body.style.paddingBottom = stack.offsetHeight + "px";
+    // Read the geometry ONCE, before any style write: reading offsetHeight again AFTER writing
+    // body.paddingBottom would force a second synchronous relayout (a ~69ms forced reflow on this
+    // large page). One read, then both writes, so the layout is flushed at most once.
+    var h = stack ? stack.offsetHeight : 0;
+    if (stack) document.body.style.paddingBottom = h + "px";
     // Lift the back-to-top button above the fixed bottom banner stack so they do not overlap;
     // drops back to 20px once the stack collapses (banners dismissed). CSSOM, so CSP-safe.
     var btt = document.querySelector(".back-to-top");
-    if (btt) {
-      var h = stack ? stack.offsetHeight : 0;
-      btt.style.bottom = (h ? h + 20 : 20) + "px";
-    }
+    if (btt) btt.style.bottom = (h ? h + 20 : 20) + "px";
   }
   function initBottomStackSpacer() {
     if (!document.querySelector(".bottom-stack")) return;

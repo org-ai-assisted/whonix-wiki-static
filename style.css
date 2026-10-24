@@ -1691,8 +1691,13 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   --surface-2: #4d4d4d;
   /* Production footer ground: a horizontal charcoal gradient (Footer.css), not a flat
      fill. The footer is body-width already, so it spans edge to edge without a vw
-     full-bleed trick (which would risk mobile horizontal overflow). */
-  background: linear-gradient(90deg, #333, #5a5a5a, #5a5a5a, #333);
+     full-bleed trick (which would risk mobile horizontal overflow). The leading solid
+     #333 is a background-COLOR fallback: a gradient is a background-IMAGE with no color,
+     so a contrast checker (axe/Lighthouse) cannot read it and resolves footer links
+     against the body's LIGHT ground instead -- a false 1.9:1 fail. The solid dark color
+     (the gradient's own edge tone) gives the checker the real dark footer to measure
+     against; the opaque gradient paints over it, so it is visually identical. */
+  background: #333 linear-gradient(90deg, #333, #5a5a5a, #5a5a5a, #333);
   padding: 30px 20px;
   margin-top: 60px;
   color: var(--muted);
@@ -2244,6 +2249,23 @@ sup.reference:target {
 .thumb-gallery.justify-left { justify-content: flex-start; }
 .thumb-gallery.justify-center { justify-content: center; }
 .thumb-gallery.justify-right { justify-content: flex-end; }
+/* Logo grid symmetry: MediaWiki sizes each thumb to its own image (fit-content width + a
+   per-aspect-ratio height), so mixed-ratio logos (a wide Kicksecure logo, a tall Debian swirl)
+   render as ragged, differently-sized boxes whose images touch the frame. Normalize to UNIFORM
+   cells: one fixed width, one equal square image area, each logo scaled to fit via
+   object-fit:contain with inset padding -- so every logo is centered with breathing room and
+   never touches the cell border, whatever its native ratio. */
+.wiki-content .thumb-gallery .thumbinner {
+  width: 8.5rem; box-sizing: border-box;   /* uniform cell (overrides the fit-content shrink) */
+}
+.wiki-content .thumb-gallery .thumbinner > a,
+.wiki-content .thumb-gallery .thumbinner > p > a {
+  display: flex; align-items: center; justify-content: center;
+  height: 6rem; padding: 0.45rem; box-sizing: border-box;   /* equal square image zone + inset */
+}
+.wiki-content .thumb-gallery .thumbimage {
+  width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain;
+}
 
 /* --- tab mininav SWITCHER (JS builds a pill cloud; the production Mininav.css look:
    a rounded blue bar of pills, inactive #9aabed, active white/#36b) --- */
