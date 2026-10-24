@@ -173,6 +173,21 @@ body {
    container width -- WITHOUT width:100% the `margin: auto` centering makes it shrink to
    its content (a long <pre>/<code> line) in the flex column and overflow the viewport. */
 .wiki-content { flex: 1 0 auto; width: 100%; min-width: 0; }
+/* Each top-level content section (page.py _wrap_sections) skips style+layout+paint while
+   off-screen and renders lazily on scroll -- cuts the up-front Style & Layout cost (hence mobile
+   TBT) on long pages. `auto` in contain-intrinsic-size lets the browser store each section's real
+   height after first render, so the 800px placeholder only affects the very first scroll-past
+   (minimal CLS); display:block keeps normal flow. Modern browsers scroll in-page #anchors and
+   find-in-page INTO cv:auto content. */
+.cv-section { content-visibility: auto; contain-intrinsic-size: auto 800px; display: block; }
+/* Per-section reserved-height buckets (page.py _cv_size_bucket estimates each section's height):
+   keeps the placeholder close to the real height so native (no-JS) fragment scroll lands near the
+   target and first-render CLS stays small. `auto` still caches the exact size after first render. */
+.cv-section.cv-h300 { contain-intrinsic-size: auto 300px; }
+.cv-section.cv-h600 { contain-intrinsic-size: auto 600px; }
+.cv-section.cv-h1200 { contain-intrinsic-size: auto 1200px; }
+.cv-section.cv-h2400 { contain-intrinsic-size: auto 2400px; }
+.cv-section.cv-h4800 { contain-intrinsic-size: auto 4800px; }
 /* video shares img's responsive treatment: max-width stops a fixed width= attr overflowing a
    phone, and height:auto preserves the intrinsic aspect ratio once the cap binds. Applied
    uniformly, exactly like img (height:auto regardless of a height attr) -- a video with a
@@ -238,6 +253,9 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
   font-size: 1.5rem;   /* glyph nearly fills the 24px target (small inset) */
 }
 .ext-link-to-archive > a:hover { color: var(--link); text-decoration: none; }
+/* The archive marker is the Internet Archive logo (a self-hosted PNG, CSP img-src 'self',
+   Tor-Safest-compatible raster) centered in the 24px target. */
+.ext-link-to-archive .ia-archive-icon { height: 18px; width: auto; display: block; }
 :focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
@@ -326,7 +344,7 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
 .download-button-v2 .op-sys {
   display: table-cell; text-align: center; position: relative; top: -2px; padding: 0 15px 0 10px;
 }
-.download-button-v2 .op-sys > img { height: 16px; margin-right: 6px; }
+.download-button-v2 .op-sys > img { height: 16px; width: auto; margin-right: 6px; }  /* width:auto keeps the OS-logo aspect ratio (Lighthouse image-aspect-ratio) at desktop too; the @media phone rule already handled mobile */
 .download-button-v2 .op-sys > img:last-child { margin-right: 0; }
 /* Narrow phones: a long label ("Download Whonix LXQt (VirtualBox) (stable) (FREE!)") in a
    nowrap table-cell capped at max-width:100% is clipped by the pill. Let it wrap to 2 lines
@@ -413,23 +431,27 @@ body.site-whonix .site-logo-img { width: auto; }
 .tools-toggle:focus-visible ~ .tools-label {
   outline: 2px solid var(--focus); outline-offset: 2px;
 }
+/* 2-column layout (#70, supersedes the #61 max-height scroll): the Page + Tools sections sit
+   SIDE BY SIDE so the menu is short enough not to scroll, and -- being wider -- gives a larger
+   target the pointer can move into from the chevron (fixes the hard-to-enter hover-close). The
+   share panel spans both columns below. Grid props live here (harmless while display:none); the
+   open state just flips `display` to grid. */
 .tools-menu {
   display: none; position: absolute; top: 100%; right: 0; z-index: 50;
-  min-width: 250px; margin-top: 0.4rem; padding: 0.35rem;
+  width: max-content; max-width: min(94vw, 640px); margin-top: 0.25rem; padding: 0.7rem 0.85rem;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 0 0 10px 10px; box-shadow: var(--shadow-md);
-  /* Grouped sections + the share panel can exceed the viewport (esp. mobile); cap to the
-     screen and scroll instead of overflowing off-screen. */
-  max-height: calc(100vh - 4rem); overflow-y: auto; overscroll-behavior: contain;
+  grid-template-columns: repeat(2, minmax(12rem, 1fr)); gap: 0.2rem 1rem; align-items: start;
 }
-.tools-toggle:checked ~ .tools-menu { display: block; }
+.tools-toggle:checked ~ .tools-menu { display: grid; }
+.tools-menu > .share-panel { grid-column: 1 / -1; }
 /* Hover bridge: the menu sits 0.4rem below the chevron (margin-top), and it opens on
    `.tools:hover`. Without this, moving the pointer from the chevron DOWN into that gap leaves
    `.tools` before reaching the panel, so `.tools:hover` drops and the menu closes under the
    cursor. A transparent strip spanning the gap (a child of `.tools-menu`, hence of `.tools`)
    keeps `.tools:hover` true across the whole chevron->panel path. */
 .tools-menu::before {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: 0.5rem;
+  content: ""; position: absolute; left: -12px; right: -12px; bottom: 100%; height: 0.6rem;
 }
 /* Open supermenu swaps the chevron for an X (FA glyph override on the label's
    icon); the click toggle is the primary open/close on every device. */
@@ -439,7 +461,7 @@ body.site-whonix .site-logo-img { width: auto; }
    tap-to-close, so gate it behind hover-capable devices. */
 @media (hover: hover) {
   .tools:hover .tools-menu,
-  .tools:focus-within .tools-menu { display: block; }
+  .tools:focus-within .tools-menu { display: grid; }
 }
 .tools-item {
   display: flex; align-items: center; gap: 0.6rem; width: 100%;
@@ -453,8 +475,9 @@ body.site-whonix .site-logo-img { width: auto; }
 }
 /* Grouped page-tools sections (production-style): a small muted header per section, with a
    hairline separator between sections. */
-.tools-section + .tools-section,
-.tools-menu .share-panel {
+/* Separator above the full-width share panel only; the Page/Tools sections are now side-by-side
+   grid columns (no stacked top-border between them). */
+.tools-menu > .share-panel {
   margin-top: 0.25rem; border-top: 1px solid var(--border); padding-top: 0.25rem;
 }
 .tools-section-label {
@@ -473,10 +496,10 @@ body.site-whonix .site-logo-img { width: auto; }
 .share-note { display: block; margin: 0; font-size: 0.75rem; color: var(--muted); }
 .share-note a { color: var(--link); }
 @media (max-width: 720px) {
-  /* full-width dropped panel on phones so the wide share panel never overflows the viewport */
+  /* Full-width dropped panel on phones. The 2-column Page|Tools layout keeps it short, so NO
+     routine scroll (#70 supersedes the #61 max-height/overflow-y). */
   .tools-menu {
-    position: fixed; left: 8px; right: 8px; top: 52px; min-width: 0;
-    max-height: calc(100vh - 64px); overflow-y: auto;
+    position: fixed; left: 8px; right: 8px; top: 52px; width: auto; max-width: none;
   }
 }
 /* Printable view: strip all chrome, print the article only (the supermenu Print action). */
@@ -547,7 +570,8 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
   box-shadow: var(--shadow-md);
 }
 .nav-group:hover > .nav-submenu,
-.nav-group:focus-within > .nav-submenu { display: block; }
+.nav-group:focus-within > .nav-submenu,
+.nav-group.kb-open > .nav-submenu { display: block; }   /* keyboard (#69): Down opens before focus moves in */
 .nav-submenu li { margin: 0; }
 .nav-submenu a {
   display: flex;
@@ -948,7 +972,10 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
   padding: 5px 13px 0 40px; position: relative; max-width: 100%; vertical-align: middle;
   min-height: 31px; overflow: auto;
   font-family: var(--font-mono); font-size: 13px; color: var(--link); line-height: 1.6em;
-  white-space: pre;
+  /* pre-wrap (not pre) so the box wraps + is the SAME HEIGHT before and after app.js enriches it
+     to .js-fully-loaded (which also wraps). The old pre->wrap transition reflowed height = CLS,
+     made worse now that the enrich is deferred to idle. pre-wrap keeps code formatting too. */
+  white-space: pre-wrap; overflow-wrap: anywhere;
 }
 .code-select, .code-select > *:not(.cbutton) { cursor: copy; }
 .code-select:hover { border-color: var(--border-soft); background: var(--surface-2); }
@@ -957,7 +984,7 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
    link URL) would push the box past its max-width:100% and overflow a phone. overflow-wrap:
    anywhere lowers the box's min-content width so max-width:100% wins and the URL wraps. */
 .code-select.js-fully-loaded {
-  overflow: visible; padding-left: 38px; white-space: unset; overflow-wrap: anywhere;
+  overflow: visible; padding-left: 40px; white-space: pre-wrap; overflow-wrap: anywhere;
 }
 .code-select .tooltip2 {
   position: absolute; top: -39px; left: 6px; background: var(--surface); color: var(--link);
@@ -1039,7 +1066,9 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
 .other > .content > .more > .more-content { text-align: center; }
 .payitem.line {
   display: flex; align-items: center; gap: 0.5rem 0.75rem; flex-wrap: wrap;
-  padding: 0.55rem 0.85rem; border-bottom: 1px solid var(--border-soft); font-size: 0;
+  /* #73: no border-bottom divider (prod has none) + tighter vertical padding so the gap
+     between crypto code-select rows matches prod (~8px, was ~18px). */
+  padding: 0.25rem 0.85rem; font-size: 0;
 }
 .payitem.line > * { font-size: 0.9rem; }
 .payitem .qr-button { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; }
@@ -1077,7 +1106,7 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
    caret as the coin rows -- it is an expandable (icon-only) row too, not a loose icon strip. */
 .payitem.symbols {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-  gap: 0.5rem; padding: 0.55rem 0.85rem; border-bottom: 1px solid var(--border-soft);
+  gap: 0.5rem; padding: 0.25rem 0.85rem;   /* #73: match prod (no divider, tighter) */
 }
 /* ERC-20 stablecoin symbols are smaller than the coin-row logos (prod) -- the 1.4rem coin
    icon is too large for this icon-only row. */
@@ -1523,9 +1552,25 @@ code:empty { display: none; }
    overflow:hidden BFC traps its 12px top margin inside the pane; zero it directly. */
 .tcc-content p:empty { display: none; }
 /* Zero the LEADING floated thumb's own top margin so it does not stack on the pane padding.
-   Specificity (0,4,0) beats the later `.wiki-content .thumb.tright` figure-margin rule. */
+   Specificity (0,4,0)+ beats the later `.wiki-content .thumb.tright` figure-margin rule.
+   A tab body may wrap its content in {{GoogleOff}} -> <div data-nosnippet>, pushing the thumb
+   one level deeper (it is still the pane's leading floated block); reach it there too, else the
+   centering below misses it and the thumb floats left with a lopsided top gap (e.g. the CLI tab). */
 .wiki-content .tcc-content > .thumb.tright,
-.wiki-content .tcc-content > .thumb.tleft { margin-top: 0; }
+.wiki-content .tcc-content > .thumb.tleft,
+.wiki-content .tcc-content > [data-nosnippet] > .thumb.tright,
+.wiki-content .tcc-content > [data-nosnippet] > .thumb.tleft { margin-top: 0; }
+@media (max-width: 720px) {
+  /* Tab previews: on a phone, center the figure instead of floating it right, so a smaller
+     screenshot (e.g. the CLI tab vs the wider GUI tab) sits centered with symmetric whitespace
+     rather than shoved against the right edge with a lopsided empty gap. */
+  .wiki-content .tcc-content > .thumb.tright,
+  .wiki-content .tcc-content > .thumb.tleft,
+  .wiki-content .tcc-content > [data-nosnippet] > .thumb.tright,
+  .wiki-content .tcc-content > [data-nosnippet] > .thumb.tleft {
+    float: none; margin-left: auto; margin-right: auto; width: fit-content;
+  }
+}
 .tcc-content > :first-child, .tcc-content > .tcc-section > :first-child { margin-top: 0; }
 /* Nested tab panes + info/notice boxes each add horizontal padding; stacked several levels
    deep on a phone (tabs-in-infobox-in-tabs) they squeeze the innermost content to ~180px so
@@ -1939,6 +1984,23 @@ sup.reference:target {
 .share-tooltip .share-icon:hover, .share-panel .share-icon:hover {
   color: #fff; text-decoration: none; filter: brightness(1.12);
 }
+/* No-JS social confirmation: the brand icon is a <details> <summary>; clicking it reveals the
+   destination URL + an explicit Open link, so the icon never auto-connects (privacy; works at
+   Tor Browser Safest with JS off). */
+.share-social .share-confirm { display: flex; flex-direction: column; align-items: center; }
+.share-social summary.share-icon { list-style: none; cursor: pointer; }
+.share-social summary.share-icon::-webkit-details-marker { display: none; }
+.share-social summary.share-icon::marker { content: ""; }
+.share-open-panel {
+  display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.35rem; width: 100%;
+}
+.share-open-panel .code-select { font-size: 0.8rem; word-break: break-all; }
+.share-open {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
+  padding: 0.4rem 0.7rem; border-radius: var(--radius-sm);
+  background: var(--surface-2); color: var(--link); font-size: 0.9rem; text-decoration: none;
+}
+.share-open:hover { text-decoration: underline; }
 .share-icon.si-x-twitter { background: #000; }
 .share-icon.si-facebook { background: #1877f2; }
 .share-icon.si-telegram { background: #229ed9; }

@@ -1,0 +1,2 @@
+*.min.js linguist-generated -diff
+*.min.css linguist-generated -diff
