@@ -11,115 +11,157 @@
   Cross-Origin-Opener-Policy: same-origin
 
 /Whonix-logo-standard.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /favicon.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /github-mark.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Architectures-combi-logo.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Arm64-logo.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Bittorrent.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Clipart-gui.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Coming-soon-icon.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Evolution-host-logo-text.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/GnuPG-Logo.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Hackintosh-logo.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Iconfinder_tor_386502.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Intel-amd-combi-logo.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Kicksecure-badge.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Kicksecure-icon-logo.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Kicksecure-image-seal.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Kicksecure-logo-icon.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Kicksecure-logo-rectangle.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Noscript-logo-full.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Power-up-privacy-logo.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Ppc64-logo.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Raspberry-pi-logo.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Riscv64-logo.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Signify_Logo.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Tronix-trx-logo-red.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Video-general-icon.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Whonix-logo-icon.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Whonix-logo-rectangle.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Whonix-logo-standard-bimi.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Whonix-logo-standard.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Whonix-logo-text.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Whonix_Profile_Dark.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Whonix_Profile_Light.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Yt-dlp.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/orig/Architectures-combi-logo.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/orig/Iconfinder_tor_386502.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/orig/Intel-amd-combi-logo.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/orig/Whonix-logo-text.svg
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
+
+/safari-pinned-tab.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
