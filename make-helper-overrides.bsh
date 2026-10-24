@@ -1,7 +1,13 @@
 #!/bin/bash
 
-## Suppress lintian tags expected for this package:
-## - possible-documentation-but-no-doc-base-registration: the HTML under
-##   /usr/share/doc is an offline-wiki bundle, not a doc-base manual.
-## - no-copyright-file: this package intentionally ships no debian/copyright.
-genmkfile_lintian_post_opts+=" --suppress-tags possible-documentation-but-no-doc-base-registration,no-copyright-file"
+## Lintian tags EXPECTED for a generated static-web-bundle shipped as offline docs; each is
+## N/A to this package, not a defect (genmkfile fails CLOSED on any lintian output, so the
+## benign ones must be named -- never fail-open):
+## - possible-documentation-but-no-doc-base-registration: HTML bundle, not a doc-base manual.
+## - no-copyright-file / no-debian-copyright-in-source: ships no debian/copyright by design.
+## - font-in-non-font-package / font-outside-font-dir: the webfonts are bundle assets served
+##   next to the HTML, not system fonts belonging in /usr/share/fonts.
+## - source-contains-prebuilt-javascript-object: the minified JS is intended generated output.
+## - debian-watch-file-is-missing: content is generated from the wiki; there is no upstream tarball.
+## - initial-upload-closes-no-bugs: internal package, no ITP bug to close.
+genmkfile_lintian_post_opts+=" --suppress-tags possible-documentation-but-no-doc-base-registration,no-copyright-file,no-debian-copyright-in-source,font-in-non-font-package,font-outside-font-dir,source-contains-prebuilt-javascript-object,debian-watch-file-is-missing,initial-upload-closes-no-bugs"
