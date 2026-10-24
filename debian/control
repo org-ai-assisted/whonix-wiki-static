@@ -1,0 +1,20 @@
+Source: whonix-wiki-static
+Section: doc
+Priority: optional
+Maintainer: Patrick Schleizer <adrelanos@whonix.org>
+Build-Depends: debhelper-compat (= 13)
+Homepage: https://www.whonix.org/wiki
+Vcs-Browser: https://github.com/org-ai-assisted/whonix-wiki-static
+Vcs-Git: https://github.com/org-ai-assisted/whonix-wiki-static.git
+Standards-Version: 4.7.2
+Rules-Requires-Root: no
+
+Package: whonix-wiki-static
+Architecture: all
+Depends: ${misc:Depends},
+Description: offline static copy of the Whonix wiki
+ The complete Whonix wiki rendered as self-contained static HTML/CSS/JS by
+ mw-static-generator: no PHP, no database, no server-side logic at serve time,
+ strict Content-Security-Policy, separate CSS/JS with no inline. Installed under
+ /usr/share/doc/homepage/ for offline reading; the same tree is reusable to host
+ the site online from a web server.

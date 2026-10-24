@@ -1,0 +1,7 @@
+#!/bin/bash
+
+## Suppress lintian tags expected for this package:
+## - possible-documentation-but-no-doc-base-registration: the HTML under
+##   /usr/share/doc is an offline-wiki bundle, not a doc-base manual.
+## - no-copyright-file: this package intentionally ships no debian/copyright.
+genmkfile_lintian_post_opts+=" --suppress-tags possible-documentation-but-no-doc-base-registration,no-copyright-file"

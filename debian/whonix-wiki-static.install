@@ -1,0 +1,19 @@
+## Map the flat servable tree (repo root) into the FHS offline-doc location.
+## The root stays flat so it ALSO serves as the GitHub Pages / dist-encrypted
+## tree; only the site payload is shipped (repo-meta -- debian/, README,
+## make-helper-overrides.bsh, openpgp-policy.toml, dotfiles -- is excluded).
+*.html usr/share/doc/homepage/whonix-wiki-static/
+*.js usr/share/doc/homepage/whonix-wiki-static/
+*.css usr/share/doc/homepage/whonix-wiki-static/
+*.json usr/share/doc/homepage/whonix-wiki-static/
+*.png usr/share/doc/homepage/whonix-wiki-static/
+*.svg usr/share/doc/homepage/whonix-wiki-static/
+*.ico usr/share/doc/homepage/whonix-wiki-static/
+*.webmanifest usr/share/doc/homepage/whonix-wiki-static/
+robots.txt usr/share/doc/homepage/whonix-wiki-static/
+_headers usr/share/doc/homepage/whonix-wiki-static/
+wiki usr/share/doc/homepage/whonix-wiki-static/
+media usr/share/doc/homepage/whonix-wiki-static/
+fontawesome usr/share/doc/homepage/whonix-wiki-static/
+fonts usr/share/doc/homepage/whonix-wiki-static/
+libs usr/share/doc/homepage/whonix-wiki-static/
