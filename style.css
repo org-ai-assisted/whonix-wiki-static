@@ -508,10 +508,13 @@ body.site-whonix .site-logo-img { width: auto; }
   }
 }
 @media (max-width: 480px) {
-  /* The 2-col grid floor is 2 x minmax(12rem) + 1rem gap ~= 400px; below that the grid
-     overflows the fixed left:8/right:8 box (~374px on a 390px phone) and pushes the share
-     panel's rightmost social icon past the right edge. Collapse to one column on phones. */
-  .tools-menu { grid-template-columns: 1fr; }
+  /* Keep Page | Tools as TWO columns (so the menu stays short, not a long vertical stack with a
+     wasted right half) but let them SHRINK to fit the fixed left:8/right:8 phone box: the overflow
+     (clipped share icon) came from the 12rem column FLOOR making the grid ~400px wide, NOT from
+     having 2 columns. minmax(0,1fr) lets each column drop below its content's ideal width (long
+     labels wrap), so the grid equals the box width and the full-width share panel spans it exactly
+     -- no social icon is pushed past the edge. */
+  .tools-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.2rem 0.6rem; }
 }
 /* Printable view: strip all chrome, print the article only (the supermenu Print action). */
 @media print {
