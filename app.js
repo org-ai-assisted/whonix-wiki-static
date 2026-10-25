@@ -1005,6 +1005,10 @@
       return previewsLoading;
     }
     var card = null, hideTimer = null, showTimer = null;
+    // Every [n] citation in document order -> the prev/next buttons in a reference card step
+    // through all of them. curRef is the one currently shown.
+    var refList = [].slice.call(content.querySelectorAll("sup.reference a[href^='#']"));
+    var curRef = -1;
     function ensure() {
       if (card) return card;
       card = el("div", "hovercard");
@@ -1045,6 +1049,33 @@
       var box = el("div", "hovercard-ref");
       for (var j = 0; j < out.length; j++) box.appendChild(out[j]);
       return [box];
+    }
+    // The prev/next footnote navigator that lives INSIDE a reference card.
+    function navFor(idx) {
+      var nav = el("div", "hovercard-nav");
+      var prev = el("button", "hovercard-navbtn", String.fromCharCode(0x25C0));  // left-pointing triangle
+      var pos = el("span", "hovercard-pos", (idx + 1) + " / " + refList.length);
+      var next = el("button", "hovercard-navbtn", String.fromCharCode(0x25B6));  // right-pointing triangle
+      prev.type = next.type = "button";
+      prev.setAttribute("aria-label", "Previous footnote");
+      next.setAttribute("aria-label", "Next footnote");
+      prev.addEventListener("click", function () { clearTimeout(hideTimer); showRef((idx - 1 + refList.length) % refList.length); });
+      next.addEventListener("click", function () { clearTimeout(hideTimer); showRef((idx + 1) % refList.length); });
+      nav.appendChild(prev); nav.appendChild(pos); nav.appendChild(next);
+      return nav;
+    }
+    // Show reference `idx` in the card. `anchor` is passed only on the first hover -> position the
+    // card near that citation; the prev/next buttons omit it, so the card flips content IN PLACE
+    // (you keep your spot). The card keeps itself open on mouseenter, so you can move into it to
+    // scroll, select/copy, or follow links; moving the pointer away dismisses it.
+    function showRef(idx, anchor) {
+      var nodes = refNodes(refList[idx]);
+      if (!nodes) return;
+      curRef = idx;
+      if (refList.length > 1) nodes.push(navFor(idx));
+      fill(nodes);
+      card.hidden = false;
+      if (anchor) place(anchor);
     }
     function pageNodes(a) {
       var idx = previews;
@@ -1088,8 +1119,15 @@
       var a = e.target.closest && e.target.closest("a");
       if (!a || !content.contains(a)) return;
       hovered = a;
-      // Citations read the DOM -- synchronous, no fetch.
-      if (a.closest("sup.reference")) { scheduleCard(refNodes(a), a); return; }
+      // Citations read the DOM -- synchronous, no fetch. A reference card carries the prev/next
+      // navigator (browse all notes in place); a citation not in the list falls back to a plain card.
+      if (a.closest("sup.reference")) {
+        var ri = refList.indexOf(a);
+        if (ri === -1) { scheduleCard(refNodes(a), a); return; }
+        clearTimeout(showTimer);
+        showTimer = setTimeout(function () { ensure(); showRef(ri, a); }, 200);
+        return;
+      }
       // Page previews need the index: fetch it once (memoized), then show only if the pointer is
       // still on this link. Once loaded the promise resolves on a microtask, so later hovers are
       // immediate; the first hover before the fetch lands just shows the native title= instead.
