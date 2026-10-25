@@ -839,6 +839,16 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 .wiki-content h4 { font-size: 16px; font-weight: 700; }
 .wiki-content h5 { font-size: 15px; font-weight: 700; }
 .wiki-content h6 { font-size: 13px; font-weight: 700; }
+/* Heading-level clamp (page.py normalize_heading_levels) moves a skipped heading's semantic
+   <hN> tag to keep the outline contiguous; `hvis{authored}` pins the VISUAL back to the AUTHORED
+   level so appearance is unchanged. Higher specificity (2 classes) than the bare hN rules above.
+   h3-6 also clear the h1/h2 underline, since the authored (deeper) level never had one. */
+.wiki-content .hvis1 { font-size: 26px; font-weight: 400; }
+.wiki-content .hvis2 { font-size: 18px; font-weight: 400; }
+.wiki-content .hvis3 { font-size: 17px; font-weight: 400; border-bottom: none; padding-bottom: 0; }
+.wiki-content .hvis4 { font-size: 16px; font-weight: 700; border-bottom: none; padding-bottom: 0; }
+.wiki-content .hvis5 { font-size: 15px; font-weight: 700; border-bottom: none; padding-bottom: 0; }
+.wiki-content .hvis6 { font-size: 13px; font-weight: 700; border-bottom: none; padding-bottom: 0; }
 /* A widget-embedded heading may wrap its text in a block <p> (leftrightimagetext inner pass);
    keep it inline so the appended edit/share affordances stay on the heading line (the generator
    also unwraps it -- this guards any stray case). */
@@ -1245,7 +1255,7 @@ code:empty { display: none; }
 /* ---- tables (self-scrolling: generator emits no wrapper) ---- */
 /* pandoc drops the `class="wikitable"`, so content tables arrive as bare <table>;
    style ALL content tables (not the TOC or the storage viewer, which own their look). */
-.wiki-content table:not(.toc):not(.storage-table) {
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-vpn) {
   display: block;
   width: max-content;
   max-width: 100%;
@@ -1255,21 +1265,21 @@ code:empty { display: none; }
   font-size: 0.95rem;
   border: 1px solid color-mix(in srgb, var(--border) 60%, var(--fg) 40%);
 }
-.wiki-content table:not(.toc):not(.storage-table) th,
-.wiki-content table:not(.toc):not(.storage-table) td {
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-vpn) th,
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-vpn) td {
   border: 1px solid color-mix(in srgb, var(--border) 60%, var(--fg) 40%);
   padding: 0.5rem 0.75rem;
   text-align: left;
   vertical-align: top;
 }
-.wiki-content table:not(.toc):not(.storage-table) th {
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-vpn) th {
   background: color-mix(in srgb, var(--surface) 70%, var(--fg) 12%);
   font-weight: 700;
   border-bottom-width: 2px;
 }
 /* zebra: explicit .odd/.even hooks and an nth-child fallback */
-.wiki-content table:not(.toc):not(.storage-table) tr.even td,
-.wiki-content table:not(.toc):not(.storage-table) tbody tr:nth-child(even) td {
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-vpn) tr.even td,
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-vpn) tbody tr:nth-child(even) td {
   background: color-mix(in srgb, var(--surface) 55%, var(--bg));
 }
 .table-wrap { overflow-x: auto; }
@@ -1327,7 +1337,11 @@ code:empty { display: none; }
 }
 
 /* ---- callouts / notice boxes ---- */
+/* flow-root gives each box its own block-formatting-context so a preceding
+   .thumb.tright (float:right) sibling sits BESIDE it instead of the full-width
+   box sliding under the float. Matches how the intro box wraps beside a thumb. */
 .mbox, .info-box, .community-support-info {
+  display: flow-root;
   margin: 1.25rem 0;
   padding: 0.75rem 1rem;
   border: 1px solid var(--border-soft);
@@ -1355,7 +1369,7 @@ code:empty { display: none; }
   padding: 5px 21px 15px;
 }
 .info-box.has-icon {
-  display: block; position: relative; padding-left: 55px;
+  display: flow-root; position: relative; padding-left: 55px;
 }
 .info-box-icon {
   position: absolute; left: 12px; top: 9px; margin: 0;
@@ -1621,7 +1635,10 @@ code:empty { display: none; }
 .tab-content-controller.mininav-ready .tcc-image { display: none; }
 
 /* ---- collapsibles: native <details>, collapses with no JS ---- */
+/* flow-root: own BFC so a right-floated .thumb.tright sibling sits beside the
+   box rather than overlapping it (same float-containment fix as notice boxes). */
 .mw-collapsible, .toccolours {
+  display: flow-root;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   margin: 1rem 0;
@@ -2015,6 +2032,10 @@ sup.reference:target {
 .share-tooltip .menu-wrapper { display: none; position: absolute; left: 0;
   top: calc(100% + 0.3rem); z-index: 40; }
 .share-tooltip:hover .menu-wrapper, .share-tooltip:focus-within .menu-wrapper { display: block; }
+/* Tap/click opens a PERSISTENT state (app.js .share-open) -- a mobile tap does not hold :hover or
+   :focus-within, so without this the menu never stays open on a phone. Same positioning as hover
+   (absolute; the max-width:440px block below makes it the centered fixed overlay on phones). */
+.share-tooltip.share-open .menu-wrapper { display: block; }
 /* An authored illustration (Figure: Share Button) shows the menu OPEN inline -- a static page
    has no hover, so flow the menu in place rather than floating it. */
 .share-tooltip.is-open .menu-wrapper { display: block; position: static; margin-top: 0.3rem; }
@@ -2151,6 +2172,199 @@ sup.reference:target {
   :root:not([data-theme="light"]) .cmp-yes { color: #5cc95c; }
   :root:not([data-theme="light"]) .cmp-no { color: #ff6b5e; }
 }
+/* VPN comparison card (prod .section-competition table): borderless, centered,
+   3px cell gaps; the Whonix (2nd) column gets a pale fill + a rounded blue frame
+   (left/right borders on every cell, a top border+radius on the header cell and a
+   bottom border+radius on the last cell). tables.py re-tags the table (pandoc drops
+   the wikitable class) so the generic table rules above opt out via :not(.comparison-vpn). */
+.comparison-vpn {
+  border-collapse: separate;
+  border-spacing: 3px;
+  margin: 1.25rem auto;
+  background: transparent;
+}
+.comparison-vpn th,
+.comparison-vpn td {
+  padding: 12px 20px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 19px;
+  font-weight: 400;
+  border: 1px solid transparent;
+  background: #fff;
+  color: #202122;
+}
+@media (max-width: 480px) {
+  .comparison-vpn th,
+  .comparison-vpn td { padding: 8px 6px; font-size: 15px; }
+}
+.comparison-vpn tr:first-child th { font-weight: 700; }
+/* feature column: left-aligned labels */
+.comparison-vpn td:first-child,
+.comparison-vpn th:first-child { text-align: left; }
+/* neutralize pandoc's per-cell <p> margins */
+.comparison-vpn td p,
+.comparison-vpn th p { margin: 0; }
+/* Whonix column (2nd): pale fill + blue side borders */
+.comparison-vpn th:nth-child(2),
+.comparison-vpn td:nth-child(2) {
+  background: #f7f7ff;
+  border-left: 1px solid #007bff;
+  border-right: 1px solid #007bff;
+}
+/* top of the frame: header cell rounds + top border */
+.comparison-vpn tr:first-child th:nth-child(2) {
+  border-top: 1px solid #007bff;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+/* bottom of the frame: last cell rounds + bottom border */
+.comparison-vpn tr:last-child td:nth-child(2),
+.comparison-vpn tr:last-child th:nth-child(2) {
+  border-bottom: 1px solid #007bff;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+/* dark mode: keep the blue frame, swap the pale fill for a theme surface tint */
+:root[data-theme="dark"] .comparison-vpn th,
+:root[data-theme="dark"] .comparison-vpn td {
+  background: var(--surface);
+  color: var(--fg);
+}
+:root[data-theme="dark"] .comparison-vpn th:nth-child(2),
+:root[data-theme="dark"] .comparison-vpn td:nth-child(2) {
+  background: color-mix(in srgb, #007bff 14%, var(--surface));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .comparison-vpn th,
+  :root:not([data-theme="light"]) .comparison-vpn td {
+    background: var(--surface);
+    color: var(--fg);
+  }
+  :root:not([data-theme="light"]) .comparison-vpn th:nth-child(2),
+  :root:not([data-theme="light"]) .comparison-vpn td:nth-child(2) {
+    background: color-mix(in srgb, #007bff 14%, var(--surface));
+  }
+}
+/* ---- homepage download OS-card band (prod .section-download.dark-section) ---- */
+/* Full-bleed dark band (negative side margins pull it to viewport edges) holding a
+   centered flex grid of rounded OS cards; the card image keeps a square ratio via a
+   padding-top spacer + absolutely-positioned object-fit:contain <img>; hover scales the
+   card. The ISO card stacks a "Coming Soon" image over its icon. Values from prod. */
+.dark-section {
+  background: #273445;
+  color: #fff;
+  text-align: center;
+  padding: 24px 0 31px;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+.dark-section > .inner-wrapper {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+.dark-section > .inner-wrapper p { color: #fff; }
+.section-download .col-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1rem;
+}
+.section-download .col-container > div { width: 40%; margin: 0.5%; }
+@media (min-width: 560px) { .section-download .col-container > div { width: 22%; } }
+@media (min-width: 768px) { .section-download .col-container > div { width: 14%; } }
+@media (min-width: 960px) { .section-download .col-container > div { width: 12%; } }
+/* pandoc wraps each card's <a> in a <p>; descendant selectors + a zeroed <p> margin keep
+   the card compact regardless of that wrapper. */
+.section-download .col-container > div p { margin: 0; }
+.section-download .col-container > div a {
+  background: #3c495a;
+  display: block;
+  width: 90%;
+  margin: 0 auto;
+  border-radius: 20px;
+  text-decoration: none;
+  padding: 1px;
+  vertical-align: top;
+  transition: transform 0.3s;
+}
+.section-download .col-container > div a:hover { transform: scale(1.1); }
+.section-download .col-container > div a > span:last-child {
+  display: block;
+  margin-top: 10px;
+  padding-bottom: 6px;
+  color: #fff;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.section-download .image-wrapper {
+  display: block;
+  width: 100%;
+  position: relative;
+  padding-top: 40%;
+}
+.section-download .image-wrapper img.image {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  object-fit: contain;
+}
+/* ---- homepage hero video-preview widget (prod .overview-image-and-video-player) ---- */
+/* 16:9 poster frame: a blurred SVG placeholder under the hero image, with a play-button
+   pseudo-element that fades in while the frame scales up slightly on hover. Pure-CSS,
+   link-only (no <video>/JS); hover is driven off .overview-image directly (no checkbox).
+   The play symbol (prod Play-symbol-v2.svg) is inlined as a data: URI -- img-src 'self'
+   data: allows it, and CSS url()s are not asset-rewritten at deploy. */
+.overview-image-and-video-player {
+  width: 100%;
+  max-width: 934px;
+  margin: 1.5rem auto 0;
+  padding-top: 56.25%;
+  position: relative;
+}
+.overview-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: hidden;
+  z-index: 5;
+  transition: opacity 0.5s, transform 0.5s;
+}
+.overview-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+}
+.overview-image img.overview-image-preview { filter: blur(1.2vmax); }
+.overview-image::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg%20width%3D%22100mm%22%20height%3D%22100mm%22%20version%3D%221.1%22%20viewBox%3D%220%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20transform%3D%22matrix%28.82066%200%200%20.82066%20-43.279%20-23.487%29%22%3E%3Ccircle%20cx%3D%22113.66%22%20cy%3D%2289.546%22%20r%3D%2254.697%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-linecap%3D%22square%22%20stroke-linejoin%3D%22round%22%20stroke-miterlimit%3D%223%22%20stroke-width%3D%2212.459%22%20style%3D%22paint-order%3Afill%20markers%20stroke%22%2F%3E%3Cpath%20d%3D%22m94.081%20113.72%200.02952-48.868c0-2.5229%203.3616-3.8537%205.4539-2.6457l44.73%2024.507c2.5742%201.5579%202.0791%204.9963%200.24847%205.9539l-44.918%2024.127c-3.2132%201.731-5.6051%200.0743-5.5447-3.0736z%22%20fill%3D%22%23fff%22%20fill-rule%3D%22evenodd%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  background-position: 50% center;
+  background-size: 28% auto;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.overview-image:hover { transform: scale(1.01); }
+.overview-image:hover::after { opacity: 1; }
 /* Status icon/text colors rescued from inline color: by sanitize (strict CSP strips the
    inline style) -- {{Check-yes}} green check, {{Check-no}} red cross, {{Check-todo}} orange
    clock. Dark-mode gets brighter variants for contrast. */

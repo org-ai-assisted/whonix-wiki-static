@@ -505,6 +505,90 @@
     return "";
   }
 
+  // ---- Full-text search primitives: MIRROR mwstatic/search_index.py byte-for-byte. The shared
+  // fixture tests/js-tests + mwstatic/tests/fixtures/search-parity.json gate both languages, so a
+  // drift here fails its test lane. Tokens are reduced to ASCII [a-z0-9], the ONE class JS and
+  // Python match identically (JS \w is not Unicode even under /u), so lower-casing and the FNV-1a
+  // math agree with no Unicode-class or UTF-8 divergence. ----
+  var SEARCH_STOPWORDS = (
+    "all also an and any are as at be been but by can com day did do for from get go had has " +
+    "have he her here him his how http https if in into is it its man may me more my new no not " +
+    "now of old on one only or org other our out see so some such than that the their them then " +
+    "there they this to too two up us use was we were what when which who will with would www " +
+    "you your").split(" ").reduce(function (s, w) { s[w] = 1; return s; }, Object.create(null));
+  function tokenize(text) {
+    var m = String(text).toLowerCase().match(/[a-z0-9]+/g);
+    if (!m) return [];
+    var out = [];
+    for (var i = 0; i < m.length; i++) {
+      if (m[i].length > 1 && !SEARCH_STOPWORDS[m[i]]) out.push(m[i]);
+    }
+    return out;
+  }
+  function ftHash(term) {              // FNV-1a 32-bit over the term's bytes (ASCII == char codes)
+    var h = 0x811c9dc5;
+    for (var i = 0; i < term.length; i++) {
+      h ^= term.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+    return h >>> 0;
+  }
+  function ftBucket(term, buckets) { return ftHash(term) % buckets; }
+  function pad3(n) { return ("00" + n).slice(-3); }            // shard basename (0..511 -> "000")
+  function undelta(deltas) {                                   // delta-coded positions -> absolute
+    var out = [], acc = 0;
+    for (var i = 0; i < deltas.length; i++) { acc += deltas[i]; out.push(acc); }
+    return out;
+  }
+  // Reward query terms that occur ADJACENT (in query order) in a page body -- a phrase/proximity
+  // hit. +1.5 per adjacent query-term pair whose positions are consecutive somewhere in the body.
+  function proximityBonus(positionsPerTerm) {
+    if (positionsPerTerm.length < 2) return 0;
+    var bonus = 0;
+    for (var k = 0; k < positionsPerTerm.length - 1; k++) {
+      var a = positionsPerTerm[k], next = positionsPerTerm[k + 1], set = {};
+      for (var i = 0; i < next.length; i++) set[next[i]] = 1;
+      for (var j = 0; j < a.length; j++) { if (set[a[j] + 1]) { bonus += 1.5; break; } }
+    }
+    return bonus;
+  }
+  // BM25 over the AND-intersection of posting lists, plus a title boost and the proximity bonus.
+  // `lists[t]` is the posting list for query term t: [[pageId, titleTf, deltaPositions], ...].
+  // Returns [[pageId, score], ...] sorted by score desc (pageId tie-break for determinism).
+  function scoreBM25(manifest, terms, lists) {
+    var k1 = 1.2, b = 0.75;
+    var n = manifest.docs || 1, avgdl = manifest.avgdl || 1, dl = manifest.dl || [];
+    var maps = lists.map(function (pl) {
+      var m = {};
+      for (var i = 0; i < pl.length; i++) m[pl[i][0]] = pl[i];
+      return m;
+    });
+    var shortest = 0;                        // intersect by scanning the rarest term's list
+    for (var i = 1; i < lists.length; i++) {
+      if (lists[i].length < lists[shortest].length) shortest = i;
+    }
+    var out = [];
+    var cand = lists[shortest];
+    for (var c = 0; c < cand.length; c++) {
+      var id = cand[c][0], ok = true, score = 0, positionsPerTerm = [];
+      for (var t = 0; t < maps.length; t++) {
+        var post = maps[t][id];
+        if (!post) { ok = false; break; }        // not in every term's list -> fails AND
+        var titleTf = post[1], tf = post[2].length, df = lists[t].length;
+        var idf = Math.log(1 + (n - df + 0.5) / (df + 0.5));
+        var docLen = dl[id] || avgdl;
+        score += idf * (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * docLen / avgdl));
+        score += idf * titleTf * 2;              // a title occurrence weighs strongly
+        positionsPerTerm.push(undelta(post[2]));
+      }
+      if (!ok) continue;
+      score += proximityBonus(positionsPerTerm);
+      out.push([id, score]);
+    }
+    out.sort(function (x, y) { return y[1] - x[1] || x[0] - y[0]; });
+    return out;
+  }
+
   function initSearch() {
     var input = document.getElementById("search-input");
     if (!input) return;
@@ -528,6 +612,78 @@
       return loading;
     }
     input.addEventListener("focus", ensureIndex);   // prime before the first keystroke
+    // Full-text index: a tiny manifest (buckets, doc stats, per-shard content hash) fetched once,
+    // then only the one or two small shards a query's terms HASH to -- never the whole index, so
+    // cost stays flat as the wiki grows. Both fetches are same-origin (connect-src 'self'), inert
+    // JSON, memoized single-flight, and degrade to null on absence so title search still works.
+    var manifest = null, manifestLoading = null;
+    function ensureManifest() {
+      if (!manifestLoading) {
+        manifestLoading = loadJSON(carrierHref("mw-fulltext-manifest")).then(function (d) {
+          manifest = d;
+          return d;
+        });
+      }
+      return manifestLoading;
+    }
+    var shardCache = {};                    // shard basename -> single-flight fetch promise
+    function ensureShard(man, term) {
+      var name = pad3(ftBucket(term, man.buckets));
+      var h = man.sh && man.sh[name];
+      if (!h) return Promise.resolve(null); // empty bucket: no shard emitted -> no fetch, no 404
+      if (!shardCache[name]) {
+        shardCache[name] = loadJSON(root + man.base + name + ".json?h=" + h);
+      }
+      return shardCache[name];
+    }
+    function appendResult(e) {              // TT-safe: textContent + setAttribute only, no HTML-string sink
+      var li = document.createElement("li");
+      var a = document.createElement("a");
+      a.setAttribute("href", root + e.u);
+      a.textContent = e.t;
+      li.appendChild(a);
+      results.appendChild(li);
+    }
+    // The open field is an ABSOLUTE overlay; anchor the panel just below its rendered box (CSSOM
+    // .style is not gated by style-src -- CSP-safe, same as the bottom-stack spacer).
+    function positionPanel() {
+      if (!results.hidden) results.style.top = (input.offsetTop + input.offsetHeight + 4) + "px";
+    }
+    // Monotonic query id: an async shard batch that resolves after a newer keystroke is dropped.
+    var queryGen = 0;
+    // Augment the (already rendered) title hits with body matches the title scan missed. Appends
+    // BM25-ranked body-only pages after the title hits, up to the 20 cap. Skipped for a
+    // namespace-qualified query (that path stays title-only, main namespace).
+    function fullText(q, gen, shownIds, shownCount) {
+      ensureManifest().then(function (man) {
+        if (!man || gen !== queryGen) return;
+        var terms = [], seen = Object.create(null);   // null-proto: a term "constructor" etc. must not hit Object.prototype
+        tokenize(q).forEach(function (t) { if (!seen[t]) { seen[t] = 1; terms.push(t); } });
+        if (!terms.length) return;
+        Promise.all(terms.map(function (t) { return ensureShard(man, t); })).then(function (objs) {
+          if (gen !== queryGen) return;
+          var lists = [];
+          for (var i = 0; i < terms.length; i++) {
+            // Own-property guard: a shard is a JSON object, so objs[i]["constructor"] would
+            // otherwise resolve to an Object.prototype member and corrupt the posting list.
+            var pl = (objs[i] && Object.prototype.hasOwnProperty.call(objs[i], terms[i]))
+              ? objs[i][terms[i]] : null;
+            if (!pl) return;              // AND semantics: a missing term -> no full-text hits
+            lists.push(pl);
+          }
+          var ranked = scoreBM25(man, terms, lists), added = 0;
+          for (var j = 0; j < ranked.length && shownCount < 20; j++) {
+            var id = ranked[j][0], e = index[id];
+            if (shownIds[id] || !e || e.n) continue;   // already shown, or (defensively) namespaced
+            appendResult(e);
+            shownIds[id] = 1;
+            shownCount++;
+            added++;
+          }
+          if (added) { results.hidden = false; positionPanel(); }
+        });
+      });
+    }
     // A namespaced page (n:1, e.g. "Template:Foo") is a candidate only for a query that
     // TARGETS its namespace: the text before the query's first colon must equal the page's
     // namespace. A plain query (no colon) stays in the main namespace. So "template:" surfaces
@@ -561,29 +717,25 @@
       // Render after the index resolves (a microtask once loaded); before then, no-op.
       ensureIndex().then(function () {
         var q = input.value.trim().toLowerCase();
+        var gen = ++queryGen;
         while (results.firstChild) results.removeChild(results.firstChild);
         if (q.length < 2) { results.hidden = true; return; }
-        var shown = 0;
+        // Title pass (instant, no extra fetch): substring title matches, tracked by pageId so the
+        // full-text pass never double-lists a page.
+        var shownIds = {}, shown = 0;
         for (var i = 0; i < index.length && shown < 20; i++) {
           var e = index[i];
           if (!nsEligible(e, q)) continue;   // namespaced page: only for its own namespace query
           if (e.t.toLowerCase().indexOf(q) === -1) continue;
-          var li = document.createElement("li");
-          var a = document.createElement("a");
-          a.setAttribute("href", root + e.u);
-          a.textContent = e.t;
-          li.appendChild(a);
-          results.appendChild(li);
+          appendResult(e);
+          shownIds[i] = 1;
           shown++;
         }
         results.hidden = shown === 0;
-        // The open field is an ABSOLUTE overlay at top:calc(100%+0.3rem); the results share
-        // its offsetParent (.site-search), so anchor the panel just BELOW the field's rendered
-        // box rather than at the ul's static top (which overlapped the field). CSSOM .style is
-        // not gated by style-src, so this is CSP-safe (same as the bottom-stack spacer).
-        if (!results.hidden) {
-          results.style.top = (input.offsetTop + input.offsetHeight + 4) + "px";
-        }
+        positionPanel();
+        // Full-text pass (async, appended when the on-demand shards arrive). A namespace-qualified
+        // query stays title-only -- its body words would wrongly surface main-namespace pages.
+        if (q.indexOf(":") === -1) fullText(q, gen, shownIds, shown);
       });
     });
     // No <form> (CSP form-action 'none'), so Enter is inert by default: navigate to the
@@ -600,7 +752,13 @@
       var q = input.value.trim().toLowerCase();
       if (q.length < 2) return;   // empty query matches everything via indexOf("")
       ensureIndex().then(function () {
+        // Prefer an exact/substring TITLE match; else fall back to the top rendered row (which may
+        // be a body-only full-text hit) so Enter is never inert while results are on screen.
         var href = bestMatch(q);
+        if (href === null) {
+          var firstLink = results.querySelector("li a");
+          if (firstLink) href = firstLink.getAttribute("href");
+        }
         if (href !== null) window.location.assign(href);
       });
     });
@@ -611,9 +769,18 @@
     var toggle = document.getElementById("search-toggle");
     var box = input.closest(".site-search");
     function closeSearch() {
+      // Bump queryGen so a still-in-flight full-text shard batch cannot REOPEN the panel we are
+      // closing (its gen !== queryGen guard then drops it).
+      queryGen++;
       if (toggle) toggle.checked = false;
       results.hidden = true;
       while (results.firstChild) results.removeChild(results.firstChild);
+    }
+    // The magnifier is a pure-CSS :checked toggle; a USER unchecking it fires 'change' (a
+    // programmatic closeSearch does not), so FULLY close here -- hide + clear the results, not
+    // just bump queryGen, else the dropdown lingers visible after the search box collapses.
+    if (toggle) {
+      toggle.addEventListener("change", function () { if (!toggle.checked) closeSearch(); });
     }
     document.addEventListener("click", function (e) {
       if (toggle && !toggle.checked && results.hidden) return;
@@ -1481,26 +1648,55 @@
   }
 
   // Per-heading share menus are server-rendered into an inert <template class="share-full">
-  // (NOT in the render tree -> zero style/layout, and never queried at load). Move one into its
-  // live .menu on the first PRESS or focus of that heading's share button, then wire its copy
-  // buttons. This keeps the full per-section social+copy menu for JS users while the initial
-  // RENDERED DOM stays ~500 elements (it was ~3881 on ISO -- the 29 full heading menus dominated
-  // mobile Style & Layout / TBT); no-JS / Tor-Safest users keep the static permalink. ONE
-  // delegated listener pair -> ~zero load-time JS, and nothing is built for headings nobody opens.
+  // (NOT in the render tree -> zero style/layout, and never queried at load). On first press or
+  // focus of a heading's share button the template is moved into its live .menu; a tap/click then
+  // TOGGLES a persistent .share-open. The toggle is essential on touch: the menu is otherwise
+  // shown only by CSS :hover/:focus-within, which a mobile tap does not hold, so without it the
+  // menu never stays open on a phone. This keeps the full per-section social+copy menu for JS
+  // users while the initial RENDERED DOM stays ~500 elements (it was ~3881 on ISO -- the 29 full
+  // heading menus dominated mobile Style & Layout / TBT); no-JS / Tor-Safest users keep the static
+  // permalink. Delegated listeners -> ~zero load-time JS, nothing built for headings nobody opens.
   function initShareLazy() {
     function activate(tip) {
       var tmpl = tip.querySelector("template.share-full");
-      if (!tmpl) return;                                   // page-level/footer/open menus: no template
-      tmpl.parentNode.insertBefore(tmpl.content, tmpl);    // move the inert nodes into the live menu
+      if (!tmpl) return;                                   // footer/page/authored menus: no template
+      var menu = tmpl.parentNode;
+      // The template's full menu RE-INCLUDES the permalink, so drop the pre-rendered no-JS
+      // permalink (every node before the template) -- else it would show twice once injected.
+      while (menu.firstChild && menu.firstChild !== tmpl) menu.removeChild(menu.firstChild);
+      menu.insertBefore(tmpl.content, tmpl);               // move the inert nodes into the live menu
       tmpl.remove();
       initCopyButtons();                                   // idempotent: wires only the new .code-select
     }
-    function onPress(e) {
+    function closeAll(except) {
+      var open = document.querySelectorAll(".share-tooltip.share-open");
+      for (var i = 0; i < open.length; i++) if (open[i] !== except) open[i].classList.remove("share-open");
+    }
+    // Prime: inject the full menu on first press/focus so :hover and :focus-within reveal it.
+    function onPrime(e) {
       var el = e.target;
       if (el && el.closest) { var tip = el.closest(".share-tooltip"); if (tip) activate(tip); }
     }
-    document.addEventListener("pointerdown", onPress);     // press (mouse/touch/pen)
-    document.addEventListener("focusin", onPress);         // keyboard focus into the share button
+    // Toggle the persistent open state on tap/click. preventDefault stops the anchor's #id jump so
+    // the tap opens the menu instead of scrolling the page. Authored (is_open) demo figures have
+    // no .headline-anchor toggle target here but stay open via their own .is-open -- untouched.
+    function onToggle(e) {
+      var a = e.target && e.target.closest ? e.target.closest(".headline-anchor") : null;
+      var tip = a && a.closest(".share-tooltip");
+      if (!tip) return;                                    // clicks inside the menu fall through
+      e.preventDefault();
+      activate(tip);
+      var open = !tip.classList.contains("share-open");
+      closeAll(tip);
+      if (open) tip.classList.add("share-open"); else tip.classList.remove("share-open");
+    }
+    document.addEventListener("pointerdown", onPrime);     // prime on press (mouse/touch/pen)
+    document.addEventListener("focusin", onPrime);         // prime on keyboard focus
+    document.addEventListener("click", onToggle);          // toggle persistent open on tap/click
+    document.addEventListener("pointerdown", function (e) {   // dismiss on an outside press
+      if (!(e.target && e.target.closest && e.target.closest(".share-tooltip"))) closeAll(null);
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeAll(null); });
   }
 
   ready(function () {
@@ -1541,4 +1737,12 @@
       initShareLazy();
     });
   });
+
+  // Test-support: expose the pure, side-effect-free search primitives so the js-test lane can
+  // assert app.js's OWN tokenizer/hash against the shared parity fixture (the cross-language gate)
+  // and unit-test the scorer directly. No DOM, network, or secret surface.
+  window.mwSearch = {
+    tokenize: tokenize, ftHash: ftHash, ftBucket: ftBucket,
+    stopwords: SEARCH_STOPWORDS, score: scoreBM25
+  };
 })();
