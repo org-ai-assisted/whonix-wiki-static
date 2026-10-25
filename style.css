@@ -2802,11 +2802,12 @@ html.client-js .show-for-nojs-only { display: none; }
 
 /* End-of-year donation banner (sitenotice-end-of-year) -- shown when built with
    MW_STATIC_EOY; reuses the crypto panel. Ported from Sitenotice.css section 4. */
-/* Match prod's EOY banner box exactly. Prod: 936px border-box, padding:25px all sides => 886px
-   content box => .eoy-left calc(100% - 330px) = 556px wide. The 25px top/bottom padding plus the
-   12px/9px vertical margins reproduce prod's header->banner (28px) and banner->title (25px) gaps;
-   a 960px/no-padding/no-margin box overshot the width to 630px and collapsed both gaps to 16px. */
-.sitenotice-banner.sitenotice-end-of-year { width: 100%; max-width: 936px; padding: 25px; margin: 4px auto 9px; display: block; text-align: left; }
+/* Match prod's EOY banner box: 936px border-box, padding:25px all sides => 886px content box
+   => .eoy-left calc(100% - 330px) = 556px wide. The 25px padding is the box's OWN interior; the
+   header->banner and banner->content GAPS live solely on #siteNotice (shared by every variant),
+   so NO top margin here -- a per-variant top margin is exactly what made the EOY vs default gap
+   diverge and flip-flop. Only the horizontal auto-centering and a small bottom margin remain. */
+.sitenotice-banner.sitenotice-end-of-year { width: 100%; max-width: 936px; padding: 25px; margin: 0 auto 9px; display: block; text-align: left; }
 .sitenotice-end-of-year > * { display: inline-block; vertical-align: top; }
 .sitenotice-end-of-year > .eoy-left { width: calc(100% - 330px); margin-right: 20px; }
 .sitenotice-end-of-year > .eoy-right { width: 100%; max-width: 300px; }
