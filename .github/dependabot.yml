@@ -1,0 +1,7 @@
+version: 2
+updates:
+  # Track bumps for the SHA-pinned GitHub Actions in the Pages deploy workflow.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

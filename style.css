@@ -1021,6 +1021,12 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
 }
 .code-select, .code-select > *:not(.cbutton) { cursor: copy; }
 .code-select:hover { border-color: var(--border-soft); background: var(--surface-2); }
+/* Clipboard-hijack DEMO (Shell, Dev/wiki): text hidden from sight but present in the DOM, so a
+   copy grabs more than is shown. A class (not an inline style, which strict-CSP strips) keeps the
+   demo working on the static site. Only meaningful inside the demo's .code-select box. */
+.clipboard-trap-hidden {
+  position: absolute; opacity: 0; width: 1px; height: 1em; display: inline-block; overflow: hidden;
+}
 /* Loaded state is overflow:visible so the absolute tooltip above the box is not clipped;
    that removes the base state's internal scroll, so a long unbreakable token (e.g. a direct
    link URL) would push the box past its max-width:100% and overflow a phone. overflow-wrap:
@@ -1255,7 +1261,7 @@ code:empty { display: none; }
 /* ---- tables (self-scrolling: generator emits no wrapper) ---- */
 /* pandoc drops the `class="wikitable"`, so content tables arrive as bare <table>;
    style ALL content tables (not the TOC or the storage viewer, which own their look). */
-.wiki-content table:not(.toc):not(.storage-table):not(.comparison-vpn) {
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-table) {
   display: block;
   width: max-content;
   max-width: 100%;
@@ -1265,21 +1271,21 @@ code:empty { display: none; }
   font-size: 0.95rem;
   border: 1px solid color-mix(in srgb, var(--border) 60%, var(--fg) 40%);
 }
-.wiki-content table:not(.toc):not(.storage-table):not(.comparison-vpn) th,
-.wiki-content table:not(.toc):not(.storage-table):not(.comparison-vpn) td {
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-table) th,
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-table) td {
   border: 1px solid color-mix(in srgb, var(--border) 60%, var(--fg) 40%);
   padding: 0.5rem 0.75rem;
   text-align: left;
   vertical-align: top;
 }
-.wiki-content table:not(.toc):not(.storage-table):not(.comparison-vpn) th {
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-table) th {
   background: color-mix(in srgb, var(--surface) 70%, var(--fg) 12%);
   font-weight: 700;
   border-bottom-width: 2px;
 }
 /* zebra: explicit .odd/.even hooks and an nth-child fallback */
-.wiki-content table:not(.toc):not(.storage-table):not(.comparison-vpn) tr.even td,
-.wiki-content table:not(.toc):not(.storage-table):not(.comparison-vpn) tbody tr:nth-child(even) td {
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-table) tr.even td,
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-table) tbody tr:nth-child(even) td {
   background: color-mix(in srgb, var(--surface) 55%, var(--bg));
 }
 .table-wrap { overflow-x: auto; }
@@ -2029,8 +2035,10 @@ sup.reference:target {
   min-width: 24px; min-height: 24px; vertical-align: middle;
 }
 .share-tooltip .headline-anchor:hover { color: var(--link); text-decoration: none; }
-.share-tooltip .menu-wrapper { display: none; position: absolute; left: 0;
-  top: calc(100% + 0.3rem); z-index: 40; }
+/* Centered under the button; top:100% + padding-top (not a top offset) so the 0.3rem visual gap
+   is INSIDE the hovered wrapper -- no dead zone where the pointer leaves :hover moving button->menu. */
+.share-tooltip .menu-wrapper { display: none; position: absolute; left: 50%;
+  top: 100%; transform: translateX(-50%); padding-top: 0.3rem; z-index: 40; }
 .share-tooltip:hover .menu-wrapper, .share-tooltip:focus-within .menu-wrapper { display: block; }
 /* Tap/click opens a PERSISTENT state (app.js .share-open) -- a mobile tap does not hold :hover or
    :focus-within, so without this the menu never stays open on a phone. Same positioning as hover
@@ -2041,6 +2049,7 @@ sup.reference:target {
 .share-tooltip.is-open .menu-wrapper { display: block; position: static; margin-top: 0.3rem; }
 /* production ShareTooltip.css: a white, centered menu (not the surface/left-aligned one) */
 .share-tooltip .menu { display: block; width: 315px; max-width: calc(100vw - 10px);
+  max-height: min(70vh, 34rem); overflow-y: auto;
   padding: 10px; font-size: 13px; font-weight: normal; text-align: center;
   background: #fff; color: #333; border: 1px solid #eee;
   border-radius: 10px; box-shadow: 1px 1px 3px rgb(0 0 0 / 20%); }
@@ -2049,7 +2058,7 @@ sup.reference:target {
 }
 /* keep the menu on-screen on phones (ShareTooltip.css overflow handling) */
 @media (max-width: 800px) {
-  .share-tooltip .menu-wrapper { left: auto; right: 0; }
+  .share-tooltip .menu-wrapper { left: auto; right: 0; transform: none; }
 }
 @media (max-width: 440px) {
   /* Center the fixed 315px menu on phones. Right-pinning (right:5px) left a wide gap on the
@@ -2176,15 +2185,15 @@ sup.reference:target {
    3px cell gaps; the Whonix (2nd) column gets a pale fill + a rounded blue frame
    (left/right borders on every cell, a top border+radius on the header cell and a
    bottom border+radius on the last cell). tables.py re-tags the table (pandoc drops
-   the wikitable class) so the generic table rules above opt out via :not(.comparison-vpn). */
-.comparison-vpn {
+   the wikitable class) so the generic table rules above opt out via :not(.comparison-table). */
+.comparison-table {
   border-collapse: separate;
   border-spacing: 3px;
   margin: 1.25rem auto;
   background: transparent;
 }
-.comparison-vpn th,
-.comparison-vpn td {
+.comparison-table th,
+.comparison-table td {
   padding: 12px 20px;
   text-align: center;
   vertical-align: middle;
@@ -2195,54 +2204,54 @@ sup.reference:target {
   color: #202122;
 }
 @media (max-width: 480px) {
-  .comparison-vpn th,
-  .comparison-vpn td { padding: 8px 6px; font-size: 15px; }
+  .comparison-table th,
+  .comparison-table td { padding: 8px 6px; font-size: 15px; }
 }
-.comparison-vpn tr:first-child th { font-weight: 700; }
+.comparison-table tr:first-child th { font-weight: 700; }
 /* feature column: left-aligned labels */
-.comparison-vpn td:first-child,
-.comparison-vpn th:first-child { text-align: left; }
+.comparison-table td:first-child,
+.comparison-table th:first-child { text-align: left; }
 /* neutralize pandoc's per-cell <p> margins */
-.comparison-vpn td p,
-.comparison-vpn th p { margin: 0; }
+.comparison-table td p,
+.comparison-table th p { margin: 0; }
 /* Whonix column (2nd): pale fill + blue side borders */
-.comparison-vpn th:nth-child(2),
-.comparison-vpn td:nth-child(2) {
+.comparison-table th:nth-child(2),
+.comparison-table td:nth-child(2) {
   background: #f7f7ff;
   border-left: 1px solid #007bff;
   border-right: 1px solid #007bff;
 }
 /* top of the frame: header cell rounds + top border */
-.comparison-vpn tr:first-child th:nth-child(2) {
+.comparison-table tr:first-child th:nth-child(2) {
   border-top: 1px solid #007bff;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
 /* bottom of the frame: last cell rounds + bottom border */
-.comparison-vpn tr:last-child td:nth-child(2),
-.comparison-vpn tr:last-child th:nth-child(2) {
+.comparison-table tr:last-child td:nth-child(2),
+.comparison-table tr:last-child th:nth-child(2) {
   border-bottom: 1px solid #007bff;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }
 /* dark mode: keep the blue frame, swap the pale fill for a theme surface tint */
-:root[data-theme="dark"] .comparison-vpn th,
-:root[data-theme="dark"] .comparison-vpn td {
+:root[data-theme="dark"] .comparison-table th,
+:root[data-theme="dark"] .comparison-table td {
   background: var(--surface);
   color: var(--fg);
 }
-:root[data-theme="dark"] .comparison-vpn th:nth-child(2),
-:root[data-theme="dark"] .comparison-vpn td:nth-child(2) {
+:root[data-theme="dark"] .comparison-table th:nth-child(2),
+:root[data-theme="dark"] .comparison-table td:nth-child(2) {
   background: color-mix(in srgb, #007bff 14%, var(--surface));
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .comparison-vpn th,
-  :root:not([data-theme="light"]) .comparison-vpn td {
+  :root:not([data-theme="light"]) .comparison-table th,
+  :root:not([data-theme="light"]) .comparison-table td {
     background: var(--surface);
     color: var(--fg);
   }
-  :root:not([data-theme="light"]) .comparison-vpn th:nth-child(2),
-  :root:not([data-theme="light"]) .comparison-vpn td:nth-child(2) {
+  :root:not([data-theme="light"]) .comparison-table th:nth-child(2),
+  :root:not([data-theme="light"]) .comparison-table td:nth-child(2) {
     background: color-mix(in srgb, #007bff 14%, var(--surface));
   }
 }

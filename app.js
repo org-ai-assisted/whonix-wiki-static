@@ -1648,11 +1648,13 @@
   }
 
   // Per-heading share menus are server-rendered into an inert <template class="share-full">
-  // (NOT in the render tree -> zero style/layout, and never queried at load). On first press or
-  // focus of a heading's share button the template is moved into its live .menu; a tap/click then
-  // TOGGLES a persistent .share-open. The toggle is essential on touch: the menu is otherwise
-  // shown only by CSS :hover/:focus-within, which a mobile tap does not hold, so without it the
-  // menu never stays open on a phone. This keeps the full per-section social+copy menu for JS
+  // (NOT in the render tree -> zero style/layout, and never queried at load). On first HOVER,
+  // press or focus of a heading's share button the template is moved into its live .menu, so CSS
+  // :hover/:focus-within then reveals the FULL menu with no click (desktop hover + keyboard). A
+  // tap/click additionally TOGGLES a persistent .share-open, essential on touch: a tap holds
+  // neither :hover nor :focus-within, so without it the menu never stays open on a phone. Same
+  // code on every platform (no UA branching) -- the browser decides which events fire. This keeps
+  // the full per-section social+copy menu for JS
   // users while the initial RENDERED DOM stays ~500 elements (it was ~3881 on ISO -- the 29 full
   // heading menus dominated mobile Style & Layout / TBT); no-JS / Tor-Safest users keep the static
   // permalink. Delegated listeners -> ~zero load-time JS, nothing built for headings nobody opens.
@@ -1690,9 +1692,10 @@
       closeAll(tip);
       if (open) tip.classList.add("share-open"); else tip.classList.remove("share-open");
     }
-    document.addEventListener("pointerdown", onPrime);     // prime on press (mouse/touch/pen)
-    document.addEventListener("focusin", onPrime);         // prime on keyboard focus
-    document.addEventListener("click", onToggle);          // toggle persistent open on tap/click
+    document.addEventListener("pointerover", onPrime);     // prime on HOVER -> desktop hover reveals the FULL menu, no click
+    document.addEventListener("pointerdown", onPrime);     // prime on press (touch/pen may skip hover)
+    document.addEventListener("focusin", onPrime);         // prime on keyboard/tap focus
+    document.addEventListener("click", onToggle);          // reliable tap toggle (touch has no hover to hold it open)
     document.addEventListener("pointerdown", function (e) {   // dismiss on an outside press
       if (!(e.target && e.target.closest && e.target.closest(".share-tooltip"))) closeAll(null);
     });

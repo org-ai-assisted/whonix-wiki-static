@@ -1,0 +1,5 @@
+# W-008 carve-out: pages.yml:deploy is the stage-repo GitHub Pages publisher. It runs only in the
+# stage org (guarded: repository_owner != org-ai-assisted) to publish the built site; it is not
+# org-ai-assisted CI, so the org CI switch (CI_ENABLED_ORG_AI_ASSISTED) does not apply.
+owner-gate-exempt:
+  ".github/workflows/pages.yml:deploy": "Stage-repo Pages publisher; runs only in the stage org (not the org-ai-assisted mirror), outside the org CI switch."
