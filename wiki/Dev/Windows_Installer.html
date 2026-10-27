@@ -26,7 +26,7 @@
 <meta name="theme-color" content="#ffffff">
 <link rel="mw-search-index" href="../../search-index.min.json?h=ec6453ea">
 <link rel="mw-page-previews" href="../../page-previews.min.json?h=aa83cb68">
-<link rel="mw-fulltext-manifest" href="../../search/fulltext-manifest.min.json?h=4f099a61">
+<link rel="mw-fulltext-manifest" href="../../search/fulltext-manifest.min.json?h=b30f9576">
 <script>(function(){try{var d=document.documentElement,L=localStorage,t=L.getItem('theme');d.classList.add('client-js');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))d.setAttribute('data-theme','dark');if(L.getItem('legal-agreement-banner-dismissed')==='1')d.classList.add('legal-ack-hidden');if(L.getItem('stage-notice-dismissed')==='1')d.classList.add('stage-notice-hidden');var s=d.getAttribute('data-sn-id');if(s&&L.getItem('sitenotice-dismissed')===s)d.classList.add('sitenotice-hidden');}catch(e){}})();</script>
 <link rel="preload" as="image" fetchpriority="high" href="../../media/WhonixSetupVersionInfo.png.webp?h=07da4329" imagesrcset="../../media/thumb/WhonixSetupVersionInfo.png-160.webp?h=07da4329 160w, ../../media/thumb/WhonixSetupVersionInfo.png-240.webp?h=07da4329 240w, ../../media/thumb/WhonixSetupVersionInfo.png-360.webp?h=07da4329 360w, ../../media/WhonixSetupVersionInfo.png.webp?h=07da4329 455w" imagesizes="(max-width: 220px) 100vw, 220px">
 </head>
@@ -486,7 +486,7 @@ Application.ProcessMessages[/url]</span><span class="desc">Copy as phpBB</span><
 <p>In <code>WhonixUtils.pas</code>, <code>Execute</code> uses
 <code>Sleep</code> and <code>Application.ProcessMessages</code> in a
 loop, which can lead to a blocking UI:</p>
-<pre lang="pascal"><code>
+<pre><code>
 repeat
   Sleep(100);
   Application.ProcessMessages;
@@ -508,7 +508,7 @@ not be freed properly in case of an exception, especially in
 <code>FormCreate</code> and <code>InstallationBuildIn</code>.</p>
 <p><strong>Solution:</strong> Use try-finally blocks to ensure that
 resources are properly freed:</p>
-<pre lang="pascal"><code>
+<pre><code>
 ResourceStream := TResourceStream.Create(HInstance, 'LICENSE', RT_RCDATA);
 try
   MemoLicense.Lines.LoadFromStream(ResourceStream);

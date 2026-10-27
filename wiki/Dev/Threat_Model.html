@@ -26,7 +26,7 @@
 <meta name="theme-color" content="#ffffff">
 <link rel="mw-search-index" href="../../search-index.min.json?h=ec6453ea">
 <link rel="mw-page-previews" href="../../page-previews.min.json?h=aa83cb68">
-<link rel="mw-fulltext-manifest" href="../../search/fulltext-manifest.min.json?h=4f099a61">
+<link rel="mw-fulltext-manifest" href="../../search/fulltext-manifest.min.json?h=b30f9576">
 <script>(function(){try{var d=document.documentElement,L=localStorage,t=L.getItem('theme');d.classList.add('client-js');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))d.setAttribute('data-theme','dark');if(L.getItem('legal-agreement-banner-dismissed')==='1')d.classList.add('legal-ack-hidden');if(L.getItem('stage-notice-dismissed')==='1')d.classList.add('stage-notice-hidden');var s=d.getAttribute('data-sn-id');if(s&&L.getItem('sitenotice-dismissed')===s)d.classList.add('sitenotice-hidden');}catch(e){}})();</script>
 <link rel="preload" as="image" fetchpriority="high" href="../../media/Flyin-donate-promo.jpg.webp?h=aa8079fb">
 </head>
@@ -73,72 +73,82 @@ document are to be interpreted as described in <a href="https://www.ietf.org/rfc
 <p>First, let us quickly consider all the possible threats we could
 face. We can categorize threats against computer systems into five
 categories:</p>
-<dl>
-<dt>1. <strong>Non-technical/non-computer-based and legal
-attacks</strong></dt>
-
-</dl>
-<p>:* Examples include:</p>
-<p>::* "Rubber hose cryptanalysis"</p>
-<p>::* Mandatory key disclosure</p>
-<p>::* Subpoenas</p>
-<p>::* Real detective work/espionage (done by real humans, not bots)</p>
-<p>::* Bugs</p>
-<p>::* Surveillance cameras</p>
-<dl>
-<dt>2. <strong>Hardware attacks through physical access</strong></dt>
-
-</dl>
-<p>:* Examples include:</p>
-<p>::* RAM and hard disk forensics</p>
-<p>::* Keyloggers</p>
-<p>::* TEMPEST</p>
-<p>::* Evil Maid attacks</p>
-<dl>
-<dt>3. <strong>Backdoors</strong></dt>
-
-</dl>
-<p>:* Intentional weaknesses or additional hidden "functionality"
-inserted into your system by a manufacturer, vendor, or distributor
-(hardware or software), allowing remote access<sup>1</sup>.</p>
-<p>:* These can be introduced anywhere from:</p>
-<p>::* Design/source code</p>
-<p>::* Manufacturing/compilation</p>
-<p>::* Distribution</p>
-<dl>
-<dt>;* Learn more about
+<ul>
+<li><strong>1. Non-technical/non-computer-based and legal
+attacks</strong>
+<ul>
+<li>Examples include:
+<ul>
+<li>"Rubber hose cryptanalysis"</li>
+<li>Mandatory key disclosure</li>
+<li>Subpoenas</li>
+<li>Real detective work/espionage (done by real humans, not bots)</li>
+<li>Bugs</li>
+<li>Surveillance cameras</li>
+</ul></li>
+</ul></li>
+</ul>
+<ul>
+<li><strong>2. Hardware attacks through physical access</strong>
+<ul>
+<li>Examples include:
+<ul>
+<li>RAM and hard disk forensics</li>
+<li>Keyloggers</li>
+<li>TEMPEST</li>
+<li>Evil Maid attacks</li>
+</ul></li>
+</ul></li>
+</ul>
+<ul>
+<li><strong>3. Backdoors</strong>
+<ul>
+<li>Intentional weaknesses or additional hidden "functionality" inserted
+into your system by a manufacturer, vendor, or distributor (hardware or
+software), allowing remote access<sup>1</sup>.</li>
+<li>These can be introduced anywhere from:
+<ul>
+<li>Design/source code</li>
+<li>Manufacturing/compilation</li>
+<li>Distribution</li>
+<li>Learn more about
 <a href="https://www.kicksecure.com/wiki/Malware_and_Firmware_Trojans#Backdoors"><img src="../../media/Kicksecure-wiki-link-icon.png.webp?h=bfb13876" width="50" height="50" alt="Kicksecure logo" class="kicksecure-wiki-link-icon" loading="lazy" decoding="async" /></a>
-Backdoors.</dt>
-
-</dl>
-<dl>
-<dt>4. <strong>Vulnerabilities</strong></dt>
-
-</dl>
-<p>:* Coding or hardware design errors that can be exploited to gain
-remote access.<sup id="cite_ref-1" class="reference"><a href="#cite_note-1"><span class="cite-bracket">[</span>1<span class="cite-bracket">]</span></a></sup></p>
-<p>:* In practice, vulnerabilities and backdoors can appear identical;
-only their methods of creation differ.</p>
-<dl>
-<dt>5. <strong>Design flaws</strong></dt>
-
-</dl>
-<p>:* Even in a system free of backdoors and errors, with perfect
-physical and legal protection (which does not exist in reality),
-achieving perfect security may still be elusive.</p>
-<p>:* This is particularly true for anonymity systems.</p>
-<p>::* While perfect cryptographic design exists (the one-time pad),
-anonymity is not binary.</p>
-<p>::* You are not simply anonymous or not; you possess some non-zero
-but imperfect degree of anonymity.</p>
-<p>::* Your anonymity hinges on blending in with others.</p>
-<p>::* Anonymity networks necessitate trust and a sizable, diverse user
-base.</p>
-<p>::* A perfectly secure system would not rely on trust in others or on
-such external factors.</p>
-<p>::* Every complex (yet still usable) system design (all computer
-systems are complex) involves trade-offs. That is why the majority
-employ imperfect cryptography instead of the one-time pad...</p>
+Backdoors.</li>
+</ul></li>
+</ul></li>
+</ul>
+<ul>
+<li><strong>4. Vulnerabilities</strong>
+<ul>
+<li>Coding or hardware design errors that can be exploited to gain
+remote access.<sup id="cite_ref-1" class="reference"><a href="#cite_note-1"><span class="cite-bracket">[</span>1<span class="cite-bracket">]</span></a></sup></li>
+<li>In practice, vulnerabilities and backdoors can appear identical;
+only their methods of creation differ.</li>
+</ul></li>
+</ul>
+<ul>
+<li><strong>5. Design flaws</strong>
+<ul>
+<li>Even in a system free of backdoors and errors, with perfect physical
+and legal protection (which does not exist in reality), achieving
+perfect security may still be elusive.</li>
+<li>This is particularly true for anonymity systems.
+<ul>
+<li>While perfect cryptographic design exists (the one-time pad),
+anonymity is not binary.</li>
+<li>You are not simply anonymous or not; you possess some non-zero but
+imperfect degree of anonymity.</li>
+<li>Your anonymity hinges on blending in with others.</li>
+<li>Anonymity networks necessitate trust and a sizable, diverse user
+base.</li>
+<li>A perfectly secure system would not rely on trust in others or on
+such external factors.</li>
+<li>Every complex (yet still usable) system design (all computer systems
+are complex) involves trade-offs. That is why the majority employ
+imperfect cryptography instead of the one-time pad...</li>
+</ul></li>
+</ul></li>
+</ul>
 <p>Lastly, it is worth noting that the bug mentioned in <a href="https://gitlab.torproject.org/legacy/trac/-/issues/5928">Research:
 IP discovery through Tor behind isolated network</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://gitlab.torproject.org/legacy/trac/-/issues/5928" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.png" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup> seems to primarily
 concern determining the IP address a Tor client uses to connect to the

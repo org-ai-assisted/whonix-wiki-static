@@ -29,7 +29,7 @@
 <meta name="theme-color" content="#ffffff">
 <link rel="mw-search-index" href="../search-index.min.json?h=ec6453ea">
 <link rel="mw-page-previews" href="../page-previews.min.json?h=aa83cb68">
-<link rel="mw-fulltext-manifest" href="../search/fulltext-manifest.min.json?h=4f099a61">
+<link rel="mw-fulltext-manifest" href="../search/fulltext-manifest.min.json?h=b30f9576">
 <script>(function(){try{var d=document.documentElement,L=localStorage,t=L.getItem('theme');d.classList.add('client-js');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))d.setAttribute('data-theme','dark');if(L.getItem('legal-agreement-banner-dismissed')==='1')d.classList.add('legal-ack-hidden');if(L.getItem('stage-notice-dismissed')==='1')d.classList.add('stage-notice-hidden');var s=d.getAttribute('data-sn-id');if(s&&L.getItem('sitenotice-dismissed')===s)d.classList.add('sitenotice-hidden');}catch(e){}})();</script>
 <link rel="preload" as="image" fetchpriority="high" href="../media/Accessgateway.jpg.webp?h=21e61715" imagesrcset="../media/thumb/Accessgateway.jpg-160.webp?h=21e61715 160w, ../media/thumb/Accessgateway.jpg-240.webp?h=21e61715 240w, ../media/thumb/Accessgateway.jpg-360.webp?h=21e61715 360w, ../media/Accessgateway.jpg.webp?h=21e61715 640w" imagesizes="(max-width: 220px) 100vw, 220px">
 </head>
@@ -197,7 +197,7 @@ following steps.</p>
 <p><u>If you are using a terminal Whonix-Gateway</u>, click
 <span class="mw-customtoggle-myDivision"><u><code>HERE</code></u></span>
 for instructions.</p>
-<details class="mw-collapsible" id="mw-customcollapsible-myDivision"><summary><span class="mwc-toggle"><span class="mwc-more">Learn More</span><span class="mwc-less">Show Less</span></span>Complete the following steps. Reload Tor. <span class="code-select" data-code="sudo systemctl reload tor@default.service">sudo systemctl reload tor@default.service</span> Check Tor's daemon status. <span class="code-select" data-code="sudo systemctl status tor@default.service">sudo systemctl status tor@default.service</span> It should include a a message saying.</summary><pre><code>
+<details class="mw-collapsible"><summary><span class="mwc-toggle"><span class="mwc-more">Learn More</span><span class="mwc-less">Show Less</span></span>Complete the following steps. Reload Tor. <span class="code-select" data-code="sudo systemctl reload tor@default.service">sudo systemctl reload tor@default.service</span> Check Tor's daemon status. <span class="code-select" data-code="sudo systemctl status tor@default.service">sudo systemctl status tor@default.service</span> It should include a a message saying.</summary><pre><code>
 Active: active (running) since ...
 </code></pre>
 In case of issues, try the following debugging steps. Check Tor's config. <span class="code-select" data-code="sudo -u debian-tor tor --verify-config">sudo -u debian-tor tor --verify-config</span> The output should be similar to the following.
