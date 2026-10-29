@@ -130,6 +130,8 @@
         var wrap = document.createElement("span");
         var vp = document.createElement("span");
         vp.className = "viewport";
+        // focusable so keyboard users can scroll the horizontal overflow
+        vp.setAttribute("tabindex", "0");
         var code = document.createElement("span");
         code.className = "code";
         code.textContent = text;

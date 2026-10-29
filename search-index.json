@@ -2070,8 +2070,33 @@
   },
   {
     "n": 1,
+    "t": "File:Download-arm64.jpg",
+    "u": "wiki/File:Download-arm64.jpg"
+  },
+  {
+    "n": 1,
     "t": "File:Download-button-438937640.png",
     "u": "wiki/File:Download-button-438937640.png"
+  },
+  {
+    "n": 1,
+    "t": "File:Download-issues.png",
+    "u": "wiki/File:Download-issues.png"
+  },
+  {
+    "n": 1,
+    "t": "File:Download-ppc64.jpg",
+    "u": "wiki/File:Download-ppc64.jpg"
+  },
+  {
+    "n": 1,
+    "t": "File:Download-raspberrypi.jpg",
+    "u": "wiki/File:Download-raspberrypi.jpg"
+  },
+  {
+    "n": 1,
+    "t": "File:Download-riscv64.jpg",
+    "u": "wiki/File:Download-riscv64.jpg"
   },
   {
     "n": 1,
@@ -4327,6 +4352,11 @@
     "n": 1,
     "t": "File:Sepa-lastschrift-vector-logo.png",
     "u": "wiki/File:Sepa-lastschrift-vector-logo.png"
+  },
+  {
+    "n": 1,
+    "t": "File:Shared Folder.png",
+    "u": "wiki/File:Shared_Folder.png"
   },
   {
     "n": 1,
@@ -9075,11 +9105,6 @@
     "n": 1,
     "t": "Template:SitenoticeBanner",
     "u": "wiki/Template:SitenoticeBanner"
-  },
-  {
-    "n": 1,
-    "t": "Template:SitenoticeBannerEndOfYear",
-    "u": "wiki/Template:SitenoticeBannerEndOfYear"
   },
   {
     "n": 1,
