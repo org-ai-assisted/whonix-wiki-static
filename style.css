@@ -2106,14 +2106,22 @@ sup.reference:target {
 /* No-JS social confirmation: the brand icon is a <details> <summary>; clicking it reveals the
    destination URL + an explicit Open link, so the icon never auto-connects (privacy; works at
    Tor Browser Safest with JS off). */
-.share-social .share-confirm { display: flex; flex-direction: column; align-items: center; }
+.share-social .share-confirm { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+/* An OPENED social confirmation spans the full menu row so its revealed panel is bounded by the
+   menu width -- otherwise the <details> (a flex item) grows to the long share URL's intrinsic
+   width (~1300px), breaking the panel out of the menu: the URL overflows horizontally, the
+   "Open in X" link is pushed off-screen, and the icon row spills onto the page (mobile). */
+.share-social .share-confirm[open] { width: 100%; }
 .share-social summary.share-icon { list-style: none; cursor: pointer; }
 .share-social summary.share-icon::-webkit-details-marker { display: none; }
 .share-social summary.share-icon::marker { content: ""; }
 .share-open-panel {
   display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.35rem; width: 100%;
+  min-width: 0; max-width: 100%;
 }
-.share-open-panel .code-select { font-size: 0.8rem; word-break: break-all; }
+/* The long URL scrolls inside the code-select viewport (overflow-x:auto) rather than widening the
+   panel: min-width:0 lets the flex item shrink below its pre-wrapped content so the viewport clips. */
+.share-open-panel .code-select { font-size: 0.8rem; word-break: break-all; min-width: 0; max-width: 100%; }
 .share-open {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
   padding: 0.4rem 0.7rem; border-radius: var(--radius-sm);
