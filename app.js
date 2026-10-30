@@ -229,6 +229,27 @@
     }
   }
 
+  // "Compare more features": the generator ships the extra comparison rows visible with the
+  // toggle control hidden (no-JS reader sees every row). On load, reveal the control and collapse
+  // the extras; the button toggles .cmp-collapsed on the table + its own aria-expanded.
+  function initComparisonMore() {
+    var btns = document.querySelectorAll(".comparison-table .cmp-more-btn");
+    for (var i = 0; i < btns.length; i++) {
+      (function (btn) {
+        var table = btn.closest(".comparison-table");
+        var row = btn.closest(".cmp-more-ctrl");
+        if (!table || !row) return;
+        row.hidden = false;
+        table.classList.add("cmp-collapsed");
+        btn.setAttribute("aria-expanded", "false");
+        btn.addEventListener("click", function () {
+          var collapsed = table.classList.toggle("cmp-collapsed");
+          btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+        });
+      })(btns[i]);
+    }
+  }
+
   // Open a collapsible <details> when the URL fragment targets it (or an element inside it),
   // so an in-page anchor to a closed box reveals its content instead of landing on a shut box.
   // Runs on load + hashchange. TT-safe: only sets .open.
@@ -1241,8 +1262,12 @@
       var nodes = refNodes(refList[idx]);
       if (!nodes) return;
       curRef = idx;
-      if (refList.length > 1) nodes.push(navFor(idx));
-      fill(nodes);
+      // Headline + prev/next navigator go at the TOP (prepended), above the note text. The
+      // headline number is the citation's visible label ([1] -> "1", [g 1] -> "g 1").
+      var num = (refList[idx].textContent || "").replace(/[\[\]]/g, "").trim();
+      var head = [el("div", "hovercard-title", "Footnote " + num)];
+      if (refList.length > 1) head.push(navFor(idx));
+      fill(head.concat(nodes));
       card.hidden = false;
       if (anchor) place(anchor);
     }
@@ -1309,6 +1334,16 @@
     }
     content.addEventListener("mouseover", onEnter);
     content.addEventListener("mouseout", function () { hovered = null; clearTimeout(showTimer); hideSoon(); });
+    // While a reference card is open, Left/Right arrows step through the footnotes in place
+    // (same wrap as the prev/next buttons); Escape dismisses any open card. Gated on a reference
+    // card being shown (.hovercard-ref present) so arrows never hijack a page-preview card.
+    document.addEventListener("keydown", function (e) {
+      if (!card || card.hidden) return;
+      if (e.key === "Escape") { card.hidden = true; return; }
+      if (curRef < 0 || refList.length < 2 || !card.querySelector(".hovercard-ref")) return;
+      if (e.key === "ArrowLeft") { e.preventDefault(); clearTimeout(hideTimer); showRef((curRef - 1 + refList.length) % refList.length); }
+      else if (e.key === "ArrowRight") { e.preventDefault(); clearTimeout(hideTimer); showRef((curRef + 1) % refList.length); }
+    });
   }
 
   // Browser-storage viewer (the Special:BrowserStorage page): list what this site
@@ -1729,6 +1764,7 @@
       initDataCopy();
       initPagePrint();
       initExpandCollapseAll();
+      initComparisonMore();
       initBackToTop();
       initSearch();
       initFlyin();

@@ -40,7 +40,7 @@
   --border-soft: #e6e9ec;
   --code-bg: #f3f4f6;
   --pre-bg: #dddddd;
-  --pre-fg: #636363;
+  --pre-fg: #595959;   /* >=4.5:1 on --pre-bg for color-contrast AA (code-block text) */
 
   /* interaction */
   /* --link must clear BOTH axe audits, so it is a balance:
@@ -188,6 +188,16 @@ body {
 .cv-section.cv-h1200 { contain-intrinsic-size: auto 1200px; }
 .cv-section.cv-h2400 { contain-intrinsic-size: auto 2400px; }
 .cv-section.cv-h4800 { contain-intrinsic-size: auto 4800px; }
+/* A section's content-visibility containment also PAINT-CLIPS it and makes it its own stacking
+   context. An open share menu is absolutely positioned at the heading and overflows below the
+   section box, so it was truncated at the next heading (clipped by this section) and under-painted
+   by the following section; measuring the subtree on open also snapped its height, shifting the
+   page. Drop the containment on a section whose share menu is open (hover, keyboard focus, or the
+   click-persistent .share-open) so the popup overflows and overlays normally and the real height
+   is used. */
+.cv-section:has(.share-tooltip:hover),
+.cv-section:has(.share-tooltip:focus-within),
+.cv-section:has(.share-tooltip.share-open) { content-visibility: visible; }
 /* video shares img's responsive treatment: max-width stops a fixed width= attr overflowing a
    phone, and height:auto preserves the intrinsic aspect ratio once the cap binds. Applied
    uniformly, exactly like img (height:auto regardless of a height attr) -- a video with a
@@ -974,7 +984,10 @@ blockquote.quotation .blockquote-context > a:has(img.author-image) {
   grid-column: 1; grid-row: 1 / span 3; align-self: center; display: block;
 }
 blockquote.quotation .blockquote-context img.author-image {
-  height: 40px; width: 40px; object-fit: cover; border-radius: 50%; display: block;
+  /* no circular crop: a round 40x40 cover-fit cut off parts of the author's face. Show the whole
+     image at its natural aspect ratio, bounded, like production. */
+  max-height: 80px; max-width: 80px; height: auto; width: auto;
+  object-fit: contain; display: block; border-radius: 4px;
 }
 blockquote.quotation .blockquote-context:has(img.author-image) .nm,
 blockquote.quotation .blockquote-context:has(img.author-image) .rl,
@@ -1338,6 +1351,16 @@ code:empty { display: none; }
    affordance) so a link -- e.g. a citation marker landing in a Yes/No cell -- meets contrast in
    both themes. */
 .wiki-content table:not(.toc):not(.storage-table) :is(td, th):is(.cell-green, .cell-red, .cell-yellow, .cell-blue, .cell-gray) a {
+  color: currentColor;
+  text-decoration: underline;
+}
+/* Links on the other tinted in-content surfaces that the --link blue cannot reach 4.5:1 on: a
+   plain <th> header cell (bg ~#d6d7d9 -> #1d70b8 ~3.6:1) and an info-box callout (the callout
+   tint stacks on a NESTED info-box, darkening past the ~surface the --link is tuned to). Inherit
+   the surface's --fg text colour (high contrast) and keep the underline, the same treatment as the
+   status cells above and the in-cell citations (:is(td,th) .reference a) below. */
+.wiki-content table:not(.toc):not(.storage-table) th a,
+.wiki-content .info-box a {
   color: currentColor;
   text-decoration: underline;
 }
@@ -2171,8 +2194,11 @@ sup.reference:target {
 .info-tooltip:hover > span, .info-tooltip:focus-within > span { display: block; }
 /* comparison Yes/No cells (green check / red cross). Unscoped: pandoc drops the
    wikitable's own class, so these are keyed on the inline span classes that survive. */
+/* verdict cells are now colored circle images (True/False/5050.png); keep these for any
+   legacy text use, and size the icons. */
 .cmp-yes { color: #157f15; font-weight: 600; white-space: nowrap; }
 .cmp-no { color: #c0392b; font-weight: 600; white-space: nowrap; }
+.cmp-icon { height: 30px; width: auto; vertical-align: middle; }
 /* dark mode: the darker light-mode green/red fail WCAG AA contrast on the dark cell bg
    (and the old #1a8a1a green was already ~4.48:1 on white, under AA) -- lighten for dark. */
 :root[data-theme="dark"] .cmp-yes { color: #5cc95c; }
@@ -2255,6 +2281,51 @@ sup.reference:target {
     background: color-mix(in srgb, #007bff 14%, var(--surface));
   }
 }
+/* "Compare more features" collapsible. app.js reveals the control row and adds .cmp-collapsed on
+   load; with JS off the control stays hidden (its `hidden` attr) and every row shows. */
+.comparison-table.cmp-collapsed tr.cmp-extra { display: none; }
+/* control-row cells keep the normal comparison-table framing (so column 2's blue frame stays
+   continuous); the two value columns show a muted "..." placeholder. */
+.comparison-table .cmp-more-dots { color: var(--muted); letter-spacing: 2px; }
+.comparison-table .cmp-more-btn {
+  font: inherit; color: var(--accent); background: none; border: 0; cursor: pointer;
+  padding: 0.3rem 0.6rem; min-height: 30px;
+}
+.comparison-table .cmp-more-btn:hover { text-decoration: underline; }
+.comparison-table .cmp-more-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.comparison-table .cmp-more-btn::after { content: " \25BC"; font-size: 0.8em; }
+.comparison-table .cmp-more-btn[aria-expanded="true"]::after { content: " \25B2"; }
+/* Call-to-action button (prod blue "Download Whonix now!" style). */
+.cta-button {
+  display: inline-block; background: #1c75d6; color: #fff; padding: 0.5rem 1.1rem;
+  border-radius: 6px; font-weight: 600; text-decoration: none; line-height: 1.25;
+}
+.cta-button:hover, .cta-button:focus { filter: brightness(1.08); color: #fff; text-decoration: none; }
+/* Comparison table's bottom CTA row: the two side cells are blank (no fill/border), so only the
+   centered button cell shows, and the column-2 frame bottom-rounds at it (as production does). */
+.comparison-table tr:last-child td:first-child,
+.comparison-table tr:last-child td:last-child { background: transparent; border-color: transparent; }
+/* "Learn More" box (prod .learn-more-vpns): a bordered, centered panel below the table. */
+.learn-more-vpns {
+  border: 1px solid var(--border, #ccc); border-radius: 6px; padding: 0.6rem 1rem;
+  margin: 1rem auto; text-align: center; max-width: 960px;
+}
+/* Homepage "explainer" box (prod .explainer): tinted panel, lead line + green-check items. */
+.explainer {
+  background: var(--surface-2, #ececec);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  /* hug the content width (centered), not the full column -- prod's box fits its text. */
+  width: fit-content;
+  max-width: 100%;
+  margin: 1.25rem auto;
+  line-height: 1.9;
+}
+.explainer p { margin: 0; }
+.explainer-check { vertical-align: middle; margin-right: 0.35rem; position: relative; top: -1px; }
+/* Homepage: section headings are centered (prod), unlike article headings. Scoped to .page-home
+   (the Whonix/Kicksecure homepage body class) so article headings stay left-aligned. */
+.page-home .wiki-content h2 { text-align: center; }
 /* ---- homepage download OS-card band (prod .section-download.dark-section) ---- */
 /* Full-bleed dark band (negative side margins pull it to viewport edges) holding a
    centered flex grid of rounded OS cards; the card image keeps a square ratio via a
@@ -2273,7 +2344,9 @@ sup.reference:target {
 .dark-section > .inner-wrapper {
   max-width: 960px;
   margin: 0 auto;
-  padding: 0 16px;
+  /* generous side inset so the intro text and the card grid do not touch the band edges
+     (prod insets them well in from the dark edges). */
+  padding: 0 2rem;
 }
 .dark-section > .inner-wrapper p { color: #fff; }
 .section-download .col-container {
@@ -2324,6 +2397,73 @@ sup.reference:target {
   top: 0;
   left: 0;
   object-fit: contain;
+}
+/* Homepage dark bands (prod section-download / section-explain / section-upcoming): the section
+   heading sits INSIDE a full-bleed dark band. Two triggers: the download section (its inner
+   .section-download) and a {{#darkband}} marker (.cv-darkband) authored after a == heading ==.
+   The band is promoted to the whole .cv-section so the <h2> and the body share one band; the
+   inner .section-download then only lays out the OS-card grid (bleed/bg neutralized). */
+.page-home .cv-section:has(> .section-download),
+.page-home .cv-section:has(.cv-darkband) {
+  background: #273445;
+  color: #fff;
+  margin: 1.5rem calc(50% - 50vw);
+  padding: 2rem 0 1.25rem;
+}
+.page-home .cv-section:has(> .section-download) > h2,
+.page-home .cv-section:has(.cv-darkband) > h2 {
+  color: #fff;
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 2rem;
+  border-bottom: 0;
+}
+/* marker-band body: constrain to the content column and keep text/links legible on dark. */
+.page-home .cv-section:has(.cv-darkband) > :not(h2) {
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+.page-home .cv-section:has(.cv-darkband) a { color: #8ab4f8; }
+.cv-darkband { display: none; }
+.page-home .cv-section p:has(> .cv-darkband:only-child) { display: none; }
+/* heading affordances legible on the dark band: the "100% FREE" link (direct child <a>) stays a
+   lighter blue; the share trigger + edit pencil go light grey. The link is UNDERLINED: on the
+   dark band its contrast with the white heading text is < 3:1, so colour alone is not a usable
+   distinction (axe link-in-text-block) -- same non-colour indicator the prose-link rule applies. */
+.page-home .cv-section:has(> .section-download) > h2 > a,
+.page-home .cv-section:has(.cv-darkband) > h2 > a {
+  color: #8ab4f8;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.page-home .cv-section:has(> .section-download) > h2 > .share-tooltip > .headline-anchor,
+.page-home .cv-section:has(.cv-darkband) > h2 > .share-tooltip > .headline-anchor,
+.page-home .cv-section:has(> .section-download) > h2 > .mw-editsection > a,
+.page-home .cv-section:has(.cv-darkband) > h2 > .mw-editsection > a { color: #cbd5e1; }
+.page-home .section-download.dark-section {
+  margin: 0;
+  padding: 0 0 0.25rem;
+  background: transparent;
+}
+/* ---- homepage comparison-table feature-row icons (prod .cat <i class="fa-...">) ---- */
+/* Round tinted badge behind each feature glyph, left of the label; vertically centred with the
+   wrapping text. FA glyph classes authored via {{#faicon:...}} in the wiki source. */
+.comparison-table td:first-child .cmp-feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background: #dcdedf;
+  color: #3a3f44;
+  font-size: 1rem;
+  margin-right: 0.6rem;
+  vertical-align: middle;
 }
 /* ---- homepage hero video-preview widget (prod .overview-image-and-video-player) ---- */
 /* 16:9 poster frame: a blurred SVG placeholder under the hero image, with a play-button
@@ -3167,10 +3307,11 @@ body.mini-modal-active { overflow: hidden; }
 .hovercard::before { content: ""; position: absolute; left: 0; right: 0; top: -8px; height: 8px; }
 .hovercard .hovercard-title { font-weight: 700; margin-bottom: 4px; }
 .hovercard .hovercard-extract { margin: 0; }
-/* A long note scrolls inside the card -- the nav below stays put. */
+/* A long note scrolls inside the card -- the nav above it stays put. */
 .hovercard .hovercard-ref { font-size: .85rem; max-height: 44vh; overflow-y: auto; overscroll-behavior: contain; }
-/* Prev/next footnote navigator inside a reference card (browse all notes in place). */
-.hovercard .hovercard-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 9px; padding-top: 8px; border-top: 1px solid var(--border); }
+/* Prev/next footnote navigator inside a reference card (browse all notes in place); sits at the
+   TOP of the card, above the note text, with a separator rule under it. */
+.hovercard .hovercard-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 9px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 .hovercard .hovercard-navbtn {
   font: inherit; color: var(--fg); background: var(--surface-2); border: 1px solid var(--border);
   border-radius: 6px; min-width: 34px; min-height: 30px; padding: 3px 9px; cursor: pointer;
