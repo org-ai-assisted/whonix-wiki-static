@@ -2107,11 +2107,13 @@ sup.reference:target {
    destination URL + an explicit Open link, so the icon never auto-connects (privacy; works at
    Tor Browser Safest with JS off). */
 .share-social .share-confirm { display: flex; flex-direction: column; align-items: center; min-width: 0; }
-/* An OPENED social confirmation spans the full menu row so its revealed panel is bounded by the
-   menu width -- otherwise the <details> (a flex item) grows to the long share URL's intrinsic
-   width (~1300px), breaking the panel out of the menu: the URL overflows horizontally, the
-   "Open in X" link is pushed off-screen, and the icon row spills onto the page (mobile). */
-.share-social .share-confirm[open] { width: 100%; }
+/* An OPENED social confirmation spans the full menu row AND stretches its children to that width,
+   so the revealed panel is bounded by the menu -- otherwise (align-items:center, the default here)
+   the panel sizes to the long share URL's intrinsic width (~1300px) despite width:100%, breaking
+   out of the menu: the URL overflows horizontally, "Open in X" is pushed off-screen, and the icon
+   row spills onto the page (mobile). The summary re-centers so the brand icon stays centred. */
+.share-social .share-confirm[open] { width: 100%; align-items: stretch; }
+.share-social .share-confirm[open] > summary.share-icon { align-self: center; }
 .share-social summary.share-icon { list-style: none; cursor: pointer; }
 .share-social summary.share-icon::-webkit-details-marker { display: none; }
 .share-social summary.share-icon::marker { content: ""; }
