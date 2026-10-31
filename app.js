@@ -1759,6 +1759,25 @@
   // users while the initial RENDERED DOM stays ~500 elements (it was ~3881 on ISO -- the 29 full
   // heading menus dominated mobile Style & Layout / TBT); no-JS / Tor-Safest users keep the static
   // permalink. Delegated listeners -> ~zero load-time JS, nothing built for headings nobody opens.
+  // Homepage hero video: a poster overlay (.overview-image) sits over the <video>; clicking it
+  // hides the poster and plays the video, so its native controls take over. CSP-safe (no inline
+  // handler), no autoplay, poster is a plain <img>; keyboard users reach the video's own controls.
+  // TT-safe: only toggles display + calls video.play(), no HTML sinks.
+  function initHeroVideo() {
+    var players = document.querySelectorAll(".overview-image-and-video-player");
+    for (var i = 0; i < players.length; i++) {
+      (function (player) {
+        var overlay = player.querySelector(".overview-image");
+        var video = player.querySelector("video");
+        if (!overlay || !video) return;
+        overlay.addEventListener("click", function () {
+          overlay.style.display = "none";
+          if (video.play) video.play();
+        });
+      })(players[i]);
+    }
+  }
+
   function initShareLazy() {
     function activate(tip) {
       var tmpl = tip.querySelector("template.share-full");
@@ -1840,6 +1859,7 @@
       initHovercards();
       initStorageViewer();
       initShareLazy();
+      initHeroVideo();
     });
   });
 
