@@ -1778,6 +1778,24 @@
     }
   }
 
+  // Endorsement "show more": collapse the testimonial grid to a first set and reveal a button
+  // that expands it (prod's "show more" slider, CSP-safe). Server-rendered button starts hidden,
+  // so no-JS shows every card; JS collapses + reveals it only when there are extras to show.
+  // TT-safe: toggles a class + button text, no HTML sinks.
+  function initEndorsementMore() {
+    var grid = document.querySelector(".endorsement-grid");
+    var btn = document.querySelector(".endorsement-more");
+    if (!grid || !btn) return;
+    if (grid.querySelectorAll(".endorsement-card").length <= 6) return;  // nothing extra to reveal
+    grid.classList.add("endorsement-collapsed");
+    btn.hidden = false;
+    btn.addEventListener("click", function () {
+      var collapsed = grid.classList.toggle("endorsement-collapsed");
+      btn.textContent = collapsed ? "Show more" : "Show less";
+      btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+    });
+  }
+
   function initShareLazy() {
     function activate(tip) {
       var tmpl = tip.querySelector("template.share-full");
@@ -1860,6 +1878,7 @@
       initStorageViewer();
       initShareLazy();
       initHeroVideo();
+      initEndorsementMore();
     });
   });
 

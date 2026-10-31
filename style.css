@@ -2409,6 +2409,15 @@ sup.reference:target {
   }
   .endorsement-card { scroll-snap-align: center; }
 }
+/* "Show more" reveal (prod's slider, CSP-safe): the collapsed grid shows the first 6 cards; the
+   app.js-revealed button expands to show the rest. No-JS leaves every card visible (no collapse). */
+.endorsement-grid.endorsement-collapsed .endorsement-card:nth-child(n+7) { display: none; }
+.endorsement-more {
+  display: block; margin: 0.9rem auto 0; padding: 0.5rem 1.4rem;
+  background: var(--surface-2); color: var(--link); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); font-size: 0.95rem; font-weight: 600; cursor: pointer;
+}
+.endorsement-more:hover { background: var(--surface); }
 /* Homepage "explainer" box (prod .explainer): tinted panel, lead line + green-check items. */
 .explainer {
   background: var(--surface-2, #ececec);
