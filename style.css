@@ -1367,7 +1367,7 @@ code:empty { display: none; }
 /* .cta-button is EXCLUDED: it is a styled call-to-action button (white text on a solid blue fill),
    not a prose cell link -- the currentColor+underline treatment turned its text dark-on-blue
    (~3.4:1, an axe color-contrast FAIL) and underlined it. Its own .cta-button rule keeps white. */
-.wiki-content table:not(.toc):not(.storage-table) :is(td, th) a:not(.cta-button),
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-table) :is(td, th) a:not(.cta-button),
 .wiki-content .info-box a {
   color: currentColor;
   text-decoration: underline;
