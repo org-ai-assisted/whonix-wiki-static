@@ -2236,6 +2236,9 @@ sup.reference:target {
   white-space: normal;
 }
 .info-tooltip:hover > span, .info-tooltip:focus-within > span { display: block; }
+/* No underline on links inside the comparison (VPN) table -- prod parity; the feature + tooltip
+   links read as plain text. Scoped higher than `.wiki-content p a` (style.css:234) so it wins. */
+.wiki-content .comparison-table a, .wiki-content .comparison-table a:hover { text-decoration: none; }
 /* comparison Yes/No cells (green check / red cross). Unscoped: pandoc drops the
    wikitable's own class, so these are keyed on the inline span classes that survive. */
 /* verdict cells are now colored circle images (True/False/5050.png); keep these for any
@@ -2297,9 +2300,10 @@ sup.reference:target {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
-/* bottom of the frame: last cell rounds + bottom border */
-.comparison-table tr:last-child td:nth-child(2),
-.comparison-table tr:last-child th:nth-child(2) {
+/* bottom of the frame: the BODY's last cell rounds + bottom border. Scoped to tbody so the
+   header row (which is tr:last-child OF THE THEAD) does not also get a blue bottom line. */
+.comparison-table tbody tr:last-child td:nth-child(2),
+.comparison-table tbody tr:last-child th:nth-child(2) {
   border-bottom: 1px solid #007bff;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
@@ -2382,7 +2386,12 @@ sup.reference:target {
 /* the quote inherits the card text colour (not --link blue) so the italic pull-quote reads as a
    quote, not a link; underline on hover keeps the affordance. */
 .endorsement-quote { color: inherit; text-decoration: none; }
-.endorsement-quote:hover, .endorsement-quote:focus { text-decoration: underline; }
+/* No underline on endorsement links -- scoped higher than `.wiki-content p a` (style.css:234),
+   which otherwise wins and underlines the quote. The external-link affordance stands in for the
+   link cue (prod parity). */
+.wiki-content .endorsement-grid a,
+.wiki-content .endorsement-grid a:hover,
+.wiki-content .endorsement-grid a:focus { text-decoration: none; }
 .endorsement-archive { margin-left: 0.35rem; color: var(--muted); font-style: normal; white-space: nowrap; }
 .endorsement-archive:hover, .endorsement-archive:focus { color: var(--link); }
 @media (max-width: 900px) { .endorsement-grid { grid-template-columns: repeat(2, 1fr); } }
