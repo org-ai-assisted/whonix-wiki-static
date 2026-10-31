@@ -2392,6 +2392,11 @@ sup.reference:target {
 .wiki-content .endorsement-grid a,
 .wiki-content .endorsement-grid a:hover,
 .wiki-content .endorsement-grid a:focus { text-decoration: none; }
+/* External-link cue after each endorsement text link (prod parity), replacing the underline. The
+   north-east-arrow box glyph is the standard external-link mark; logo-image links are excluded. */
+.wiki-content .endorsement-quote[href^="http"]::after {
+  content: "\2197"; font-size: 0.78em; margin-left: 0.18em; vertical-align: top; color: var(--link);
+}
 .endorsement-archive { margin-left: 0.35rem; color: var(--muted); font-style: normal; white-space: nowrap; }
 .endorsement-archive:hover, .endorsement-archive:focus { color: var(--link); }
 @media (max-width: 900px) { .endorsement-grid { grid-template-columns: repeat(2, 1fr); } }
