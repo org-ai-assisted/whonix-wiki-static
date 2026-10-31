@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="content-security-policy" content="default-src 'none'; script-src 'self' 'sha256-Rt7W3r/2OYHVmGnViwX+EY4xS8oYzN+Rt1uyUs7eYD8='; style-src 'self'; img-src 'self' data:; font-src 'self'; media-src 'self'; manifest-src 'self'; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; worker-src 'self'; require-trusted-types-for 'script'">
+<meta http-equiv="content-security-policy" content="default-src 'none'; script-src 'self' 'sha256-Rt7W3r/2OYHVmGnViwX+EY4xS8oYzN+Rt1uyUs7eYD8='; style-src 'self'; img-src 'self' data:; font-src 'self'; media-src 'self'; manifest-src 'self'; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; worker-src 'none'; require-trusted-types-for 'script'">
 <meta name="robots" content="noindex,nofollow">
 <title>Wikitests // title test : test title via title template</title>
 <meta property="og:type" content="article">
@@ -15,7 +15,7 @@
 <meta property="og:title" content="Wikitests // title test : test title via title template">
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/Roboto-Regular-webfont.woff2?h=f2a890a8" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../../fontawesome/webfonts/fa-solid-900.woff2?h=06c105de" crossorigin fetchpriority="low">
-<link rel="stylesheet" href="../../style.min.css?h=db26875c">
+<link rel="stylesheet" href="../../style.min.css?h=46e5a397">
 <link rel="stylesheet" href="../../fontawesome/css/all.min.css?h=58d87708">
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
@@ -26,7 +26,7 @@
 <meta name="theme-color" content="#ffffff">
 <link rel="mw-search-index" href="../../search-index.min.json?h=523ed3dd">
 <link rel="mw-page-previews" href="../../page-previews.min.json?h=aa83cb68">
-<link rel="mw-fulltext-manifest" href="../../search/fulltext-manifest.min.json?h=6d5a67e6">
+<link rel="mw-fulltext-manifest" href="../../search/fulltext-manifest.min.json?h=8e62c88d">
 <script>(function(){try{var d=document.documentElement,L=localStorage,t=L.getItem('theme');d.classList.add('client-js');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))d.setAttribute('data-theme','dark');if(L.getItem('legal-agreement-banner-dismissed')==='1')d.classList.add('legal-ack-hidden');if(L.getItem('stage-notice-dismissed')==='1')d.classList.add('stage-notice-hidden');var s=d.getAttribute('data-sn-id');if(s&&L.getItem('sitenotice-dismissed')===s)d.classList.add('sitenotice-hidden');}catch(e){}})();</script>
 <link rel="preload" as="image" fetchpriority="high" href="../../media/Deep-web-1106648640.jpg.webp?h=2082d298" imagesrcset="../../media/thumb/Deep-web-1106648640.jpg-160.webp?h=2082d298 160w, ../../media/thumb/Deep-web-1106648640.jpg-240.webp?h=2082d298 240w, ../../media/thumb/Deep-web-1106648640.jpg-360.webp?h=2082d298 360w, ../../media/Deep-web-1106648640.jpg.webp?h=2082d298 640w" imagesizes="(max-width: 640px) 100vw, 640px">
 </head>
@@ -535,58 +535,58 @@ over-width on mobile</p>
 <li>text, 1 url
 <ul>
 <li>expected: url as main link plus 1 icon link with main url</li>
-<li>Whonix Clearnet</li>
+<li><a target="_blank" href="https://www.whonix.org" class="external template-extlink" rel="noreferrer noopener" aria-label="Whonix Clearnet">Whonix Clearnet</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.whonix.org" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></li>
 </ul></li>
 <li>No text, 1 url
 <ul>
 <li>expected: url as text, url as main link plus 1 icon link with main
 url</li>
-<li></li>
+<li><a target="_blank" href="https://www.whonix.org" class="external template-extlink" rel="noreferrer noopener" aria-label="https://www.whonix.org">https://www.whonix.org</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.whonix.org" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></li>
 </ul></li>
 <li>text, icons=none, 1 url
 <ul>
 <li>expected: url as main link, no icons</li>
-<li>Whonix Clearnet</li>
+<li><a target="_blank" href="https://www.whonix.org" class="external template-extlink" rel="noreferrer noopener" aria-label="Whonix Clearnet">Whonix Clearnet</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.whonix.org" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></li>
 </ul></li>
 <li>No text, icons=none, 1 url
 <ul>
 <li>expected: url as text, url as main link, no icons</li>
-<li></li>
+<li><a target="_blank" href="https://www.whonix.org" class="external template-extlink" rel="noreferrer noopener" aria-label="https://www.whonix.org">https://www.whonix.org</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.whonix.org" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></li>
 </ul></li>
 <li>text, 7 urls (6th = onion, 7th = GitHub)
 <ul>
 <li>expected: First url only used as main link, then icon links: 1x
 archive.org, 1x archive.today, 2x pseudo archives, 1x onion, 1x
 GitHub</li>
-<li>Main Link</li>
+<li><a target="_blank" href="https://www.kicksecure.com/" class="external template-extlink" rel="noreferrer noopener" aria-label="Main Link">Main Link</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.kicksecure.com/" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></li>
 </ul></li>
 <li>text, 4 urls (second = onion) - typical (maximum!) use case
 <ul>
 <li>expected: First url only used as main link, then icon links: 1x
 onion, 1x archive.org, 1x archive.today</li>
-<li>Interesting data on the test.com website</li>
+<li><a target="_blank" href="https://www.test.com" class="external template-extlink" rel="noreferrer noopener" aria-label="Interesting data on the test.com website">Interesting data on the test.com website</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.test.com" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></li>
 </ul></li>
 <li>text, 1 onion url
 <ul>
 <li>expected: onion url used for main link and for first icon</li>
-<li>Onion Link</li>
+<li><a target="_blank" href="http://www.w5j6stm77zs6652pgsij4awcjeel3eco7kvipheu6mtr623eyyehj4yd.onion/" class="external template-extlink" rel="noreferrer noopener" aria-label="Onion Link">Onion Link</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/http://www.w5j6stm77zs6652pgsij4awcjeel3eco7kvipheu6mtr623eyyehj4yd.onion/" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></li>
 </ul></li>
 <li>no text, 1 onion url
 <ul>
 <li>expected: url used for text and as main link and for first icon</li>
-<li></li>
+<li><a target="_blank" href="http://www.w5j6stm77zs6652pgsij4awcjeel3eco7kvipheu6mtr623eyyehj4yd.onion/" class="external template-extlink" rel="noreferrer noopener" aria-label="http://www.w5j6stm77zs6652pgsij4awcjeel3eco7kvipheu6mtr623eyyehj4yd.onion/">http://www.w5j6stm77zs6652pgsij4awcjeel3eco7kvipheu6mtr623eyyehj4yd.onion/</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/http://www.w5j6stm77zs6652pgsij4awcjeel3eco7kvipheu6mtr623eyyehj4yd.onion/" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></li>
 </ul></li>
 <li>text, 1 GitHub url
 <ul>
 <li>expected: GitHub url used for main link and for first icon, icon is
 GitHub icon</li>
-<li>Kicksecure GitHub link</li>
+<li><a target="_blank" href="https://github.com/Kicksecure/" class="external template-extlink" rel="noreferrer noopener" aria-label="Kicksecure GitHub link">Kicksecure GitHub link</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://github.com/Kicksecure/" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></li>
 </ul></li>
 <li>no text, 1 GitHub url
 <ul>
 <li>expected: GitHub url used for text and as main link and for first
 icon, icon is GitHub icon</li>
-<li></li>
+<li><a target="_blank" href="https://github.com/Kicksecure/" class="external template-extlink" rel="noreferrer noopener" aria-label="https://github.com/Kicksecure/">https://github.com/Kicksecure/</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://github.com/Kicksecure/" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></li>
 </ul></li>
 </ul>
 </div>
@@ -1533,7 +1533,7 @@ issues.</p>
 </div>
 <div id="fly-in-notification-panel" role="region" hidden aria-label="Notification panel"><div class="inner-wrapper"><i class="close-panel fa-solid fa-xmark" role="button" tabindex="0" aria-label="Close this notification"></i><a href="../Donate" aria-label="Donate"><img class="flyin-image" src="../../media/Flyin-donate-promo.jpg.webp?h=aa8079fb" width="300" height="215" alt="" loading="lazy" decoding="async" /></a><div class="content"><div class="headline"><a href="../Donate">Your support makes<br>all the difference!</a></div><p>We believe security software like Whonix needs to remain Open Source and independent. <b>Would you help</b> sustain and grow the project? Learn more about our <a href="../Donate">14 year success story and maybe DONATE!</a></p></div></div></div>
 <nav class="back-to-top-nav" aria-label="Back to top"><a class="back-to-top" href="#top" aria-label="Back to top of the page"><i class="fa-solid fa-chevron-up" aria-hidden="true"></i></a></nav>
-<script src="../../app.min.js?h=c8f838c0" defer></script>
+<script src="../../app.min.js?h=748aa2d5" defer></script>
 <script type="module" src="../../libs/instant.page/instantpage.min.js"></script>
 </body>
 </html>

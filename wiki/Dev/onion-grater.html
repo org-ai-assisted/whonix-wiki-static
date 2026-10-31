@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="content-security-policy" content="default-src 'none'; script-src 'self' 'sha256-Rt7W3r/2OYHVmGnViwX+EY4xS8oYzN+Rt1uyUs7eYD8='; style-src 'self'; img-src 'self' data:; font-src 'self'; media-src 'self'; manifest-src 'self'; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; worker-src 'self'; require-trusted-types-for 'script'">
+<meta http-equiv="content-security-policy" content="default-src 'none'; script-src 'self' 'sha256-Rt7W3r/2OYHVmGnViwX+EY4xS8oYzN+Rt1uyUs7eYD8='; style-src 'self'; img-src 'self' data:; font-src 'self'; media-src 'self'; manifest-src 'self'; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; worker-src 'none'; require-trusted-types-for 'script'">
 <meta name="robots" content="noindex,nofollow">
 <title>onion-grater, a Tor Control Port Filter Proxy</title>
 <meta property="og:type" content="article">
@@ -15,7 +15,7 @@
 <meta property="og:title" content="onion-grater, a Tor Control Port Filter Proxy">
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/Roboto-Regular-webfont.woff2?h=f2a890a8" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../../fontawesome/webfonts/fa-solid-900.woff2?h=06c105de" crossorigin fetchpriority="low">
-<link rel="stylesheet" href="../../style.min.css?h=db26875c">
+<link rel="stylesheet" href="../../style.min.css?h=46e5a397">
 <link rel="stylesheet" href="../../fontawesome/css/all.min.css?h=58d87708">
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
@@ -26,7 +26,7 @@
 <meta name="theme-color" content="#ffffff">
 <link rel="mw-search-index" href="../../search-index.min.json?h=523ed3dd">
 <link rel="mw-page-previews" href="../../page-previews.min.json?h=aa83cb68">
-<link rel="mw-fulltext-manifest" href="../../search/fulltext-manifest.min.json?h=6d5a67e6">
+<link rel="mw-fulltext-manifest" href="../../search/fulltext-manifest.min.json?h=8e62c88d">
 <script>(function(){try{var d=document.documentElement,L=localStorage,t=L.getItem('theme');d.classList.add('client-js');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))d.setAttribute('data-theme','dark');if(L.getItem('legal-agreement-banner-dismissed')==='1')d.classList.add('legal-ack-hidden');if(L.getItem('stage-notice-dismissed')==='1')d.classList.add('stage-notice-hidden');var s=d.getAttribute('data-sn-id');if(s&&L.getItem('sitenotice-dismissed')===s)d.classList.add('sitenotice-hidden');}catch(e){}})();</script>
 <link rel="preload" as="image" fetchpriority="high" href="../../media/Flyin-donate-promo.jpg.webp?h=aa8079fb">
 </head>
@@ -46,7 +46,7 @@ Proxy</h1></div>
 <ul>
 <li><a href="../Tor">Tor</a></li>
 <li><a href="https://www.kicksecure.com/wiki/Tor_Versioning"><img src="../../media/Kicksecure-wiki-link-icon.png.webp?h=bfb13876" width="50" height="50" alt="Kicksecure logo" class="kicksecure-wiki-link-icon" loading="lazy" decoding="async" /></a>
-Tor Versioning</li>
+<a target="_blank" href="https://www.kicksecure.com/wiki/Tor_Versioning" class="external template-extlink" rel="noreferrer noopener" aria-label="Tor Versioning">Tor Versioning</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.kicksecure.com/wiki/Tor_Versioning" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></li>
 <li><a href="../Anon_Connection_Wizard">Anon Connection
 Wizard</a></li>
 <li><a href="../Tor-control-panel">tor-control-panel</a></li>
@@ -203,8 +203,7 @@ analysis to learn more about the paths the Tor client is using.</p>
 allowing commands to be sent from a compromised Whonix-Workstation to a
 Whonix-Gateway. This could include unsafe command parsing, memory leaks
 in Tor daemon C code, and other vulnerabilities.</p>
-<p>Information about these kinds of attacks was requested upstream but
-received no expression of interest.</p>
+<p>Information about these kinds of attacks <a target="_blank" href="https://gitlab.torproject.org/tpo/network-health/metrics/analysis/-/issues/5928" class="external template-extlink" rel="noreferrer noopener" aria-label="was requested upstream but received no expression of interest">was requested upstream but received no expression of interest</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://gitlab.torproject.org/tpo/network-health/metrics/analysis/-/issues/5928" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup>.</p>
 </section><section class="cv-section cv-h4800"><h2 class="hvis1" id="Imitating_real_Tor_Control_Connection">Imitating real Tor
 Control Connection<span class="share-tooltip" data-anchor="Imitating_real_Tor_Control_Connection"><a class="headline-anchor" href="#Imitating_real_Tor_Control_Connection" aria-label="Copy or share a link to this section"><i class="fa-solid fa-share-nodes"></i></a><span class="menu-wrapper"><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Dev/onion-grater#Imitating_real_Tor_Control_Connection">https://www.whonix.org/wiki/Dev/onion-grater#Imitating_real_Tor_Control_Connection</span><template class="share-full"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Dev/onion-grater#Imitating_real_Tor_Control_Connection">https://www.whonix.org/wiki/Dev/onion-grater#Imitating_real_Tor_Control_Connection</span><span class="menu-section">Click below &#8628; = Copy to Clipboard</span><span class="copy-cards"><span class="copy-card"><span class="code-select cs-image" data-social="copy-mediawiki" data-code="[[Dev/onion-grater#Imitating_real_Tor_Control_Connection|Imitating real Tor
 Control Connection]]" data-button-image-src="../../media/Mediawiki-logo.png.webp?h=5fbf3dce">[[Dev/onion-grater#Imitating_real_Tor_Control_Connection|Imitating real Tor
@@ -746,9 +745,9 @@ enabling onion-grater profiles):
 <li>See onion-grater profiles source code.</li>
 <li>See also <a href="onion-grater#Application_Support">Application Support</a>.</li>
 <li><a href="https://www.kicksecure.com/wiki/Dev/git#Search_the_Source_Code"><img src="../../media/Kicksecure-wiki-link-icon.png.webp?h=bfb13876" width="50" height="50" alt="Kicksecure logo" class="kicksecure-wiki-link-icon" loading="lazy" decoding="async" /></a>
-Search the Source Code and
+<a target="_blank" href="https://www.kicksecure.com/wiki/Dev/git#Search_the_Source_Code" class="external template-extlink" rel="noreferrer noopener" aria-label="Search the Source Code">Search the Source Code</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.kicksecure.com/wiki/Dev/git#Search_the_Source_Code" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup> and
 <a href="https://www.kicksecure.com/wiki/Dev/git#Find_Files"><img src="../../media/Kicksecure-wiki-link-icon.png.webp?h=bfb13876" width="50" height="50" alt="Kicksecure logo" class="kicksecure-wiki-link-icon" loading="lazy" decoding="async" /></a>
-Find Files: <code>onion-grater-merger</code></li>
+<a target="_blank" href="https://www.kicksecure.com/wiki/Dev/git#Find_Files" class="external template-extlink" rel="noreferrer noopener" aria-label="Find Files">Find Files</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.kicksecure.com/wiki/Dev/git#Find_Files" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup>: <code>onion-grater-merger</code></li>
 <li>For example, see <a href="https://github.com/Whonix/onion-grater/blob/master/usr/share/doc/onion-grater-merger/examples/40_onion_authentication.yml">/usr/share/doc/onion-grater-merger/examples/40_onion_authentication.yml</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://github.com/Whonix/onion-grater/blob/master/usr/share/doc/onion-grater-merger/examples/40_onion_authentication.yml" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup>.
 Quote: <sup id="cite_ref-8" class="reference"><a href="#cite_note-8"><span class="cite-bracket">[</span>8<span class="cite-bracket">]</span></a></sup></li>
 <li>For most other commands, no additional commentary by Whonix is
@@ -854,8 +853,8 @@ Notes.</p>
 <ul>
 <li><u>Sudoedit guidance:</u> See
 <a href="https://www.kicksecure.com/wiki/Software#Open_File_with_Root_Rights"><img src="../../media/Kicksecure-wiki-link-icon.png.webp?h=bfb13876" width="50" height="50" alt="Kicksecure logo" class="kicksecure-wiki-link-icon" loading="lazy" decoding="async" /></a>
-Open File with Root Rights for details on why using
-<code>sudoedit</code> improves security and how to use it.</li>
+<a target="_blank" href="https://www.kicksecure.com/wiki/Software#Open_File_with_Root_Rights" class="external template-extlink" rel="noreferrer noopener" aria-label="Open File with Root Rights">Open File with Root Rights</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.kicksecure.com/wiki/Software#Open_File_with_Root_Rights" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup> for details on why using <code>sudoedit</code>
+improves security and how to use it.</li>
 <li><u>Editor requirement:</u> Close Featherpad (or the chosen text
 editor) before running the <code>sudoedit</code> command.</li>
 </ul>
@@ -867,8 +866,8 @@ Notes.</p>
 <ul>
 <li><u>Sudoedit guidance:</u> See
 <a href="https://www.kicksecure.com/wiki/Software#Open_File_with_Root_Rights"><img src="../../media/Kicksecure-wiki-link-icon.png.webp?h=bfb13876" width="50" height="50" alt="Kicksecure logo" class="kicksecure-wiki-link-icon" loading="lazy" decoding="async" /></a>
-Open File with Root Rights for details on why using
-<code>sudoedit</code> improves security and how to use it.</li>
+<a target="_blank" href="https://www.kicksecure.com/wiki/Software#Open_File_with_Root_Rights" class="external template-extlink" rel="noreferrer noopener" aria-label="Open File with Root Rights">Open File with Root Rights</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.kicksecure.com/wiki/Software#Open_File_with_Root_Rights" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup> for details on why using <code>sudoedit</code>
+improves security and how to use it.</li>
 <li><u>Editor requirement:</u> Close Featherpad (or the chosen text
 editor) before running the <code>sudoedit</code> command.</li>
 <li><u>Template requirement:</u> When using <a href="../Qubes">Qubes-Whonix</a>, this must be done inside the
@@ -886,7 +885,7 @@ Template.</li>
 to be restarted if they were already running.</li>
 <li><u>Qubes persistence:</u> See also
 <a href="https://www.kicksecure.com/wiki/Qubes#Qubes_Persistence"><img src="../../media/Kicksecure-wiki-link-icon.png.webp?h=bfb13876" width="50" height="50" alt="Kicksecure logo" class="kicksecure-wiki-link-icon" loading="lazy" decoding="async" /></a>
-Qubes Persistence</li>
+<a target="_blank" href="https://www.kicksecure.com/wiki/Qubes#Qubes_Persistence" class="external template-extlink" rel="noreferrer noopener" aria-label="Qubes Persistence">Qubes Persistence</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.kicksecure.com/wiki/Qubes#Qubes_Persistence" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></li>
 <li><u>General procedure:</u> This is a general procedure required for
 Qubes and is <a href="../Unspecific">unspecific to
 Qubes-Whonix</a>.</li>
@@ -1262,7 +1261,7 @@ view. This means it will know + basically everything Tor is doing, which
 is pretty bad in case Tor + Browser is compromised.</span></li>
 <li id="cite_note-10"><span class="mw-cite-backlink"><a href="#cite_ref-10" aria-label="Jump up" title="Jump up">&#8593;</a></span> <span class="reference-text"><a href="https://phabricator.whonix.org/T631">https://phabricator.whonix.org/T631</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://phabricator.whonix.org/T631" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></span></li>
 <li id="cite_note-11"><span class="mw-cite-backlink"><a href="#cite_ref-11" aria-label="Jump up" title="Jump up">&#8593;</a></span> <span class="reference-text"><a href="https://www.kicksecure.com/wiki/Configuration_Files#Configuration_Drop-In_Folders"><img src="../../media/Kicksecure-wiki-link-icon.png.webp?h=bfb13876" width="50" height="50" alt="Kicksecure logo" class="kicksecure-wiki-link-icon" loading="lazy" decoding="async" /></a>
-Style Configuration Folders</span></li>
+<a target="_blank" href="https://www.kicksecure.com/wiki/Configuration_Files#Configuration_Drop-In_Folders" class="external template-extlink" rel="noreferrer noopener" aria-label="Style Configuration Folders">Style Configuration Folders</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.kicksecure.com/wiki/Configuration_Files#Configuration_Drop-In_Folders" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></span></li>
 <li id="cite_note-12"><span class="mw-cite-backlink"><a href="#cite_ref-12" aria-label="Jump up" title="Jump up">&#8593;</a></span> <span class="reference-text"><a href="https://phabricator.whonix.org/T448">https://phabricator.whonix.org/T448</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://phabricator.whonix.org/T448" aria-label="Archived version on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></span></li>
 </ol>
 
@@ -1284,7 +1283,7 @@ Updates</span></span></span></p>
 </div>
 <div id="fly-in-notification-panel" role="region" hidden aria-label="Notification panel"><div class="inner-wrapper"><i class="close-panel fa-solid fa-xmark" role="button" tabindex="0" aria-label="Close this notification"></i><a href="../Donate" aria-label="Donate"><img class="flyin-image" src="../../media/Flyin-donate-promo.jpg.webp?h=aa8079fb" width="300" height="215" alt="" fetchpriority="high" /></a><div class="content"><div class="headline"><a href="../Donate">Your support makes<br>all the difference!</a></div><p>We believe security software like Whonix needs to remain Open Source and independent. <b>Would you help</b> sustain and grow the project? Learn more about our <a href="../Donate">14 year success story and maybe DONATE!</a></p></div></div></div>
 <nav class="back-to-top-nav" aria-label="Back to top"><a class="back-to-top" href="#top" aria-label="Back to top of the page"><i class="fa-solid fa-chevron-up" aria-hidden="true"></i></a></nav>
-<script src="../../app.min.js?h=c8f838c0" defer></script>
+<script src="../../app.min.js?h=748aa2d5" defer></script>
 <script type="module" src="../../libs/instant.page/instantpage.min.js"></script>
 </body>
 </html>

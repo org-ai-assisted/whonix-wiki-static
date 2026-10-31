@@ -2344,6 +2344,44 @@ sup.reference:target {
   border: 1px solid var(--border, #ccc); border-radius: 6px; padding: 0.6rem 1rem;
   margin: 1rem auto; text-align: center; max-width: 960px;
 }
+/* Homepage "Trusted by Security Experts" endorsement gallery ({{#endorsementgrid}} of
+   {{#endorsement}} cards, prod's press .col-container): each card is a source logo + the quote
+   (both linking to the source) + an optional Internet-Archive link. Desktop: a 3-column grid;
+   phone: a horizontal scroll-snap carousel (CSP-safe, no JS -- prod uses splide). */
+.endorsement-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.25rem 0;
+}
+.endorsement-card {
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.6rem;
+  background: var(--surface); border: 1px solid var(--border-soft, #e0e0e0); border-radius: 8px;
+  padding: 1rem;
+}
+.endorsement-source {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 60px; width: 100%; text-decoration: none;
+}
+/* Definite HEIGHT (not max-height) so an SVG logo with no intrinsic width (The Guardian / The
+   Intercept) gets a sizing basis and scales by its viewBox ratio instead of collapsing to 0 in the
+   flex column; raster logos scale to the same height, giving a uniform logo row. */
+.endorsement-logo { height: 48px; width: auto; max-width: 90%; object-fit: contain; }
+.endorsement-name { font-weight: 600; color: var(--fg); font-size: 1.05rem; }
+.endorsement-text { margin: 0; font-style: italic; color: var(--fg); line-height: 1.45; }
+/* the quote inherits the card text colour (not --link blue) so the italic pull-quote reads as a
+   quote, not a link; underline on hover keeps the affordance. */
+.endorsement-quote { color: inherit; text-decoration: none; }
+.endorsement-quote:hover, .endorsement-quote:focus { text-decoration: underline; }
+.endorsement-archive { margin-left: 0.35rem; color: var(--muted); font-style: normal; white-space: nowrap; }
+.endorsement-archive:hover, .endorsement-archive:focus { color: var(--link); }
+@media (max-width: 900px) { .endorsement-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) {
+  /* phone: one-card-wide horizontal scroll-snap carousel instead of a cramped 1-col stack. */
+  .endorsement-grid {
+    grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 86%;
+    overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 7%;
+    -webkit-overflow-scrolling: touch; padding-bottom: 0.4rem;
+  }
+  .endorsement-card { scroll-snap-align: center; }
+}
 /* Homepage "explainer" box (prod .explainer): tinted panel, lead line + green-check items. */
 .explainer {
   background: var(--surface-2, #ececec);

@@ -528,6 +528,27 @@
     return "";
   }
 
+  // Defense in depth beneath the CSP + Trusted Types (which already block a javascript:
+  // navigation): a URL this script will navigate to must be same-origin. A relative path
+  // (incl. "" = the root/homepage, "wiki/Foo", "../wiki/Foo") is allowed; a leading scheme
+  // (javascript:/data:/...) or a protocol-relative "//host" is not. allowAbsolute additionally
+  // permits an explicit http(s):// target, for the download buttons that link to the release
+  // host (https on clearnet, http on an onion mirror). Guards the search + download sinks
+  // against a tampered same-origin index/attribute: a planted javascript: href is dropped,
+  // not navigated.
+  function navSafe(h, allowAbsolute) {
+    if (typeof h !== "string") return false;
+    // Browsers strip ASCII tab/newline anywhere in a URL and leading C0/space before resolving
+    // its scheme, so "ja\tvascript:" and " javascript:" still execute -- strip that set for the
+    // scheme CHECK (mirrors parserfunctions.safe_url), then test the cleaned value.
+    var p = h.replace(/[\u0000- \u007f]/g, "");
+    if (p.slice(0, 2) === "//") return false;               // protocol-relative -> cross-origin
+    var m = /^([a-z][a-z0-9+.-]*):/i.exec(p);                // a leading URL scheme?
+    if (!m) return true;                                     // relative (incl. "") -> same-origin
+    var s = m[1].toLowerCase();                              // an absolute target: only http(s),
+    return !!allowAbsolute && (s === "http" || s === "https");  // never javascript:/data:/etc.
+  }
+
   // ---- Full-text search primitives: MIRROR mwstatic/search_index.py byte-for-byte. The shared
   // fixture tests/js-tests + mwstatic/tests/fixtures/search-parity.json gate both languages, so a
   // drift here fails its test lane. Tokens are reduced to ASCII [a-z0-9], the ONE class JS and
@@ -660,12 +681,15 @@
       return shardCache[name];
     }
     function appendResult(e) {              // TT-safe: textContent + setAttribute only, no HTML-string sink
+      var href = root + e.u;
+      if (!navSafe(href, false)) return false;   // drop a row whose (tampered) target is not same-origin
       var li = document.createElement("li");
       var a = document.createElement("a");
-      a.setAttribute("href", root + e.u);
+      a.setAttribute("href", href);
       a.textContent = e.t;
       li.appendChild(a);
       results.appendChild(li);
+      return true;                          // caller counts a row only when one was really added
     }
     // The open field is an ABSOLUTE overlay; anchor the panel just below its rendered box (CSSOM
     // .style is not gated by style-src -- CSP-safe, same as the bottom-stack spacer).
@@ -698,7 +722,7 @@
           for (var j = 0; j < ranked.length && shownCount < 20; j++) {
             var id = ranked[j][0], e = index[id];
             if (shownIds[id] || !e || e.n) continue;   // already shown, or (defensively) namespaced
-            appendResult(e);
+            if (!appendResult(e)) continue;             // a dropped (tampered) target adds no row
             shownIds[id] = 1;
             shownCount++;
             added++;
@@ -750,7 +774,7 @@
           var e = index[i];
           if (!nsEligible(e, q)) continue;   // namespaced page: only for its own namespace query
           if (e.t.toLowerCase().indexOf(q) === -1) continue;
-          appendResult(e);
+          if (!appendResult(e)) continue;    // a dropped (tampered) target adds no row -> no count
           shownIds[i] = 1;
           shown++;
         }
@@ -782,7 +806,7 @@
           var firstLink = results.querySelector("li a");
           if (firstLink) href = firstLink.getAttribute("href");
         }
-        if (href !== null) window.location.assign(href);
+        if (href !== null && navSafe(href, false)) window.location.assign(href);
       });
     });
     // Close the box on an outside click / Escape (JS enhancement of the CSS :checked toggle):
@@ -1035,6 +1059,9 @@
         btn.addEventListener("click", function (e) {
           var href = btn.getAttribute("href");
           if (!href) return;
+          // The modal auto-navigates (proceed.click after the countdown); only an https or
+          // same-origin target may drive that, never a tampered javascript:/data: href.
+          if (!navSafe(href, true)) return;
           e.preventDefault();
           var modal = el("div", "mini-modal download-button-modal");
           modal.id = "download-button-modal";
@@ -1361,8 +1388,10 @@
     }
     function render(note) {
       clear(mount);
-      // Read the actual state once.
-      var present = {};
+      // Read the actual state once. Null-proto: a localStorage key named "__proto__" /
+      // "constructor" (same-origin script only) must land as an OWN entry, not touch
+      // Object.prototype, so the viewer lists and deletes it like any other.
+      var present = Object.create(null);
       try {
         for (var i = 0; i < localStorage.length; i++) {
           var pk = localStorage.key(i);
@@ -1373,8 +1402,10 @@
         return;
       }
       // Rows: every POTENTIAL key from the registry (shown even when not set), then
-      // any unrecognized key actually present -- so nothing is hidden.
-      var known = {};
+      // any unrecognized key actually present -- so nothing is hidden. Null-proto so a
+      // "__proto__"/"constructor" key reads as absent from the registry (!known[k] true)
+      // and is listed as unrecognized, not silently swallowed by an Object.prototype hit.
+      var known = Object.create(null);
       var rows = STORAGE_KEYS.map(function (k) {
         known[k.key] = true;
         return { key: k.key, label: k.label, set: (k.key in present), value: present[k.key] };
@@ -1781,9 +1812,10 @@
 
   // Test-support: expose the pure, side-effect-free search primitives so the js-test lane can
   // assert app.js's OWN tokenizer/hash against the shared parity fixture (the cross-language gate)
-  // and unit-test the scorer directly. No DOM, network, or secret surface.
+  // and unit-test the scorer directly. navSafe is exposed too (jsdom cannot spy location.assign,
+  // so the nav guard is unit-tested here). No DOM, network, or secret surface.
   window.mwSearch = {
     tokenize: tokenize, ftHash: ftHash, ftBucket: ftBucket,
-    stopwords: SEARCH_STOPWORDS, score: scoreBM25
+    stopwords: SEARCH_STOPWORDS, score: scoreBM25, navSafe: navSafe
   };
 })();
