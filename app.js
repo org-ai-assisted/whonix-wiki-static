@@ -253,22 +253,20 @@
   // Open a collapsible <details> when the URL fragment targets it (or an element inside it),
   // so an in-page anchor to a closed box reveals its content instead of landing on a shut box.
   // Runs on load + hashchange. TT-safe: only sets .open.
-  // Reliable hash scroll under content-visibility + smooth scrolling. `scroll-behavior: smooth`
-  // (style.css) makes scrollIntoView ANIMATE to a destination computed ONCE; a .cv-section
-  // (content-visibility:auto) is laid out from its contain-intrinsic-size ESTIMATE until rendered,
-  // so a load-time call animates toward a stale target (typically the page bottom) while sections
-  // render underneath it. Scroll INSTANTLY (no animation can lock in a stale target) and re-scroll
-  // across a few frames until the target settles (real sizes cached by contain-intrinsic-size:auto).
-  // Frame-capped so it always terminates. TT-safe: only scrolls.
+  // Reliable hash scroll under content-visibility. A .cv-section (content-visibility:auto) is laid
+  // out from its contain-intrinsic-size ESTIMATE until rendered, so a cold-load scroll to a target
+  // in an unrendered section lands at the estimated position -- which, with `scroll-behavior:smooth`
+  // animating to a destination computed ONCE, is typically the page bottom. Force EVERY section to
+  // full layout so positions are EXACT, scroll instantly, then restore: the sections keep their
+  // now-cached real sizes (contain-intrinsic-size:auto), so the scroll stays put and off-screen
+  // skipping resumes. Only runs on a hash navigation, so the common no-fragment load keeps the
+  // content-visibility perf win untouched. TT-safe: only sets content-visibility + scrolls.
   function scrollHashIntoView(el) {
     if (!el.scrollIntoView) return;
-    var last = null, stable = 0, frames = 0;
-    (function step() {
-      el.scrollIntoView({ block: "start", behavior: "instant" });
-      var top = Math.round(el.getBoundingClientRect().top);
-      if (top === last) { if (++stable >= 2) return; } else { stable = 0; last = top; }
-      if (++frames < 40) requestAnimationFrame(step);
-    })();
+    var secs = document.querySelectorAll(".cv-section"), i;
+    for (i = 0; i < secs.length; i++) secs[i].style.contentVisibility = "visible";
+    el.scrollIntoView({ block: "start", behavior: "instant" });
+    for (i = 0; i < secs.length; i++) secs[i].style.contentVisibility = "";
   }
 
   function openHashDetails() {
