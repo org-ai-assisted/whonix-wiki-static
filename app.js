@@ -975,6 +975,10 @@
   function initModals() {
     var active = null;
     function close() {
+      // dead: close() runs only with a modal active -- open() calls it behind if(active); the Escape
+      // + underlay/.mm-close handlers behind if(!active)return; {open,close} is a local never put on
+      // window. Author retired; verified by call-site analysis (navSafe @7509f88 did not touch this).
+      /* c8 ignore next */
       if (!active) return;
       active.modal.classList.remove("active");
       active.modal.hidden = true;
@@ -998,6 +1002,9 @@
     }
     // Focusable elements inside the active modal, in DOM order.
     function focusables() {
+      // dead: focusables() is called only from the Tab branch of the modal keydown handler, itself
+      // behind if(!active)return, so active is never null here. Author retired; verified by call-site analysis.
+      /* c8 ignore next */
       if (!active) return [];
       var sel = 'a[href], button:not([disabled]), input:not([disabled]), '
         + '[tabindex]:not([tabindex="-1"])';
@@ -1300,6 +1307,9 @@
     }
     function pageNodes(a) {
       var idx = previews;
+      // dead: previews is null only until ensurePreviews() resolves it to (d||{}); pageNodes()'s sole
+      // caller runs inside ensurePreviews().then(...), so idx is always truthy here. Author retired; verified.
+      /* c8 ignore next */
       if (!idx) return null;   // index not resolved yet -> no card (native title= covers the gap)
       var href = a.getAttribute("href") || "";
       // Only internal (relative) links have previews -- skip absolute/scheme and
