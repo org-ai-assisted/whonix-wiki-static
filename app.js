@@ -253,6 +253,24 @@
   // Open a collapsible <details> when the URL fragment targets it (or an element inside it),
   // so an in-page anchor to a closed box reveals its content instead of landing on a shut box.
   // Runs on load + hashchange. TT-safe: only sets .open.
+  // Reliable hash scroll under content-visibility + smooth scrolling. `scroll-behavior: smooth`
+  // (style.css) makes scrollIntoView ANIMATE to a destination computed ONCE; a .cv-section
+  // (content-visibility:auto) is laid out from its contain-intrinsic-size ESTIMATE until rendered,
+  // so a load-time call animates toward a stale target (typically the page bottom) while sections
+  // render underneath it. Scroll INSTANTLY (no animation can lock in a stale target) and re-scroll
+  // across a few frames until the target settles (real sizes cached by contain-intrinsic-size:auto).
+  // Frame-capped so it always terminates. TT-safe: only scrolls.
+  function scrollHashIntoView(el) {
+    if (!el.scrollIntoView) return;
+    var last = null, stable = 0, frames = 0;
+    (function step() {
+      el.scrollIntoView({ block: "start", behavior: "instant" });
+      var top = Math.round(el.getBoundingClientRect().top);
+      if (top === last) { if (++stable >= 2) return; } else { stable = 0; last = top; }
+      if (++frames < 40) requestAnimationFrame(step);
+    })();
+  }
+
   function openHashDetails() {
     var id;
     try { id = decodeURIComponent((location.hash || "").slice(1)); } catch (e) { return; }
@@ -261,12 +279,9 @@
     if (!el) return;
     var d = el.closest ? el.closest("details") : null;
     if (d) d.open = true;
-    // A .cv-section (content-visibility:auto) estimates its height until rendered, so the native
-    // fragment scroll can land ~a screen off the target. scrollIntoView renders the section and
-    // lands precisely (it scrolls relative to the element, not an estimated absolute position).
-    // Runs on load + hashchange (openHashDetails is wired to both), so TOC/section-link clicks
-    // land exactly; no-JS keeps the native (approximate) scroll.
-    if (el.scrollIntoView) el.scrollIntoView();
+    // Runs on load + hashchange (wired to both), so TOC/section-link clicks + a cold-load #fragment
+    // all land on the target; no-JS keeps the native (approximate) scroll.
+    scrollHashIntoView(el);
   }
 
   // The crypto-panel QR reveal and the "More Payment Options" grid collapse are now pure-CSS
@@ -425,7 +440,7 @@
       var secs = tabSections(ctrl);
       activateTab(ctrl, Array.prototype.indexOf.call(secs, sec));
     }
-    if (el.scrollIntoView) el.scrollIntoView();
+    scrollHashIntoView(el);
   }
 
   // Mobile nav menu is a pure-CSS checkbox toggle (#nav-toggle). With JS on, also
@@ -1246,10 +1261,20 @@
       clearTimeout(hideTimer);
       hideTimer = setTimeout(function () { if (card) card.hidden = true; }, 200);
     }
+    // Cap the card to the room actually available and flip it ABOVE the citation when there is
+    // more room there, so it sizes to its content yet never runs off the top or bottom of the
+    // viewport. overflow-y:auto on .hovercard-ref then scrolls only when the content is genuinely
+    // taller than that room (a small footnote shows in full, no needless inner scrollbar).
     function place(anchor) {
       var r = anchor.getBoundingClientRect();
-      var top = r.bottom + window.scrollY + 6;
-      var left = Math.max(8, Math.min(r.left + window.scrollX, window.scrollX + document.documentElement.clientWidth - 340));
+      var GAP = 6, MARGIN = 8;
+      var below = window.innerHeight - r.bottom - GAP - MARGIN;
+      var above = r.top - GAP - MARGIN;
+      var useAbove = above > below && above > 160;
+      card.style.maxHeight = Math.max(120, useAbove ? above : below) + "px";
+      var h = card.offsetHeight;  // measured AFTER the cap, to place an above-card by its real height
+      var top = useAbove ? (r.top + window.scrollY - GAP - h) : (r.bottom + window.scrollY + GAP);
+      var left = Math.max(MARGIN, Math.min(r.left + window.scrollX, window.scrollX + document.documentElement.clientWidth - 340 - MARGIN));
       card.style.top = top + "px";
       card.style.left = left + "px";
     }

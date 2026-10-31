@@ -2075,6 +2075,15 @@ sup.reference:target {
   min-width: 24px; min-height: 24px; vertical-align: middle;
 }
 .share-tooltip .headline-anchor:hover { color: var(--link); text-decoration: none; }
+/* Visible manually-placed anchors ({{Anchor|...|show=true}} -> span.mpa-visible) -- prod
+   Utility.css parity: a block "#id" label (the invisible form, no mpa-visible, stays inert). */
+.manually-placed-anchor { position: relative; }
+.manually-placed-anchor.mpa-visible {
+  display: block; margin: 15px 0; font-size: 18px; letter-spacing: 1px;
+}
+.manually-placed-anchor.mpa-visible::before {
+  content: "#"; font-weight: bold; margin-right: 7px;
+}
 /* Centered under the button; top:100% + padding-top (not a top offset) so the 0.3rem visual gap
    is INSIDE the hovered wrapper -- no dead zone where the pointer leaves :hover moving button->menu. */
 .share-tooltip .menu-wrapper { display: none; position: absolute; left: 50%;
@@ -2176,7 +2185,11 @@ sup.reference:target {
      which would run the menu off the left edge. */
   .footer-share .menu-wrapper { top: auto; bottom: calc(100% + 0.3rem); left: 0; right: auto; }
 }
-.image-right { float: right; margin: 0 0 1rem 1.25rem; max-width: 45%; }
+/* :not() so this standalone float applies ONLY to a bare floated image / the Contributor box,
+   NOT the flex .left-right-image-text widget, whose `image-right` token is merely a
+   flex-direction modifier (flex-direction:row-reverse elsewhere). Without it the flex widget
+   wrongly became float:right;max-width:45% and two of them painted text over each other. */
+.image-right:not(.left-right-image-text) { float: right; margin: 0 0 1rem 1.25rem; max-width: 45%; }
 /* float rescued from an inline style by sanitize (strict CSP strips style=):
    the {{Contributor}} support-status box floats right of the lead prose in prod.
    Margin mirrors prod's margin-top-5/margin-left-10; max-width keeps it from
@@ -2606,7 +2619,7 @@ sup.reference:target {
 
 @media (max-width: 480px) {
   .wiki-content { margin: 1.25rem auto 2rem; padding: 0 1rem; }
-  .image-right { float: none; margin: 1rem 0; max-width: 100%; }
+  .image-right:not(.left-right-image-text) { float: none; margin: 1rem 0; max-width: 100%; }
   .wiki-content .float-right, .wiki-content .float-left { float: none; margin: 1rem 0; max-width: 100%; }
 }
 
@@ -3335,7 +3348,9 @@ body.mini-modal-active { overflow: hidden; }
   /* side gutters must clear the absolutely-positioned expand-table-button (~141px) on the
      left; symmetric so the title stays centered between them. */
   position: relative; text-align: center;
-  min-height: 2em; padding: 0.35em 10em 0.35em 10em;
+  /* min-height clears the ~2.4em absolutely-positioned expand-table-button (top:0.3em + ~32px):
+     2em let the button's bottom bleed into the first header cell on a single-line caption. */
+  min-height: 2.75em; padding: 0.35em 10em 0.35em 10em;
 }
 .wiki-content table caption .expand-table-button {
   position: absolute; left: 0.3em; top: 0.3em;
@@ -3388,6 +3403,10 @@ body.mini-modal-active { overflow: hidden; }
   position: absolute; z-index: 2100; max-width: 340px; background: var(--surface, #fff);
   color: inherit; border: 1px solid var(--border, #ccc); border-radius: 8px;
   box-shadow: 0 6px 20px rgb(0 0 0 / 25%); padding: 10px 12px; font-size: .9rem; line-height: 1.4;
+  /* flex column: title + nav stay fixed, the ref body flexes and scrolls only when the card is
+     capped to the room app.js place() found -- so small footnotes size to content (no inner
+     scrollbar) while a huge one still never overflows the screen. */
+  display: flex; flex-direction: column;
 }
 /* Hover bridge: a transparent strip over the 6px gap between citation and card, so moving the
    pointer DOWN into the card (to scroll / select / click a link) never crosses un-hovered space. */
@@ -3395,10 +3414,12 @@ body.mini-modal-active { overflow: hidden; }
 .hovercard .hovercard-title { font-weight: 700; margin-bottom: 4px; }
 .hovercard .hovercard-extract { margin: 0; }
 /* A long note scrolls inside the card -- the nav above it stays put. */
-.hovercard .hovercard-ref { font-size: .85rem; max-height: 44vh; overflow-y: auto; overscroll-behavior: contain; }
+/* No fixed cap: the card's max-height is set per-open by app.js place() to the room available,
+   and this body flexes within it -- scrolls only when the footnote is genuinely taller. */
+.hovercard .hovercard-ref { font-size: .85rem; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
 /* Prev/next footnote navigator inside a reference card (browse all notes in place); sits at the
    TOP of the card, above the note text, with a separator rule under it. */
-.hovercard .hovercard-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 9px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.hovercard .hovercard-nav { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 9px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 .hovercard .hovercard-navbtn {
   font: inherit; color: var(--fg); background: var(--surface-2); border: 1px solid var(--border);
   border-radius: 6px; min-width: 34px; min-height: 30px; padding: 3px 9px; cursor: pointer;
