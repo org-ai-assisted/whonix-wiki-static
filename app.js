@@ -870,13 +870,25 @@
     if (btt) btt.style.bottom = (h ? h + 20 : 20) + "px";
   }
   function initBottomStackSpacer() {
-    if (!document.querySelector(".bottom-stack")) return;
-    remeasureBottomStack();
-    var raf = 0;
-    window.addEventListener("resize", function () {
-      if (raf) return;
-      raf = requestAnimationFrame(function () { raf = 0; remeasureBottomStack(); });
-    });
+    var stack = document.querySelector(".bottom-stack");
+    if (!stack) return;
+    if (typeof ResizeObserver !== "undefined") {
+      // Drive the measure from a ResizeObserver: its callback runs AFTER the browser's own layout
+      // pass, so reading offsetHeight never forces a SYNCHRONOUS relayout inside the blocking init
+      // task (the ~51ms forced reflow Lighthouse flagged at remeasureBottomStack). The initial
+      // observe fires once (first spacer set) and it also covers window-resize + font/content
+      // reflow + banner-dismiss (the stack shrinks -> refires) with no init-time cost.
+      new ResizeObserver(function () { remeasureBottomStack(); }).observe(stack);
+    } else {
+      // No ResizeObserver (very old browser / jsdom): defer the first read with rAF so even the
+      // fallback does not force a synchronous layout in the init task; resize keeps it in sync.
+      requestAnimationFrame(remeasureBottomStack);
+      var raf = 0;
+      window.addEventListener("resize", function () {
+        if (raf) return;
+        raf = requestAnimationFrame(function () { raf = 0; remeasureBottomStack(); });
+      });
+    }
   }
 
   // Consent/privacy banner: shown by default. The dismiss is now a CSS checkbox-hack (the
