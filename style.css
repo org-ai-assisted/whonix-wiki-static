@@ -1737,7 +1737,7 @@ details[open] > summary > .mwc-toggle > .mwc-less { display: inline; }
 /* ---- back-to-top floating button ---- */
 /* Static <a href="#top"> (page.py). No-JS floor: on browsers with scroll-driven
    animations it reveals itself past ~400px (see @supports below); elsewhere it stays
-   always-visible. With JS, app.js drives [hidden] for the exact threshold + idle-hide. */
+   always-visible. With JS, app.js fades it (.btt-hidden) for the threshold + idle-hide. */
 .back-to-top {
   position: fixed;
   right: 20px;
@@ -1757,9 +1757,38 @@ details[open] > summary > .mwc-toggle > .mwc-less { display: inline; }
   cursor: pointer;
   text-decoration: none;
   box-shadow: var(--shadow-md);
+  /* Crisp dark outline on the white chevron so it stays legible even when the translucent chip
+     composites over light content (e.g. a white screenshot scrolling beneath it in dark mode). */
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.7), 0 1px 2px rgba(0, 0, 0, 0.5);
   transition: background 0.12s ease;
 }
 .back-to-top:hover { background: rgba(0, 0, 0, 0.55); color: #fff; }
+/* Dark mode: invert to a translucent LIGHT chip so the control stays visible on a dark page
+   (a dark-on-dark chip would vanish -- production does not invert, so its own button is faint
+   in dark mode). Both dark triggers, matching the theme token blocks above. */
+:root[data-theme="dark"] .back-to-top { background: rgba(255, 255, 255, 0.32); color: #fff; }
+:root[data-theme="dark"] .back-to-top:hover { background: rgba(255, 255, 255, 0.48); color: #fff; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .back-to-top { background: rgba(255, 255, 255, 0.32); color: #fff; }
+  :root:not([data-theme="light"]) .back-to-top:hover { background: rgba(255, 255, 255, 0.48); color: #fff; }
+}
+/* JS path: initBackToTop toggles .btt-hidden to fade the control in/out (eased opacity,
+   matching the production wiki's phased 300ms fade) instead of a binary display snap.
+   visibility carries tab-order removal, delayed to the END of the fade-out (0.3s) so the
+   fade is seen, and restored at once on fade-in. pointer-events:none drops the click target
+   the instant the fade-out starts (near-0 opacity alone stays hit-testable), and the :focus
+   rule holds a control focused mid-fade shown so the delayed visibility:hidden cannot drop
+   its focus. The initial hide is committed under the base (no-opacity) transition via a
+   forced reflow before .btt-anim enables the fade, so load shows no fade-out. (Mirrors the
+   journal-maker CSR back-to-top; ported independently -- same behavior, this repo's styling.) */
+:root.js .back-to-top { opacity: 1; visibility: visible; }
+:root.js .back-to-top.btt-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+:root.js .back-to-top.btt-anim { transition: opacity 0.3s ease, visibility 0s linear 0s, background 0.12s ease; }
+:root.js .back-to-top.btt-anim.btt-hidden { transition: opacity 0.3s ease, visibility 0s linear 0.3s, background 0.12s ease; }
+:root.js .back-to-top.btt-hidden:focus { opacity: 1; visibility: visible; pointer-events: auto; }
+@media (prefers-reduced-motion: reduce) {
+  :root.js .back-to-top.btt-anim, :root.js .back-to-top.btt-anim.btt-hidden { transition: background 0.12s ease; }
+}
 /* No-JS floor: keep the back-to-top above the fixed bottom banner stack (consent/stage) so
    they never overlap -- mirrors the body padding reservation. With JS, remeasureBottomStack
    sets the exact offset (and drops it back to 20px once the banners are dismissed). */
@@ -1769,20 +1798,27 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   body:has(.bottom-stack .consent-banner) .back-to-top,
   body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(8rem + 20px); }
 }
-/* No-JS reveal: hidden at the top, revealed in a narrow band at ~400px (a wide range
-   would fade in progressively instead of at the threshold). The @supports guard is
-   REQUIRED: without scroll timelines the animation would bind to the time timeline and
-   stick the button hidden -- so unsupported browsers fall through to the visible base. */
+/* No-JS reveal floor -- a pure progressive-enhancement fallback, JS-scoped (:root:not(.js))
+   so under JS it NEVER applies and initBackToTop owns the control (no competing CSS reveal).
+   A DISCRETE visibility flip (not an opacity fade): visibility carries the whole state, so
+   the control is either fully hidden -- out of the tab order, no click target, no faint focus
+   stop -- or fully shown, and is never interactive-while-faint. Revealed in a narrow band at
+   ~400px (visibility flips to visible for any progress past the range start). The @supports
+   guard is REQUIRED: without scroll timelines the animation would bind to the time timeline
+   and stick the button hidden -- so unsupported browsers fall through to the visible base. */
 @supports (animation-timeline: scroll()) {
-  .back-to-top {
-    opacity: 0;
+  :root:not(.js) .back-to-top {
+    visibility: hidden;
     animation: back-to-top-reveal linear both;
     animation-timeline: scroll(root);
     animation-range: 380px 400px;
   }
+  /* Keep a focused control visible regardless of scroll (parity with the JS focus-guard):
+     a visibility:hidden mid-focus would drop focus / its focus indicator. */
+  :root:not(.js) .back-to-top:focus { animation: none; visibility: visible; }
   @keyframes back-to-top-reveal {
-    from { opacity: 0; pointer-events: none; }
-    to { opacity: 1; pointer-events: auto; }
+    from { visibility: hidden; }
+    to { visibility: visible; }
   }
 }
 

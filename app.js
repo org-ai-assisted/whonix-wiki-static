@@ -488,21 +488,53 @@
   // Back-to-top is STATIC HTML (page.py) so it works with no JS (<a href="#top"> + a CSS
   // scroll-reveal floor). JS enhances production's behavior on that same element: show past
   // a scroll threshold, auto-hide ~2s after scrolling stops, smooth-scroll (no #top hash) on
-  // click. JS drives [hidden] (display); the CSS floor only governs the no-JS case.
+  // click. Shown/hidden via an eased opacity fade (.btt-hidden) mirroring the production wiki
+  // control, not a binary display snap; the CSS floor governs only the no-JS case.
   function initBackToTop() {
     var btn = document.querySelector(".back-to-top");
     if (!btn) return;
-    btn.hidden = true;
+    // Mark the document JS-capable so the no-JS reveal floor (:root:not(.js)) steps aside and
+    // this owns the control. Done HERE, not earlier: the floor keeps the button hidden until
+    // JS is ready, so a late idle-callback init never flashes it visible on load.
+    document.documentElement.classList.add("js");
+    // Hide instantly, then enable the fade. Forcing a reflow between the two commits the hidden
+    // state under the base (no-opacity) transition, so opacity snaps to 0 with no fade; .btt-anim
+    // then enables the fade for later toggles only (a lone requestAnimationFrame would batch both
+    // class adds into one style pass and still play a 300ms fade-out on load).
+    btn.classList.add("btt-hidden");
+    void btn.offsetHeight;
+    btn.classList.add("btt-anim");
+    function show() { btn.classList.remove("btt-hidden"); }
+    // Never hide while the control holds keyboard focus (a hide-timer or scroll-to-top must not
+    // steal focus mid-activation, and the fade-out's visibility:hidden would drop focus).
+    function hide() { if (document.activeElement !== btn) { btn.classList.add("btt-hidden"); } }
+    var idle = null;
     btn.addEventListener("click", function (e) {
       e.preventDefault();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // "instant", not "auto": with html { scroll-behavior: smooth } set, "auto" honors that
+      // and still animates -- "auto" only means "use the CSS behavior". "instant" forces the
+      // jump a reduced-motion user asked for (same as the forced jump elsewhere in this file).
+      var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.scrollTo({ top: 0, behavior: reduce ? "instant" : "smooth" });
+      // On a POINTER click (detail > 0; keyboard-activated clicks report 0) release focus, so
+      // the scroll-to-top's own hide() is not suppressed by the focus-guard -- otherwise the
+      // control sits at the top catching clicks over the content. A keyboard user keeps focus
+      // (blurring them would discard their place rather than move it somewhere sensible).
+      if (e.detail > 0) { btn.blur(); }
     });
-    var idle = null;
-    window.addEventListener("scroll", function () {
-      if (window.scrollY < 400) { btn.hidden = true; return; }
-      btn.hidden = false;
+    // On blur, re-check the threshold: hide at once near the top, else resume the idle-hide. A
+    // focused control's idle timer no-ops (focus-guard), so without the rearm it would linger
+    // shown once focus leaves while still scrolled down.
+    btn.addEventListener("blur", function () {
+      if (window.scrollY < 400) { hide(); return; }
       clearTimeout(idle);
-      idle = setTimeout(function () { btn.hidden = true; }, 2000);
+      idle = setTimeout(hide, 2000);
+    });
+    window.addEventListener("scroll", function () {
+      if (window.scrollY < 400) { hide(); return; }
+      show();
+      clearTimeout(idle);
+      idle = setTimeout(hide, 2000);
     });
   }
 
