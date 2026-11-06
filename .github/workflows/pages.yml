@@ -52,7 +52,7 @@ jobs:
           path: _site
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e  # v4
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346  # v5.0.1
         with:
           # 20 min (default 10): the Pages backend can take >10 min to process this large site,
           # and the action's own timeout -- not the job timeout-minutes -- aborts the deploy.
