@@ -24,7 +24,9 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # 20, not 10: uploading the full static-site artifact (thousands of files +
+    # media) can exceed 10 min on a slow runner and cancel the deploy.
+    timeout-minutes: 20
     # Publish Pages ONLY in the stage orgs; the org-ai-assisted mirror has no Pages site, so the
     # deploy-pages step would fail there. Byte-identical across both stage repos.
     if: github.repository_owner != 'org-ai-assisted'
