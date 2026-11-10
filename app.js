@@ -497,13 +497,16 @@
     // this owns the control. Done HERE, not earlier: the floor keeps the button hidden until
     // JS is ready, so a late idle-callback init never flashes it visible on load.
     document.documentElement.classList.add("js");
-    // Hide instantly, then enable the fade. Forcing a reflow between the two commits the hidden
-    // state under the base (no-opacity) transition, so opacity snaps to 0 with no fade; .btt-anim
-    // then enables the fade for later toggles only (a lone requestAnimationFrame would batch both
-    // class adds into one style pass and still play a 300ms fade-out on load).
+    // Hide instantly, then enable the fade only AFTER the hidden state has painted, so opacity:0 is
+    // committed under the base (no-transition) style -- no load-time fade -- WITHOUT a synchronous
+    // forced reflow. Reading offsetHeight here to flush the hidden state is a ~15ms forced layout
+    // Lighthouse flags; a lone rAF batches both class adds into one pre-paint style pass and still
+    // fades out on load, so the SECOND rAF runs a frame after btt-hidden has painted -- adding
+    // .btt-anim then changes nothing to animate, only arming the fade for later show()/hide().
     btn.classList.add("btt-hidden");
-    void btn.offsetHeight;
-    btn.classList.add("btt-anim");
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { btn.classList.add("btt-anim"); });
+    });
     function show() { btn.classList.remove("btt-hidden"); }
     // Never hide while the control holds keyboard focus (a hide-timer or scroll-to-top must not
     // steal focus mid-activation, and the fade-out's visibility:hidden would drop focus).

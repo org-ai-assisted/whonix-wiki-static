@@ -1808,25 +1808,32 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 }
 /* No-JS reveal floor -- a pure progressive-enhancement fallback, JS-scoped (:root:not(.js))
    so under JS it NEVER applies and initBackToTop owns the control (no competing CSS reveal).
-   A DISCRETE visibility flip (not an opacity fade): visibility carries the whole state, so
-   the control is either fully hidden -- out of the tab order, no click target, no faint focus
-   stop -- or fully shown, and is never interactive-while-faint. Revealed in a narrow band at
-   ~400px (visibility flips to visible for any progress past the range start). The @supports
-   guard is REQUIRED: without scroll timelines the animation would bind to the time timeline
-   and stick the button hidden -- so unsupported browsers fall through to the visible base. */
+   Hidden via a COMPOSITED transform (scale(0)), not visibility: transform is GPU-composited,
+   so the scroll-linked reveal runs on the compositor (Lighthouse "avoid non-composited
+   animations" -- visibility and opacity are not compositable). scale(0) keeps the same
+   non-interactive-while-hidden guarantee visibility gave -- a zero-area control is not a corner
+   click target and has no faint-but-focusable state (the opacity-only a11y trap) -- while
+   staying in the a11y tree for screen readers. Revealed in a narrow band at ~400px; a focused
+   control is pulled back by the :focus rule (parity with the JS focus-guard). The @supports
+   guard is REQUIRED: without scroll timelines the animation would bind to the time timeline and
+   stick the button scaled to 0 -- so unsupported browsers fall through to the visible base. */
 @supports (animation-timeline: scroll()) {
   :root:not(.js) .back-to-top {
-    visibility: hidden;
+    transform: scale(0);
     animation: back-to-top-reveal linear both;
     animation-timeline: scroll(root);
     animation-range: 380px 400px;
   }
   /* Keep a focused control visible regardless of scroll (parity with the JS focus-guard):
-     a visibility:hidden mid-focus would drop focus / its focus indicator. */
-  :root:not(.js) .back-to-top:focus { animation: none; visibility: visible; }
+     a scaled-to-0 control mid-focus would hide its focus indicator. */
+  :root:not(.js) .back-to-top:focus { animation: none; transform: none; }
   @keyframes back-to-top-reveal {
-    from { visibility: hidden; }
-    to { visibility: visible; }
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+  /* Reduced motion: flip in discretely at the threshold rather than scaling up. */
+  @media (prefers-reduced-motion: reduce) {
+    :root:not(.js) .back-to-top { animation-timing-function: steps(1, jump-end); }
   }
 }
 
