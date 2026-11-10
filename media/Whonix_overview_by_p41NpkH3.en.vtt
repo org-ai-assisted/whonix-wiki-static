@@ -1,0 +1,31 @@
+WEBVTT
+Kind: captions
+Language: en
+
+00:00:00.000 --> 00:00:02.000
+A laptop runs the Whonix app -- a padlock
+logo on black -- on a Windows desktop: "Booting.."
+
+00:00:02.000 --> 00:00:04.000
+Still on Windows, the window shows "Anonymize.."
+then the host switches to a Linux desktop.
+
+00:00:04.000 --> 00:00:06.000
+On an Ubuntu desktop (left dock, Activities bar),
+the same Whonix window reads "Secure..."
+
+00:00:06.000 --> 00:00:08.000
+The host becomes macOS (top menu bar, Dock);
+the Whonix window shows "Protect..."
+
+00:00:08.000 --> 00:00:09.500
+On macOS the message changes to "Done." --
+the Whonix app has finished its startup.
+
+00:00:09.500 --> 00:00:11.000
+Full-screen Whonix logo on black:
+"Ready for Linux", then "Ready for KVM".
+
+00:00:11.000 --> 00:00:12.200
+Final text under the Whonix logo:
+"Ready for everyone."

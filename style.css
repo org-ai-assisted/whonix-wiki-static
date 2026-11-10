@@ -24,6 +24,18 @@
   font-family: Cousine; font-display: swap;
   src: url(fonts/Cousine-Regular.woff2) format("woff2");
 }
+/* Metric-matched fallback for Roboto body text (capsize/Fontaine method, Arial base; overrides
+   computed from the shipped Roboto-Regular-webfont.woff2). Listed in --font-sans right after
+   Roboto, so until the web font loads the system fallback occupies the SAME box -- near-zero
+   font-swap reflow (CLS). local() only: no network, no new file, so no CSP or preload change. */
+@font-face {
+  font-family: "Roboto Fallback";
+  src: local("Arial"), local("Helvetica Neue"), local("Liberation Sans");
+  size-adjust: 101.6785%;
+  ascent-override: 104.0638%;
+  descent-override: 28.5731%;
+  line-gap-override: 0%;
+}
 
 /* ---- design tokens: light (default) ---- */
 :root {
@@ -77,7 +89,7 @@
   --gap: 1rem;
 
   /* fonts */
-  --font-sans: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, "Noto Sans", sans-serif;
+  --font-sans: Roboto, "Roboto Fallback", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, "Noto Sans", sans-serif;
   --font-mono: Cousine, ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "Courier New", monospace;
 }
 

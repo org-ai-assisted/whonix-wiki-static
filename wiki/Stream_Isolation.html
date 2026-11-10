@@ -15,7 +15,7 @@
 <meta property="og:title" content="Stream Isolation">
 <link rel="preload" as="font" type="font/woff2" href="../fonts/Roboto-Regular-webfont.woff2?h=f2a890a8" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-solid-900.woff2?h=06c105de" crossorigin fetchpriority="low">
-<link rel="stylesheet" href="../style.min.css?h=31014b06">
+<link rel="stylesheet" href="../style.min.css?h=cc0a5ef8">
 <link rel="stylesheet" href="../fontawesome/css/all.min.css?h=58d87708">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg" sizes="any">
 <link rel="shortcut icon" href="../favicon.ico">
@@ -526,7 +526,7 @@ instead run
 <span>apt-get.anondist-orig</span>.
 Use cases could be if you want to connect to localhost. If you know what
 you are doing, you should also be able to deactivate any uwt wrappers
-you dislike, see <a aria-label="#Deactivate_uwt_Stream_Isolation_Wrapper: Deactivate uwt Stream Isolation Wrapper" href="#Deactivate_uwt_Stream_Isolation_Wrapper">#Deactivate_uwt_Stream_Isolation_Wrapper</a>.</li>
+you dislike, see <a href="#Deactivate_uwt_Stream_Isolation_Wrapper">#Deactivate_uwt_Stream_Isolation_Wrapper</a>.</li>
 <li><u>What bypassing uwt changes:</u> When running
 <em><span>/usr/bin/apt-get.anondist-orig</span></em>,
 it directly goes through Tor's <code>DnsPort</code> and through Tor's
@@ -1195,7 +1195,7 @@ wrappers permanently</h5>
 and remove stream isolation for <a href="Stream_Isolation#By_uwt_wrapper">uwt-wrapped
 applications</a> system-wide. Consequently, all uwt-wrapped applications
 revert to the default system networking configuration.</p>
-<p>For more granular control of uwt wrapper deactivation, see: <a aria-label="Deactivate uwt Stream Isolation Wrapper: Stream Isolation section Deactivate uwt Stream Isolation Wrapper" href="Stream_Isolation#Deactivate_uwt_Stream_Isolation_Wrapper">Deactivate uwt Stream Isolation Wrapper</a>.</p>
+<p>For more granular control of uwt wrapper deactivation, see: <a href="Stream_Isolation#Deactivate_uwt_Stream_Isolation_Wrapper">Deactivate uwt Stream Isolation Wrapper</a>.</p>
 <div class="info-box ">
 <p><strong>1.</strong> Platform specific notice:</p>
 <ul>
@@ -2613,7 +2613,7 @@ traffic using the <a href="https://en.wikipedia.org/wiki/SOCKS">socks</a><sup cl
 <li><a href="https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO#Classicalcommonway:usetheapplicationsproxysettings">application
 specific socks proxy settings</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO#Classicalcommonway:usetheapplicationsproxysettings on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO#Classicalcommonway:usetheapplicationsproxysettings" aria-label="Archived version of gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO#Classicalcommonway:usetheapplicationsproxysettings on web.archive.org"><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup></li>
 <li><a href="https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO#classical-common-way-use-the-applications-proxy-settings">wrapper
-method</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO#classical-common-way-use-the-applications-proxy-settings on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO#classical-common-way-use-the-applications-proxy-settings" aria-label="Archived version of gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO#classical-common-way-use-the-applications-proxy-settings on web.archive.org"><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup> such as <code>torsocks</code> (which can be automatically
+method</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO#classical-common-way-use-the-applications-proxy-settings on web.archive.org"><a aria-label="Archived version of gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO#classical-common-way-use-the-applications-proxy-settings on web.archive.org: web.archive.org web https: gitlab.torproject.org legacy trac - wikis doc TorifyHOWTO section classical-common-way-use-the-applications-proxy-settings" rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO#classical-common-way-use-the-applications-proxy-settings" ><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup> such as <code>torsocks</code> (which can be automatically
 prepended using <a href="https://github.com/Whonix/uwt"><code>uwt</code></a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of github.com/Whonix/uwt on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://github.com/Whonix/uwt" aria-label="Archived version of github.com/Whonix/uwt on web.archive.org"><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup>)</li>
 </ul>
 <p>Traffic on separate <code>SocksPort</code>s is stream isolated by Tor

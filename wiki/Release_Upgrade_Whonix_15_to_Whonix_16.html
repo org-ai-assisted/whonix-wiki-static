@@ -18,7 +18,7 @@
 <meta property="og:image:height" content="426">
 <link rel="preload" as="font" type="font/woff2" href="../fonts/Roboto-Regular-webfont.woff2?h=f2a890a8" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-solid-900.woff2?h=06c105de" crossorigin fetchpriority="low">
-<link rel="stylesheet" href="../style.min.css?h=31014b06">
+<link rel="stylesheet" href="../style.min.css?h=cc0a5ef8">
 <link rel="stylesheet" href="../fontawesome/css/all.min.css?h=58d87708">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg" sizes="any">
 <link rel="shortcut icon" href="../favicon.ico">
@@ -64,7 +64,7 @@
 <td><p>Difficulty</p></td>
 <td><ul>
 <li>Downloading a new <span class="nowrap">Whonix-Gateway<sup>&#8482;</sup></span> /
-<span class="nowrap">Whonix-Workstation<sup>&#8482;</sup></span> (<a href="https://www.kicksecure.com/wiki/Factory_Reset/">Factory Reset</a>) is easier than applying the <a aria-label="Release Upgrade: Release Upgrade" href="Release_Upgrade">Release Upgrade</a> instructions
+<span class="nowrap">Whonix-Workstation<sup>&#8482;</sup></span> (<a href="https://www.kicksecure.com/wiki/Factory_Reset/">Factory Reset</a>) is easier than applying the <a href="Release_Upgrade">Release Upgrade</a> instructions
 on this page.</li>
 <li>Debian release notes:
 <ul>
@@ -97,7 +97,7 @@ by downloading the new release, which is much simpler than upgrading:
 <li>For standard ("everyday") update instructions see <a href="https://www.kicksecure.com/wiki/Operating_System_Software_and_Updates/">Operating
 System Software and Updates</a>.<br />
 </li>
-<li>The instructions on this page describe how to perform a <a aria-label="Release Upgrade: Release Upgrade" href="Release_Upgrade">Release Upgrade</a> from Whonix
+<li>The instructions on this page describe how to perform a <a href="Release_Upgrade">Release Upgrade</a> from Whonix
 15 to Whonix 16.</li>
 </ul></td>
 </tr>
@@ -175,7 +175,7 @@ minimum <code>1.5</code>, should show <code>version="1.5"</code>.</li>
 <li>Consider keeping the full release upgrade log output. It will be
 required for <a href="Support">Support</a> in case
 there are issues.</li>
-<li>Perform the automated <a aria-label="Release Upgrade: Release Upgrade" href="Release_Upgrade">release upgrade</a> using <code>release-upgrade</code>
+<li>Perform the automated <a href="Release_Upgrade">release upgrade</a> using <code>release-upgrade</code>
 command. <span class="code-select" data-code="sudo release-upgrade">sudo release-upgrade</span></li>
 <li>Done. If everything went well, at the end it will show:
 <blockquote><p>INFO: OK. (release-upgrade version: 1.5) Release upgrade success.</p></blockquote></li>
@@ -187,7 +187,7 @@ Autoremove</a></li>
 
 <ol class="references">
 <li id="cite_note-1"><span class="mw-cite-backlink"><a href="#cite_ref-1" aria-label="Jump up to footnote 1" title="Jump up">&#8593;</a></span> <span class="reference-text">This method is still possible. All the automated
-<a aria-label="release-upgrade: github.com Kicksecure legacy-dist blob master usr sbin release-upgrade" href="https://github.com/Kicksecure/legacy-dist/blob/master/usr/sbin/release-upgrade"><code>release-upgrade</code></a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of github.com/Kicksecure/legacy-dist/blob/master/usr/sbin/release-upgrade on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://github.com/Kicksecure/legacy-dist/blob/master/usr/sbin/release-upgrade" aria-label="Archived version of github.com/Kicksecure/legacy-dist/blob/master/usr/sbin/release-upgrade on web.archive.org"><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup>
+<a href="https://github.com/Kicksecure/legacy-dist/blob/master/usr/sbin/release-upgrade"><code>release-upgrade</code></a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of github.com/Kicksecure/legacy-dist/blob/master/usr/sbin/release-upgrade on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://github.com/Kicksecure/legacy-dist/blob/master/usr/sbin/release-upgrade" aria-label="Archived version of github.com/Kicksecure/legacy-dist/blob/master/usr/sbin/release-upgrade on web.archive.org"><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" /></a></sup>
 script does is perform actions which the user could perform manually. If
 a manual release upgrade is desired, emulate what the
 <code>release-upgrade</code> script is doing. The manual release
