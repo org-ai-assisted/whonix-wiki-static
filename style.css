@@ -1810,12 +1810,15 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
    so under JS it NEVER applies and initBackToTop owns the control (no competing CSS reveal).
    Hidden via a COMPOSITED transform (scale(0)), not visibility: transform is GPU-composited,
    so the scroll-linked reveal runs on the compositor (Lighthouse "avoid non-composited
-   animations" -- visibility and opacity are not compositable). scale(0) keeps the same
-   non-interactive-while-hidden guarantee visibility gave -- a zero-area control is not a corner
-   click target and has no faint-but-focusable state (the opacity-only a11y trap) -- while
-   staying in the a11y tree for screen readers. Revealed in a narrow band at ~400px; a focused
-   control is pulled back by the :focus rule (parity with the JS focus-guard). The @supports
-   guard is REQUIRED: without scroll timelines the animation would bind to the time timeline and
+   animations" -- visibility and opacity are not compositable; that is the whole point of this
+   floor). TRADE-OFF vs the old visibility:hidden: scale(0) collapses the control to zero area
+   (no mouse hit target, no faint/partial state) but, unlike visibility:hidden, it does NOT
+   remove the control from sequential focus order -- so a keyboard user can Tab to the hidden
+   "back to top" and the :focus rule reveals it (the visible-on-focus pattern; WCAG
+   focus-visible, harmless to reach early). Removing it from the tab order too would need
+   visibility/display, which cannot be composited -- the reason this floor existed as a
+   non-composited animation in the first place. It stays in the a11y tree. The @supports guard
+   is REQUIRED: without scroll timelines the animation binds to the time timeline and would
    stick the button scaled to 0 -- so unsupported browsers fall through to the visible base. */
 @supports (animation-timeline: scroll()) {
   :root:not(.js) .back-to-top {
@@ -1831,9 +1834,10 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
     from { transform: scale(0); }
     to { transform: scale(1); }
   }
-  /* Reduced motion: flip in discretely at the threshold rather than scaling up. */
+  /* Reduced motion: reveal instantly at the range START (collapsed range), with no scale-up
+     motion, and at the SAME threshold as the animated path (not the range end). */
   @media (prefers-reduced-motion: reduce) {
-    :root:not(.js) .back-to-top { animation-timing-function: steps(1, jump-end); }
+    :root:not(.js) .back-to-top { animation-range: 380px 380px; }
   }
 }
 
