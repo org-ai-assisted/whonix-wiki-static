@@ -213,6 +213,14 @@ img, video { max-width: 100%; height: auto; }
 .kicksecure-wiki-link-icon {
   display: inline; width: auto; height: 1.15em; vertical-align: -0.18em;
 }
+/* The icon is its OWN <a> (File link=), a ~17px glyph sitting right beside a same-URL text link
+   -- a tiny crowded tap target that fails axe target-size (WCAG 2.5.8). Give that anchor a >=24x24
+   hit box (centered glyph), like the archive/reference markers; size-based, so the adjacent prose
+   text link (inline-exempt) needs no gap. */
+a:has(> img.kicksecure-wiki-link-icon) {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 24px; min-height: 24px;
+}
 /* Production wiki image-sizing classes ({{img-height-N}}): a logo sized by HEIGHT, width auto.
    Prod targets a descendant img (.img-height-N img); the generator stamps the class on the <img>
    itself -- cover both. !important + width:auto overrides any presentational width attr, so an
@@ -1437,7 +1445,7 @@ code:empty { display: none; }
   width: 30px; height: 30px; border-radius: 5px; font-size: 0.95rem;  /* prod: rounded square */
   background: var(--callout, var(--accent)); color: #fff;
 }
-.info-box-icon > img { width: 40px; height: auto; }   /* Ambox image icon, prod ~40px */
+.info-box-icon > img { width: 30px; height: auto; }   /* Ambox image icon: match the 30px icon box */
 
 /* Numbered section/step badge (production "padded-content-icon" widget): a bold
    numeral, coloured by the element's cs-* --callout. pci-style-circle makes it a
@@ -2079,7 +2087,18 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   .left-right-image-text > .image { max-width: 100%; }
 }
 .references, .footnotes { font-size: 0.9rem; color: var(--fg-soft); }
-.reference { font-size: 0.85em; vertical-align: super; line-height: 0; }
+/* In-text citation marker [N]: middle-aligned (not raised superscript) so its >=24x24 tap target
+   (.reference > a below) fits the 24px body line without growing it or crowding an adjacent marker
+   (e.g. the archive sup next to it). */
+.reference { font-size: 0.85em; vertical-align: middle; line-height: 0; }
+/* The [N] anchor is a >=24x24 tap target (WCAG 2.5.8 / axe target-size), matching the archive
+   marker (.ext-link-to-archive > a) and the backlink caret (.mw-cite-backlink a) -- a deliberate
+   a11y deviation from production's tiny superscript. Centered so the small glyph fills the hit box
+   and two adjacent markers each clear 24px (the size path, so no 24px-spacing gap is needed). */
+.reference > a {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 24px; min-height: 24px;
+}
 /* Footnote back-reference ("jump up" caret): a >=24px tap target (Lighthouse target-size) with
    the caret enlarged to nearly fill it, so the larger hit area is a bigger visible control, not
    wasted padding. In the references list each sits on its own line, so size does not crowd text. */

@@ -9773,6 +9773,11 @@
   },
   {
     "n": 1,
+    "t": "Template:Vulnerability scope addendum",
+    "u": "wiki/Template:Vulnerability_scope_addendum"
+  },
+  {
+    "n": 1,
     "t": "Template:W Firewall",
     "u": "wiki/Template:W_Firewall"
   },
@@ -10151,6 +10156,10 @@
   {
     "t": "VoIP",
     "u": "wiki/VoIP"
+  },
+  {
+    "t": "Vulnerability Reporting and Handling Process",
+    "u": "wiki/Vulnerability_Reporting_and_Handling_Process"
   },
   {
     "t": "Warning",
