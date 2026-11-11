@@ -47,7 +47,7 @@
   --fg: #1b1d1f;
   --fg-soft: #3c4147;
   --muted: #5c626a;
-  --heading: #444444;
+  --heading: #1b1d1f;
   --border: #d5d9de;
   --border-soft: #e6e9ec;
   --code-bg: #f3f4f6;
@@ -102,7 +102,7 @@
   --fg: #e7e8ea;
   --fg-soft: #c6c9ce;
   --muted: #9aa1a9;
-  --heading: #9aa1a9;
+  --heading: #e7e8ea;
   --border: #333840;
   --border-soft: #2a2e35;
   --code-bg: #1e2126;
@@ -134,7 +134,7 @@
     --fg: #e7e8ea;
     --fg-soft: #c6c9ce;
     --muted: #9aa1a9;
-    --heading: #9aa1a9;
+    --heading: #e7e8ea;
     --border: #333840;
     --border-soft: #2a2e35;
     --code-bg: #1e2126;
@@ -171,7 +171,8 @@ body {
   background: var(--page-bg);   /* prod's light-gray page frame (#f3f3f3) */
   color: var(--fg);
   font: 15px/1.6 var(--font-sans);   /* production content metric: 15px Roboto, 1.6 line-height */
-  -webkit-font-smoothing: antialiased;
+  /* -webkit-font-smoothing: antialiased is macOS-only and THINS dark-on-light text; it is scoped
+     to the dark theme below (light-on-dark over-bolds), not applied globally. */
   text-rendering: optimizeLegibility;
   overflow-wrap: break-word;
   /* Sticky footer: fill at least the viewport and let the content column grow, so the
@@ -184,6 +185,12 @@ body {
 /* flex:1 grows it to push the footer down; width:100% + min-width:0 keep it at the
    container width -- WITHOUT width:100% the `margin: auto` centering makes it shrink to
    its content (a long <pre>/<code> line) in the flex column and overflow the viewport. */
+/* grayscale AA only for the dark theme, where light-on-dark Roboto over-bolds under subpixel AA;
+   the light theme renders without it (it only thinned dark-on-light text). macOS/WebKit only. */
+:root[data-theme="dark"] body { -webkit-font-smoothing: antialiased; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body { -webkit-font-smoothing: antialiased; }
+}
 .wiki-content { flex: 1 0 auto; width: 100%; min-width: 0; }
 /* Each top-level content section (page.py _wrap_sections) skips style+layout+paint while
    off-screen and renders lazily on scroll -- cuts the up-front Style & Layout cost (hence mobile
@@ -891,27 +898,28 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
   scroll-margin-top: 4.5rem;
   text-wrap: balance;
 }
+.wiki-content p { text-wrap: pretty; }   /* fewer orphans/ragged last lines; Chromium/Safari, no-op elsewhere */
 .wiki-content h1 { font-size: 26px; }
-.wiki-content h2 { font-size: 18px; }
-.wiki-content h3 { font-size: 17px; }
+.wiki-content h2 { font-size: 20px; }
+.wiki-content h3 { font-size: 18px; }
 /* Section-heading underline (prod Vector): h1/h2 get a bottom rule; the page TITLE
    (#firstHeading / .first-heading box) and h3+ do not. */
 .wiki-content h1:not(#firstHeading):not(.first-heading), .wiki-content h2 {
   border-bottom: 1px solid var(--border); padding-bottom: 0.2em;
 }
-.wiki-content h4 { font-size: 16px; font-weight: 700; }
-.wiki-content h5 { font-size: 15px; font-weight: 700; }
-.wiki-content h6 { font-size: 13px; font-weight: 700; }
+.wiki-content h4 { font-size: 17px; font-weight: 400; }
+.wiki-content h5 { font-size: 16px; font-weight: 400; }
+.wiki-content h6 { font-size: 15px; font-weight: 400; }
 /* Heading-level clamp (page.py normalize_heading_levels) moves a skipped heading's semantic
    <hN> tag to keep the outline contiguous; `hvis{authored}` pins the VISUAL back to the AUTHORED
    level so appearance is unchanged. Higher specificity (2 classes) than the bare hN rules above.
    h3-6 also clear the h1/h2 underline, since the authored (deeper) level never had one. */
 .wiki-content .hvis1 { font-size: 26px; font-weight: 400; }
-.wiki-content .hvis2 { font-size: 18px; font-weight: 400; }
-.wiki-content .hvis3 { font-size: 17px; font-weight: 400; border-bottom: none; padding-bottom: 0; }
-.wiki-content .hvis4 { font-size: 16px; font-weight: 700; border-bottom: none; padding-bottom: 0; }
-.wiki-content .hvis5 { font-size: 15px; font-weight: 700; border-bottom: none; padding-bottom: 0; }
-.wiki-content .hvis6 { font-size: 13px; font-weight: 700; border-bottom: none; padding-bottom: 0; }
+.wiki-content .hvis2 { font-size: 20px; font-weight: 400; }
+.wiki-content .hvis3 { font-size: 18px; font-weight: 400; border-bottom: none; padding-bottom: 0; }
+.wiki-content .hvis4 { font-size: 17px; font-weight: 400; border-bottom: none; padding-bottom: 0; }
+.wiki-content .hvis5 { font-size: 16px; font-weight: 400; border-bottom: none; padding-bottom: 0; }
+.wiki-content .hvis6 { font-size: 15px; font-weight: 400; border-bottom: none; padding-bottom: 0; }
 /* A widget-embedded heading may wrap its text in a block <p> (leftrightimagetext inner pass);
    keep it inline so the appended edit/share affordances stay on the heading line (the generator
    also unwraps it -- this guards any stray case). */
@@ -935,7 +943,7 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
   position: relative;
   font-size: 28px;
   font-weight: 400;   /* prod page title is normal-weight Roboto, not bold */
-  line-height: 1.6;   /* prod title box is 28px/1.6 = ~66px tall (was 1.25 -> 56px, 10px short) */
+  line-height: 1.25;   /* tighter display leading: 1.6 was too airy on wrapping titles */
   /* prod .first-heading is a BLOCK: the book-nav floats top-right and the title text wraps
      around/below it at FULL width. A flex row instead steals column width from the title and
      wraps it to more lines than prod (the "stage title breaks to more lines" bug). */
