@@ -6,9 +6,13 @@
    explicit choice wins) AND [data-theme=dark] (set flash-free by the pre-paint
    script). All color/spacing/shape is a token, redefined only for dark. */
 
-/* Self-hosted webfonts (production parity, served from 'self' under the strict CSP).
-   Only the weights production ships: Roboto 400 + 300, Cousine (mono). Bold/italic are
-   the browser's synthetic faces, exactly as production renders them. */
+/* Self-hosted webfonts, served from 'self' under the strict CSP (no external font CDN).
+   Roboto ships real 300/400 roman + 700 roman + 400/700 italic faces (below); Cousine (mono)
+   ships only 400. Where a real face exists (Roboto latin bold/italic) it renders from it; where
+   none does (mono bold/italic, non-latin, Roboto's uncovered edge glyphs) the browser's synthetic
+   face keeps the bold/italic EMPHASIS visible. So font-synthesis is left at its default (ON): a
+   global `none` would strip that emphasis for the no-real-face cases and do NOTHING for the real
+   faces (a matching real face is always used regardless), i.e. pure regression, no benefit. */
 /* CSS-RELATIVE font URLs (resolved against style.css's own location, like Font Awesome's
    ../webfonts/): root-absolute /fonts/... would 404 on a subpath (project Pages) or file://
    deploy, where relativize_assets does not rewrite CSS url()s. */
@@ -19,6 +23,22 @@
 @font-face {
   font-family: Roboto; font-weight: 300; font-display: swap;
   src: url(fonts/Roboto-Light-webfont.woff2) format("woff2");
+}
+/* REAL bold + italic faces (latin subset, Apache-2.0 Roboto) so weight-700 and italic text
+   render as designed, never browser-synthesized faux bold/italic. Roboto-Bold is the static
+   700 roman; Roboto-Italic is the variable italic face (wght 100-900), so one file serves BOTH
+   the 400 and 700 italic rules as genuine weight instances. */
+@font-face {
+  font-family: Roboto; font-weight: 700; font-style: normal; font-display: swap;
+  src: url(fonts/Roboto-Bold.woff2) format("woff2");
+}
+@font-face {
+  font-family: Roboto; font-weight: 400; font-style: italic; font-display: swap;
+  src: url(fonts/Roboto-Italic.woff2) format("woff2");
+}
+@font-face {
+  font-family: Roboto; font-weight: 700; font-style: italic; font-display: swap;
+  src: url(fonts/Roboto-Italic.woff2) format("woff2");
 }
 @font-face {
   font-family: Cousine; font-display: swap;
@@ -445,7 +465,7 @@ body.site-whonix .site-logo-img { width: auto; }
   flex-wrap: wrap;
   max-width: var(--maxw);
   margin: 0 auto;
-  padding: 3px 6px;   /* prod header is ~50px tall (44px logo + ~3px); logo ~6px in */
+  padding: 3px 12px;   /* 12px side inset aligns the header with the body-text axis (was 6px, off-axis) */
   position: relative;   /* anchor for the hanging Developer-Zone tab (Dev pages) */
 }
 .site-logo {
@@ -543,7 +563,7 @@ body.site-whonix .site-logo-img { width: auto; }
 }
 .tools-section-label {
   margin: 0; padding: 0.35rem 0.7rem 0.1rem;
-  font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+  font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
   color: var(--muted);
 }
 /* Header supermenu share section: holds the SHARED share menu (share_menu_inner, identical
@@ -712,6 +732,11 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 /* Clear the sticky site-header when the skip link jumps to #main-content (same offset as the
    heading scroll-margin-top below), so the firstHeading is not hidden under the header. */
 #main-content { scroll-margin-top: 4.5rem; }
+/* Normalize the header action glyphs to one size + fixed-width box so they align on the same
+   optical center and the gaps between them read even (the heart was 20px vs the 16-17px others). */
+.site-header-inner .fa-magnifying-glass,
+.site-header-inner .fa-chevron-down,
+.site-header-inner .fa-heart { font-size: 17px; width: 1.25em; text-align: center; line-height: 1; }
 .search-icon {
   display: inline-flex; align-items: center; justify-content: center;
   width: 2.1rem; height: 2.1rem; border-radius: var(--radius-sm);
@@ -974,6 +999,17 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 }
 
 .wiki-content p { margin: 0 0 0.85em; }   /* prod paragraph spacing */
+/* Readable measure: cap prose line length. 66ch ~= Tailwind `prose` (65ch); `ch` runs wider
+   than a mean glyph so this renders ~73-80 actual chars -- the top of the 45-75 ideal / the
+   WCAG-80 ceiling. The intro band opts out below. */
+.wiki-content p, .wiki-content li, .wiki-content dd { max-width: 66ch; }
+/* Measure-cap exceptions, so the cap never constrains non-prose layout: a table cell (pandoc
+   wraps cell content in <p>) sizes to its content, and a list item / definition that DIRECTLY
+   holds block media (image, code block, nested table) keeps full width instead of squeezing the
+   media to the text measure. */
+.wiki-content td > p, .wiki-content th > p,
+.wiki-content li:has(> img, > video, > pre, > table),
+.wiki-content dd:has(> img, > video, > pre, > table) { max-width: none; }
 /* pandoc wraps every table-cell's content in <p>; prod's wikitable cells hold bare text,
    so the 0.85em paragraph margin makes stage rows ~13px taller. Zero it inside cells. */
 .wiki-content td > p, .wiki-content th > p { margin: 0; }
@@ -1455,14 +1491,16 @@ code:empty { display: none; }
 .info-box.has-icon { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-start; }
 .info-box.has-icon > * { min-width: 0; max-width: 100%; }
 .info-box-icon { flex: 0 0 auto; color: var(--callout, var(--accent)); font-size: 1.1rem; }
-.mbox > :first-child, .info-box > :last-child > :first-child { margin-top: 0; }
-.mbox > :last-child { margin-bottom: 0; }
+.mbox > :first-child, .info-box > :first-child, .info-box > :last-child > :first-child { margin-top: 0; }
+.mbox > :last-child, .info-box > :last-child { margin-bottom: 0; }
 /* Note/info boxes match prod: a plain white card with a full light-gray border and NO
    coloured left accent (overrides the shared callout rule above). The box type shows only
    through the icon badge, whose colour comes from the icon's own cs-blue/cs-green. */
 .info-box {
   border: 1px solid var(--border); background: var(--bg);
-  padding: 5px 21px 15px;
+  /* symmetric vertical padding; inner first/last margins are zeroed above so the box hugs its
+     text rather than inheriting the paragraph's bottom margin (the gap used to be bottom-heavy). */
+  padding: 12px 21px;
 }
 .info-box.has-icon {
   display: flow-root; position: relative; padding-left: 55px;
@@ -1479,6 +1517,9 @@ code:empty { display: none; }
   background: var(--callout, var(--accent)); color: #fff;
 }
 .info-box-icon > img { width: 30px; height: auto; }   /* Ambox image icon: match the 30px icon box */
+/* A callout's content image (e.g. the manual's book logo) is a small decorative cue, not a
+   figure: cap it so a tall glyph cannot stretch the box past its text. Excludes the type badge. */
+.info-box :not(.info-box-icon) > img { height: 46px !important; width: auto !important; max-width: 100%; }
 
 /* Numbered section/step badge (production "padded-content-icon" widget): a bold
    numeral, coloured by the element's cs-* --callout. pci-style-circle makes it a
@@ -1541,6 +1582,8 @@ code:empty { display: none; }
 }
 /* A rounded text badge (e.g. the "CONGRATULATIONS!" banner) constrained to the
    content width so a long word breaks rather than overflowing a narrow viewport. */
+/* Display all-caps captions (CONGRATULATIONS / WELL DONE) want positive tracking (Butterick 5-12%). */
+.pci-style-rounded.fa-2x { letter-spacing: 0.06em; }
 .padded-content-icon.pci-style-rounded {
   display: inline-block; max-width: 100%; overflow-wrap: anywhere;
   padding: 0.1em 0.45em; border-radius: var(--radius-md, 6px);
@@ -1917,6 +1960,7 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   gap: 1.5rem 2.5rem;
   max-width: 960px;
   margin: 0 auto;
+  padding: 0 12px;   /* align footer with the 12px body-text axis */
 }
 .footer-col { flex: 1 1 15rem; min-width: 0; }
 .footer-headline { margin: 0 0 8px; font-weight: bold; font-size: 25px; line-height: 1.05em; color: var(--fg); }
@@ -2046,24 +2090,30 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
    (0,1,1) -- without it that rule beat `.intro-like > *` (0,1,0) and re-added a 1rem gap
    between the paragraphs, breaking the box into disconnected slabs. */
 .wiki-content .intro-like > *,
-.pre-intro-p ~ :not(.post-intro-p):not(.post-intro-p ~ *):not(.hidden-thumbnail) {
+.wiki-content .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail)) {
+  /* Specificity is tuned, not accidental: the `.wiki-content` prefix + `:not(:where())`
+     put this base slab rule at (0,2,0) -- high enough to keep `margin:0` winning over the
+     `.wiki-content p` margin:0 0 1rem rule (0,1,1) (else a 1rem gap re-breaks the band), yet
+     low enough that the first/last-slab overrides below win and keep the roomy box edges.
+     A plain `:not():not():not()` chain would be (0,4,0) and force the reduced interior
+     padding onto the box top and bottom too. */
   font-size: 1.06rem; line-height: 1.55; color: var(--muted); font-style: italic;
-  background: var(--surface); display: flow-root; margin: 0;
-  padding: 17px 20px 18px 26px;   /* prod intro box is roomier (was cramped 6/7px) */
-  box-shadow: inset 11px 0 8px -8px rgb(0 0 0 / 9%);
+  background: var(--surface); display: flow-root;
+  /* Flat tint band: no shadow, no rounded corners. Text sits FLUSH on the body/heading left
+     axis; the tint bleeds 12px into each gutter so the lead reads as a tinted band, not an
+     indented card. Vertical margin stays 0 so stacked intro paragraphs join at ~0.8em (a normal
+     paragraph gap); roomy top/bottom come from the first/last-slab overrides. The band keeps
+     full measure -- the 66ch prose cap does not apply here. */
+  margin: 0 -12px; padding: 0.4em 12px; max-width: none;
 }
 .intro-like > :first-child,
-.pre-intro-p + *,
-.pre-intro-p + .hidden-thumbnail + * {
+.wiki-content .pre-intro-p + *,
+.wiki-content .pre-intro-p + .hidden-thumbnail + * {
   padding-top: 1em;
-  border-top-left-radius: 9px; border-top-right-radius: 9px;
-  /* left-edge inset only (match the other slabs) -- no extra TOP shadow on the first slab. */
-  box-shadow: inset 11px 0 8px -8px rgb(0 0 0 / 9%);
 }
 .intro-like > :last-child,
-.pre-intro-p ~ :has(+ .post-intro-p) {
+.wiki-content .pre-intro-p ~ :has(+ .post-intro-p) {
   padding-bottom: 1.1em;
-  border-bottom-left-radius: 9px; border-bottom-right-radius: 9px;
 }
 /* The content-intro box (between .pre-intro-p / .post-intro-p) has no wrapper to carry the
    1.5em below-gap the {{IntroLike}} div gets, so the first normal text sat flush against it;
@@ -2081,8 +2131,13 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 }
 .page-home .wiki-content .intro-like > *,
 .page-home .intro-like > :first-child,
-.page-home .intro-like > :last-child {
-  background: transparent; box-shadow: none; padding: 0; border-radius: 0;
+.page-home .intro-like > :last-child,
+.page-home .wiki-content .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail)) {
+  /* centered hero: no tint, no gutter bleed (margin-inline:0 cancels the band's -12px). Covers
+     BOTH the {{IntroLike}} div form AND the {{Intro}} pre/post-intro-p marker form -- the homepage
+     lead uses the marker form, so without that selector the hero sub-slogan fell back to the base
+     italic grey band instead of this centered non-italic slogan. */
+  background: transparent; padding: 0; margin-inline: 0;
   font-style: normal; text-align: center; color: var(--fg); font-size: 1.19rem;
 }
 .page-home .intro-like { margin: 0 0 1.2em; }
@@ -2122,7 +2177,10 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 /* {{LeftRightImageText}} (production Utility.css): image + text side by side, image on
    the left by default, right with .image-right; stacks on a phone. */
 .left-right-image-text {
-  display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; margin: 1.5rem 0;
+  /* top-align image and text: centering floated a short text block (heading + 2 lines) down
+     the middle of a tall image, leaving a gap above the heading. flex-start aligns the heading
+     to the image top. */
+  display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap; margin: 1.5rem 0;
 }
 .left-right-image-text.image-right { flex-direction: row-reverse; }
 .left-right-image-text > .image { flex: 0 0 auto; max-width: 45%; }
