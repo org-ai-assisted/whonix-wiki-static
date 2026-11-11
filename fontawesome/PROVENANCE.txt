@@ -1,0 +1,8 @@
+Font Awesome Free 6.7.2 -- vendored from git tag 6.7.2 of
+https://github.com/FortAwesome/Font-Awesome (LICENSE.txt: icons CC BY 4.0,
+fonts SIL OFL 1.1, code MIT). woff2 only (browsers pick woff2 first; .ttf
+and fa-v4compatibility omitted -- unused). Update: re-clone the tag, re-copy
+css/all.min.css + webfonts/fa-{solid-900,regular-400,brands-400}.woff2.
+
+Note: a single trailing newline was appended to css/all.min.css to satisfy the
+end-of-file-fixer gate (otherwise byte-identical to upstream).
