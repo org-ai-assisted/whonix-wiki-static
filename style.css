@@ -932,12 +932,13 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
    a subtle near-white panel, borderless, 28px. The generator synthesizes an
    <h1 id="firstHeading" class="first-heading"> for a normal page (see page.py). */
 #firstHeading, .first-heading {
-  background: var(--surface);
   max-width: 100%;
-  padding: 10px 17px 11px;
-  /* top margin is 0: the content box above already sets the 23px header->title gap (prod's title
-     sits flush at the top of .mw-body). bottom 25 = prod title->mininav/intro gap. */
-  margin: 0 0 25px -2px;
+  /* Unboxed title: no panel fill, flush-left on the content-column axis (shares the
+     section-heading / body left edge). The boxed Vector-mirror panel read heavy and pushed the
+     title ~15px off that axis; unboxed is the modern idiom and matches the homepage hero. */
+  padding: 0;
+  /* top margin 0: the content box above sets the header->title gap. bottom 25 = title->intro gap. */
+  margin: 0 0 25px;
   color: var(--heading);
   border: none;
   position: relative;
