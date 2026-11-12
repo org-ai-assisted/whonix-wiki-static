@@ -1595,24 +1595,31 @@
         }
       }
     }
+    // Coalesce EVERY sync trigger (RO batch, resize, each late image load) into ONE measurement
+    // per frame. Otherwise each in-table image that finishes decoding calls sync() in its own
+    // task, and its scrollWidth read runs while layout is dirty from the decode -> a full forced
+    // synchronous layout per image (~41ms on a dense page with many in-table images). A rAF
+    // callback still runs before the frame's layout, so the frame's first read is one forced
+    // layout -- the win is collapsing a burst into one, not zero.
+    var raf = 0;
+    function scheduleSync() {
+      if (raf) { return; }
+      raf = requestAnimationFrame(function () { raf = 0; sync(); });
+    }
     if (typeof ResizeObserver !== "undefined") {
-      var ro = new ResizeObserver(sync);
+      var ro = new ResizeObserver(scheduleSync);
       items.forEach(function (item) { ro.observe(item.table); });
     } else {
-      sync();
-      var raf = 0;
-      window.addEventListener("resize", function () {
-        if (raf) { return; }
-        raf = requestAnimationFrame(function () { raf = 0; sync(); });
-      });
+      sync();   // no-RO path keeps the immediate first measure (js-test asserts rails post-init)
+      window.addEventListener("resize", scheduleSync);
     }
     // A late image load can grow scrollWidth WITHOUT changing the (max-width:100%-capped)
     // border box, so ResizeObserver never fires for it -- re-sync on each image load too.
     items.forEach(function (item) {
       item.table.querySelectorAll("img").forEach(function (img) {
         if (!img.complete) {
-          img.addEventListener("load", sync);
-          img.addEventListener("error", sync);  // a broken image also changes layout
+          img.addEventListener("load", scheduleSync);
+          img.addEventListener("error", scheduleSync);  // a broken image also changes layout
         }
       });
     });

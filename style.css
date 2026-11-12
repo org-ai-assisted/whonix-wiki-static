@@ -6,56 +6,12 @@
    explicit choice wins) AND [data-theme=dark] (set flash-free by the pre-paint
    script). All color/spacing/shape is a token, redefined only for dark. */
 
-/* Self-hosted webfonts, served from 'self' under the strict CSP (no external font CDN).
-   Roboto ships real 300/400 roman + 700 roman + 400/700 italic faces (below); Cousine (mono)
-   ships only 400. Where a real face exists (Roboto latin bold/italic) it renders from it; where
-   none does (mono bold/italic, non-latin, Roboto's uncovered edge glyphs) the browser's synthetic
-   face keeps the bold/italic EMPHASIS visible. So font-synthesis is left at its default (ON): a
-   global `none` would strip that emphasis for the no-real-face cases and do NOTHING for the real
-   faces (a matching real face is always used regardless), i.e. pure regression, no benefit. */
-/* CSS-RELATIVE font URLs (resolved against style.css's own location, like Font Awesome's
-   ../webfonts/): root-absolute /fonts/... would 404 on a subpath (project Pages) or file://
-   deploy, where relativize_assets does not rewrite CSS url()s. */
-@font-face {
-  font-family: Roboto; font-weight: 400; font-display: swap;
-  src: url(fonts/Roboto-Regular-webfont.woff2) format("woff2");
-}
-@font-face {
-  font-family: Roboto; font-weight: 300; font-display: swap;
-  src: url(fonts/Roboto-Light-webfont.woff2) format("woff2");
-}
-/* REAL bold + italic faces (latin subset, Apache-2.0 Roboto) so weight-700 and italic text
-   render as designed, never browser-synthesized faux bold/italic. Roboto-Bold is the static
-   700 roman; Roboto-Italic is the variable italic face (wght 100-900), so one file serves BOTH
-   the 400 and 700 italic rules as genuine weight instances. */
-@font-face {
-  font-family: Roboto; font-weight: 700; font-style: normal; font-display: swap;
-  src: url(fonts/Roboto-Bold.woff2) format("woff2");
-}
-@font-face {
-  font-family: Roboto; font-weight: 400; font-style: italic; font-display: swap;
-  src: url(fonts/Roboto-Italic.woff2) format("woff2");
-}
-@font-face {
-  font-family: Roboto; font-weight: 700; font-style: italic; font-display: swap;
-  src: url(fonts/Roboto-Italic.woff2) format("woff2");
-}
-@font-face {
-  font-family: Cousine; font-display: swap;
-  src: url(fonts/Cousine-Regular.woff2) format("woff2");
-}
-/* Metric-matched fallback for Roboto body text (capsize/Fontaine method, Arial base; overrides
-   computed from the shipped Roboto-Regular-webfont.woff2). Listed in --font-sans right after
-   Roboto, so until the web font loads the system fallback occupies the SAME box -- near-zero
-   font-swap reflow (CLS). local() only: no network, no new file, so no CSP or preload change. */
-@font-face {
-  font-family: "Roboto Fallback";
-  src: local("Arial"), local("Helvetica Neue"), local("Liberation Sans");
-  size-adjust: 101.6785%;
-  ascent-override: 104.0638%;
-  descent-override: 28.5731%;
-  line-gap-override: 0%;
-}
+/* All text -- sans AND mono -- is a SYSTEM STACK (Vector-2022 idiom): ZERO downloaded web fonts.
+   No @font-face anywhere => no async font load => no swap => ZERO web-font layout shift (CLS) by
+   construction, and nothing to fetch on any page. A bare `Roboto` in --font-sans renders from a
+   LOCALLY installed face (Android system font; any desktop that has it) for brand parity, else the
+   OS sans; --font-mono is the OS monospace (ui-monospace etc), matching GitHub's code stack.
+   font-synthesis stays default (ON) so local/system bold+italic still render. */
 
 /* ---- design tokens: light (default) ---- */
 :root {
@@ -71,8 +27,8 @@
   --border: #d5d9de;
   --border-soft: #e6e9ec;
   --code-bg: #f3f4f6;
-  --pre-bg: #dddddd;
-  --pre-fg: #595959;   /* >=4.5:1 on --pre-bg for color-contrast AA (code-block text) */
+  --pre-bg: #f8f9fa;
+  --pre-fg: #1f2328;   /* near-black on #f8f9fa ~15:1 -- MediaWiki/GitHub light code block (was #595959/#ddd ~5:1) */
 
   /* interaction */
   /* --link must clear BOTH axe audits, so it is a balance:
@@ -81,9 +37,9 @@
          surface cards (~#f0f0ee), where #1d70b8 = ~4.6:1.
      A brighter #1f6feb gains link-in-text-block margin but drops to ~3.5:1 on those surfaces
      -> site-wide color-contrast FAIL (verified: mininav/card/admonition links). So #1d70b8 wins.
-     Dark theme cannot meet link-in-text-block (a link readable on the dark bg is too close in
-     lightness to near-white body text for 3:1) -- accepted known flag. link-in-text-block was
-     experimental until axe-core 4.5.0; its WCAG-A mapping is hedged and resting-only is debated. */
+     Dark link #74b1ff is 8.03:1 on the dark bg; its 1.81:1 vs near-white body text is the
+     link-in-text-block (adjacent-text) ratio, whose 3:1 bar is MET by the persistent underline
+     (a non-color cue, WCAG G183) -- so no color-contrast failure. */
   --link: #1d70b8;
   --link-hover: #08409b;
   --accent: #14866d;
@@ -109,8 +65,10 @@
   --gap: 1rem;
 
   /* fonts */
-  --font-sans: Roboto, "Roboto Fallback", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, "Noto Sans", sans-serif;
-  --font-mono: Cousine, ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "Courier New", monospace;
+  /* system sans stack (Vector-2022 shape); bare Roboto renders from a LOCAL face where installed
+     (Android, some desktops) for brand parity, else the OS sans -- no @font-face, no swap, no CLS */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "Courier New", monospace;
 }
 
 /* ---- design tokens: dark ---- */
@@ -183,17 +141,20 @@
 *, *::before, *::after { box-sizing: border-box; }
 html {
   color-scheme: light dark;
-  scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+}
+/* Smooth in-page scrolling, but only when the user has NOT requested reduced motion (the
+   back-to-top control honours the same preference -- keep them consistent). */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
 }
 body {
   margin: 0;
   background: var(--page-bg);   /* prod's light-gray page frame (#f3f3f3) */
   color: var(--fg);
-  font: 15px/1.6 var(--font-sans);   /* production content metric: 15px Roboto, 1.6 line-height */
+  font: 16px/1.6 var(--font-sans);   /* 16px / 1.6 line-height; sans from the system stack */
   /* -webkit-font-smoothing: antialiased is macOS-only and THINS dark-on-light text; it is scoped
      to the dark theme below (light-on-dark over-bolds), not applied globally. */
-  text-rendering: optimizeLegibility;
   overflow-wrap: break-word;
   /* Sticky footer: fill at least the viewport and let the content column grow, so the
      footer sits at the bottom instead of leaving white space below it on a short page
@@ -225,8 +186,18 @@ body {
 .cv-section.cv-h300 { contain-intrinsic-size: auto 300px; }
 .cv-section.cv-h600 { contain-intrinsic-size: auto 600px; }
 .cv-section.cv-h1200 { contain-intrinsic-size: auto 1200px; }
+.cv-section.cv-h2000 { contain-intrinsic-size: auto 2000px; }
+/* cv-h2400 + cv-h4800 are no longer EMITTED (page.py uses the finer ladder) but are KEPT: a partial
+   deploy pushes this shared stylesheet while leaving unrebuilt pages whose old HTML still carries
+   these classes -- dropping the rules would collapse those sections to the generic 800px. */
 .cv-section.cv-h2400 { contain-intrinsic-size: auto 2400px; }
+.cv-section.cv-h3000 { contain-intrinsic-size: auto 3000px; }
+.cv-section.cv-h4200 { contain-intrinsic-size: auto 4200px; }
 .cv-section.cv-h4800 { contain-intrinsic-size: auto 4800px; }
+.cv-section.cv-h5600 { contain-intrinsic-size: auto 5600px; }
+.cv-section.cv-h7200 { contain-intrinsic-size: auto 7200px; }
+.cv-section.cv-h9600 { contain-intrinsic-size: auto 9600px; }
+.cv-section.cv-h12000 { contain-intrinsic-size: auto 12000px; }
 /* A section's content-visibility containment also PAINT-CLIPS it and makes it its own stacking
    context. An open share menu is absolutely positioned at the heading and overflows below the
    section box, so it was truncated at the next heading (clipped by this section) and under-painted
@@ -260,6 +231,42 @@ a:has(> img.kicksecure-wiki-link-icon) {
   display: inline-flex; align-items: center; justify-content: center;
   min-width: 24px; min-height: 24px;
 }
+/* WCAG 2.5.8 Target Size (Minimum, AA): a link that is the whole content of a content list item,
+   table cell, definition, caption, or info-box is a STANDALONE tap target -- NOT the inline-
+   sentence exception. At body-text height (~20px) stacked in a list/cell these fail 2.5.8:
+   undersized AND crowded (the Lighthouse "tap targets too small / close" on forum/archive link
+   lists, table-cell links, cell-paragraph links). Pad them to clear the 24px minimum height.
+   SCOPE: list/cell/caption/info-box containers ONLY -- deliberately NOT a bare prose <p>. Vertical
+   padding grows the inline box ~1px past the 24px line box, which is invisible where items carry a
+   margin (list items have 0.3rem) but would make two inline prose links on ADJACENT WRAPPED LINES
+   overlap, so a click could hit the wrong one. These containers hold standalone links (one per
+   block, not a running sentence), so no such overlap arises; prose sentence links are left alone
+   (they are WCAG-exempt anyway). Buttons keep their own larger sizing (excluded below), and the
+   inline citation/edit markers (a <sup> footnote / archived-version mark, a references-list
+   backlink) stay tiny superscripts (padding reverted) so this does not fight the footnote fix. */
+.wiki-content :is(li, dd, dt, td, th, figcaption, .info-box) a:not(.cta-button):not(.button):not(.pill):not(.download-button-v2):not(.hero-download-button):not(.headline-anchor) {
+  padding-block: 3px;
+}
+.wiki-content sup a,
+.wiki-content .mw-cite-backlink a {
+  padding-block: 0;
+}
+/* Gallery caption file-links (`<gallery>` thumbnail labels) render in a SMALLER font than body
+   text, so the base padding above does not reach 24px; and a caption is crowded by its own
+   thumbnail link above (on mobile, by the next thumbnail below too). Pad to clear 24px for the
+   smaller caption font -- a standalone caption, so there is no sentence flow to disturb. */
+.wiki-content .gallery .gallerytext a {
+  padding-block: 4px;
+}
+/* Download/app lists render each entry as a logo link (to the image File page) PLUS a short text
+   link (to the article): `<li><a href=File><img></a> <a href=article>ISO</a></li>`. A 3-letter
+   label ("ISO", "I2P") is under 24px WIDE and sits right beside the logo, so it fails 2.5.8 on
+   width. Scope by structure -- the text link immediately AFTER an image link in a list item -- and
+   widen it with inline PADDING (not inline-block, which would stop a longer label wrapping and
+   centre it); only these paired labels are affected, never an inline prose link. */
+.wiki-content li > a:has(> img) + a {
+  padding-inline: 3px;
+}
 /* Production wiki image-sizing classes ({{img-height-N}}): a logo sized by HEIGHT, width auto.
    Prod targets a descendant img (.img-height-N img); the generator stamps the class on the <img>
    itself -- cover both. !important + width:auto overrides any presentational width attr, so an
@@ -274,6 +281,9 @@ hr {
 }
 a { color: var(--link); text-decoration: none; }
 a:hover { color: var(--link-hover); text-decoration: underline; text-underline-offset: 2px; }
+/* No :visited distinction BY DESIGN: the Tor/privacy audience + modern browsers already clamp
+   :visited styling (history-sniffing defence), so a visited colour is low value and a tiny privacy
+   signal. Links are distinguished by colour + underline-in-prose, which leaks no history. */
 /* a11y (Lighthouse link-in-text-block): a link embedded in body PROSE must not rely on colour
    alone -- its contrast with the surrounding near-black text is < 3:1 -- so underline it. Scoped
    to prose contexts; nav / cards / pills / buttons (their own classes) are not in a text block
@@ -446,7 +456,7 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
   position: sticky;
   top: 0;
   z-index: 30;
-  font-size: 16px;   /* chrome stays 16px (body is 15px for content parity) */
+  font-size: 16px;   /* chrome + body are both 16px */
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
@@ -916,35 +926,38 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
    <hN> element alone reads 0px -- do NOT conclude "no underline" from that). */
 .wiki-content h1, .wiki-content h2, .wiki-content h3,
 .wiki-content h4, .wiki-content h5, .wiki-content h6 {
-  color: var(--heading);   /* prod section headings are gray (#777), not near-black */
-  font-weight: 400;
+  color: var(--heading);   /* #1b1d1f near-black == body colour: full-dark headings (the docs idiom) */
+  /* semibold headings: WEIGHT (not just size) carries the hierarchy, so body-sized h4/h5/h6 read as
+     headings, not paragraphs. 600 (not 700) is the idiomatic docs heading weight -- GitHub/Starlight
+     600, and 700 reads heavy/blocky at the 30-32px title size. */
+  font-weight: 600;
   line-height: 1.3;
   margin: 1.1em 0 0.5em;
   scroll-margin-top: 4.5rem;
   text-wrap: balance;
 }
 .wiki-content p { text-wrap: pretty; }   /* fewer orphans/ragged last lines; Chromium/Safari, no-op elsewhere */
-.wiki-content h1 { font-size: 26px; }
-.wiki-content h2 { font-size: 20px; }
-.wiki-content h3 { font-size: 18px; }
+.wiki-content h1 { font-size: 30px; }
+.wiki-content h2 { font-size: 24px; }
+.wiki-content h3 { font-size: 20px; }
 /* Section-heading underline (prod Vector): h1/h2 get a bottom rule; the page TITLE
    (#firstHeading / .first-heading box) and h3+ do not. */
 .wiki-content h1:not(#firstHeading):not(.first-heading), .wiki-content h2 {
   border-bottom: 1px solid var(--border); padding-bottom: 0.2em;
 }
-.wiki-content h4 { font-size: 17px; font-weight: 400; }
-.wiki-content h5 { font-size: 16px; font-weight: 400; }
-.wiki-content h6 { font-size: 15px; font-weight: 400; }
+.wiki-content h4 { font-size: 18px; }   /* weight 700 from the shared rule above */
+.wiki-content h5 { font-size: 17px; }
+.wiki-content h6 { font-size: 16px; }
 /* Heading-level clamp (page.py normalize_heading_levels) moves a skipped heading's semantic
    <hN> tag to keep the outline contiguous; `hvis{authored}` pins the VISUAL back to the AUTHORED
    level so appearance is unchanged. Higher specificity (2 classes) than the bare hN rules above.
    h3-6 also clear the h1/h2 underline, since the authored (deeper) level never had one. */
-.wiki-content .hvis1 { font-size: 26px; font-weight: 400; }
-.wiki-content .hvis2 { font-size: 20px; font-weight: 400; }
-.wiki-content .hvis3 { font-size: 18px; font-weight: 400; border-bottom: none; padding-bottom: 0; }
-.wiki-content .hvis4 { font-size: 17px; font-weight: 400; border-bottom: none; padding-bottom: 0; }
-.wiki-content .hvis5 { font-size: 16px; font-weight: 400; border-bottom: none; padding-bottom: 0; }
-.wiki-content .hvis6 { font-size: 15px; font-weight: 400; border-bottom: none; padding-bottom: 0; }
+.wiki-content .hvis1 { font-size: 30px; font-weight: 600; }
+.wiki-content .hvis2 { font-size: 24px; font-weight: 600; }
+.wiki-content .hvis3 { font-size: 20px; font-weight: 600; border-bottom: none; padding-bottom: 0; }
+.wiki-content .hvis4 { font-size: 18px; font-weight: 600; border-bottom: none; padding-bottom: 0; }
+.wiki-content .hvis5 { font-size: 17px; font-weight: 600; border-bottom: none; padding-bottom: 0; }
+.wiki-content .hvis6 { font-size: 16px; font-weight: 600; border-bottom: none; padding-bottom: 0; }
 /* A widget-embedded heading may wrap its text in a block <p> (leftrightimagetext inner pass);
    keep it inline so the appended edit/share affordances stay on the heading line (the generator
    also unwraps it -- this guards any stray case). */
@@ -953,8 +966,8 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 /* heading wrapper carries no box, so the inner hN margins govern rhythm */
 .widget-headline { margin: 0; }
 .wiki-content > .widget-headline:first-child h1 { margin-top: 0.25rem; }
-/* Page title (#firstHeading / .first-heading) -- production Boilerplate.css values:
-   a subtle near-white panel, borderless, 28px. The generator synthesizes an
+/* Page title (#firstHeading / .first-heading) -- borderless, top of the 16px-base ladder
+   at 32px (production Boilerplate.css shipped 28px). The generator synthesizes an
    <h1 id="firstHeading" class="first-heading"> for a normal page (see page.py). */
 #firstHeading, .first-heading {
   max-width: 100%;
@@ -967,8 +980,8 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
   color: var(--heading);
   border: none;
   position: relative;
-  font-size: 28px;
-  font-weight: 400;   /* prod page title is normal-weight Roboto, not bold */
+  font-size: 32px;
+  font-weight: 600;   /* semibold title (600): the idiomatic docs heading weight, matches section headings + hero */
   line-height: 1.25;   /* tighter display leading: 1.6 was too airy on wrapping titles */
   /* prod .first-heading is a BLOCK: the book-nav floats top-right and the title text wraps
      around/below it at FULL width. A flex row instead steals column width from the title and
@@ -994,9 +1007,6 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 }
 /* book-nav floats top-right of the BLOCK title (prod): the base .wiki-book-index{float:right}
    applies and the title text wraps around it at full width. */
-@media (max-width: 600px) {
-  #firstHeading, .first-heading { font-size: 25px; }
-}
 
 .wiki-content p { margin: 0 0 0.85em; }   /* prod paragraph spacing */
 /* Readable measure: cap prose line length. 66ch ~= Tailwind `prose` (65ch); `ch` runs wider
@@ -1004,12 +1014,15 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
    WCAG-80 ceiling. The intro band opts out below. */
 .wiki-content p, .wiki-content li, .wiki-content dd { max-width: 66ch; }
 /* Measure-cap exceptions, so the cap never constrains non-prose layout: a table cell (pandoc
-   wraps cell content in <p>) sizes to its content, and a list item / definition that DIRECTLY
-   holds block media (image, code block, nested table) keeps full width instead of squeezing the
-   media to the text measure. */
+   wraps cell content in <p>) sizes to its content, and a list item / definition holding block
+   media (image, video, code block, nested table) keeps full width instead of squeezing the media
+   to the text measure. The media may be WRAPPED -- pandoc puts a loose-list image in <p>, and
+   [[File:|link=]] puts it in <a> -- so the exception covers the direct, <a>- and <p>-wrapped
+   shapes (and the wrapping <p> itself, else it re-caps the image it holds). */
 .wiki-content td > p, .wiki-content th > p,
-.wiki-content li:has(> img, > video, > pre, > table),
-.wiki-content dd:has(> img, > video, > pre, > table) { max-width: none; }
+.wiki-content li:has(> img, > video, > pre, > table, > a > img, > a > video, > p > img, > p > video),
+.wiki-content dd:has(> img, > video, > pre, > table, > a > img, > a > video, > p > img, > p > video),
+.wiki-content li > p:has(> img, > video), .wiki-content dd > p:has(> img, > video) { max-width: none; }
 /* pandoc wraps every table-cell's content in <p>; prod's wikitable cells hold bare text,
    so the 0.85em paragraph margin makes stage rows ~13px taller. Zero it inside cells. */
 .wiki-content td > p, .wiki-content th > p { margin: 0; }
@@ -1100,15 +1113,15 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
 /* ---- code + pre ---- */
 .wiki-content pre {
   display: block;
-  background: var(--pre-bg);   /* prod code blocks are a medium gray (#ddd), no radius */
+  background: var(--pre-bg);   /* light near-white code block (MediaWiki/GitHub idiom): near-black text, 6px rounded */
   color: var(--pre-fg);
   border: 1px solid var(--border);
-  border-radius: 0;
-  padding: 13px;
+  border-radius: 6px;
+  padding: 12px 16px;
   overflow-x: auto;
   font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.55;
+  font-size: 0.875em;   /* relative (was fixed 13px) so code scales with the body */
+  line-height: 1.45;
   tab-size: 4;
 }
 .wiki-content pre code { background: none; padding: 0; border: 0; font-size: inherit; }
@@ -1131,7 +1144,7 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
   white-space: pre;
 }
 .code-select, .code-select > *:not(.cbutton) { cursor: copy; }
-.code-select:hover { border-color: var(--border-soft); background: var(--surface-2); }
+.code-select:hover { border-color: var(--border-soft); background: var(--surface-2); color: var(--link-hover); /* --link on --surface-2 is 4.48:1; --link-hover (8.2:1) clears the text floor */ }
 /* Clipboard-hijack DEMO (Shell, Dev/wiki): text hidden from sight but present in the DOM, so a
    copy grabs more than is shown. A class (not an inline style, which strict-CSP strips) keeps the
    demo working on the static site. Only meaningful inside the demo's .code-select box. */
@@ -1361,7 +1374,7 @@ code {
   background: var(--code-bg);
   border: 1px solid var(--border-soft);
   padding: 3px 7px;
-  border-radius: 3px;
+  border-radius: 6px;
   font-family: var(--font-mono);
   font-size: 0.88em;
 }
@@ -1452,17 +1465,17 @@ code:empty { display: none; }
   color: currentColor;
   text-decoration: underline;
 }
-/* Links on the other tinted in-content surfaces that the --link blue cannot reach 4.5:1 on: a
-   table cell (a <th> header ~#d6d7d9 -> #1d70b8 ~3.6:1; a <td> in the top-of-article "About this
-   page" metadata box, where --link sits at only ~4.6:1 and the box tint tips it under 4.5:1) and
-   an info-box callout (the callout tint stacks on a NESTED info-box, darkening past the ~surface
-   the --link is tuned to). Inherit the cell's --fg text colour (high contrast) and keep the
-   underline -- the same treatment as the status cells above and the in-cell citations
-   (:is(td,th) .reference a) below, and unifying th + td link colour within a table. */
+/* Links on tinted in-content surfaces the --link blue cannot reach 4.5:1 on: a <th> header
+   (~#d6d7d9 -> #1d70b8 ~3.6:1) and an info-box callout (the callout tint stacks on a NESTED
+   info-box, darkening past the ~surface the --link is tuned to). Inherit the cell's --fg text
+   colour (high contrast) + keep the underline. Scoped to <th> ONLY: a plain <td> sits on the
+   white/near-white cell background where --link blue is ~5.3:1 (well above 4.5:1), so it must
+   stay blue -- forcing <td> links to near-black currentColor regressed every content-table link
+   to black. Tinted <td> cells get their contrast fix from the .cell-* rule above. */
 /* .cta-button is EXCLUDED: it is a styled call-to-action button (white text on a solid blue fill),
    not a prose cell link -- the currentColor+underline treatment turned its text dark-on-blue
    (~3.4:1, an axe color-contrast FAIL) and underlined it. Its own .cta-button rule keeps white. */
-.wiki-content table:not(.toc):not(.storage-table):not(.comparison-table) :is(td, th) a:not(.cta-button),
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-table) th a:not(.cta-button),
 .wiki-content .info-box a {
   color: currentColor;
   text-decoration: underline;
@@ -1519,7 +1532,12 @@ code:empty { display: none; }
 .info-box-icon > img { width: 30px; height: auto; }   /* Ambox image icon: match the 30px icon box */
 /* A callout's content image (e.g. the manual's book logo) is a small decorative cue, not a
    figure: cap it so a tall glyph cannot stretch the box past its text. Excludes the type badge. */
-.info-box :not(.info-box-icon) > img { height: 46px !important; width: auto !important; max-width: 100%; }
+/* Content images/logos embedded in an info-box BODY size to 46px. EXCLUDE the icons that live
+   in the callout but are not body content: the type icon's image (nested .info-box-icon a img,
+   so the parent-guard alone misses it) and the archive affordance marker -- the 46px!important
+   distorted both (square Info icon -> 30x46; 14x16 archive mark -> 24x46; Lighthouse
+   image-aspect-ratio). Each keeps its own sizing rule. */
+.info-box :not(.info-box-icon, .info-box-icon *) > img:not(.ia-archive-icon) { height: 46px !important; width: auto !important; max-width: 100%; }
 
 /* Numbered section/step badge (production "padded-content-icon" widget): a bold
    numeral, coloured by the element's cs-* --callout. pci-style-circle makes it a
@@ -2033,12 +2051,12 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 /* Sub-slogan pills ({{#sloganpills}}): solid brand-button chips (homepage tagline row). */
 .slogan-pills { list-style: none; margin: 0.6rem 0 1rem; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .slogan-pills .pill { display: inline-block; }
-/* Font-independent hero pill layout (cold-load CLS fix). With plain flex-wrap the 3 chips pair
-   greedily by chip width, which is font-dependent: Roboto wraps to 2 rows at >=359px but the
-   ~0.55%-wider fallback needs 3 rows until ~368px, so in 359-367px Roboto=2 rows / fallback=3 rows
-   -- a ~57px shift when Roboto swaps in. At/above 359px (exactly Roboto's own 3->2 flip) pin the
-   2-row shape STRUCTURALLY via grid (row 1 = first two chips at natural width, row 2 = third chip),
-   so the fallback wraps to the SAME 2 rows. Below 359px both fonts already stack 3 rows (untouched).
+/* Font-independent hero pill layout. With plain flex-wrap the 3 chips pair greedily by chip width,
+   which is font-dependent -- and the system sans stack renders a DIFFERENT face per visitor (local
+   Roboto vs the OS sans), so flex-wrap would give an inconsistent 2-vs-3-row shape across fonts.
+   At/above 359px pin the 2-row shape STRUCTURALLY via grid (row 1 = first two chips at natural
+   width, row 2 = third chip) so every font wraps to the SAME 2 rows; below 359px all fonts already
+   stack 3 rows (untouched). No web font => no swap, so this is cross-font consistency, not a swap fix.
    CSP-safe: a plain stylesheet rule, no inline/JS; grid overrides the base display:flex. */
 @media (min-width: 359px) {
   .slogan-pills { display: grid; grid-template-columns: max-content max-content;
@@ -2191,18 +2209,16 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   .left-right-image-text > .image { max-width: 100%; }
 }
 .references, .footnotes { font-size: 0.9rem; color: var(--fg-soft); }
-/* In-text citation marker [N]: middle-aligned (not raised superscript) so its >=24x24 tap target
-   (.reference > a below) fits the 24px body line without growing it or crowding an adjacent marker
-   (e.g. the archive sup next to it). */
-.reference { font-size: 0.85em; vertical-align: middle; line-height: 0; }
-/* The [N] anchor is a >=24x24 tap target (WCAG 2.5.8 / axe target-size), matching the archive
-   marker (.ext-link-to-archive > a) and the backlink caret (.mw-cite-backlink a) -- a deliberate
-   a11y deviation from production's tiny superscript. Centered so the small glyph fills the hit box
-   and two adjacent markers each clear 24px (the size path, so no 24px-spacing gap is needed). */
-.reference > a {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 24px; min-height: 24px;
-}
+/* In-text citation marker [N]: a real SUPERSCRIPT (idiomatic -- matches MediaWiki/Wikipedia's
+   sup.reference and the <sup> UA default; production ships a tiny raised mark). line-height:0
+   stops the raised mark from growing the line box (the standard sup guard). */
+.reference { font-size: 0.8em; vertical-align: super; line-height: 0; }
+/* The [N] anchor needs a >=24px tap target (WCAG 2.5.8): axe does not grant the inline exemption
+   here (the superscript's collapsed box measures ~20px tall). The anchor is display:inline-block
+   with an explicit line-height so its OWN box is >=24px (plain padding on an inline element does
+   NOT extend the measured box). The box fits inside the body line (25.6px) so the line does not
+   grow, and the small raised glyph keeps the superscript look. */
+.reference > a { display: inline-block; line-height: 24px; padding: 0 0.2em; }
 /* Footnote back-reference ("jump up" caret): a >=24px tap target (Lighthouse target-size) with
    the caret enlarged to nearly fill it, so the larger hit area is a bigger visible control, not
    wasted padding. In the references list each sits on its own line, so size does not crowd text. */
@@ -2250,7 +2266,7 @@ sup.reference:target {
    not "[edit]" text) at the end of the heading line, beside the share icon. Deep-links to the
    section's source line on GitHub. Themed -> dark-mode safe. */
 .mw-editsection {
-  font-size: 0.78em; font-weight: normal; margin-left: 0.5rem;
+  font-size: 0.75em; font-weight: normal; margin-left: 0.45rem;
   vertical-align: middle; white-space: nowrap; user-select: none;
 }
 .mw-editsection { color: var(--muted); }
@@ -2258,16 +2274,17 @@ sup.reference:target {
   /* >=24x24 touch target (WCAG 2.5.8 / lighthouse target-size): the pencil glyph is tiny,
      so pad the hit area out to 24px without enlarging the visible icon. Same box + color as
      the share icon so the two heading affordances align and read equally (user request). */
-  color: var(--fg); text-decoration: none;
+  color: var(--muted); text-decoration: none;
   display: inline-flex; align-items: center; justify-content: center;
   min-width: 24px; min-height: 24px; padding: 0 0.15em; vertical-align: middle;
 }
 .mw-editsection a:hover { color: var(--link); text-decoration: none; }
 .share-tooltip { position: relative; display: inline-block; margin-left: 0.45rem;
-  font-size: 0.72em; vertical-align: middle; }
-/* match the edit affordance: same dark color + 24x24 inline-flex box so edit + share align */
+  font-size: 0.75em; vertical-align: middle; }
+/* match the edit affordance: same MUTED color + size + 24x24 inline-flex box so edit + share
+   are symmetric (equal gray, equal 0.75em glyph, equal 0.45rem gap, same optical center). */
 .share-tooltip .headline-anchor {
-  color: var(--fg); display: inline-flex; align-items: center; justify-content: center;
+  color: var(--muted); display: inline-flex; align-items: center; justify-content: center;
   min-width: 24px; min-height: 24px; vertical-align: middle;
 }
 .share-tooltip .headline-anchor:hover { color: var(--link); text-decoration: none; }
@@ -2408,6 +2425,13 @@ sup.reference:target {
 .wiki-content .float-right table:not(.toc):not(.storage-table) th,
 .wiki-content .float-right table:not(.toc):not(.storage-table) td:first-child {
   background: var(--surface-2); text-align: center; font-weight: 700;
+}
+/* Links in that shaded label column/header: --link blue is only 4.47:1 on --surface-2 (axe
+   color-contrast fail), so inherit the cell's dark text colour + keep the underline affordance
+   (matches the th-tinted-surface rule for generic content tables). */
+.wiki-content .float-right table:not(.toc):not(.storage-table) th a,
+.wiki-content .float-right table:not(.toc):not(.storage-table) td:first-child a {
+  color: currentColor; text-decoration: underline;
 }
 [hidden] { display: none !important; }
 
@@ -2661,13 +2685,25 @@ sup.reference:target {
   justify-content: center;
   margin-top: 1rem;
 }
-.section-download .col-container > div { width: 40%; margin: 0.5%; }
-@media (min-width: 560px) { .section-download .col-container > div { width: 22%; } }
-@media (min-width: 768px) { .section-download .col-container > div { width: 14%; } }
-@media (min-width: 960px) { .section-download .col-container > div { width: 12%; } }
+.section-download .col-container > div { width: 46%; margin: 1%; }
+@media (min-width: 560px) { .section-download .col-container > div { width: 30%; } }
+@media (min-width: 768px) { .section-download .col-container > div { width: 22%; } }
+@media (min-width: 960px) { .section-download .col-container > div { width: 18%; } }
 /* pandoc wraps each card's <a> in a <p>; descendant selectors + a zeroed <p> margin keep
    the card compact regardless of that wrapper. */
 .section-download .col-container > div p { margin: 0; }
+/* download tabs (#downloadgrid groups=): the groups are the TABS of the shared
+   tab-content-controller on the dark band (production Hardware / Virtual Machine / Other). The
+   controller's in-content chrome (light title bar, content border/padding) is for light-bg prose
+   tabs; neutralize it here so only the pill switcher + the active tile row read on #273445. No-JS
+   shows each group's title as a centered white label over its tiles (progressive enhancement). */
+.section-download .tab-content-controller { margin: 1rem auto 0; }
+.section-download .tcc-title {
+  background: transparent; color: #fff; text-align: center; cursor: pointer;
+  font-size: 1.05rem; font-weight: 700;
+}
+.section-download .tcc-section.active .tcc-title { color: #fff; box-shadow: none; }
+.section-download .tcc-content { border-top: none; padding: 0; }
 .section-download .col-container > div a {
   background: #3c495a;
   display: block;
@@ -2675,7 +2711,8 @@ sup.reference:target {
   margin: 0 auto;
   border-radius: 20px;
   text-decoration: none;
-  padding: 1px;
+  /* inset the icon from the rounded card edge (a flush icon touching the border looks bad). */
+  padding: 12px 10px 8px;
   vertical-align: top;
   transition: transform 0.3s;
 }
@@ -2686,9 +2723,10 @@ sup.reference:target {
   padding-bottom: 6px;
   color: #fff;
   text-align: center;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  /* let a long platform label (Raspberry Pi (RPi), ppc64el (POWER9/10)) wrap to 2 lines rather
+     than truncate with an ellipsis -- the widened tiles have the room. */
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .section-download .image-wrapper {
   display: block;
@@ -2838,11 +2876,13 @@ sup.reference:target {
 .overview-image:hover::after { opacity: 1; }
 /* Status icon/text colors rescued from inline color: by sanitize (strict CSP strips the
    inline style) -- {{Check-yes}} green check, {{Check-no}} red cross, {{Check-todo}} orange
-   clock. Dark-mode gets brighter variants for contrast. */
-.text-green { color: #1a8a1a; }
+   clock. Dark-mode gets brighter variants for contrast. Light values are darkened to clear
+   WCAG 4.5:1 as bold body-size text on BOTH --page-bg #f3f3f3 and --surface #f6f7f9
+   (green 4.95, orange 4.74, yellow 4.69, red 4.90); do not lighten past that floor. */
+.text-green { color: #157a15; }
 .text-red { color: #c0392b; }
-.text-orange { color: #c9700a; }
-.text-yellow { color: #b8960b; }
+.text-orange { color: #a35908; }
+.text-yellow { color: #866900; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .text-green { color: #4ac94a; }
   :root:not([data-theme="light"]) .text-red { color: #ef6b5c; }
@@ -3022,7 +3062,10 @@ sup.reference:target {
   background-color: #89d; border-radius: 50px; box-shadow: 2px 2px 6px #00000028 inset;
   text-align: center; font-size: 0;
 }
-.mininav.mn-switcher > ul > li { display: inline-block; margin: 0; padding: 0; }
+/* max-width:none: a pill <li> inherits font-size:0 from the ul, so the prose reading-measure cap
+   `.wiki-content li { max-width: 66ch }` resolves `ch` against font-size 0 -> 0, collapsing every
+   pill to width 0 (they then overflow + stack). The switcher pills are chrome, not prose. */
+.mininav.mn-switcher > ul > li { display: inline-block; margin: 0; padding: 0; max-width: none; }
 .mininav.mn-switcher li > :not(span, img) {
   /* dark text on the light-blue pill: white failed WCAG contrast (2.22) on #9aabed;
      dark navy keeps the production pill colour while passing a11y */
