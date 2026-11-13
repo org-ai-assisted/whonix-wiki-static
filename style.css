@@ -787,6 +787,21 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
   outline-offset: 1px;
   border-color: var(--accent);
 }
+/* Desktop (>720px): the lens expands the field INLINE into an in-header search bar, not a
+   floating overlay -- in-flow after the magnifier, so it reads as a real header search box.
+   The header is pinned nowrap here so the growing field can NEVER reflow the row to a 2nd line
+   (the sole reason the field was kept absolute); the nav yields (display:none) while the bar is
+   open to free the room the small nav->lens slack cannot. Mobile (<=720px) keeps the overlay. */
+@media (min-width: 721px) {
+  .site-header-inner { flex-wrap: nowrap; }
+  .search-field { position: static; top: auto; right: auto; box-shadow: none; }
+  /* A usable inline bar needs more room than the ~60-120px nav->lens slack, so the nav yields
+     to the search WHILE IT IS OPEN (it returns on close). :has() keys the ancestor off the
+     toggle, which sits AFTER the nav in the DOM (a `~` combinator cannot reach a preceding
+     sibling). The header stays nowrap so the bar never reflows the row to a 2nd line. */
+  .site-header-inner:has(#search-toggle:checked) .site-nav { display: none; }
+  .search-toggle:checked ~ .search-field { width: min(50vw, 22rem); box-shadow: none; }
+}
 .edit-source { color: var(--muted); font-size: 0.9rem; }
 /* Header Donate call-to-action (production parity). Red heart glyph + link. */
 .header-donate {
@@ -2211,6 +2226,17 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
    give the element after the box that gap (prod ~21px). `.wiki-content` prefix outranks the
    margin:0 the box-paragraph rule sets. */
 .wiki-content .post-intro-p + * { margin-top: 1.5em; }
+/* Flush-left content column (the has-rail-only grid and the plain non-grid page have NO left
+   `prev` gutter): the band's -12px left bleed has nowhere to sit, so it shoves the lead text
+   12px off the page-title's left axis. Cancel the LEFT bleed there -- text stays flush with the
+   heading (the right bleed into the rail gutter is unaffected). has-booknav pages keep the bleed. */
+.wiki-content:not(.has-booknav) .intro-like > :not(blockquote),
+.wiki-content:not(.has-booknav) .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail, blockquote)) {
+  /* blockquote excluded: it carries its own border-left + indent, so zeroing padding-left would
+     collapse its text against the bar -- it keeps the band treatment. Plain text paragraphs (the
+     lead the gate measures) get the flush-left reset. */
+  margin-left: 0; padding-left: 0;
+}
 /* Homepage hero: match prod's centered slogan + sub-slogan (h2.slogan 34px centered #333;
    p.sub-slogan 19px centered non-italic #222). The shared boxed Title + italic IntroLike
    callout are reshaped to that clean centered look on the HOMEPAGE ONLY -- every other page
