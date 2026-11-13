@@ -172,30 +172,6 @@
     }
   }
 
-  // Generic copy button: any [data-copy] element copies its attribute to the clipboard and
-  // flashes a `.copied` class for ~2s (the label's data-copied text is shown via CSS ::after).
-  // Used by the header supermenu's Permalink button (share copy fields are .code-select).
-  function initDataCopy() {
-    var btns = document.querySelectorAll("[data-copy]");
-    for (var i = 0; i < btns.length; i++) {
-      (function (btn) {
-        var text = btn.getAttribute("data-copy");
-        var timer;
-        function done() {
-          btn.classList.add("copied");
-          clearTimeout(timer);
-          timer = setTimeout(function () { btn.classList.remove("copied"); }, 2000);
-        }
-        btn.addEventListener("click", function (e) {
-          e.preventDefault();
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(done, done);
-          } else { done(); }
-        });
-      })(btns[i]);
-    }
-  }
-
   // Print button: emitted `hidden` (no-JS users use native Ctrl+P, not a dead button), so
   // unhide it here and wire window.print() -- the only static-safe "printable view" (a print
   // stylesheet strips chrome).
@@ -216,16 +192,22 @@
   function initExpandCollapseAll() {
     var btns = document.querySelectorAll(".expand-or-collapse-all-button");
     for (var i = 0; i < btns.length; i++) {
-      btns[i].addEventListener("click", function () {
-        var items = document.querySelectorAll("details.mw-collapsible");
-        var anyClosed = false;
-        for (var k = 0; k < items.length; k++) {
-          if (!items[k].open) { anyClosed = true; break; }
-        }
-        for (var j = 0; j < items.length; j++) {
-          items[j].open = anyClosed;
-        }
-      });
+      (function (btn) {
+        btn.addEventListener("click", function () {
+          var items = document.querySelectorAll("details.mw-collapsible");
+          var anyClosed = false;
+          for (var k = 0; k < items.length; k++) {
+            if (!items[k].open) { anyClosed = true; break; }
+          }
+          for (var j = 0; j < items.length; j++) {
+            items[j].open = anyClosed;
+          }
+          // Reflect the new aggregate state so the label + chevron match the collapsible pills
+          // (.mwc-toggle): just opened all -> "Collapse all" + up arrow; else -> "Expand all" + down.
+          btn.classList.toggle("is-expanded", anyClosed);
+          btn.textContent = anyClosed ? "Collapse all" : "Expand all";
+        });
+      })(btns[i]);
     }
   }
 
@@ -250,25 +232,9 @@
     }
   }
 
-  // Open a collapsible <details> when the URL fragment targets it (or an element inside it),
-  // so an in-page anchor to a closed box reveals its content instead of landing on a shut box.
-  // Runs on load + hashchange. TT-safe: only sets .open.
-  // Reliable hash scroll under content-visibility. A .cv-section (content-visibility:auto) is laid
-  // out from its contain-intrinsic-size ESTIMATE until rendered, so a cold-load scroll to a target
-  // in an unrendered section lands at the estimated position -- which, with `scroll-behavior:smooth`
-  // animating to a destination computed ONCE, is typically the page bottom. Force EVERY section to
-  // full layout so positions are EXACT, scroll instantly, then restore: the sections keep their
-  // now-cached real sizes (contain-intrinsic-size:auto), so the scroll stays put and off-screen
-  // skipping resumes. Only runs on a hash navigation, so the common no-fragment load keeps the
-  // content-visibility perf win untouched. TT-safe: only sets content-visibility + scrolls.
-  function scrollHashIntoView(el) {
-    if (!el.scrollIntoView) return;
-    var secs = document.querySelectorAll(".cv-section"), i;
-    for (i = 0; i < secs.length; i++) secs[i].style.contentVisibility = "visible";
-    el.scrollIntoView({ block: "start", behavior: "instant" });
-    for (i = 0; i < secs.length; i++) secs[i].style.contentVisibility = "";
-  }
-
+  // Open a collapsible <details> when the URL fragment targets it (or an element inside it), so an
+  // in-page anchor to a closed box reveals its content and scrolls to it instead of landing on a
+  // shut box. Runs on load + hashchange. TT-safe: only sets .open + scrolls.
   function openHashDetails() {
     var id;
     try { id = decodeURIComponent((location.hash || "").slice(1)); } catch (e) { return; }
@@ -276,10 +242,12 @@
     var el = document.getElementById(id);
     if (!el) return;
     var d = el.closest ? el.closest("details") : null;
-    if (d) d.open = true;
-    // Runs on load + hashchange (wired to both), so TOC/section-link clicks + a cold-load #fragment
-    // all land on the target; no-JS keeps the native (approximate) scroll.
-    scrollHashIntoView(el);
+    if (d && !d.open) {
+      d.open = true;                                   // reveal the box, then scroll to the now-laid-out target
+      if (el.scrollIntoView) el.scrollIntoView({ block: "start" });
+    }
+    // A target NOT inside a closed box needs no JS scroll: the sections render in full (no
+    // content-visibility estimate), so the browser's native #fragment scroll already lands right.
   }
 
   // The crypto-panel QR reveal and the "More Payment Options" grid collapse are now pure-CSS
@@ -438,7 +406,8 @@
       var secs = tabSections(ctrl);
       activateTab(ctrl, Array.prototype.indexOf.call(secs, sec));
     }
-    scrollHashIntoView(el);
+    // the target's tab(s) are now active + laid out, so scroll to it (no content-visibility estimate)
+    if (el.scrollIntoView) el.scrollIntoView({ block: "start" });
   }
 
   // Mobile nav menu is a pure-CSS checkbox toggle (#nav-toggle). With JS on, also
@@ -1802,17 +1771,16 @@
     nav.addEventListener("focusout", function (e) { if (!nav.contains(e.relatedTarget)) closeAll(); });
   }
 
-  // Per-heading share menus are server-rendered into an inert <template class="share-full">
-  // (NOT in the render tree -> zero style/layout, and never queried at load). On first HOVER,
-  // press or focus of a heading's share button the template is moved into its live .menu, so CSS
+  // Per-heading share menus are DEDUPED to ONE page-level <template class="share-proto"> that
+  // carries the full menu with opaque sentinels; each heading's .share-tooltip carries only its
+  // 7 real per-context values as data-sh-*. On first HOVER, press or focus of a heading's share button
+  // we clone the proto, substitute this heading's values, and move it into the live .menu, so CSS
   // :hover/:focus-within then reveals the FULL menu with no click (desktop hover + keyboard). A
   // tap/click additionally TOGGLES a persistent .share-open, essential on touch: a tap holds
   // neither :hover nor :focus-within, so without it the menu never stays open on a phone. Same
-  // code on every platform (no UA branching) -- the browser decides which events fire. This keeps
-  // the full per-section social+copy menu for JS
-  // users while the initial RENDERED DOM stays ~500 elements (it was ~3881 on ISO -- the 29 full
-  // heading menus dominated mobile Style & Layout / TBT); no-JS / Tor-Safest users keep the static
-  // permalink. Delegated listeners -> ~zero load-time JS, nothing built for headings nobody opens.
+  // code on every platform (no UA branching) -- the browser decides which events fire. One proto
+  // per page (not ~30 baked menus) keeps the RENDERED DOM small AND the HTML payload light;
+  // no-JS / Tor-Safest users keep the static permalink. Delegated listeners -> ~zero load-time JS.
   // Homepage hero video: a poster overlay (.overview-image) sits over the <video>; clicking it
   // hides the poster and plays the video, so its native controls take over. CSP-safe (no inline
   // handler), no autoplay, poster is a plain <img>; keyboard users reach the video's own controls.
@@ -1851,16 +1819,61 @@
   }
 
   function initShareLazy() {
+    // Replace each of the 7 opaque sentinels 1:1 with this heading's value -- PURE string
+    // substitution, NO encoding. chrome.share_menu_values already applied every context transform
+    // (url-quoting, wikitext-delimiter stripping, accessible-name disambiguation) and the browser
+    // decoded the data-sh-* attrs, so the values are final; re-encoding here would corrupt them
+    // (the bug this replaces: it encodeURIComponent'd href values, bypassing Python's transforms ->
+    // clipboard injection + broken social/markdown URLs). Distinct sentinels mean no value is ever
+    // reused across two encodings, so one map + one pass is always correct.
+    function substShare(str, map) {
+      return str.replace(/ZZSH(DIRECT|U|T|ARIA|WIKI|MD|PHPBB|ID)ZZ/g, function (m) { return map[m]; });
+    }
+    // Per-heading-unique prefix for the social popover ids (ZZSHIDZZ in the proto). Every cloned
+    // menu must get document-unique popovertarget/[popover] id pairs, or a button would target the
+    // first same-id popover on the page. Incremented once per heading built.
+    var shUid = 0;
+    // The full social+copy menu is deduped: ONE page-level <template class="share-proto"> carries
+    // it with the sentinels; each heading's .share-tooltip carries its 7 real values as data-sh-*.
+    // On first open, clone the proto, substitute this heading's values, and drop the pre-rendered
+    // no-JS permalink (the proto re-includes it). Footer/authored menus have no data-sh-direct
+    // (their full menu is already rendered) -> left untouched.
     function activate(tip) {
-      var tmpl = tip.querySelector("template.share-full");
-      if (!tmpl) return;                                   // footer/page/authored menus: no template
-      var menu = tmpl.parentNode;
-      // The template's full menu RE-INCLUDES the permalink, so drop the pre-rendered no-JS
-      // permalink (every node before the template) -- else it would show twice once injected.
-      while (menu.firstChild && menu.firstChild !== tmpl) menu.removeChild(menu.firstChild);
-      menu.insertBefore(tmpl.content, tmpl);               // move the inert nodes into the live menu
-      tmpl.remove();
-      initCopyButtons();                                   // idempotent: wires only the new .code-select
+      if (tip.getAttribute("data-sh-built")) return;       // build once per heading
+      var direct = tip.getAttribute("data-sh-direct");
+      if (direct === null) return;                         // footer/authored menu: already full
+      var proto = document.querySelector("template.share-proto");
+      var menu = tip.querySelector(".menu");
+      if (!proto || !menu) return;
+      var map = {
+        ZZSHDIRECTZZ: direct,
+        ZZSHUZZ: tip.getAttribute("data-sh-u"),
+        ZZSHTZZ: tip.getAttribute("data-sh-t"),
+        ZZSHARIAZZ: tip.getAttribute("data-sh-aria"),
+        ZZSHWIKIZZ: tip.getAttribute("data-sh-wiki"),
+        ZZSHMDZZ: tip.getAttribute("data-sh-md"),
+        ZZSHPHPBBZZ: tip.getAttribute("data-sh-phpbb"),
+        ZZSHIDZZ: "sh" + (shUid++)        // unique popover-id prefix for this heading's menu
+      };
+      var frag = proto.content.cloneNode(true);
+      var els = frag.querySelectorAll("*");
+      for (var i = 0; i < els.length; i++) {
+        var attrs = els[i].attributes;
+        for (var j = 0; j < attrs.length; j++) {
+          if (attrs[j].value.indexOf("ZZSH") !== -1) {
+            els[i].setAttribute(attrs[j].name, substShare(attrs[j].value, map));
+          }
+        }
+      }
+      var tw = document.createTreeWalker(frag, NodeFilter.SHOW_TEXT);
+      var n;
+      while ((n = tw.nextNode())) {
+        if (n.nodeValue.indexOf("ZZSH") !== -1) n.nodeValue = substShare(n.nodeValue, map);
+      }
+      while (menu.firstChild) menu.removeChild(menu.firstChild);  // drop the no-JS permalink
+      menu.appendChild(frag);
+      tip.setAttribute("data-sh-built", "1");
+      initCopyButtons();                                   // idempotent: wires the new .code-select
     }
     function closeAll(except) {
       var open = document.querySelectorAll(".share-tooltip.share-open");
@@ -1916,7 +1929,6 @@
     // does not shift content.
     whenIdle(function () {
       initCopyButtons();
-      initDataCopy();
       initPagePrint();
       initExpandCollapseAll();
       initComparisonMore();

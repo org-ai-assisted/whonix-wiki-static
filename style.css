@@ -62,6 +62,10 @@
 
   /* rhythm + measure */
   --maxw: 60rem;   /* production content column ~960px */
+  /* Anchor landing offset: a fragment-targeted heading scrolls to here, clear of the sticky
+     header. Sized for the TALLEST header state (82px when the desktop nav wraps at ~768-820px),
+     not just the 45-51px common case, so a deep link never lands under the header. */
+  --anchor-offset: 5.5rem;
   --gap: 1rem;
 
   /* fonts */
@@ -173,41 +177,9 @@ body {
   :root:not([data-theme="light"]) body { -webkit-font-smoothing: antialiased; }
 }
 .wiki-content { flex: 1 0 auto; width: 100%; min-width: 0; }
-/* Each top-level content section (page.py _wrap_sections) skips style+layout+paint while
-   off-screen and renders lazily on scroll -- cuts the up-front Style & Layout cost (hence mobile
-   TBT) on long pages. `auto` in contain-intrinsic-size lets the browser store each section's real
-   height after first render, so the 800px placeholder only affects the very first scroll-past
-   (minimal CLS); display:block keeps normal flow. Modern browsers scroll in-page #anchors and
-   find-in-page INTO cv:auto content. */
-.cv-section { content-visibility: auto; contain-intrinsic-size: auto 800px; display: block; }
-/* Per-section reserved-height buckets (page.py _cv_size_bucket estimates each section's height):
-   keeps the placeholder close to the real height so native (no-JS) fragment scroll lands near the
-   target and first-render CLS stays small. `auto` still caches the exact size after first render. */
-.cv-section.cv-h300 { contain-intrinsic-size: auto 300px; }
-.cv-section.cv-h600 { contain-intrinsic-size: auto 600px; }
-.cv-section.cv-h1200 { contain-intrinsic-size: auto 1200px; }
-.cv-section.cv-h2000 { contain-intrinsic-size: auto 2000px; }
-/* cv-h2400 + cv-h4800 are no longer EMITTED (page.py uses the finer ladder) but are KEPT: a partial
-   deploy pushes this shared stylesheet while leaving unrebuilt pages whose old HTML still carries
-   these classes -- dropping the rules would collapse those sections to the generic 800px. */
-.cv-section.cv-h2400 { contain-intrinsic-size: auto 2400px; }
-.cv-section.cv-h3000 { contain-intrinsic-size: auto 3000px; }
-.cv-section.cv-h4200 { contain-intrinsic-size: auto 4200px; }
-.cv-section.cv-h4800 { contain-intrinsic-size: auto 4800px; }
-.cv-section.cv-h5600 { contain-intrinsic-size: auto 5600px; }
-.cv-section.cv-h7200 { contain-intrinsic-size: auto 7200px; }
-.cv-section.cv-h9600 { contain-intrinsic-size: auto 9600px; }
-.cv-section.cv-h12000 { contain-intrinsic-size: auto 12000px; }
-/* A section's content-visibility containment also PAINT-CLIPS it and makes it its own stacking
-   context. An open share menu is absolutely positioned at the heading and overflows below the
-   section box, so it was truncated at the next heading (clipped by this section) and under-painted
-   by the following section; measuring the subtree on open also snapped its height, shifting the
-   page. Drop the containment on a section whose share menu is open (hover, keyboard focus, or the
-   click-persistent .share-open) so the popup overflows and overlays normally and the real height
-   is used. */
-.cv-section:has(.share-tooltip:hover),
-.cv-section:has(.share-tooltip:focus-within),
-.cv-section:has(.share-tooltip.share-open) { content-visibility: visible; }
+/* page.py _wrap_sections wraps each top-level section in <section class="cv-section"> as a
+   structural boundary -- the homepage dark-band + other :has() rules below hook onto it. The
+   sections render in full so the browser's native (no-JS) #fragment scroll lands correctly. */
 /* video shares img's responsive treatment: max-width stops a fixed width= attr overflowing a
    phone, and height:auto preserves the intrinsic aspect ratio once the cap binds. Applied
    uniformly, exactly like img (height:auto regardless of a height attr) -- a video with a
@@ -387,6 +359,24 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
 /* prod .mw-ui-button is a rounded PILL that scales slightly on hover -- match it. */
 .mw-ui-button { border-radius: 20px; }
 .mw-ui-button:hover { transform: scale(1.1); }
+/* "Expand all" matches the collapsible "Learn More" pills (.mwc-toggle): blue, bold, the SAME
+   font-size + padding, pushed to the right edge so the controls form one consistent column. */
+.expand-or-collapse-all-button {
+  display: block; margin-left: auto; width: fit-content;
+  /* Inset by the collapsible card's border (1px) + padding-right (10px) so the button's right
+     edge lines up with each card's "Learn More" pill (which sits flush to the card's inner edge),
+     forming one right-aligned column rather than overhanging to the card's outer edge. */
+  margin-right: 11px;
+  background: var(--link); border-color: var(--link); color: #fff;
+  font-weight: 700; font-size: 1rem; padding: 4px 17px 5px 10px;
+}
+.expand-or-collapse-all-button:hover {
+  background: var(--link); border-color: var(--link); color: #fff; filter: brightness(1.08);
+}
+/* Down/up chevron matching the .mwc-toggle pills: down = "Expand all", up = "Collapse all"
+   (app.js flips the label + .is-expanded on click). */
+.expand-or-collapse-all-button::before { content: "\25BC"; margin-right: 0.4rem; font-size: 0.8em; }
+.expand-or-collapse-all-button.is-expanded::before { content: "\25B2"; }
 
 /* prod download button (MediaWiki Kicksecure ext .download-button-v2 / .dbutton): a rounded
    gradient-blue pill with a left icon divider + an OS-icon cell. Reproduced from prod CSS. */
@@ -506,7 +496,7 @@ body.site-whonix .site-logo-img { width: auto; }
   border-radius: 0 0 8px 8px;
   white-space: nowrap;
 }
-/* Header "supermenu": a pure-CSS chevron dropdown (Edit/History/Print/Permalink/Share)
+/* Header "supermenu": a pure-CSS chevron dropdown (Edit/History/Print/Share)
    between the search icon and the Donate CTA, matching production's page-tools chevron. */
 .tools { position: relative; display: inline-flex; align-items: center; }
 .tools-label {
@@ -561,9 +551,6 @@ body.site-whonix .site-logo-img { width: auto; }
 }
 .tools-item:hover { background: var(--surface-2); color: var(--fg); text-decoration: none; }
 .tools-item i { color: var(--muted); }
-.tools-item.copied::after {
-  content: attr(data-copied); margin-left: auto; color: #2e7d32; font-size: 0.85em;
-}
 /* Grouped page-tools sections (production-style): a small muted header per section, with a
    hairline separator between sections. */
 /* Separator above the full-width share panel only; the Page/Tools sections are now side-by-side
@@ -741,7 +728,7 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 .skip-link:focus { top: 0; }
 /* Clear the sticky site-header when the skip link jumps to #main-content (same offset as the
    heading scroll-margin-top below), so the firstHeading is not hidden under the header. */
-#main-content { scroll-margin-top: 4.5rem; }
+#main-content { scroll-margin-top: var(--anchor-offset); }
 /* Normalize the header action glyphs to one size + fixed-width box so they align on the same
    optical center and the gaps between them read even (the heart was 20px vs the 16-17px others). */
 .site-header-inner .fa-magnifying-glass,
@@ -850,12 +837,15 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
      label + separators), not a cramped wall of links. Collapsed by default; the hamburger
      plus outside-tap / Esc (app.js initNavToggle) toggle it. */
   .site-nav {
-    /* order 5: LAST of the header flex items, so the open drawer wraps to its own
-       full-width row BELOW search(2)/tools(3)/Donate(4) instead of sharing order 3
-       with .tools and shoving Donate below the menu. */
-    flex-basis: 100%; order: 5;
+    /* OVERLAY drawer (absolute), not an inline flex row: opening it must NOT grow the sticky
+       header or push content. As an inline flex-basis:100% row it added the full menu height to
+       the header (72px -> ~800px), jumping the header's bottom border + all content down ~725px
+       -- a severe layout shift. Absolute + top:100% hangs it below the row; the header keeps its
+       fixed height + border, and the menu floats over the page with its own scroll. */
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 29;
+    background: var(--surface); box-shadow: var(--shadow-sm);
     max-height: calc(100vh - 130px); overflow-y: auto;
-    margin: 0.4rem -1rem 0; padding: 0 1rem 0.4rem;
+    padding: 0 1rem 0.4rem;
     border-top: 1px solid var(--border);
   }
   .site-nav > ul { flex-direction: column; gap: 0; }
@@ -892,12 +882,22 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
   .header-cta { order: 4; }
   .search-toggle:checked ~ .search-field { width: min(80vw, 16rem); }   /* overlay, not inline */
 }
-/* Narrow phones: production drops the "Donate" word (heart glyph only) at <=382px, where
-   the label would otherwise crowd the bar. font-size:0 hides the text node; the heart keeps
-   its own size. */
-@media (max-width: 382px) {
+/* Narrow phones: drop the "Donate" word (heart glyph only) so the CTA stays on the logo
+   row. Our mobile header fits the heart+word on one row only at >=425px; below that the
+   whole CTA wraps to a second line under the logo (the full word showing while wrapped).
+   font-size:0 hides the text node; the heart keeps its own size. (Prod drops the word at
+   <=380px; our Font Awesome heart + wordmark metrics run wider, so we drop it sooner.) */
+@media (max-width: 424px) {
   .header-donate { font-size: 0; }
   .header-donate .fa-heart { font-size: 20px; }
+}
+/* Ultra-narrow: below the width where even the heart-only CTA (word already dropped above)
+   would wrap under the logo, drop the wordmark TEXT -- keeping the shield logo image AND the
+   trademark mark. This reclaims the row space so the whole header stays on one line.
+   font-size:0 hides the bare wordmark text node in .site-logo; the <img> logo and the separate
+   .site-tm element keep their own size. */
+@media (max-width: 374px) {
+  .site-logo { font-size: 0; }
 }
 
 /* ---- content ---- */
@@ -933,7 +933,7 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
   font-weight: 600;
   line-height: 1.3;
   margin: 1.1em 0 0.5em;
-  scroll-margin-top: 4.5rem;
+  scroll-margin-top: var(--anchor-offset);
   text-wrap: balance;
 }
 .wiki-content p { text-wrap: pretty; }   /* fewer orphans/ragged last lines; Chromium/Safari, no-op elsewhere */
@@ -948,6 +948,14 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 .wiki-content h4 { font-size: 18px; }   /* weight 700 from the shared rule above */
 .wiki-content h5 { font-size: 17px; }
 .wiki-content h6 { font-size: 16px; }
+/* Mobile tap-target clearance (WCAG 2.5.8 / axe target-size): each heading carries two 24px
+   affordance icons (share + edit). At narrow widths the heading text wraps, dropping one
+   heading's icon row within 24px of the next heading's -- axe flags the pair as mutually
+   obscured. A roomier top margin at mobile separates the icon rows; max() preserves the
+   em-scaled rhythm of the larger headings. Desktop does not wrap, so it is left untouched. */
+@media (max-width: 600px) {
+  .wiki-content :is(h1, h2, h3, h4, h5, h6) { margin-top: max(1.1em, 2rem); }
+}
 /* Heading-level clamp (page.py normalize_heading_levels) moves a skipped heading's semantic
    <hN> tag to keep the outline contiguous; `hvis{authored}` pins the VISUAL back to the AUTHORED
    level so appearance is unchanged. Higher specificity (2 classes) than the bare hN rules above.
@@ -1009,6 +1017,48 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
    applies and the title text wraps around it at full width. */
 
 .wiki-content p { margin: 0 0 0.85em; }   /* prod paragraph spacing */
+/* Readable measure: cap prose line length. 66ch ~= Tailwind `prose` (65ch); `ch` runs wider
+   than a mean glyph so this renders ~73-80 actual chars -- the top of the 45-75 ideal / the
+   WCAG-80 ceiling. The intro band opts out below. */
+.wiki-content p, .wiki-content li, .wiki-content dd { max-width: 66ch; }
+/* Measure-cap exceptions, so the cap never constrains non-prose layout: a table cell (pandoc
+   wraps cell content in <p>) sizes to its content, and a list item / definition holding block
+   media (image, video, code block, nested table) keeps full width instead of squeezing the media
+   to the text measure. The media may be WRAPPED -- pandoc puts a loose-list image in <p>, and
+   [[File:|link=]] puts it in <a> -- so the exception covers the direct, <a>- and <p>-wrapped
+   shapes (and the wrapping <p> itself, else it re-caps the image it holds). */
+.wiki-content td > p, .wiki-content th > p,
+.wiki-content li:has(> img, > video, > pre, > table, > a > img, > a > video, > p > img, > p > video),
+.wiki-content dd:has(> img, > video, > pre, > table, > a > img, > a > video, > p > img, > p > video),
+.wiki-content li > p:has(> img, > video), .wiki-content dd > p:has(> img, > video) { max-width: none; }
+/* Readable measure: cap prose line length. 66ch ~= Tailwind `prose` (65ch); `ch` runs wider
+   than a mean glyph so this renders ~73-80 actual chars -- the top of the 45-75 ideal / the
+   WCAG-80 ceiling. The intro band opts out below. */
+.wiki-content p, .wiki-content li, .wiki-content dd { max-width: 66ch; }
+/* Measure-cap exceptions, so the cap never constrains non-prose layout: a table cell (pandoc
+   wraps cell content in <p>) sizes to its content, and a list item / definition holding block
+   media (image, video, code block, nested table) keeps full width instead of squeezing the media
+   to the text measure. The media may be WRAPPED -- pandoc puts a loose-list image in <p>, and
+   [[File:|link=]] puts it in <a> -- so the exception covers the direct, <a>- and <p>-wrapped
+   shapes (and the wrapping <p> itself, else it re-caps the image it holds). */
+.wiki-content td > p, .wiki-content th > p,
+.wiki-content li:has(> img, > video, > pre, > table, > a > img, > a > video, > p > img, > p > video),
+.wiki-content dd:has(> img, > video, > pre, > table, > a > img, > a > video, > p > img, > p > video),
+.wiki-content li > p:has(> img, > video), .wiki-content dd > p:has(> img, > video) { max-width: none; }
+/* Readable measure: cap prose line length. 66ch ~= Tailwind `prose` (65ch); `ch` runs wider
+   than a mean glyph so this renders ~73-80 actual chars -- the top of the 45-75 ideal / the
+   WCAG-80 ceiling. The intro band opts out below. */
+.wiki-content p, .wiki-content li, .wiki-content dd { max-width: 66ch; }
+/* Measure-cap exceptions, so the cap never constrains non-prose layout: a table cell (pandoc
+   wraps cell content in <p>) sizes to its content, and a list item / definition holding block
+   media (image, video, code block, nested table) keeps full width instead of squeezing the media
+   to the text measure. The media may be WRAPPED -- pandoc puts a loose-list image in <p>, and
+   [[File:|link=]] puts it in <a> -- so the exception covers the direct, <a>- and <p>-wrapped
+   shapes (and the wrapping <p> itself, else it re-caps the image it holds). */
+.wiki-content td > p, .wiki-content th > p,
+.wiki-content li:has(> img, > video, > pre, > table, > a > img, > a > video, > p > img, > p > video),
+.wiki-content dd:has(> img, > video, > pre, > table, > a > img, > a > video, > p > img, > p > video),
+.wiki-content li > p:has(> img, > video), .wiki-content dd > p:has(> img, > video) { max-width: none; }
 /* Readable measure: cap prose line length. 66ch ~= Tailwind `prose` (65ch); `ch` runs wider
    than a mean glyph so this renders ~73-80 actual chars -- the top of the 45-75 ideal / the
    WCAG-80 ceiling. The intro band opts out below. */
@@ -1461,22 +1511,23 @@ code:empty { display: none; }
    (e.g. #0b57d0 on cell-red ~3.69:1). Inherit the cell's text color (keeps the underline
    affordance) so a link -- e.g. a citation marker landing in a Yes/No cell -- meets contrast in
    both themes. */
-.wiki-content table:not(.toc):not(.storage-table) :is(td, th):is(.cell-green, .cell-red, .cell-yellow, .cell-blue, .cell-gray) a {
+/* Colored status cells (cell-*) + tinted <th> headers carry a tint the --link blue cannot clear
+   WCAG 4.5:1 on (axe-confirmed: cell-red fails; a <th> ~#d6d7d9 is ~3.6:1), so THEIR links inherit
+   the high-contrast text colour + keep the underline. .cta-button stays excluded (solid-fill button). */
+.wiki-content table:not(.toc):not(.storage-table) :is(td, th):is(.cell-green, .cell-red, .cell-yellow, .cell-blue, .cell-gray) a,
+.wiki-content table:not(.toc):not(.storage-table):not(.comparison-table) th a:not(.cta-button) {
   color: currentColor;
   text-decoration: underline;
 }
-/* Links on tinted in-content surfaces the --link blue cannot reach 4.5:1 on: a <th> header
-   (~#d6d7d9 -> #1d70b8 ~3.6:1) and an info-box callout (the callout tint stacks on a NESTED
-   info-box, darkening past the ~surface the --link is tuned to). Inherit the cell's --fg text
-   colour (high contrast) + keep the underline. Scoped to <th> ONLY: a plain <td> sits on the
-   white/near-white cell background where --link blue is ~5.3:1 (well above 4.5:1), so it must
-   stay blue -- forcing <td> links to near-black currentColor regressed every content-table link
-   to black. Tinted <td> cells get their contrast fix from the .cell-* rule above. */
-/* .cta-button is EXCLUDED: it is a styled call-to-action button (white text on a solid blue fill),
-   not a prose cell link -- the currentColor+underline treatment turned its text dark-on-blue
-   (~3.4:1, an axe color-contrast FAIL) and underlined it. Its own .cta-button rule keeps white. */
-.wiki-content table:not(.toc):not(.storage-table):not(.comparison-table) th a:not(.cta-button),
+/* info-box callouts sit on a LIGHT ~7% tint where --link blue clears 4.5:1 (~4.75:1), so callout
+   links stay the SAME blue as ordinary prose links (the case the operator flagged) -- just underline. */
 .wiki-content .info-box a {
+  text-decoration: underline;
+}
+/* Homepage .explainer tinted panel (--surface-2 ~#ececec): --link blue is ~4.35:1 there, just under
+   4.5. currentColor + underline is theme-safe (dark text on the light panel, light text in dark mode)
+   and matches the tinted-surface treatment above. */
+.explainer a {
   color: currentColor;
   text-decoration: underline;
 }
@@ -1530,6 +1581,9 @@ code:empty { display: none; }
   background: var(--callout, var(--accent)); color: #fff;
 }
 .info-box-icon > img { width: 30px; height: auto; }   /* Ambox image icon: match the 30px icon box */
+/* A callout's content image (e.g. the manual's book logo) is a small decorative cue, not a
+   figure: cap it so a tall glyph cannot stretch the box past its text. Excludes the type badge. */
+.info-box :not(.info-box-icon) > img { height: 46px !important; width: auto !important; max-width: 100%; }
 /* A callout's content image (e.g. the manual's book logo) is a small decorative cue, not a
    figure: cap it so a tall glyph cannot stretch the box past its text. Excludes the type badge. */
 /* Content images/logos embedded in an info-box BODY size to 46px. EXCLUDE the icons that live
@@ -2012,12 +2066,14 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 .footer-social-icons .icon-link {
   display: inline-flex; align-items: center; justify-content: center;
   width: 34px; height: 34px; border-radius: 50%;
-  background: var(--surface); color: var(--fg-soft); line-height: 1;
+  /* Brand-coloured circle + white glyph, same source (--brand) as the share badges (prod shows
+     full-colour brand icons here; our FA brand glyphs are monochrome, so paint the badge). */
+  background: var(--brand, var(--surface)); color: #fff; line-height: 1;
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 .footer-social-icons .icon-link:hover {
-  transform: scale(1.15); background: var(--surface-2); color: var(--fg); text-decoration: none;
+  transform: scale(1.15); filter: brightness(1.12); text-decoration: none;
 }
 .footer-sponsor-head { margin: 0.9rem 0 0.3rem; font-weight: bold; color: var(--fg); }
 .footer-sponsor { margin: 0.3rem 0 0; font-size: 0.85rem; color: var(--muted); }
@@ -2247,18 +2303,28 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   outline: 2px solid var(--accent);
   border-radius: var(--radius-sm);
   padding: 0.15rem 0.4rem;
-  scroll-margin-top: 4.5rem;
+  scroll-margin-top: var(--anchor-offset);
 }
 /* The reverse jump: clicking a footnote's back-reference (^) targets the in-text citation
    marker (sup.reference#cite_ref-N). Give it the SAME scroll-margin (so the sticky header
    does not hide it) and highlight as the note target, so the round trip is symmetric. */
 sup.reference:target {
-  scroll-margin-top: 4.5rem;
+  scroll-margin-top: var(--anchor-offset);
   background: var(--surface-2);
   outline: 2px solid var(--accent);
   border-radius: var(--radius-sm);
   padding: 0 0.2rem;
 }
+/* Standalone citation cluster (a li/p/dd that is only "[2][3][4]", marked .reference-cluster by
+   refs.py): with no surrounding sentence, WCAG 2.5.8's inline exception does not apply, so the
+   tiny 19px-wide markers fail axe target-size. Give each citation link a >=24x24 hit box and a
+   clear gap between markers. Inline-prose citations (unmarked) keep their compact superscript. */
+.reference-cluster sup.reference { vertical-align: middle; }
+.reference-cluster sup.reference a {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 24px; min-height: 24px; padding: 0 4px;
+}
+.reference-cluster sup.reference + sup.reference { margin-left: 6px; }
 /* section-heading permalink + share menu (production ShareTooltip): a small share
    icon linking to the section #id, with a hover menu holding the copyable direct URL
    (app.js adds a Copy button to the inner .code-select). CSP-safe: pure-CSS hover. */
@@ -2337,32 +2403,33 @@ sup.reference:target {
 .share-tooltip .share-icon, .share-panel .share-icon {
   display: inline-flex; align-items: center; justify-content: center;
   width: 2rem; height: 2rem; border-radius: 50%; color: #fff; font-size: 1rem;
-  background: #555; text-decoration: none;
+  background: var(--brand, #555); text-decoration: none;
+  /* it is a <button popovertarget> now (was a <summary>): strip the UA button chrome. */
+  border: 0; padding: 0; cursor: pointer; font-family: inherit; line-height: 1;
 }
 .share-tooltip .share-icon:hover, .share-panel .share-icon:hover {
   color: #fff; text-decoration: none; filter: brightness(1.12);
 }
-/* No-JS social confirmation: the brand icon is a <details> <summary>; clicking it reveals the
-   destination URL + an explicit Open link, so the icon never auto-connects (privacy; works at
-   Tor Browser Safest with JS off). */
-.share-social { position: relative; }   /* positioning context for the opened panel dropdown */
-.share-social .share-confirm { display: flex; flex-direction: column; align-items: center; min-width: 0; }
-/* An OPENED social confirmation drops its panel BELOW the icon row as an absolute, menu-width
-   dropdown (left:0/right:0 against the position:relative .share-social), so revealing it neither
-   resizes the brand icon nor reflows the icon row -- clicking an icon must NOT rearrange the icon
-   list (it did when the opened <details> was made full-width). The definite left/right width bounds
-   the long share URL, which scrolls inside the code-select viewport. Space below the row is reserved
-   while a panel is open so the dropdown does not overlap the trailing note. */
-.share-social .share-confirm[open] > .share-open-panel {
-  position: absolute; left: 0; right: 0; top: calc(100% + 0.35rem); margin-top: 0; z-index: 2;
-}
-.share-social:has(.share-confirm[open]) { margin-bottom: 5rem; }
-.share-social summary.share-icon { list-style: none; cursor: pointer; }
-.share-social summary.share-icon::-webkit-details-marker { display: none; }
-.share-social summary.share-icon::marker { content: ""; }
+/* No-JS open-confirm via the native Popover API (chrome.py share_social_links): the brand icon is
+   a <button popovertarget> and the confirm is a sibling [popover] div. The browser renders it in
+   the TOP LAYER, so revealing it never grows or scrolls the height-capped .menu -- the old in-flow
+   <details> reveal reserved 5rem below the row and overflowed the scroll cap, making the menu jump.
+   Declarative, no JS, CSP/Trusted-Types-inert, and works at Tor Browser Safest with JS OFF (popover
+   is native in Firefox ESR 128, Tor Browser 14's base). Auto popovers light-dismiss and close each
+   other, so no exclusive-group bookkeeping is needed. A popover-unaware browser ignores the
+   attribute and shows the panel inline -- still a deliberate see-the-URL-first confirm, so the
+   degraded path stays privacy-safe (it never auto-connects). */
 .share-open-panel {
-  display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.35rem; width: 100%;
-  min-width: 0; max-width: 100%;
+  display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; max-width: min(18rem, 88vw);
+  background: var(--surface); color: var(--fg); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 0.6rem;
+}
+/* Pin under the invoking icon where CSS anchor positioning exists (Chromium); a popover's invoker
+   is its implicit anchor, so no explicit anchor-name is needed. Firefox ESR 128 lacks anchor
+   positioning and falls back to the UA default -- a small viewport-centred card, which reads fine
+   as a confirm. Both are top-layer, so neither touches the menu's height. */
+@supports (anchor-name: --a) {
+  .share-open-panel:popover-open { margin: 0; inset: auto; top: anchor(bottom); left: anchor(left); }
 }
 /* The long URL scrolls inside the code-select viewport (overflow-x:auto) rather than widening the
    panel: min-width:0 lets the flex item shrink below its pre-wrapped content so the viewport clips. */
@@ -2373,14 +2440,23 @@ sup.reference:target {
   background: var(--surface-2); color: var(--link-hover); font-size: 0.9rem; text-decoration: none;
 }
 .share-open:hover { text-decoration: underline; }
-.share-icon.si-x-twitter { background: #000; }
-.share-icon.si-facebook { background: #1877f2; }
-.share-icon.si-telegram { background: #229ed9; }
-.share-icon.si-reddit { background: #ff4500; }
-.share-icon.si-whatsapp { background: #25d366; }
-.share-icon.si-linkedin { background: #0a66c2; }
-.share-icon.si-hacker-news { background: #ff6600; }
-.share-icon.si-mastodon { background: #6364ff; }
+/* Per-network brand colours, SINGLE SOURCE: each .si-<network> sets the --brand custom
+   property, which every surface that shows the badge reads -- the share tooltip/panel icons
+   (background: var(--brand) above) AND the footer social row (.footer-social-icons .icon-link).
+   So the palette lives once; footer-only networks (youtube/github/bluesky) are included. */
+.si-x-twitter { --brand: #000; }
+.si-facebook { --brand: #1877f2; }
+.si-telegram { --brand: #229ed9; }
+.si-reddit { --brand: #ff4500; }
+.si-whatsapp { --brand: #25d366; }
+.si-linkedin { --brand: #0a66c2; }
+.si-hacker-news { --brand: #ff6600; }
+.si-mastodon { --brand: #6364ff; }
+.si-youtube { --brand: #ff0000; }
+.si-github { --brand: #181717; }
+.si-bluesky { --brand: #1185fe; }
+.si-play { --brand: #d32f2f; }   /* Invidious (YouTube front-end), keyed by its fa-play glyph */
+.si-rss { --brand: #ee802f; }    /* RSS feed orange */
 /* Section label splitting the menu into prod's two groups (copy-to-clipboard / open-social). */
 .menu-section {
   display: block; margin: 0.85rem 0 0.4rem; padding-top: 0.5rem; border-top: 1px solid #eee;
@@ -2685,13 +2761,46 @@ sup.reference:target {
   justify-content: center;
   margin-top: 1rem;
 }
-.section-download .col-container > div { width: 46%; margin: 1%; }
+.section-download .col-container > div { width: 46%; margin: 1%; display: flex; }
 @media (min-width: 560px) { .section-download .col-container > div { width: 30%; } }
 @media (min-width: 768px) { .section-download .col-container > div { width: 22%; } }
 @media (min-width: 960px) { .section-download .col-container > div { width: 18%; } }
 /* pandoc wraps each card's <a> in a <p>; descendant selectors + a zeroed <p> margin keep
    the card compact regardless of that wrapper. */
 .section-download .col-container > div p { margin: 0; }
+/* Equal-height cards: col-container already stretches each flex-item <div> to its row's
+   height, but the visible card is the inner <a>, which otherwise sizes to its own content --
+   so a 2-line label (e.g. "VirtualBox Linux installer") renders a taller box than its single-
+   line neighbours. Make the <p> wrapper fill the <div> and the <a> stretch to fill the <p>, so
+   every card in a row shares the tallest card's height. */
+.section-download .col-container > div > p { display: flex; flex: 1; width: 100%; }
+/* grouped download band (#downloadgrid groups=): each #downloadgroup is a centered white
+   subheading over its own centered tile row (production Hardware / Virtual Machine / Other). A
+   centered label over a symmetric card grid is the idiomatic place for a centered heading. */
+.section-download .download-group { margin-top: 1.5rem; }
+.section-download .download-group-label {
+  color: #fff; font-size: 1.05rem; font-weight: 700; text-align: center;
+  margin: 0; border-bottom: none; padding-bottom: 0;
+}
+.section-download .download-group .col-container { margin-top: 0.5rem; }
+/* grouped download band (#downloadgrid groups=): each #downloadgroup is a centered white
+   subheading over its own centered tile row (production Hardware / Virtual Machine / Other). A
+   centered label over a symmetric card grid is the idiomatic place for a centered heading. */
+.section-download .download-group { margin-top: 1.5rem; }
+.section-download .download-group-label {
+  color: #fff; font-size: 1.05rem; font-weight: 700; text-align: center;
+  margin: 0; border-bottom: none; padding-bottom: 0;
+}
+.section-download .download-group .col-container { margin-top: 0.5rem; }
+/* grouped download band (#downloadgrid groups=): each #downloadgroup is a centered white
+   subheading over its own centered tile row (production Hardware / Virtual Machine / Other). A
+   centered label over a symmetric card grid is the idiomatic place for a centered heading. */
+.section-download .download-group { margin-top: 1.5rem; }
+.section-download .download-group-label {
+  color: #fff; font-size: 1.05rem; font-weight: 700; text-align: center;
+  margin: 0; border-bottom: none; padding-bottom: 0;
+}
+.section-download .download-group .col-container { margin-top: 0.5rem; }
 /* download tabs (#downloadgrid groups=): the groups are the TABS of the shared
    tab-content-controller on the dark band (production Hardware / Virtual Machine / Other). The
    controller's in-content chrome (light title bar, content border/padding) is for light-bg prose
@@ -3112,43 +3221,54 @@ sup.reference:target {
    sits below the category box at the end of the article. */
 .page-lastmod { margin: 1rem 0 0; font-size: 0.85rem; color: var(--fg-soft); }
 
-/* --- book prev/index/next nav (#wikibookindex) --- */
-/* Production shows this as a compact prev/index/next ICON cluster at the top-right of the title,
-   NOT a full-width text bar. Float it right of the title text, icon-only (the shipped
-   FontAwesome chevron-left / list / chevron-right glyphs), no labels, no box. */
+/* --- book prev/index/next nav --- */
+/* A full-width bar: Prev (far LEFT) and Next (far RIGHT) are the primary controls; Contents (the
+   index) is demoted to a small centre link. Extracted off the headline (page.py
+   _promote_first_heading) and placed above the content; the footer copy repeats it at the bottom.
+   On a rail page it spans both columns. */
+.wiki-content.has-rail > .wiki-book-index { grid-column: 1 / -1; }
+/* Grid (1fr auto 1fr) with EXPLICIT columns: Contents stays centred even when prev or next is
+   absent (a cover / final / single-page book) -- space-between would left/right-align it. */
 .wiki-book-index {
-  float: right;
-  display: inline-flex; gap: 0.3rem; align-items: center;
-  margin: 0.15rem 0 0 1rem; padding: 0; font-size: 1.4rem;   /* prod top-cluster icons ~22.5px */
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 0.6rem;
+  margin: 0 0 1.5rem; font-size: 1rem;
 }
-/* Prod (Mininav.css) renders each top-cluster prev/index/next as a filled GRAY box: subtle
-   surface fill, dark glyph, prod padding 0 6.75 2.25 -> ~42x32 (vs the old transparent ~21x17). */
-.wiki-book-index a, .wiki-book-index a:hover {
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--surface-2); color: var(--heading); text-decoration: none;
-  padding: 0 6.75px 2.25px;
+.wiki-book-index.wbi-for-footer { margin: 2.5rem 0 0; }
+/* text-decoration:none on the rows directly (not just `.wiki-book-index a`): the inline footer
+   copy is wrapped in a <p>, so `.wiki-content p a` would otherwise out-specify a bare link rule. */
+.wiki-book-index a { text-decoration: none; color: var(--fg); }
+.wiki-book-index .prev, .wiki-book-index .next {
+  display: flex; align-items: center; gap: 0.6rem; min-width: 0;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);
+  padding: 0.5rem 0.85rem; text-decoration: none; transition: background-color 0.15s;
 }
-.wiki-book-index a:hover { color: var(--link); background: var(--surface); }
-.wiki-book-index i { display: inline-block; }   /* SHOW the FA prev/index/next icons */
-.wiki-book-index .text { display: none; }        /* icon-only, like prod */
-.wiki-book-index .info { display: none; }
-/* The FOOTER book-nav (prod .wbi-for-footer) is NOT the compact top-right cluster: prod
-   stacks it as full-width LABELLED rows (icon + page title). Floated+icon-only, it crowds
-   the category box's top border below it; block+labelled matches prod and clears it. */
-.wiki-book-index.wbi-for-footer {
-  float: none; display: block; margin: 2.5rem 0 0; font-size: 1rem;
+.wiki-book-index .prev { grid-column: 1; justify-self: start; }
+.wiki-book-index .next { grid-column: 3; justify-self: end; flex-direction: row-reverse; text-align: right; }
+.wiki-book-index .prev:hover, .wiki-book-index .next:hover { background: var(--surface-2); }
+.wiki-book-index .index {
+  grid-column: 2; justify-self: center; align-self: center;
+  display: inline-flex; align-items: center; gap: 0.3rem; text-decoration: none;
+  color: var(--muted); font-size: 0.88rem; padding: 0.3rem 0.4rem;
 }
-/* Prod renders each footer book-nav row as a filled BOX (subtle surface fill + border +
-   radius, dark text, no underline), not a thin underline-separated prose link. */
-.wiki-book-index.wbi-for-footer a {
-  display: flex; width: 100%; gap: 0.6rem; align-items: center;
-  padding: 0.6rem 0.9rem; margin: 0.4rem 0;
-  background: var(--surface); border: 1px solid var(--border-soft); border-radius: var(--radius-sm);
-  color: var(--fg); text-decoration: none;
+.wiki-book-index .index:hover { color: var(--link); }
+.wiki-book-index .index .text { display: none; }   /* Contents demoted: icon + "Contents" word only */
+.wiki-book-index i { flex: none; color: var(--link); }
+.wiki-book-index .index i { color: var(--muted); font-size: 0.9em; }
+.wiki-book-index .wbi-label { display: flex; flex-direction: column; min-width: 0; }
+.wiki-book-index .wbi-cap { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.wiki-book-index .index .wbi-cap { text-transform: none; letter-spacing: 0; font-size: 0.88rem; color: inherit; }
+.wiki-book-index .text {
+  font-size: 0.9rem; font-weight: 600; color: var(--link); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; max-width: 22ch;
 }
-.wiki-book-index.wbi-for-footer a:hover { background: var(--surface-2); text-decoration: none; }
-.wiki-book-index.wbi-for-footer .text { display: inline; }   /* prod shows the page titles */
-.wiki-book-index.wbi-for-footer i { width: 1.2em; text-align: center; }
+.wiki-book-index .info { display: none; }   /* redundant a11y text; the aria-label carries the name */
+@media (max-width: 760px) {
+  .wiki-book-index { grid-template-columns: 1fr; gap: 0.4rem; }
+  .wiki-book-index .prev, .wiki-book-index .next, .wiki-book-index .index {
+    grid-column: 1; justify-self: stretch; flex-direction: row; text-align: left;
+  }
+  .wiki-book-index .text { max-width: none; white-space: normal; }
+}
 
 /* Book / related-links nav box: a .mininav carrying a title + link list (e.g. the
    "Legal Policies" grouping). :has(> ul) scopes this to the list variant, NOT the
@@ -3249,6 +3369,57 @@ sup.reference:target {
   }
   .mininav:not(.mn-switcher) > ul > li { min-height: 40px; }
 }
+/* --- Related-pages rail: book-nav mininavs rebuilt by page.py _extract_related_navs as titled
+   cards (related reading, not tabs) and lifted into a right rail beside the content. A page with
+   no such nav keeps the plain single column; .has-rail only applies when cards exist. The inline
+   .mininav:not(.mn-switcher) styling above no longer matches these (different markup). --- */
+.wiki-content.has-rail {
+  max-width: 75rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 16rem;
+  gap: 2rem;
+  align-items: start;
+}
+.wiki-content.has-rail > .content-col { min-width: 0; }
+.related-rail {
+  position: sticky; top: 4.75rem;
+  display: flex; flex-direction: column; gap: 1rem;
+  min-width: 0; align-self: start;
+}
+.related-card {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--bg); overflow: hidden; box-shadow: var(--shadow-sm);
+}
+.related-card-title {
+  margin: 0; padding: 0.55rem 0.75rem;
+  background: var(--surface-2); color: var(--heading);
+  font-weight: 600; font-size: 0.9rem; line-height: 1.35;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.related-card-count { margin-left: auto; font-size: 0.74rem; font-weight: 400; color: var(--muted); white-space: nowrap; }
+/* Vertical one-link-per-line list (the idiomatic related-nav shape) -- NOT wrapping chips. Icons
+   are stripped in page.py so every row is a clean full-width text link. */
+.related-card ul { list-style: none; margin: 0; padding: 0.25rem 0; }
+.related-card li { margin: 0; }
+.related-card li a {
+  display: block; color: var(--link); text-decoration: none;
+  padding: 0.35rem 0.8rem; font-size: 0.86rem; line-height: 1.4;
+  border-left: 3px solid transparent; overflow-wrap: break-word;
+  transition: background-color 0.12s;
+}
+.related-card li a:hover { background: var(--surface-2); text-decoration: none; }
+/* current-page row: subtle fill + a left accent rule (replaces the old floating #8899dd underline) */
+.related-card li a.selflink,
+.related-card li a[aria-current="page"] {
+  background: var(--surface-2); color: var(--fg); font-weight: 600;
+  border-left-color: var(--link); cursor: default;
+}
+@media (max-width: 900px) {
+  .wiki-content.has-rail { display: block; max-width: var(--maxw); }
+  .related-rail { position: static; margin-top: 1.75rem; }
+}
+
 /* current-page selflink: bold everywhere (used outside the mininav too). */
 .mw-selflink, a.selflink { font-weight: 700; color: var(--fg); cursor: default; }
 
