@@ -653,6 +653,14 @@
   function initSearch() {
     var input = document.getElementById("search-input");
     if (!input) return;
+    // Focus the field the moment the search opens (CSS :checked reveals it; JS moves the caret in
+    // so the user can type immediately -- the magnifier toggles #search-toggle).
+    var searchToggle = document.getElementById("search-toggle");
+    if (searchToggle) {
+      searchToggle.addEventListener("change", function () {
+        if (searchToggle.checked) { input.focus(); }
+      });
+    }
     var root = rootPrefix();
     var results = document.createElement("ul");
     results.className = "search-results";

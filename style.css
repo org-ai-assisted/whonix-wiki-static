@@ -42,6 +42,9 @@
      (a non-color cue, WCAG G183) -- so no color-contrast failure. */
   --link: #1d70b8;
   --link-hover: #08409b;
+  /* Redlink (target page missing): MediaWiki's redlink red. 5.9:1 on white (AA text), and
+     darker-yet-redder than near-black body text -- a LIGHTNESS difference, not hue alone. */
+  --link-new: #ba0000;
   --accent: #14866d;
   --accent-fg: #ffffff;
   --focus: #0b57d0;
@@ -93,6 +96,7 @@
 
   --link: #74b1ff;
   --link-hover: #9cc8ff;
+  --link-new: #ff8585;   /* redlink: light red, ~6:1 on the dark ground */
   --accent: #4fd1b0;
   --accent-fg: #08221c;
   --focus: #74b1ff;
@@ -125,6 +129,7 @@
 
     --link: #74b1ff;
     --link-hover: #9cc8ff;
+    --link-new: #ff8585;   /* redlink: light red, ~6:1 on the dark ground */
     --accent: #4fd1b0;
     --accent-fg: #08221c;
     --focus: #74b1ff;
@@ -266,6 +271,11 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
 /* The TOC is navigation (a list of #anchors), not prose links -- it is inside .wiki-content so
    the `.wiki-content li a` underline above hits it; override (higher specificity wins). */
 .wiki-content .toc a { text-decoration: none; }
+/* Redlink: the post-build redlink pass emits a <span class="new"> (NOT an <a>) for an internal
+   link whose target page does not exist -- a static mirror has no edit action to point it at, so
+   it is deliberately non-navigable. Red (the MediaWiki convention), legible without colour vision
+   (the red differs from body text in lightness; the title states the page is missing). */
+.new { color: var(--link-new); cursor: default; }
 /* Touch devices report hover:none and keep the :hover state stuck on the last-tapped
    element, so an underline-on-hover leaves the link underlined after a tap (reported on
    the header Donate link). Drop every hover-underline for pointerless devices; the colour
@@ -363,9 +373,12 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
    font-size + padding, pushed to the right edge so the controls form one consistent column. */
 .expand-or-collapse-all-button {
   display: block; margin-left: auto; width: fit-content;
-  /* Inset by the collapsible card's border (1px) + padding-right (10px) so the button's right
-     edge lines up with each card's "Learn More" pill (which sits flush to the card's inner edge),
-     forming one right-aligned column rather than overhanging to the card's outer edge. */
+  /* Equal width with the per-card "Learn More"/"Show Less" pills (.mwc-toggle): the same pill
+     stacked vertically, so BOTH left and right edges share one axis -- the idiomatic group-of-
+     same-button alignment (ragged left would read as accidental). min-width covers the widest
+     label state ("Collapse all" / "Learn More") so no pill resizes when its text flips, and the
+     right-edge inset (1px card border + 10px padding) keeps the column flush to the card edge. */
+  min-width: 10rem; text-align: center;
   margin-right: 11px;
   background: var(--link); border-color: var(--link); color: #fff;
   font-weight: 700; font-size: 1rem; padding: 4px 17px 5px 10px;
@@ -1277,14 +1290,11 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
 .paypal > .content .submit:hover {
   background: #005a9c; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
 }
-/* Other payment options: center the icon row (prod). The prior fix targeted .payitem.symbols
-   (the crypto ERC-20 row), which does not match this markup -- the icons are inline <a><img> in
-   .other > .content. Keep the "show more" expander left-aligned, as prod does. */
+/* Other payment options: the icon row, the "show more" toggle, and the expanded content all
+   center (operator request; prod kept the toggle left). The icons are inline <a><img> in
+   .other > .content; the toggle also centers via its own margin:auto on .more-button. */
 .other > .content { text-align: center; }
-.other > .content > .more { text-align: left; }
-/* #161: the "show more" label stays left (above), but its EXPANDED icon row must center like
-   the always-visible icons above it (.content). More specific than the .more rule, so it wins
-   for .more-content without disturbing the toggle label. */
+.other > .content > .more { text-align: center; }
 .other > .content > .more > .more-content { text-align: center; }
 .payitem.line {
   display: flex; align-items: center; gap: 0.5rem 0.75rem; flex-wrap: wrap;
@@ -1349,8 +1359,8 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
 .payitem > .expand code { overflow-wrap: anywhere; word-break: break-all; white-space: pre-wrap; }
 /* "More Payment Options": same checkbox-hack; collapsed by default (prod). */
 .more-button {
-  display: inline-block; cursor: pointer; color: var(--link); font-weight: 600;
-  margin: 0.5rem 0; user-select: none;
+  display: block; width: fit-content; cursor: pointer; color: var(--link); font-weight: 600;
+  margin: 0.5rem auto; user-select: none;   /* centered (operator request) */
 }
 .more-button:hover { text-decoration: underline; }
 /* `/ ""` keeps the decorative caret out of the label's accessible name. */
@@ -1871,6 +1881,9 @@ details.mw-collapsible > summary::-webkit-details-marker { display: none; }
 details.mw-collapsible > summary > p { margin: 0; }
 .mwc-toggle {
   float: right; margin: 0 0 0.5rem 0.5rem;
+  /* Same min-width + centering as .expand-or-collapse-all-button so the global pill and every
+     section toggle form one width-aligned column (both edges on one axis). */
+  min-width: 10rem; text-align: center;
   background: var(--link); color: #fff; font-weight: 700;
   padding: 4px 17px 5px 10px;
 }
@@ -1993,6 +2006,15 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   --fg-soft: #ececec;
   --muted: #bcbcbc;
   --link: #8ab4f8;
+  /* The footer ground is dark in BOTH themes, so hover must BRIGHTEN (lighter blue), not
+     inherit the page theme's --link-hover: the light theme's #08409b is a dark navy that
+     drops to ~1.9:1 on the #333/#444 footer ground (an AA fail, lower contrast on hover
+     than at rest). Set it in-scope so .copyright/.footer-freedom/.footer-links hover is
+     legible. */
+  --link-hover: #b3cdfa;
+  /* Redlink on the dark footer ground: the light-theme #ba0000 is ~1.9:1 on #333/#444, so
+     use the light-red variant (same reason as --link-hover above). */
+  --link-new: #ff8585;
   --border: #565656;
   --border-soft: #4a4a4a;
   --surface: #424242;
@@ -2252,9 +2274,11 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap; margin: 1.5rem 0;
 }
 .left-right-image-text.image-right { flex-direction: row-reverse; }
-.left-right-image-text > .image { flex: 0 0 auto; max-width: 45%; }
-.left-right-image-text > .image img { max-width: 100%; height: auto; display: block; }
-.left-right-image-text > .text { flex: 1 1 15rem; }
+/* Fixed 40% image column (not natural width): every alternating row shares the same image/text
+   split, so a larger image no longer makes one row's columns differ from the next -- symmetrical. */
+.left-right-image-text > .image { flex: 0 0 40%; max-width: 40%; }
+.left-right-image-text > .image img { max-width: 100%; height: auto; display: block; margin-inline: auto; }
+.left-right-image-text > .text { flex: 1 1 0; min-width: 0; }
 @media (max-width: 640px) {
   .left-right-image-text { flex-direction: column; align-items: stretch; gap: 0.75rem; }
   .left-right-image-text > .image { max-width: 100%; }
@@ -2419,12 +2443,24 @@ sup.reference:target {
   background: var(--surface); color: var(--fg); border: 1px solid var(--border);
   border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 0.6rem;
 }
+/* Close (x) for the share-open popover: native popovertargetaction=hide (no JS), top-right. */
+.share-close {
+  align-self: flex-end; margin: -0.2rem -0.3rem 0 0; padding: 0.15rem 0.35rem;
+  background: none; border: none; color: var(--muted); cursor: pointer; line-height: 1;
+  min-width: 24px; min-height: 24px; display: inline-flex; align-items: center; justify-content: center;
+}
+.share-close:hover { color: var(--fg); }
 /* Pin under the invoking icon where CSS anchor positioning exists (Chromium); a popover's invoker
    is its implicit anchor, so no explicit anchor-name is needed. Firefox ESR 128 lacks anchor
    positioning and falls back to the UA default -- a small viewport-centred card, which reads fine
    as a confirm. Both are top-layer, so neither touches the menu's height. */
 @supports (anchor-name: --a) {
-  .share-open-panel:popover-open { margin: 0; inset: auto; top: anchor(bottom); left: anchor(left); }
+  .share-open-panel:popover-open {
+    margin: 0; inset: auto; top: anchor(bottom); left: anchor(left);
+    /* A right-edge icon's panel would run off-screen with left-anchoring; flip to the opposite
+       edge (and/or above) when the default placement overflows the viewport. */
+    position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;
+  }
 }
 /* The long URL scrolls inside the code-select viewport (overflow-x:auto) rather than widening the
    panel: min-width:0 lets the flex item shrink below its pre-wrapped content so the viewport clips. */
@@ -2434,7 +2470,7 @@ sup.reference:target {
   padding: 0.4rem 0.7rem; border-radius: var(--radius-sm);
   background: var(--surface-2); color: var(--link-hover); font-size: 0.9rem; text-decoration: none;
 }
-.share-open:hover { text-decoration: underline; }
+.share-open:hover { text-decoration: none; background: var(--surface); }
 /* Per-network brand colours, SINGLE SOURCE: each .si-<network> sets the --brand custom
    property, which every surface that shows the badge reads -- the share tooltip/panel icons
    (background: var(--brand) above) AND the footer social row (.footer-social-icons .icon-link).
@@ -2778,24 +2814,6 @@ sup.reference:target {
   margin: 0; border-bottom: none; padding-bottom: 0;
 }
 .section-download .download-group .col-container { margin-top: 0.5rem; }
-/* grouped download band (#downloadgrid groups=): each #downloadgroup is a centered white
-   subheading over its own centered tile row (production Hardware / Virtual Machine / Other). A
-   centered label over a symmetric card grid is the idiomatic place for a centered heading. */
-.section-download .download-group { margin-top: 1.5rem; }
-.section-download .download-group-label {
-  color: #fff; font-size: 1.05rem; font-weight: 700; text-align: center;
-  margin: 0; border-bottom: none; padding-bottom: 0;
-}
-.section-download .download-group .col-container { margin-top: 0.5rem; }
-/* grouped download band (#downloadgrid groups=): each #downloadgroup is a centered white
-   subheading over its own centered tile row (production Hardware / Virtual Machine / Other). A
-   centered label over a symmetric card grid is the idiomatic place for a centered heading. */
-.section-download .download-group { margin-top: 1.5rem; }
-.section-download .download-group-label {
-  color: #fff; font-size: 1.05rem; font-weight: 700; text-align: center;
-  margin: 0; border-bottom: none; padding-bottom: 0;
-}
-.section-download .download-group .col-container { margin-top: 0.5rem; }
 /* download tabs (#downloadgrid groups=): the groups are the TABS of the shared
    tab-content-controller on the dark band (production Hardware / Virtual Machine / Other). The
    controller's in-content chrome (light title bar, content border/padding) is for light-bg prose
@@ -2810,7 +2828,8 @@ sup.reference:target {
 .section-download .tcc-content { border-top: none; padding: 0; }
 .section-download .col-container > div a {
   background: #3c495a;
-  display: block;
+  display: flex; flex-direction: column; height: 100%;   /* equal-height tiles: a 2-line label
+     (VirtualBox Linux installer) no longer makes its card taller than its 1-line neighbours */
   width: 90%;
   margin: 0 auto;
   border-radius: 20px;
@@ -2856,11 +2875,12 @@ sup.reference:target {
   background: #273445;
   color: #fff;
   margin: 1.5rem calc(50% - 50vw);
-  padding: 2rem 0 1.25rem;
+  padding: 2rem 0;
 }
 .page-home .cv-section:has(> .section-download) > h2,
 .page-home .cv-section:has(.cv-darkband) > h2 {
   color: #fff;
+  margin-top: 0;
   max-width: 960px;
   margin-left: auto;
   margin-right: auto;
@@ -2904,7 +2924,7 @@ sup.reference:target {
 .page-home .cv-section:has(.cv-darkband) > h2 > .mw-editsection > a { color: #cbd5e1; }
 .page-home .section-download.dark-section {
   margin: 0;
-  padding: 0 0 0.25rem;
+  padding: 0;
   background: transparent;
 }
 /* ---- homepage comparison-table feature-row icons (prod .cat <i class="fa-...">) ---- */
@@ -3101,6 +3121,11 @@ sup.reference:target {
 }
 .gallery .gallerytext { display: block; margin-top: 0.3rem; text-align: center; line-height: 1.3; }
 .gallery a:hover img { transform: scale(1.1); }
+/* ISO/TOC thumb galleries hold WIDE screenshots, not square icons: the square cell above leaves
+   ~80% empty vertical space around a wide image, so let the cell size to the image aspect and
+   widen the box so the screenshot reads larger. */
+.gallery.thumb-gallery-style .thumb { aspect-ratio: auto; padding: 0.25rem; }
+.gallery.thumb-gallery-style .gallerybox { max-width: 15rem; }
 .justify-left { justify-content: left; }
 .justify-center { justify-content: center; }
 .justify-right { justify-content: right; }
@@ -3217,51 +3242,70 @@ sup.reference:target {
 .page-lastmod { margin: 1rem 0 0; font-size: 0.85rem; color: var(--fg-soft); }
 
 /* --- book prev/index/next nav --- */
-/* A full-width bar: Prev (far LEFT) and Next (far RIGHT) are the primary controls; Contents (the
-   index) is demoted to a small centre link. Extracted off the headline (page.py
-   _promote_first_heading) and placed above the content; the footer copy repeats it at the bottom.
-   On a rail page it spans both columns. */
-.wiki-content.has-rail > .wiki-book-index { grid-column: 1 / -1; }
-/* Grid (1fr auto 1fr) with EXPLICIT columns: Contents stays centred even when prev or next is
-   absent (a cover / final / single-page book) -- space-between would left/right-align it. */
-.wiki-book-index {
-  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 0.6rem;
-  margin: 0 0 1.5rem; font-size: 1rem;
+/* Book prev/next nav. The "Contents" (index) control was dropped. DESKTOP: the firstheading
+   instance becomes GUTTER affordances via `display: contents` -- Prev in the left gutter, Next in
+   the right gutter above the related rail -- so the headline keeps its natural top position (no
+   bar above the content). MOBILE: the gutters collapse; the footer instance renders inline prev/
+   next at the end of the article (the idiomatic mobile form), and the gutter instance is hidden. */
+
+/* Grid shell: [left gutter | content | right gutter (Next + rail)]. Stacks to one column on mobile.
+   Defined here (not with .related-rail) so the book-nav-only page gets the same grid. */
+.wiki-content.has-rail,
+.wiki-content.has-booknav {
+  max-width: 75rem; display: grid; gap: 1rem 2rem; align-items: start;
 }
-.wiki-book-index.wbi-for-footer { margin: 2.5rem 0 0; }
-/* text-decoration:none on the rows directly (not just `.wiki-book-index a`): the inline footer
-   copy is wrapped in a <p>, so `.wiki-content p a` would otherwise out-specify a bare link rule. */
-.wiki-book-index a { text-decoration: none; color: var(--fg); }
+.wiki-content.has-rail:not(.has-booknav) {
+  grid-template-columns: minmax(0, 1fr) 16rem;
+  grid-template-areas: "content rail";
+}
+.wiki-content.has-booknav.has-rail {
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) 16rem;
+  /* row 1 (auto) sizes to Next; the flexible 1fr row 2 absorbs the tall content column so it does
+     NOT inflate row 1 and push the rail down -- the rail then sits just under Next. */
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "prev content next" ".    content rail";
+}
+.wiki-content.has-booknav:not(.has-rail) {
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) minmax(0, 11rem);
+  grid-template-areas: "prev content next";
+}
+.wiki-content > .content-col { grid-area: content; min-width: 0; }
+.wiki-content > .related-rail { grid-area: rail; }
+
+/* the firstheading nav box disappears; its Prev/Next become grid items in the gutters */
+.wiki-book-index.wbi-for-firstheading { display: contents; }
+.wiki-book-index.wbi-for-firstheading > .prev { grid-area: prev; justify-self: start; align-self: start; }
+.wiki-book-index.wbi-for-firstheading > .next { grid-area: next; justify-self: end; align-self: start; }
+
+/* Prev / Next: compact chips sized to their own label (NOT stretched to the rail width). */
 .wiki-book-index .prev, .wiki-book-index .next {
-  display: flex; align-items: center; gap: 0.6rem; min-width: 0;
+  display: inline-flex; align-items: center; gap: 0.5rem; min-width: 0; width: max-content; max-width: 100%;
   border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);
-  padding: 0.5rem 0.85rem; text-decoration: none; transition: background-color 0.15s;
+  padding: 0.5rem 0.75rem; text-decoration: none; color: var(--fg); transition: background-color 0.15s;
 }
-.wiki-book-index .prev { grid-column: 1; justify-self: start; }
-.wiki-book-index .next { grid-column: 3; justify-self: end; flex-direction: row-reverse; text-align: right; }
+.wiki-book-index .next { flex-direction: row-reverse; }
 .wiki-book-index .prev:hover, .wiki-book-index .next:hover { background: var(--surface-2); }
-.wiki-book-index .index {
-  grid-column: 2; justify-self: center; align-self: center;
-  display: inline-flex; align-items: center; gap: 0.3rem; text-decoration: none;
-  color: var(--muted); font-size: 0.88rem; padding: 0.3rem 0.4rem;
-}
-.wiki-book-index .index:hover { color: var(--link); }
-.wiki-book-index .index .text { display: none; }   /* Contents demoted: icon + "Contents" word only */
 .wiki-book-index i { flex: none; color: var(--link); }
-.wiki-book-index .index i { color: var(--muted); font-size: 0.9em; }
 .wiki-book-index .wbi-label { display: flex; flex-direction: column; min-width: 0; }
 .wiki-book-index .wbi-cap { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
-.wiki-book-index .index .wbi-cap { text-transform: none; letter-spacing: 0; font-size: 0.88rem; color: inherit; }
 .wiki-book-index .text {
   font-size: 0.9rem; font-weight: 600; color: var(--link); white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis; max-width: 22ch;
+  overflow: hidden; text-overflow: ellipsis; max-width: 14ch;
 }
 .wiki-book-index .info { display: none; }   /* redundant a11y text; the aria-label carries the name */
-@media (max-width: 760px) {
-  .wiki-book-index { grid-template-columns: 1fr; gap: 0.4rem; }
-  .wiki-book-index .prev, .wiki-book-index .next, .wiki-book-index .index {
-    grid-column: 1; justify-self: stretch; flex-direction: row; text-align: left;
+
+/* footer book-nav: hidden on desktop (the gutter Prev/Next cover it); shown inline on mobile */
+.wiki-book-index.wbi-for-footer { display: none; }
+
+@media (max-width: 900px) {
+  .wiki-content.has-rail, .wiki-content.has-booknav { display: block; max-width: var(--maxw); }
+  .related-rail { position: static; margin-top: 1.75rem; }
+  /* gutters collapse: hide the firstheading (gutter) nav, show the footer nav inline at content end */
+  .wiki-book-index.wbi-for-firstheading { display: none; }
+  .wiki-book-index.wbi-for-footer {
+    display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 2.5rem 0 0;
   }
+  .wiki-book-index.wbi-for-footer .next { margin-left: auto; }
   .wiki-book-index .text { max-width: none; white-space: normal; }
 }
 
@@ -3368,16 +3412,7 @@ sup.reference:target {
    cards (related reading, not tabs) and lifted into a right rail beside the content. A page with
    no such nav keeps the plain single column; .has-rail only applies when cards exist. The inline
    .mininav:not(.mn-switcher) styling above no longer matches these (different markup). --- */
-.wiki-content.has-rail {
-  max-width: 75rem;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 16rem;
-  gap: 2rem;
-  align-items: start;
-}
-.wiki-content.has-rail > .content-col { min-width: 0; }
 .related-rail {
-  position: sticky; top: 4.75rem;
   display: flex; flex-direction: column; gap: 1rem;
   min-width: 0; align-self: start;
 }
@@ -3410,11 +3445,6 @@ sup.reference:target {
   background: var(--surface-2); color: var(--fg); font-weight: 600;
   border-left-color: var(--link); cursor: default;
 }
-@media (max-width: 900px) {
-  .wiki-content.has-rail { display: block; max-width: var(--maxw); }
-  .related-rail { position: static; margin-top: 1.75rem; }
-}
-
 /* current-page selflink: bold everywhere (used outside the mininav too). */
 .mw-selflink, a.selflink { font-weight: 700; color: var(--fg); cursor: default; }
 
