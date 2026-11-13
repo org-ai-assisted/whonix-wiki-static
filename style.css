@@ -156,6 +156,11 @@ html {
    back-to-top control honours the same preference -- keep them consistent). */
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
+  /* Cross-document View Transitions: a smooth cross-fade between same-origin page loads. Pure CSS
+     (no JS, no CSP change); browsers without support (Firefox/Tor Browser) just do a normal instant
+     navigation. Opted in only inside this motion-welcome block, so reduced-motion users (and the
+     reduced default) get the instant swap. */
+  @view-transition { navigation: auto; }
 }
 body {
   margin: 0;
@@ -615,6 +620,72 @@ body.site-whonix .site-logo-img { width: auto; }
      fixed bottom-stack height); without it the print view keeps that gap though the stack
      is display:none here. */
   body { background: #fff; padding: 0 !important; }
+
+  /* Force the LIGHT palette on paper regardless of how dark was activated (OS preference OR
+     the [data-theme=dark] toggle). Re-declaring the light token values for all three
+     dark-activation selectors ties their specificity; this block is after the dark token
+     blocks in source order, so it wins -- the printed page never carries dark surfaces. */
+  :root,
+  :root[data-theme="dark"],
+  :root:not([data-theme="light"]) {
+    color-scheme: light;
+    --bg: #ffffff;
+    --page-bg: #f3f3f3;
+    --surface: #f6f7f9;
+    --surface-2: #eceff2;
+    --fg: #1b1d1f;
+    --fg-soft: #3c4147;
+    --muted: #5c626a;
+    --heading: #1b1d1f;
+    --border: #d5d9de;
+    --border-soft: #e6e9ec;
+    --code-bg: #f3f4f6;
+    --pre-bg: #f8f9fa;
+    --pre-fg: #1f2328;
+    --link: #1d70b8;
+    --link-hover: #08409b;
+    --link-new: #ba0000;
+    --accent: #14866d;
+    --accent-fg: #ffffff;
+    --focus: #0b57d0;
+    --c-red: #d33426;
+    --c-green: #1a9e3f;
+    --c-blue: #2f6fd0;
+    --c-yellow: #fff23e;
+    --c-orange: #d9730d;
+    --c-gray: #565c64;
+  }
+
+  /* Expand external link targets after the text so a printed page keeps the URL the reader
+     would otherwise lose. Skip the permalink glyph (same-page href, pure noise on paper). */
+  .wiki-content a[href^="http"]:not(.headline-anchor)::after {
+    content: " (" attr(href) ")";
+    font-size: 0.9em;
+    word-break: break-all;
+  }
+
+  /* Keep atomic blocks whole across a page break. A table may legitimately span pages, so
+     only its ROWS stay intact and the header repeats on each printed page. */
+  .wiki-content pre,
+  .wiki-content figure,
+  .wiki-content .thumbframe,
+  .wiki-content .mbox,
+  .wiki-content .info-box,
+  .wiki-content .community-support-info,
+  .wiki-content tr,
+  .wiki-content img {
+    break-inside: avoid;
+  }
+  .wiki-content table { break-inside: auto; }
+  .wiki-content thead { display: table-header-group; }
+
+  /* Page-break hygiene: no stranded single lines, and keep a heading with the text under it. */
+  .wiki-content p,
+  .wiki-content li { orphans: 3; widows: 3; }
+  .wiki-content h1,
+  .wiki-content h2,
+  .wiki-content h3,
+  .wiki-content h4 { break-after: avoid; }
 }
 /* DIRECT-child ul only: the horizontal top bar. `.site-nav ul` (unscoped) also matched the
    nested .nav-submenu ul and -- at higher specificity than `.nav-submenu {display:none}` --
@@ -1606,12 +1677,21 @@ code:empty { display: none; }
   background: var(--callout, var(--accent)); color: #fff;
 }
 .info-box-icon > img { width: 30px; height: auto; }   /* Ambox image icon: match the 30px icon box */
-/* Content images/logos embedded in an info-box BODY size to 46px. EXCLUDE the icons that live
-   in the callout but are not body content: the type icon's image (nested .info-box-icon a img,
-   so the parent-guard alone misses it) and the archive affordance marker -- the 46px!important
-   distorted both (square Info icon -> 30x46; 14x16 archive mark -> 24x46; Lighthouse
-   image-aspect-ratio). Each keeps its own sizing rule. */
-.info-box :not(.info-box-icon, .info-box-icon *) > img:not(.ia-archive-icon) { height: 46px !important; width: auto !important; max-width: 100%; }
+/* An UNSIZED decorative logo/cue in an info-box BODY sizes to 46px so a tall glyph cannot stretch
+   the box past its text. EXCLUDE:
+     - the icons that live in the callout but are not body content: the type icon's image (nested
+       .info-box-icon a img, so the parent-guard alone misses it) and the archive affordance marker
+       -- the 46px!important distorted both (square Info icon -> 30x46; 14x16 archive mark -> 24x46;
+       Lighthouse image-aspect-ratio); each keeps its own sizing rule.
+     - a figure, which is deliberately sized and must not be collapsed: a .media-sized image (a
+       frameless image with an explicit author px width) and any .thumbframe descendant (a
+       thumb/frame figure, sized via `.thumbframe img`). Without this a full-size figure sitting
+       inside an {{mbox}}/.info-box wrapper was force-collapsed (a 600px screenshot -> ~65px).
+   SPECIFICITY: keep the image exclusions in ONE :not() list, NOT chained :not():not(). A :not()
+   list counts as its single most-specific arg, so the rule stays (0,3,1) -- the original. A second
+   chained :not() would make it (0,4,1) and out-specify the donor-card logo's `height:90%!important`
+   (.donor-card .logo span.logo-image img, (0,3,2)), collapsing a donor logo in an info-box to 46px. */
+.info-box :not(.info-box-icon, .info-box-icon *, .thumbframe, .thumbframe *) > img:not(.ia-archive-icon, .media-sized) { height: 46px !important; width: auto !important; max-width: 100%; }
 
 /* Numbered section/step badge (production "padded-content-icon" widget): a bold
    numeral, coloured by the element's cs-* --callout. pci-style-circle makes it a
@@ -2300,13 +2380,21 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap; margin: 1.5rem 0;
 }
 .left-right-image-text.image-right { flex-direction: row-reverse; }
-/* Fixed 40% image column (not natural width): every alternating row shares the same image/text
-   split, so a larger image no longer makes one row's columns differ from the next -- symmetrical. */
-.left-right-image-text > .image { flex: 0 0 40%; max-width: 40%; }
-.left-right-image-text > .image img { max-width: 100%; height: auto; display: block; margin-inline: auto; }
+/* Balanced ~48% image column + ONE uniform 16:9 box (object-fit:cover): every alternating row gets
+   the same image WIDTH and HEIGHT, so the rows line up into a clean grid (production promo look). A
+   bare 40% column at each image's natural aspect read small + ragged (asymmetrical). */
+.left-right-image-text > .image { flex: 0 0 48%; max-width: 48%; }
+.left-right-image-text > .image img {
+  width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: cover;
+  display: block; border-radius: 6px;
+}
 .left-right-image-text > .text { flex: 1 1 0; min-width: 0; }
 @media (max-width: 640px) {
-  .left-right-image-text { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+  /* Name .image-right too: its row-reverse rule is (0,2,0) and would otherwise beat a bare
+     .left-right-image-text column rule (0,1,0) and keep the image-right rows side-by-side on a
+     phone. Both must stack to one column. */
+  .left-right-image-text,
+  .left-right-image-text.image-right { flex-direction: column; align-items: stretch; gap: 0.75rem; }
   .left-right-image-text > .image { max-width: 100%; }
 }
 .references, .footnotes { font-size: 0.9rem; color: var(--fg-soft); }
@@ -2397,6 +2485,10 @@ sup.reference:target {
 .share-tooltip .headline-anchor {
   color: var(--muted); display: inline-flex; align-items: center; justify-content: center;
   min-width: 24px; min-height: 24px; vertical-align: middle;
+  /* The per-heading trigger is a <button> (menu toggle, no scroll-jump); strip UA button chrome
+     so it renders identically to the footer/authored <a>. font:inherit keeps the 0.75em glyph
+     (a button does not inherit font-size) and the .share-tooltip gap/color stay as set. */
+  background: none; border: 0; margin: 0; padding: 0; font: inherit; line-height: 1; cursor: pointer;
 }
 .share-tooltip .headline-anchor:hover { color: var(--link); text-decoration: none; }
 /* Visible manually-placed anchors ({{Anchor|...|show=true}} -> span.mpa-visible) -- prod
@@ -2464,11 +2556,18 @@ sup.reference:target {
    other, so no exclusive-group bookkeeping is needed. A popover-unaware browser ignores the
    attribute and shows the panel inline -- still a deliberate see-the-URL-first confirm, so the
    degraded path stays privacy-safe (it never auto-connects). */
+/* NO `display` on the base rule. This is a native [popover]: a base `display` overrides the UA
+   `[popover]:not(:popover-open) { display:none }`, so every CLOSED confirm panel stays laid out
+   and leaks inline -- the Mastodon card floated over the "Copy as Wikitext/Markdown/phpBB" row
+   with no click. Layout (flex) is applied only when the popover is OPEN. A popover-unaware browser
+   has no UA hide and ignores `:popover-open`, so the panel still shows inline (block) as the
+   JS-off, see-the-URL-first confirm fallback. */
 .share-open-panel {
-  display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; max-width: min(18rem, 88vw);
+  flex-direction: column; gap: 0.3rem; min-width: 0; max-width: min(18rem, 88vw);
   background: var(--surface); color: var(--fg); border: 1px solid var(--border);
   border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 0.6rem;
 }
+.share-open-panel:popover-open { display: flex; }
 /* Close (x) for the share-open popover: native popovertargetaction=hide (no JS), top-right. */
 .share-close {
   align-self: flex-end; margin: -0.2rem -0.3rem 0 0; padding: 0.15rem 0.35rem;
