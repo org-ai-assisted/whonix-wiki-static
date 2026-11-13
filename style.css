@@ -1581,11 +1581,6 @@ code:empty { display: none; }
   background: var(--callout, var(--accent)); color: #fff;
 }
 .info-box-icon > img { width: 30px; height: auto; }   /* Ambox image icon: match the 30px icon box */
-/* A callout's content image (e.g. the manual's book logo) is a small decorative cue, not a
-   figure: cap it so a tall glyph cannot stretch the box past its text. Excludes the type badge. */
-.info-box :not(.info-box-icon) > img { height: 46px !important; width: auto !important; max-width: 100%; }
-/* A callout's content image (e.g. the manual's book logo) is a small decorative cue, not a
-   figure: cap it so a tall glyph cannot stretch the box past its text. Excludes the type badge. */
 /* Content images/logos embedded in an info-box BODY size to 46px. EXCLUDE the icons that live
    in the callout but are not body content: the type icon's image (nested .info-box-icon a img,
    so the parent-guard alone misses it) and the archive affordance marker -- the 46px!important
