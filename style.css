@@ -2898,15 +2898,16 @@ sup.reference:target {
   display: inline-flex; vertical-align: middle; margin-left: 4px;
   border: 0; padding: 0; background: none; cursor: pointer; font: inherit; line-height: 1;
 }
-/* the info badge is drawn in CSS (fa-circle-info is not in the FA subset): a small
-   filled "i" circle, so it renders regardless of the icon font. */
-.info-tooltip > i {
+/* CSS-drawn "i" badge: fa-circle-info is NOT in the FA subset (renders as tofu -- the "broken blue
+   info sign"), so draw a small filled circle with a white "i" instead. Shared by the comparison
+   tooltip AND the antispam e-mail info invoker so both show a real icon regardless of the subset. */
+.info-tooltip > i, .antispam-email-info > i {
   font-family: inherit; font-style: normal; font-weight: bold;
   display: inline-flex; align-items: center; justify-content: center;
   width: 15px; height: 15px; border-radius: 50%; background: #5594c7; color: #fff;
   font-size: 11px; line-height: 1;
 }
-.info-tooltip > i::before { content: "i"; }
+.info-tooltip > i::before, .antispam-email-info > i::before { content: "i"; }
 /* NO base `display` on the [popover]: a base display overrides the UA
    `[popover]:not(:popover-open){display:none}`, so every CLOSED note would leak inline and add
    layout width. Layout is applied only when the popover is OPEN. A popover-unaware browser has no
