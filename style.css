@@ -1308,12 +1308,14 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
 blockquote.quotation .blockquote-context:has(img.logo-banner) {
   display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
 }
-blockquote.quotation .blockquote-context:has(img.logo-banner) .nm {
+/* The logo carries the attribution, so both name and role are visually hidden (kept in the DOM for
+   screen readers); only the source and the logo band show. */
+blockquote.quotation .blockquote-context:has(img.logo-banner) .nm,
+blockquote.quotation .blockquote-context:has(img.logo-banner) .rl {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap;
 }
-blockquote.quotation .blockquote-context:has(img.logo-banner) .src { order: 1; }
-blockquote.quotation .blockquote-context:has(img.logo-banner) .rl  { order: 2; }
+blockquote.quotation .blockquote-context:has(img.logo-banner) .src { order: 1; margin-top: 0; }
 blockquote.quotation .blockquote-context:has(img.logo-banner) > a:has(img.logo-banner) {
   order: 3; align-self: stretch; grid-row: auto; grid-column: auto;
   margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-soft);
@@ -2833,6 +2835,16 @@ sup.reference:target {
   min-width: 24px; min-height: 24px; padding: 0 0.15em; vertical-align: middle;
 }
 .footer-edit a:hover { color: var(--link); }
+/* Footer brand-line edit+share even-rhythm cluster (mirrors .heading-actions): the flex gap owns
+   the spacing, so brand-text -> cluster and edit -> share gaps are equal between the 24px icon
+   boxes. NO transform here -- it would become the containing block for the share menu's
+   position:fixed mobile overlay and misplace it (the footer keeps the share anchor at
+   transform:none; it aligns to the brand text, not a heading cap). */
+.footer-actions {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  margin-inline-start: 0.5rem; vertical-align: middle;
+}
+.footer-actions .footer-edit, .footer-actions .share-tooltip { margin-left: 0; }
 .footer-share .menu { --muted: #6b7177; }
 @media (min-width: 441px) {
   /* The footer icon sits at the LEFT of the brand line, so anchor the 315px menu to the left
@@ -3651,6 +3663,12 @@ sup.reference:target {
   vertical-align: middle; margin-right: 6px;
 }
 .mininav:empty { display: none; }
+/* Special pages (Settings/AllPages/RecentChanges/Version/SpecialPages) carry the switcher as
+   .mn-special: give the pill bar breathing room before the page body (it sits flush otherwise,
+   unlike the in-article tab switcher's own spacing). The lead band's own 1.5em top margin is
+   dropped right after the bar so the gap is the nav's, never doubled. */
+.mn-special { margin-bottom: 1.5em; }
+.mn-special + .intro-like { margin-top: 0; }
 /* Hide the tab-title visually but KEEP it in the a11y tree (sr-only, not display:none):
    the pill nav shows the label, but the section's heading must stay so screen readers get
    the authored h2->h3->h4 order (display:none drops the h3 -> heading-order a11y fail). */
