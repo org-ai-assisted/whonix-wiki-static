@@ -1942,9 +1942,18 @@
       if (!(e.target && e.target.closest && e.target.closest(".share-tooltip"))) closeAll(null);
     });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeAll(null); });
+    // The visible (x) inside the menu closes its tooltip -- the discoverable, mobile-friendly
+    // affordance (an outside tap / a 2nd tap on the trigger also close, but neither is obvious on
+    // touch). setOpen drops .share-open AND blurs the focused menu child so :focus-within releases.
+    document.addEventListener("click", function (e) {
+      var x = e.target && e.target.closest ? e.target.closest(".menu-close") : null;
+      if (!x) return;
+      var tip = x.closest(".share-tooltip");
+      if (tip) setOpen(tip, false);
+    });
   }
 
-  // Warm below-the-fold lazy images ~1.5 viewports before they enter view, so the fetch AND the
+  // Warm below-the-fold lazy images ~3 viewports before they enter view, so the fetch AND the
   // decode finish before the user scrolls to them (no visible pop-in). No-JS falls back to native
   // loading=lazy (unchanged). Bounded on bandwidth: only images the user is scrolling toward are
   // warmed, and Save-Data / 2g links are skipped (native lazy only), preserving lazy-load's data
@@ -1963,7 +1972,10 @@
         img.loading = "eager";                                 // start the fetch now (deterministic)
         if (typeof img.decode === "function") img.decode().catch(function () {});  // pre-decode
       }
-    }, { root: null, rootMargin: "150% 0px" });                // ~1.5 viewports ahead
+      // 3 viewports (not 1.5): Firefox/Safari native lazy-load use a tiny margin, so a 1.5-vp
+      // warm only reached the image about to enter view anyway -- below-fold images still popped
+      // in on scroll. 3 vp gives a real head start there; Chrome's native lazy already covers it.
+    }, { root: null, rootMargin: "300% 0px" });                // ~3 viewports ahead
     var imgs = document.querySelectorAll('img[loading="lazy"]');
     for (var j = 0; j < imgs.length; j++) io.observe(imgs[j]);
   }

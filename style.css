@@ -429,7 +429,11 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
 .download-button-v2 .dbutton {
   display: table-cell; border-radius: 50px; position: relative;
   background-image: linear-gradient(#4d8cdd 0%, #0867bb 100%);
-  padding: 6px 16px 6px 50px; color: #eaf1ff; font-weight: 600; white-space: nowrap;
+  padding: 6px 16px 6px 50px; color: #eaf1ff; font-weight: 600;
+  /* NO white-space:nowrap: the label wraps whenever the width is insufficient, at EVERY viewport
+     (desktop still fits on one line). This is the structural fix for the recurring text-spill --
+     a reworded/longer label ("(stable) (FREE!)") or a narrower column can no longer pin the text
+     to one rigid line that overflows the pill; the old 480px breakpoint was a fragile band-aid. */
 }
 .download-button-v2:hover .dbutton {
   background-image: linear-gradient(#4180d1 0%, #005aae 100%); color: #fff;
@@ -1342,7 +1346,12 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
   position: absolute; top: -39px; left: 6px; background: var(--surface); color: var(--link);
   border: 1px solid var(--link); padding: 6px 10px; border-radius: 6px; z-index: 1010;
   font-weight: bold; font-size: 14px; display: none; white-space: nowrap;
-  font-family: Courier, monospace;
+  font-family: Courier, monospace; max-width: calc(100vw - 16px); box-sizing: border-box;
+}
+/* On a phone the "Copied to clipboard!" toast is wider than the viewport as one nowrap line and
+   clips off the right edge. Let it wrap within the max-width cap above so it stays on-screen. */
+@media (max-width: 480px) {
+  .code-select .tooltip2 { white-space: normal; }
 }
 .code-select .tooltip2::after {
   content: " "; position: absolute; top: 100%; left: 7px; border-width: 7px;
@@ -1722,7 +1731,11 @@ code:empty { display: none; }
    list counts as its single most-specific arg, so the rule stays (0,3,1) -- the original. A second
    chained :not() would make it (0,4,1) and out-specify the donor-card logo's `height:90%!important`
    (.donor-card .logo span.logo-image img, (0,3,2)), collapsing a donor logo in an info-box to 46px. */
-.info-box :not(.info-box-icon, .info-box-icon *, .thumbframe, .thumbframe *) > img:not(.ia-archive-icon, .media-sized) { height: 46px !important; width: auto !important; max-width: 100%; }
+/* Exempt the mininav switcher pills (.mn-switcher icons -- the "stable" brick blew to 46px,
+   defeating the 1.2em pill cap) and the download button's OS-logo cell (.op-sys -- the ISO logo
+   blew to 46px, defeating its 16px cap). Both are icons with their OWN cap; the 46px blanket is
+   for donor/content logos, not these. */
+.info-box :not(.info-box-icon, .info-box-icon *, .thumbframe, .thumbframe *, .mn-switcher *, .op-sys) > img:not(.ia-archive-icon, .media-sized) { height: 46px !important; width: auto !important; max-width: 100%; }
 
 /* Numbered section/step badge (production "padded-content-icon" widget): a bold
    numeral, coloured by the element's cs-* --callout. pci-style-circle makes it a
@@ -2394,8 +2407,10 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
    .wiki-content to outrank the global img rule. */
 .wiki-content .thumbframe {
   border: 1px solid var(--border); background: var(--surface);
-  padding: 4px; text-align: center; overflow: hidden; font-size: 0.94rem;
+  padding: 6px; text-align: center; overflow: hidden; font-size: 0.94rem;
   width: fit-content; max-width: 100%;   /* shrink-wrap to the image, not the column */
+  border-radius: var(--radius-sm);   /* single rounded frame + soft shadow (prod Kicksecure parity) */
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.07), 0 6px 16px rgb(0 0 0 / 0.07);
   margin-bottom: 0.8em;
 }
 .wiki-content .thumbframe.tright { float: right; clear: right; margin: 0.4em 0 0.8em 1.4em; }
@@ -2404,8 +2419,9 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 .wiki-content .thumbframe.tnone { float: none; margin: 0.4em 0 0.8em; }
 .wiki-content .thumbframe p { margin: 0; }   /* defensive: neutralize any pandoc <p> wrap */
 .wiki-content .thumbframe img {
-  border: 1px solid var(--border); background: var(--bg);
-  display: block; margin: 0 auto; max-width: 100%; height: auto;
+  /* no inner border, no forced bg: the frame is the ONLY box. A forced --bg behind a
+     transparent logo (Debian/Tux/OSI/GNU are transparent PNGs) printed the white "double box". */
+  display: block; margin: 0 auto; max-width: 100%; height: auto; border-radius: 3px;
 }
 .wiki-content .thumbcaption {
   text-align: left; line-height: 1.4; padding: 4px 2px 2px;
@@ -2522,6 +2538,11 @@ sup.reference:target {
   color: var(--muted); text-decoration: none;
   display: inline-flex; align-items: center; justify-content: center;
   min-width: 24px; min-height: 24px; padding: 0 0.15em; vertical-align: middle;
+  /* vertical-align:middle centers the box on the parent's x-height center, which sits ~0.15em
+     (of this 0.75em affordance) BELOW the heading's CAP-height optical center. Lift both
+     affordance icons by the SAME em amount so their centers land on the cap-height line AND stay
+     aligned with each other at every heading level (the offset is a constant fraction of em). */
+  transform: translateY(-0.15em);
 }
 .mw-editsection a:hover { color: var(--link); text-decoration: none; }
 .share-tooltip { position: relative; display: inline-block; margin-left: 0.45rem;
@@ -2535,6 +2556,10 @@ sup.reference:target {
      so it renders identically to the footer/authored <a>. font:inherit keeps the 0.75em glyph
      (a button does not inherit font-size) and the .share-tooltip gap/color stay as set. */
   background: none; border: 0; margin: 0; padding: 0; font: inherit; line-height: 1; cursor: pointer;
+  /* Same cap-height lift as .mw-editsection a (identical em -> the two stay mutually aligned).
+     Safe on the button: the share menu-wrapper is a sibling, not a descendant, so this transform
+     does not become its containing block (the @440px position:fixed menu is unaffected). */
+  transform: translateY(-0.15em);
 }
 .share-tooltip .headline-anchor:hover { color: var(--link); text-decoration: none; }
 /* Visible manually-placed anchors ({{Anchor|...|show=true}} -> span.mpa-visible) -- prod
@@ -2558,12 +2583,35 @@ sup.reference:target {
 /* An authored illustration (Figure: Share Button) shows the menu OPEN inline -- a static page
    has no hover, so flow the menu in place rather than floating it. */
 .share-tooltip.is-open .menu-wrapper { display: block; position: static; margin-top: 0.3rem; }
+/* Visible (x) to close the share menu (app.js initShareLazy wires it to .share-open). Overlays the
+   menu's top-right corner; a SIBLING of .menu (not inside it), so the per-heading proto clone --
+   which replaces .menu's contents -- never wipes it. The 0.3rem is the wrapper's padding-top gap. */
+.share-tooltip .menu-close {
+  position: absolute; top: calc(0.3rem + 4px); right: 6px; z-index: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 32px; min-height: 32px; padding: 0;
+  background: none; border: 0; color: #888; cursor: pointer; font-size: 18px; line-height: 1;
+}
+.share-tooltip .menu-close:hover { color: #333; }
+/* The static authored demo (.is-open) flows the menu inline with no toggle JS and renders no (x),
+   so it needs no close rule. On phones the wrapper is a fixed overlay; keep the (x) at its corner. */
 /* production ShareTooltip.css: a white, centered menu (not the surface/left-aligned one) */
 .share-tooltip .menu { display: block; width: 315px; max-width: calc(100vw - 10px);
   max-height: min(70vh, 34rem); overflow-y: auto;
   padding: 10px; font-size: 13px; font-weight: normal; text-align: center;
   background: #fff; color: #333; border: 1px solid #eee;
   border-radius: 10px; box-shadow: 1px 1px 3px rgb(0 0 0 / 20%); }
+/* The share card is ALWAYS light (prod is light-only; .menu / .share-panel hardcode #fff/#333).
+   Re-ground EVERY theme token its inner components read -- .code-select (the URL + copy boxes),
+   .share-open-panel (the social-open confirm popover), the copied toast -- to their LIGHT values,
+   so a DARK ancestor never leaks a dark box into the white card. Both the footer dark band
+   (.site-footer sets --surface/--fg/--border/--link dark) and page dark mode were bleeding
+   #424242 into the URL code-select and the Open-in-<network> popover. */
+.share-tooltip .menu, .share-panel {
+  --surface: #f6f7f9; --surface-2: #eceff2; --fg: #1b1d1f; --muted: #6b7177;
+  --border: #d5d9de; --border-soft: #e6e9ec; --link: #1d70b8; --link-hover: #08409b;
+  --shadow-md: 0 4px 12px rgba(20, 24, 31, 0.10);
+}
 .share-tooltip .menu-headline, .share-panel .menu-headline {
   display: block; margin: 8px 0 12px; font-weight: bold; font-size: 20px; color: #333;
 }
@@ -2636,6 +2684,14 @@ sup.reference:target {
 /* The long URL scrolls inside the code-select viewport (overflow-x:auto) rather than widening the
    panel: min-width:0 lets the flex item shrink below its pre-wrapped content so the viewport clips. */
 .share-open-panel .code-select { font-size: 0.8rem; word-break: break-all; min-width: 0; max-width: 100%; }
+@media (max-width: 480px) {
+  /* On a phone the anchored confirm (Chromium) or the UA-centred one (Firefox) can run off the
+     right edge. Pin it to the viewport as a bottom sheet so it never overflows -- overrides the
+     anchor-positioning block above. */
+  .share-open-panel:popover-open {
+    position: fixed; inset: auto 8px 8px 8px; margin: 0; max-width: none; width: auto;
+  }
+}
 .share-open {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
   padding: 0.4rem 0.7rem; border-radius: var(--radius-sm);
@@ -2668,7 +2724,13 @@ sup.reference:target {
    re-grounds --muted to a mid-grey so the glyph-only share icons + subheads stay legible on
    white (the footer sets --muted to a near-white #bcbcbc for its DARK column, which on the
    white menu was ~1.9:1). */
-.footer-share .headline-anchor { color: inherit; }
+/* The footer share trigger aligns to the footer logo/home text, not a heading cap -- cancel the
+   per-heading cap-height lift so it is not raised out of the footer line. */
+.footer-share .headline-anchor { color: inherit; transform: none; }
+/* Footer edit pencil: reuse the heading .mw-editsection symmetric box, but the footer brand line
+   is baseline-aligned (not a heading cap), so cancel the cap-height lift and match the share
+   icon's inherited colour (footer --muted is near-white for the dark band). Sits left of share. */
+.footer-edit a { color: inherit; transform: none; }
 .footer-share .menu { --muted: #6b7177; }
 @media (min-width: 441px) {
   /* The footer icon sits at the LEFT of the brand line, so anchor the 315px menu to the left
@@ -2713,10 +2775,15 @@ sup.reference:target {
 }
 [hidden] { display: none !important; }
 
-/* comparison-table info tooltip (production Utility.css .info-tooltip; the /w/images
-   Ambox icon is replaced by a FontAwesome info glyph). Hover/focus the icon to reveal
-   the note. The popup is display:none until then, so it adds no layout width. */
-.info-tooltip { display: inline-block; position: relative; cursor: help; margin-left: 4px; vertical-align: middle; }
+/* comparison-table info popover (production Utility.css .info-tooltip; the /w/images Ambox icon
+   is replaced by a FontAwesome info glyph). The icon is a <button popovertarget> and the note a
+   sibling [popover] span (parserfunctions.infotooltip) -- tap/click to open, an explicit (x)/Esc/
+   outside-tap to dismiss. Top-layer, so revealing it never grows the table cell (the old :hover
+   reveal was also unreachable on touch). */
+.info-tooltip {  /* the <button> invoker: strip the UA button chrome, keep the inline badge */
+  display: inline-flex; vertical-align: middle; margin-left: 4px;
+  border: 0; padding: 0; background: none; cursor: pointer; font: inherit; line-height: 1;
+}
 /* the info badge is drawn in CSS (fa-circle-info is not in the FA subset): a small
    filled "i" circle, so it renders regardless of the icon font. */
 .info-tooltip > i {
@@ -2726,14 +2793,34 @@ sup.reference:target {
   font-size: 11px; line-height: 1;
 }
 .info-tooltip > i::before { content: "i"; }
-.info-tooltip > span {
-  display: none; position: absolute; max-width: 260px; width: max-content;
+/* NO base `display` on the [popover]: a base display overrides the UA
+   `[popover]:not(:popover-open){display:none}`, so every CLOSED note would leak inline and add
+   layout width. Layout is applied only when the popover is OPEN. A popover-unaware browser has no
+   UA hide and ignores :popover-open, so the note shows inline (block) -- a harmless static fallback. */
+.info-popover {
+  max-width: 260px; width: max-content;
   background: #fff; border: 1px solid #ccc; box-shadow: 2px 2px 4px rgb(0 0 0 / 15%);
-  padding: 8px 10px; border-radius: 5px; top: 1.6em; left: -10px; z-index: 20;
+  padding: 8px 10px; border-radius: 5px;
   font-size: 13px; font-weight: normal; line-height: 1.4; text-align: left; color: #333;
   white-space: normal;
 }
-.info-tooltip:hover > span, .info-tooltip:focus-within > span { display: block; }
+.info-popover:popover-open { display: block; }
+/* Close (x), top-right: native popovertargetaction=hide (no JS). */
+.info-close {
+  float: right; margin: -2px -4px 4px 6px; padding: 0 2px;
+  background: none; border: none; color: #888; cursor: pointer; line-height: 1;
+  font-size: 14px; min-width: 24px; min-height: 24px;
+}
+.info-close:hover { color: #333; }
+/* Pin under the invoking icon where CSS anchor positioning exists (Chromium); a popover's invoker
+   is its implicit anchor, so no explicit anchor-name is needed. Firefox ESR 128 lacks anchor
+   positioning and falls back to the UA default (a small viewport-centred card), which reads fine. */
+@supports (anchor-name: --a) {
+  .info-popover:popover-open {
+    position: absolute; margin: 0; inset: auto; top: anchor(bottom); left: anchor(left);
+    position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;
+  }
+}
 /* No underline on links inside the comparison (VPN) table -- prod parity; the feature + tooltip
    links read as plain text. Scoped higher than `.wiki-content p a` (style.css:234) so it wins. */
 .wiki-content .comparison-table a, .wiki-content .comparison-table a:hover { text-decoration: none; }
@@ -3302,7 +3389,11 @@ sup.reference:target {
      generator) and object-fit:contain centers the real image inside it undistorted, so
      every cell is the same size and captions share one baseline (prod). height:auto keeps
      the square proportional when max-width caps it on a narrow screen. */
-  display: block; max-width: 100%; height: auto; object-fit: contain;
+  display: block; max-width: 100%; max-height: 100%; height: auto; object-fit: contain;
+  /* max-height caps a TALL/non-square icon (e.g. the Raspberry Pi logo) to the square cell so
+     object-fit:contain letterboxes it INSIDE the border instead of overflowing below it; it is
+     a no-op for the wide-screenshot `.thumb-gallery-style` cells (aspect-ratio:auto -> no definite
+     height to resolve 100% against), so those keep sizing to the image. */
 }
 .gallery .gallerytext { display: block; margin-top: 0.3rem; text-align: center; line-height: 1.3; min-height: 2.6em; }
 /* a {{nowrap}} caption (e.g. the Architecture labels) must not force its tile wider than the
@@ -3369,6 +3460,23 @@ sup.reference:target {
 }
 .wiki-content .thumb-gallery .thumbframe img {
   width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain;
+}
+/* {{ThumbGallery|mode=logos}}: a frameless "logo cloud" (About #Optimized_defaults). Transparent
+   brand logos sit directly on the page background -- no card border/fill/shadow -- at uniform
+   height, centered, with a roomy gap. Strips the .thumbframe card chrome; keeps object-fit:contain
+   from the rule above for even alignment across mixed aspect ratios. */
+.wiki-content .thumb-gallery.mode-logos { justify-content: center; gap: 1.5rem 2.2rem; }
+.wiki-content .thumb-gallery.mode-logos .thumbframe {
+  width: auto; border: none; background: none; box-shadow: none;
+  border-radius: 0; overflow: visible; padding: 0;
+}
+.wiki-content .thumb-gallery.mode-logos .thumbframe > a,
+.wiki-content .thumb-gallery.mode-logos .thumbframe > p > a {
+  height: 4.5rem; padding: 0;
+}
+.wiki-content .thumb-gallery.mode-logos .thumbframe img { border-radius: 0; }
+.wiki-content .thumb-gallery.mode-logos .thumbcaption {
+  text-align: center; color: var(--fg-soft); font-size: 0.82rem; padding-top: 0.3rem;
 }
 
 /* --- tab mininav SWITCHER (JS builds a pill cloud; the production Mininav.css look:
@@ -3636,27 +3744,40 @@ sup.reference:target {
 /* current-page selflink: bold everywhere (used outside the mininav too). */
 .mw-selflink, a.selflink { font-weight: 700; color: var(--fg); cursor: default; }
 
-/* Anti-spam e-mail: the "please do not e-mail for..." reasons are revealed on
-   hover/focus (restores the MediaWiki hover feature) and hidden otherwise, so the
-   address is not a flat wall of text on the page. */
-.antispam-email-tooltip { position: relative; cursor: help; }
-.antispam-email-tooltip .tooltip {
-  display: none; position: absolute; left: 0; top: calc(100% + 0.3rem); z-index: 40;
+/* Anti-spam e-mail (Template:Name-email): the obfuscated address stays visible; an info-icon
+   <button popovertarget> after it opens the "please do not e-mail for..." reasons as a native
+   [popover] with an explicit (x) close -- tap/click to open, (x)/Esc/outside-tap to dismiss
+   (mobile-friendly; the old CSS :hover reveal was unreachable on touch). */
+.antispam-email-tooltip { position: relative; }
+.antispam-email-info {  /* small info-icon invoker after the address; strip the UA button chrome */
+  display: inline-flex; vertical-align: middle; margin-left: 4px;
+  border: 0; padding: 0; background: none; cursor: pointer; color: var(--link); font: inherit; line-height: 1;
+}
+.antispam-email-info:hover { color: var(--link-hover); }
+/* NO base `display`: it is a native [popover] (the UA hides it until open); layout only on
+   :popover-open, so the wide reasons card never adds inline width when closed. */
+.antispam-email-popover {
   width: max-content; max-width: min(90vw, 30rem);
   padding: 0.7rem 0.9rem; text-align: left; font-weight: normal; font-size: 0.88rem;
   background: var(--surface); color: var(--fg);
   border: 1px solid var(--border); border-radius: var(--radius-md, 6px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
-.antispam-email-tooltip:hover .tooltip,
-.antispam-email-tooltip:focus-within .tooltip { display: block; }
-.antispam-email-tooltip .tooltip .icon-bullet-list { margin-top: 0.4rem; }
+.antispam-email-popover:popover-open { display: block; }
+.antispam-email-popover .icon-bullet-list { margin-top: 0.4rem; }
+/* Pin under the invoking icon where CSS anchor positioning exists (Chromium); Firefox ESR 128
+   falls back to the UA default (viewport-centred card). */
+@supports (anchor-name: --a) {
+  .antispam-email-popover:popover-open {
+    position: absolute; margin: 0; inset: auto; top: anchor(bottom); left: anchor(left);
+    position-try-fallbacks: flip-block, flip-inline, flip-inline flip-block;
+  }
+}
 @media (max-width: 480px) {
-  /* The popup is absolutely-positioned from an indented list item (left:0), so width:max-content
-     spills past the right edge on phones. Pin it to the viewport (like the share tooltip) so it
-     fits with no horizontal overflow. */
-  .antispam-email-tooltip .tooltip {
-    position: fixed; left: 8px; right: 8px; top: 60px; width: auto; max-width: none;
+  /* The wide reasons card would spill past the right edge on phones. Pin it to the viewport (like
+     the share tooltip) so it fits with no horizontal overflow -- overrides the anchor block above. */
+  .antispam-email-popover:popover-open {
+    position: fixed; left: 8px; right: 8px; top: 60px; width: auto; max-width: none; inset: auto; margin: 0;
   }
 }
 
@@ -3984,8 +4105,11 @@ html.client-js .show-for-nojs-only { display: none; }
   border-radius: 10px; box-shadow: 0 8px 30px rgb(0 0 0 / 35%); padding: 24px;
 }
 .mini-modal .mm-close {
-  position: absolute; top: 8px; right: 10px; z-index: 3; background: transparent;
+  position: absolute; top: 2px; right: 2px; z-index: 3; background: transparent;
   border: 0; color: inherit; font-size: 22px; cursor: pointer; line-height: 1;
+  /* >=44px hit area (WCAG 2.5.8 / Material) with the glyph centered -- the bare 22px glyph was
+     an under-size touch target on a phone. */
+  min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
 }
 .mini-modal .mm-close:hover { opacity: .7; }
 body.mini-modal-active { overflow: hidden; }
