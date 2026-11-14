@@ -382,9 +382,12 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
      stacked vertically, so BOTH left and right edges share one axis -- the idiomatic group-of-
      same-button alignment (ragged left would read as accidental). min-width covers the widest
      label state ("Collapse all" / "Learn More") so no pill resizes when its text flips, and the
-     right-edge inset (1px card border + 10px padding) keeps the column flush to the card edge. */
+     right-edge inset matches the card's border + padding so the column is flush. */
   min-width: 10rem; text-align: center;
-  margin-right: 11px;
+  /* = .toccolours border (1px) + its right padding (0.9rem desktop); the <=480px collapsibles
+     block overrides this to 11px to match the 10px card padding there. Without it the button
+     right-aligns inside the prose <p> (see the :has uncap below), ~75px short of the toggles. */
+  margin-right: calc(0.9rem + 1px);
   background: var(--link); border-color: var(--link); color: #fff;
   font-weight: 700; font-size: 1rem; padding: 4px 17px 5px 10px;
 }
@@ -395,6 +398,11 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
    (app.js flips the label + .is-expanded on click). */
 .expand-or-collapse-all-button::before { content: "\25BC"; margin-right: 0.4rem; font-size: 0.8em; }
 .expand-or-collapse-all-button.is-expanded::before { content: "\25B2"; }
+/* Pandoc wraps the button in a <p>, which inherits the global .wiki-content p{max-width:66ch}
+   prose cap. The collapsible cards (.toccolours) are NOT prose-capped, so at desktop that cap
+   pins the button's <p> ~75px short of the card column and the right-aligned button can never
+   reach the .mwc-toggle axis. Uncap just this <p> so it spans the same column as the cards. */
+.wiki-content p:has(> .expand-or-collapse-all-button) { max-width: none; }
 
 /* prod download button (MediaWiki Kicksecure ext .download-button-v2 / .dbutton): a rounded
    gradient-blue pill with a left icon divider + an OS-icon cell. Reproduced from prod CSS. */
@@ -1991,6 +1999,8 @@ code:empty { display: none; }
   .tcc-content { padding-left: 0.35rem; padding-right: 0.35rem; }
   .info-box { padding-left: 11px; padding-right: 11px; }
   .toccolours.mw-collapsible { padding-left: 10px; padding-right: 10px; }
+  /* Match the Expand-all button's right inset to the 10px card padding at this width. */
+  .expand-or-collapse-all-button { margin-right: 11px; }
 }
 /* The mininav MOVES each section's logo <img> into its nav pill, leaving the original
    .tcc-image > a an EMPTY focusable anchor (href to the File: page, no content) -- an
@@ -2727,10 +2737,16 @@ sup.reference:target {
 /* The footer share trigger aligns to the footer logo/home text, not a heading cap -- cancel the
    per-heading cap-height lift so it is not raised out of the footer line. */
 .footer-share .headline-anchor { color: inherit; transform: none; }
-/* Footer edit pencil: reuse the heading .mw-editsection symmetric box, but the footer brand line
-   is baseline-aligned (not a heading cap), so cancel the cap-height lift and match the share
-   icon's inherited colour (footer --muted is near-white for the dark band). Sits left of share. */
-.footer-edit a { color: inherit; transform: none; }
+/* Footer edit pencil: the SAME symmetric 24px box as the heading edit/share icons (so the footer
+   edit + share align and read equally), but baseline-aligned to the brand line -- NO heading
+   cap-lift -- and colour-matched to the share icon (inherit; the footer --muted is near-white for
+   the dark band). Sits left of share. */
+.footer-edit a {
+  color: inherit; text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 24px; min-height: 24px; padding: 0 0.15em; vertical-align: middle;
+}
+.footer-edit a:hover { color: var(--link); }
 .footer-share .menu { --muted: #6b7177; }
 @media (min-width: 441px) {
   /* The footer icon sits at the LEFT of the brand line, so anchor the 315px menu to the left
