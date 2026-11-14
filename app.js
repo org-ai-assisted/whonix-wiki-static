@@ -658,7 +658,25 @@
     var searchToggle = document.getElementById("search-toggle");
     if (searchToggle) {
       searchToggle.addEventListener("change", function () {
-        if (searchToggle.checked) { input.focus(); }
+        // The field reveals via a 0.18s width/visibility transition and is NOT focusable until it
+        // settles: a focus() call mid-transition silently no-ops (the caret never enters, the
+        // magnifier label keeps focus). Retry focus each frame until it sticks (or ~20 frames
+        // pass) -- self-correcting, with no coupling to the CSS transition duration.
+        if (!searchToggle.checked) return;
+        // Auto-focus only on precise-pointer (mouse/desktop) devices. On touch, focusing the field
+        // pops the on-screen keyboard, which shifts the page on open + collapse -- so there the box
+        // just opens and the user taps it to type (keyboard appears only then). (pointer:fine) is
+        // the primary "has a mouse / no soft keyboard" test; (hover:hover) guards the rare touch
+        // device that still reports fine.
+        if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+        var tries = 0;
+        (function putCaret() {
+          if (!searchToggle.checked) return;   // reclosed mid-retry
+          input.focus();
+          if (document.activeElement !== input && tries++ < 20) {
+            requestAnimationFrame(putCaret);
+          }
+        })();
       });
     }
     var root = rootPrefix();
@@ -1883,9 +1901,20 @@
       tip.setAttribute("data-sh-built", "1");
       initCopyButtons();                                   // idempotent: wires the new .code-select
     }
+    // Set a tip's open state. .menu-wrapper is also revealed by :focus-within, so merely dropping
+    // .share-open would leave the menu open while focus stays inside (the "2nd tap does not close"
+    // bug). On CLOSE, blur whatever element inside the tooltip holds focus -- the trigger (a touch
+    // tap leaves it focused) OR a menu child a keyboard user tabbed into -- so :focus-within
+    // releases and the menu actually hides. aria-expanded tracks the state for assistive tech.
+    function setOpen(tip, open) {
+      var t = tip.querySelector(".headline-anchor");   // every share-tooltip carries one
+      tip.classList.toggle("share-open", open);
+      t.setAttribute("aria-expanded", open ? "true" : "false");
+      if (!open && tip.contains(document.activeElement)) document.activeElement.blur();
+    }
     function closeAll(except) {
       var open = document.querySelectorAll(".share-tooltip.share-open");
-      for (var i = 0; i < open.length; i++) if (open[i] !== except) open[i].classList.remove("share-open");
+      for (var i = 0; i < open.length; i++) if (open[i] !== except) setOpen(open[i], false);
     }
     // Prime: inject the full menu on first press/focus so :hover and :focus-within reveal it.
     function onPrime(e) {
@@ -1903,7 +1932,7 @@
       activate(tip);
       var open = !tip.classList.contains("share-open");
       closeAll(tip);
-      if (open) tip.classList.add("share-open"); else tip.classList.remove("share-open");
+      setOpen(tip, open);
     }
     document.addEventListener("pointerover", onPrime);     // prime on HOVER -> desktop hover reveals the FULL menu, no click
     document.addEventListener("pointerdown", onPrime);     // prime on press (touch/pen may skip hover)
@@ -1915,11 +1944,40 @@
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeAll(null); });
   }
 
+  // Warm below-the-fold lazy images ~1.5 viewports before they enter view, so the fetch AND the
+  // decode finish before the user scrolls to them (no visible pop-in). No-JS falls back to native
+  // loading=lazy (unchanged). Bounded on bandwidth: only images the user is scrolling toward are
+  // warmed, and Save-Data / 2g links are skipped (native lazy only), preserving lazy-load's data
+  // savings; fetchpriority=low so a warmed image never contends with the LCP.
+  function initImageWarmAhead() {
+    if (typeof IntersectionObserver !== "function") return;   // old engines: native lazy only
+    // Skip metered / data-saver / very slow links (incl. Tor-ish): native lazy only, no warming.
+    var c = navigator.connection;
+    if (c && (c.saveData || /2g$/.test(c.effectiveType || ""))) return;   // "2g" / "slow-2g"
+    var io = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (!entries[i].isIntersecting) continue;
+        var img = entries[i].target;
+        io.unobserve(img);
+        img.setAttribute("fetchpriority", "low");
+        img.loading = "eager";                                 // start the fetch now (deterministic)
+        if (typeof img.decode === "function") img.decode().catch(function () {});  // pre-decode
+      }
+    }, { root: null, rootMargin: "150% 0px" });                // ~1.5 viewports ahead
+    var imgs = document.querySelectorAll('img[loading="lazy"]');
+    for (var j = 0; j < imgs.length; j++) io.observe(imgs[j]);
+  }
+
   ready(function () {
     // Paint-, theme-, hash- and layout-critical: run immediately. Deferring these would flash
     // the stored theme, fail to open a hash-targeted tab/<details> on load, or shift layout
     // after first paint (banners show/hide, the bottom-stack spacer, the tab switcher).
     initDarkMode();
+    // These hashchange handlers are the ONLY window-level listeners. Do NOT add an "unload" or
+    // "beforeunload" listener anywhere: either one makes the page ineligible for the back/forward
+    // cache (bfcache), so a back navigation reloads instead of restoring instantly. Use
+    // "pagehide"/"pageshow" if a page-lifecycle hook is ever needed. Enforced by a jscov test
+    // (dist-ai website-tests/jscov/app.test.js) that fails CI on a (before)unload registration.
     openHashDetails();
     window.addEventListener("hashchange", openHashDetails);
     initTabs();
@@ -1953,6 +2011,7 @@
       initShareLazy();
       initHeroVideo();
       initEndorsementMore();
+      initImageWarmAhead();
     });
   });
 

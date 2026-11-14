@@ -663,6 +663,12 @@ body.site-whonix .site-logo-img { width: auto; }
     font-size: 0.9em;
     word-break: break-all;
   }
+  /* But NOT on an icon/image-only external link: the URL would overflow a fixed-size inline-flex
+     box and paint over neighbouring text. The auto-appended archive marker (.ext-link-to-archive
+     > a, a 24px target, white-space:nowrap) is the pervasive case -- cancel it explicitly so no
+     :has support is required; the :has(img) rule additionally covers any logo/image link. */
+  .wiki-content .ext-link-to-archive > a::after { content: none !important; }
+  .wiki-content a[href^="http"]:has(img)::after { content: none !important; }
 
   /* Keep atomic blocks whole across a page break. A table may legitimately span pages, so
      only its ROWS stay intact and the header repeats on each printed page. */
@@ -686,6 +692,26 @@ body.site-whonix .site-logo-img { width: auto; }
   .wiki-content h2,
   .wiki-content h3,
   .wiki-content h4 { break-after: avoid; }
+
+  /* A handful of status-colour classes hard-code their colour (no token), so the token reset
+     above does not reach them; under an explicit dark theme they would print their dark-mode
+     hue (low contrast on white paper). Restate their LIGHT values (mirroring the base rules:
+     .text-* line ~3131, .cmp-* ~2698, .mw-unrendered ~4049, .pill a ~2249). !important because
+     those dark rules sit LATER in the file, so an equal-specificity reset would lose on order. */
+  :root[data-theme="dark"] .text-green,  :root:not([data-theme="light"]) .text-green  { color: #157a15 !important; }
+  :root[data-theme="dark"] .text-red,    :root:not([data-theme="light"]) .text-red    { color: #c0392b !important; }
+  :root[data-theme="dark"] .text-orange, :root:not([data-theme="light"]) .text-orange { color: #a35908 !important; }
+  :root[data-theme="dark"] .text-yellow, :root:not([data-theme="light"]) .text-yellow { color: #866900 !important; }
+  :root[data-theme="dark"] .cmp-yes,     :root:not([data-theme="light"]) .cmp-yes     { color: #157f15 !important; }
+  :root[data-theme="dark"] .cmp-no,      :root:not([data-theme="light"]) .cmp-no      { color: #c0392b !important; }
+  :root[data-theme="dark"] .mw-unrendered,
+  :root:not([data-theme="light"]) .mw-unrendered {
+    color: #b00020 !important; background: #fdecea !important; border-color: #b00020 !important;
+  }
+  :root[data-theme="dark"] .page-home .slogan-pills .pill a,
+  :root:not([data-theme="light"]) .page-home .slogan-pills .pill a {
+    color: #0b57d0 !important; border-color: #9dc0f5 !important;
+  }
 }
 /* DIRECT-child ul only: the horizontal top bar. `.site-nav ul` (unscoped) also matched the
    nested .nav-submenu ul and -- at higher specificity than `.nav-submenu {display:none}` --
@@ -850,6 +876,11 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 /* Open-state affordance on the magnifier so open vs closed is visually distinct (not a
    "stuck" look): the icon carries the active surface while the box is open. */
 .search-toggle:checked ~ .search-icon { background: var(--surface-2); }
+/* noJS: hide the dead toggle+field (live search needs JS) so only the Special:AllPages browse
+   link (.search-nojs-browse, shown by .show-for-nojs-only) remains as the magnifier. */
+html:not(.client-js) .site-search .search-toggle,
+html:not(.client-js) .site-search label.search-icon,
+html:not(.client-js) .site-search .search-field { display: none; }
 /* Outside-click close is handled in app.js (initSearch): it unchecks #search-toggle AND
    hides the live .search-results, and -- unlike a header-nested full-viewport label -- does
    not swallow the mobile nav's own outside-tap close. No-JS still closes via the lens. */
@@ -2338,9 +2369,24 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   font-style: normal; text-align: center; color: var(--fg); font-size: 1.19rem;
 }
 .page-home .intro-like { margin: 0 0 1.2em; }
-/* Homepage "Learn What Is Whonix?" CTA line: prod shows it centered + large (~25px) with the
-   target as a blue link. Centering comes from Template:Align; this sets the prod size. */
-.page-home .hero-learn { font-size: 1.56rem; }
+/* Homepage hero CTA + "Learn:" line: both are {{Align|middle}} -> <div class="align-center"><p>.
+   The global `.wiki-content p{max-width:66ch}` pins that <p> to the column's LEFT edge, so
+   `text-align:center` only centers within a left-anchored box -- the button/link land well left
+   of the column center. Drop the cap on homepage align wrappers so centering spans the full
+   column (matches the Whonix prod hero + the Fedora/Qubes idiom). (.hero-learn is dead code -- no
+   element emits that class -- so the old size rule is removed.) */
+.page-home .align-center > p,
+.page-home .align-right > p { max-width: none; margin-inline: auto; }
+/* Homepage content sections: a centered <h2> (set below) over a LEFT-anchored 66ch body reads as
+   two different alignments. Put each section body in a centered max-width column, left-aligned
+   inside for readability -- the Ubuntu u-fixed-width / Qubes col-offset / Tailwind prose mx-auto
+   idiom. The Download band's body is nested in .section-download (a div, not a direct p/ul/ol/dl
+   child), so the `>` combinator leaves it untouched; at phone width 66ch exceeds the viewport, so
+   the cap collapses to full-width left-aligned -- no mobile change. */
+.page-home .cv-section > :is(p, ul, ol, dl) { max-width: 66ch; margin-inline: auto; }
+/* Homepage "Kicksecure gives you" checklist box: the post-intro gap rule (.post-intro-p + *)
+   gives it a 1.5em top while its own margin is 1.25rem, so it renders ~4px top-heavy. Match them. */
+.page-home .post-intro-p + .explainer { margin-top: 1.25rem; }
 /* [[File:...|thumb|left|right|none|caption]] -- a semantic <figure> framed caption box, floated
    so body text wraps beside it. The figure IS the frame (no inner wrapper div) and holds a
    direct <figcaption>; the image is styled via `.thumbframe img`. Named `.thumbframe` (not the
@@ -2915,12 +2961,15 @@ sup.reference:target {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 1rem;
+  /* symmetric block gap (prod had margin-top only -> card sat top-heavy over the tiles) */
+  margin-block: 1rem;
 }
 .section-download .col-container > div { width: 46%; margin: 1%; display: flex; }
-@media (min-width: 560px) { .section-download .col-container > div { width: 30%; } }
+/* 4 tiles/line from tablet up (22% + 2% margin ~= 4 across); 2-up on the mobile base above.
+   4 is the one column count that balances BOTH tabs with no lonely orphan: Virtual Machine(6)
+   -> 4+2, Other(7) -> 4+3. 3-up would orphan Other (3+3+1) and 5-up orphaned VM (5+1 -- the
+   reported bug). justify-content:center (set above) centers the short last row. */
 @media (min-width: 768px) { .section-download .col-container > div { width: 22%; } }
-@media (min-width: 960px) { .section-download .col-container > div { width: 18%; } }
 /* pandoc wraps each card's <a> in a <p>; descendant selectors + a zeroed <p> margin keep
    the card compact regardless of that wrapper. */
 .section-download .col-container > div p { margin: 0; }
@@ -2951,6 +3000,14 @@ sup.reference:target {
 }
 .section-download .tcc-section.active .tcc-title { color: #fff; box-shadow: none; }
 .section-download .tcc-content { border-top: none; padding: 0; }
+/* JS adds .mininav-ready at runtime, which re-applies a light-prose padding-top:0.3rem that
+   out-specifies the padding:0 above -- the active download card then sits ~4.8px top-heavy. Zero
+   it so the card whitespace is symmetric top/bottom (pairs with the col-container margin-block). */
+.section-download .tab-content-controller.mininav-ready .tcc-content { padding-top: 0; }
+/* The dark band is #273445, but .tcc-section's base `background: var(--bg)` (white) + border
+   paint a white card behind the OS tiles. Clear both so the tiles sit directly on the dark band
+   (prod has no white card); covers the no-JS bordered state and the mininav-ready state. */
+.section-download .tcc-section { background: transparent; border: none; }
 .section-download .col-container > div a {
   background: #3c495a;
   display: flex; flex-direction: column; height: 100%;   /* equal-height tiles: a 2-line label
@@ -3225,7 +3282,10 @@ sup.reference:target {
 .gallery > p { display: contents; }
 .gallery .gallerybox {
   display: flex; flex-direction: column; align-items: center;
-  max-width: 12rem; font-size: 0.85rem; color: var(--muted);
+  /* Uniform cell width: a long or {{nowrap}} caption wraps INSIDE the cell instead of widening
+     it and shoving its neighbours (what desynced the groups' column rhythm and pushed rows
+     off-centre). max-width:100% keeps 2-up on a phone. */
+  width: 8.5rem; max-width: 100%; font-size: 0.85rem; color: var(--muted);
 }
 /* Border/padding/background live on the WRAPPER, not the img: uniform padding on a
    non-square img skews its border-box ratio vs the intrinsic one (image-aspect-ratio fail). */
@@ -3244,7 +3304,10 @@ sup.reference:target {
      the square proportional when max-width caps it on a narrow screen. */
   display: block; max-width: 100%; height: auto; object-fit: contain;
 }
-.gallery .gallerytext { display: block; margin-top: 0.3rem; text-align: center; line-height: 1.3; }
+.gallery .gallerytext { display: block; margin-top: 0.3rem; text-align: center; line-height: 1.3; min-height: 2.6em; }
+/* a {{nowrap}} caption (e.g. the Architecture labels) must not force its tile wider than the
+   uniform cell width above -- inside a gallery caption, let it wrap. */
+.gallery .gallerytext .nowrap { white-space: normal; }
 .gallery a:hover img { transform: scale(1.1); }
 /* ISO/TOC thumb galleries hold WIDE screenshots, not square icons: the square cell above leaves
    ~80% empty vertical space around a wide image, so let the cell size to the image aspect and
