@@ -1980,6 +1980,31 @@
     for (var j = 0; j < imgs.length; j++) io.observe(imgs[j]);
   }
 
+  // Hover-to-open for the antispam e-mail info popover (native [popover]). The invoker is a
+  // popovertargetaction="show" button, so this hover-open and a click/tap/Enter never fight:
+  // every opener is idempotent "show", and the card dismisses via its (x), Esc, an outside
+  // tap, or moving the pointer away. Gated to a precise-pointer (hover:hover)+(pointer:fine)
+  // device so touch keeps the deliberate tap and never opens on a stray touch. Pointer-only
+  // (no focus/blur): keyboard users open with Enter (native show), so tabbing INTO the card
+  // can't blur-close it. A short close delay bridges the gap between the icon and the card.
+  function initHoverPopovers() {
+    if (!window.matchMedia || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    var invokers = document.querySelectorAll(".antispam-email-info[popovertarget]");
+    for (var i = 0; i < invokers.length; i++) {
+      (function (btn) {
+        var pop = document.getElementById(btn.getAttribute("popovertarget"));
+        if (!pop || typeof pop.showPopover !== "function") return;   // missing / popover-unaware engine
+        var timer;
+        function show() { clearTimeout(timer); try { pop.showPopover(); } catch (e) {} }  // throws if already open
+        function hideSoon() { timer = setTimeout(function () { try { pop.hidePopover(); } catch (e) {} }, 160); }
+        btn.addEventListener("mouseenter", show);
+        btn.addEventListener("mouseleave", hideSoon);
+        pop.addEventListener("mouseenter", function () { clearTimeout(timer); });
+        pop.addEventListener("mouseleave", hideSoon);
+      })(invokers[i]);
+    }
+  }
+
   ready(function () {
     // Paint-, theme-, hash- and layout-critical: run immediately. Deferring these would flash
     // the stored theme, fail to open a hash-targeted tab/<details> on load, or shift layout
@@ -2024,6 +2049,7 @@
       initHeroVideo();
       initEndorsementMore();
       initImageWarmAhead();
+      initHoverPopovers();
     });
   });
 
