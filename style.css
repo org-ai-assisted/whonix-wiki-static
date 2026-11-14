@@ -2537,6 +2537,19 @@ sup.reference:target {
 /* section-heading permalink + share menu (production ShareTooltip): a small share
    icon linking to the section #id, with a hover menu holding the copyable direct URL
    (app.js adds a Copy button to the inner .code-select). CSP-safe: pure-CSS hover. */
+/* Edit + share action cluster at the end of a heading line. A flex row so BOTH gaps (heading
+   text -> cluster, and edit -> share) are set by ONE margin + ONE gap between equal >=24px tap
+   boxes -- an even rhythm by construction, instead of per-icon margins on differently-sized
+   glyphs (which make the two visible gaps diverge). Vertical centering stays on the leaf icon
+   anchors (the translateY lift below), NOT here: a transform on this cluster would become the
+   containing block for the share menu's position:fixed mobile overlay and misplace it. */
+.heading-actions {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  margin-inline-start: 0.5rem; vertical-align: middle;
+}
+/* inside the cluster the gap owns the spacing -- drop the per-icon left margins (the footer/
+   authored uses of these classes keep their own margins, untouched). */
+.heading-actions .mw-editsection, .heading-actions .share-tooltip { margin-left: 0; }
 /* #163 per-section edit source link (prod mw-editsection): a small muted PENCIL ICON (prod-like,
    not "[edit]" text) at the end of the heading line, beside the share icon. Deep-links to the
    section's source line on GitHub. Themed -> dark-mode safe. */
