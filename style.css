@@ -2710,12 +2710,19 @@ sup.reference:target {
     margin: 0; max-width: calc(100vw - 32px); width: max-content;
   }
 }
-.share-open {
+/* The "Open in <network>" link. SCOPED to .share-open-panel: the bare class `.share-open` is ALSO
+   the persistent open-state marker app.js toggles on the .share-tooltip (.share-tooltip.share-open),
+   so a bare `.share-open { display:inline-flex; padding }` rule leaked onto the OPEN tooltip --
+   growing it from inline-block(24px) to inline-flex(46px) and shoving the footer share icon ~11px
+   right + the brand line ~5px taller on every open (the "button moves / content shifts" bug). The
+   link only ever lives inside .share-open-panel, so scoping it there styles the link and NEVER the
+   tooltip. Do NOT reintroduce a bare `.share-open {}` rule. */
+.share-open-panel .share-open {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
   padding: 0.4rem 0.7rem; border-radius: var(--radius-sm);
   background: var(--surface-2); color: var(--link-hover); font-size: 0.9rem; text-decoration: none;
 }
-.share-open:hover { text-decoration: none; background: var(--surface); }
+.share-open-panel .share-open:hover { text-decoration: none; background: var(--surface); }
 /* Per-network brand colours, SINGLE SOURCE: each .si-<network> sets the --brand custom
    property, which every surface that shows the badge reads -- the share tooltip/panel icons
    (background: var(--brand) above) AND the footer social row (.footer-social-icons .icon-link).
