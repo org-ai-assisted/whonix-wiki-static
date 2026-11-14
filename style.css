@@ -2672,11 +2672,15 @@ sup.reference:target {
   border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 0.6rem;
 }
 .share-open-panel:popover-open { display: flex; }
-/* Close (x) for the share-open popover: native popovertargetaction=hide (no JS), top-right. */
+/* Close (x) for the share-open popover: native popovertargetaction=hide (no JS). It sits on its
+   OWN header row (align-self:flex-end, no negative margin pulling it over the content), so the
+   panel's `gap` keeps it clear of the URL/body below -- a dedicated header band, never a glyph
+   floated over body copy (the idiomatic rule for a popover/sheet close; light-dismiss stays
+   primary). >=32px tap target, aria-label on the button. */
 .share-close {
-  align-self: flex-end; margin: -0.2rem -0.3rem 0 0; padding: 0.15rem 0.35rem;
+  align-self: flex-end; margin: 0; padding: 0.15rem 0.35rem;
   background: none; border: none; color: var(--muted); cursor: pointer; line-height: 1;
-  min-width: 24px; min-height: 24px; display: inline-flex; align-items: center; justify-content: center;
+  min-width: 32px; min-height: 32px; display: inline-flex; align-items: center; justify-content: center;
 }
 .share-close:hover { color: var(--fg); }
 /* Pin under the invoking icon where CSS anchor positioning exists (Chromium); a popover's invoker
@@ -2695,11 +2699,15 @@ sup.reference:target {
    panel: min-width:0 lets the flex item shrink below its pre-wrapped content so the viewport clips. */
 .share-open-panel .code-select { font-size: 0.8rem; word-break: break-all; min-width: 0; max-width: 100%; }
 @media (max-width: 480px) {
-  /* On a phone the anchored confirm (Chromium) or the UA-centred one (Firefox) can run off the
-     right edge. Pin it to the viewport as a bottom sheet so it never overflows -- overrides the
-     anchor-positioning block above. */
+  /* On a phone, render the confirm as a small CENTRED card (the native popover's no-anchor default
+     -- Firefox already centres it), constrained to the viewport. This fixes BOTH the right-edge
+     overflow AND the "detached in a corner, disconnected from the share widget" look of a bottom
+     sheet: a centred confirm reads as "about the icon you just tapped". Overrides the anchor block. */
   .share-open-panel:popover-open {
-    position: fixed; inset: auto 8px 8px 8px; margin: 0; max-width: none; width: auto;
+    /* `inset:auto` FIRST to clear the anchor block's inset/top/left, THEN centre -- the shorthand
+       would otherwise reset the top/left set before it. */
+    position: fixed; inset: auto; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    margin: 0; max-width: calc(100vw - 32px); width: max-content;
   }
 }
 .share-open {
@@ -3481,14 +3489,21 @@ sup.reference:target {
    brand logos sit directly on the page background -- no card border/fill/shadow -- at uniform
    height, centered, with a roomy gap. Strips the .thumbframe card chrome; keeps object-fit:contain
    from the rule above for even alignment across mixed aspect ratios. */
-.wiki-content .thumb-gallery.mode-logos { justify-content: center; gap: 1.5rem 2.2rem; }
+/* Symmetric logo cloud: flex-wrap let each row center its own differently-WIDTH logos, so columns
+   did not line up row-to-row (a wide wordmark pushed its neighbours off the column below). A GRID
+   of equal auto-fit 1fr tracks pins every logo to a shared column; the fixed logo-box height makes
+   a tall logo and a wide wordmark occupy the SAME slot (object-fit:contain scales each to fit). */
+.wiki-content .thumb-gallery.mode-logos {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+  gap: 1.5rem 1rem; justify-items: center; align-items: start;
+}
 .wiki-content .thumb-gallery.mode-logos .thumbframe {
-  width: auto; border: none; background: none; box-shadow: none;
-  border-radius: 0; overflow: visible; padding: 0;
+  width: 100%; border: none; background: none; box-shadow: none;
+  border-radius: 0; overflow: visible; padding: 0; margin: 0;
 }
 .wiki-content .thumb-gallery.mode-logos .thumbframe > a,
 .wiki-content .thumb-gallery.mode-logos .thumbframe > p > a {
-  height: 4.5rem; padding: 0;
+  width: 100%; height: 4.5rem; padding: 0;   /* equal logo slot for every aspect ratio */
 }
 .wiki-content .thumb-gallery.mode-logos .thumbframe img { border-radius: 0; }
 .wiki-content .thumb-gallery.mode-logos .thumbcaption {
@@ -3999,7 +4014,12 @@ html.client-js .show-for-nojs-only { display: none; }
 /* When a sitenotice is present it already supplies the gap above the content; drop the
    .wiki-content 28px top margin so the sitenotice->headline gap is not doubled (a page
    WITHOUT a notice keeps the 28px header->content gap, matching production). */
-#siteNotice + main.wiki-content { margin-top: 0; }
+/* Fire ONLY while the sitenotice is actually VISIBLE (it then supplies the header->content gap).
+   When dismissed -- in-session via [hidden], or on a return visit via the pre-paint
+   html.sitenotice-hidden -- the `+` still matches the still-in-DOM #siteNotice, so without these
+   guards the content margin stayed 0 and the title jammed the sticky header (bug #85). Hidden ->
+   the rule drops out and main.wiki-content keeps its 23px default header->content gap. */
+html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { margin-top: 0; }
 /* The page-title box carries a 25px top margin for the no-banner header->title gap; under
    a banner that stacks on the notice's own margin into a wide empty band, so tighten just
    the title's top margin when it directly follows a sitenotice (idiomatic: content starts
