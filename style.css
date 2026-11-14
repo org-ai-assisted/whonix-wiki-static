@@ -2400,6 +2400,10 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
    element emits that class -- so the old size rule is removed.) */
 .page-home .align-center > p,
 .page-home .align-right > p { max-width: none; margin-inline: auto; }
+/* Homepage centered lists ({{Align|middle|* ...}}): text-align:center alone leaves the bullet
+   markers orphaned at the far left, detached from the centered text. Drop the markers so a
+   centered list reads as clean centered lines (matches the dark-band promo sections). */
+.page-home .align-center :is(ul, ol) { list-style: none; padding-left: 0; margin-left: 0; }
 /* Homepage content sections: a centered <h2> (set below) over a LEFT-anchored 66ch body reads as
    two different alignments. Put each section body in a centered max-width column, left-aligned
    inside for readability -- the Ubuntu u-fixed-width / Qubes col-offset / Tailwind prose mx-auto
