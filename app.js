@@ -1986,7 +1986,10 @@
   // tap, or moving the pointer away. Gated to a precise-pointer (hover:hover)+(pointer:fine)
   // device so touch keeps the deliberate tap and never opens on a stray touch. Pointer-only
   // (no focus/blur): keyboard users open with Enter (native show), so tabbing INTO the card
-  // can't blur-close it. A short close delay bridges the gap between the icon and the card.
+  // can't blur-close it. The hover ZONE is the whole address snippet (.antispam-email-tooltip),
+  // so hovering the e-mail address -- not just the tiny "i" -- reveals the reasons. The card is
+  // a DOM child of that zone, so moving onto it does not leave the zone (no close); a short
+  // delay still bridges any gap. Moving off the whole snippet closes it.
   function initHoverPopovers() {
     if (!window.matchMedia || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     var invokers = document.querySelectorAll(".antispam-email-info[popovertarget]");
@@ -1994,11 +1997,12 @@
       (function (btn) {
         var pop = document.getElementById(btn.getAttribute("popovertarget"));
         if (!pop || typeof pop.showPopover !== "function") return;   // missing / popover-unaware engine
+        var zone = btn.closest(".antispam-email-tooltip") || btn;    // hover the address, not only the icon
         var timer;
         function show() { clearTimeout(timer); try { pop.showPopover(); } catch (e) {} }  // throws if already open
         function hideSoon() { timer = setTimeout(function () { try { pop.hidePopover(); } catch (e) {} }, 160); }
-        btn.addEventListener("mouseenter", show);
-        btn.addEventListener("mouseleave", hideSoon);
+        zone.addEventListener("mouseenter", show);
+        zone.addEventListener("mouseleave", hideSoon);
         pop.addEventListener("mouseenter", function () { clearTimeout(timer); });
         pop.addEventListener("mouseleave", hideSoon);
       })(invokers[i]);
