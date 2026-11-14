@@ -1297,6 +1297,30 @@ blockquote.quotation .blockquote-context:has(img.author-image) .rl,
 blockquote.quotation .blockquote-context:has(img.author-image) .src {
   grid-column: 2;
 }
+/* image-layout=banner ({{quotation|image-layout=banner}}): a wide/horizontal attribution logo is
+   illegible crammed into the 80px square avatar cell. The opt-in adds `logo-banner` to the author
+   image (img.author-image.logo-banner); keying off the IMAGE class (via :has) is robust where
+   computing the blockquote's class attribute is not (a parser function inside a raw-HTML attribute is
+   mis-parsed). Stack the context and drop the logo into a full-width FOOTER BAND under a hairline
+   divider, at a legible height (~30px, natural aspect). The logo carries the attribution, so the text
+   name is visually hidden but kept in the DOM for screen readers. Placed after the A3 grid so a
+   specificity tie resolves here. */
+blockquote.quotation .blockquote-context:has(img.logo-banner) {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+}
+blockquote.quotation .blockquote-context:has(img.logo-banner) .nm {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+blockquote.quotation .blockquote-context:has(img.logo-banner) .src { order: 1; }
+blockquote.quotation .blockquote-context:has(img.logo-banner) .rl  { order: 2; }
+blockquote.quotation .blockquote-context:has(img.logo-banner) > a:has(img.logo-banner) {
+  order: 3; align-self: stretch; grid-row: auto; grid-column: auto;
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-soft);
+}
+blockquote.quotation .blockquote-context img.author-image.logo-banner {
+  max-height: 30px; max-width: 100%; height: auto; width: auto; border-radius: 0;
+}
 :root[data-theme="dark"] blockquote.quotation::before { opacity: 0.45; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) blockquote.quotation::before { opacity: 0.45; }
