@@ -2600,11 +2600,8 @@ sup.reference:target {
 /* Visible (x) to close the share menu (app.js initShareLazy wires it to .share-open). Overlays the
    menu's top-right corner; a SIBLING of .menu (not inside it), so the per-heading proto clone --
    which replaces .menu's contents -- never wipes it. The 0.3rem is the wrapper's padding-top gap. */
-.share-tooltip .menu-close {
-  position: absolute; top: calc(0.3rem + 4px); right: 6px; z-index: 1;
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 32px; min-height: 32px; padding: 0;
-  background: none; border: 0; color: #888; cursor: pointer; font-size: 18px; line-height: 1;
+.share-tooltip .menu-close {  /* position only; the circular appearance comes from .popover-close */
+  position: absolute; top: 0.45rem; right: 0.45rem; z-index: 1;
 }
 .share-tooltip .menu-close:hover { color: #333; }
 /* The static authored demo (.is-open) flows the menu inline with no toggle JS and renders no (x),
@@ -2629,6 +2626,10 @@ sup.reference:target {
 .share-tooltip .menu-headline, .share-panel .menu-headline {
   display: block; margin: 8px 0 12px; font-weight: bold; font-size: 20px; color: #333;
 }
+/* The .share-tooltip menu carries an absolute circular close (.menu-close) at its top-right.
+   Reserve symmetric horizontal room on its headline so the centred title never runs under the
+   close (the ".../link!" collision). The .share-panel menu has no close, so it is NOT padded. */
+.share-tooltip .menu-headline { padding: 0 2.6rem; }
 /* keep the menu on-screen on phones (ShareTooltip.css overflow handling) */
 @media (max-width: 800px) {
   .share-tooltip .menu-wrapper { left: auto; right: 0; transform: none; }
@@ -2676,17 +2677,28 @@ sup.reference:target {
   border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 0.6rem;
 }
 .share-open-panel:popover-open { display: flex; }
-/* Close (x) for the share-open popover: native popovertargetaction=hide (no JS). It sits on its
-   OWN header row (align-self:flex-end, no negative margin pulling it over the content), so the
-   panel's `gap` keeps it clear of the URL/body below -- a dedicated header band, never a glyph
-   floated over body copy (the idiomatic rule for a popover/sheet close; light-dismiss stays
-   primary). >=32px tap target, aria-label on the button. */
-.share-close {
-  align-self: flex-end; margin: 0; padding: 0.15rem 0.35rem;
-  background: none; border: none; color: var(--muted); cursor: pointer; line-height: 1;
-  min-width: 32px; min-height: 32px; display: inline-flex; align-items: center; justify-content: center;
+/* --- Idiomatic header row + close, SHARED by every share surface (confirm popover, share menu,
+   info/antispam popovers): a leading title + a trailing close + a divider (Bootstrap .modal-header
+   / Primer Dialog.Header). The close sits in its own flex cell, so it can NEVER collide with the
+   title/body text at any width. Light-dismiss (Esc / tap-outside) stays primary. --- */
+.popover-head {
+  display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.1rem;
+  padding-bottom: 0.4rem; border-bottom: 1px solid var(--border);
 }
-.share-close:hover { color: var(--fg); }
+.popover-title {
+  flex: 1 1 auto; min-width: 0; font-weight: bold; color: var(--fg); text-align: left;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* The close: a ghost ICON BUTTON with a subtle filled circle -- clearly a button (not a faint
+   glyph), with a >=36px tap target and an aria-label. One rule for every surface via .popover-close. */
+.popover-close {
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  width: 2.2rem; height: 2.2rem; padding: 0; border: 0; border-radius: 50%; cursor: pointer;
+  background: var(--surface-2); color: var(--muted); font-size: 1.05rem; line-height: 1;
+  transition: background 0.12s, color 0.12s;
+}
+.popover-close:hover { background: var(--border); color: var(--fg); }
+.popover-close:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 /* Pin under the invoking icon where CSS anchor positioning exists (Chromium); a popover's invoker
    is its implicit anchor, so no explicit anchor-name is needed. Firefox ESR 128 lacks anchor
    positioning and falls back to the UA default -- a small viewport-centred card, which reads fine
@@ -2841,11 +2853,9 @@ sup.reference:target {
 }
 .info-popover:popover-open { display: block; }
 /* Close (x), top-right: native popovertargetaction=hide (no JS). */
-.info-close {
-  float: right; margin: -2px -4px 4px 6px; padding: 0 2px;
-  background: none; border: none; color: #888; cursor: pointer; line-height: 1;
-  font-size: 14px; min-width: 24px; min-height: 24px;
-}
+/* info/antispam popover close: a circular .popover-close floated to the top-right; the note text
+   wraps to its left (the popover is small, so a reserved header row would waste its width). */
+.info-close { float: right; margin: 0 0 0.3rem 0.5rem; }
 .info-close:hover { color: #333; }
 /* Pin under the invoking icon where CSS anchor positioning exists (Chromium); a popover's invoker
    is its implicit anchor, so no explicit anchor-name is needed. Firefox ESR 128 lacks anchor
