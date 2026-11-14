@@ -2612,7 +2612,15 @@ sup.reference:target {
    is INSIDE the hovered wrapper -- no dead zone where the pointer leaves :hover moving button->menu. */
 .share-tooltip .menu-wrapper { display: none; position: absolute; left: 50%;
   top: 100%; transform: translateX(-50%); padding-top: 0.3rem; z-index: 40; }
-.share-tooltip:hover .menu-wrapper, .share-tooltip:focus-within .menu-wrapper { display: block; }
+/* `:focus-within` reveals for keyboard; `:hover` ONLY where a real pointer exists. On TOUCH a tap
+   leaves a STICKY :hover on the tapped element and its ancestors, so after tapping the close (x)
+   the sticky `.share-tooltip:hover` kept the whole menu revealed -- "the x darkens but the pop-up
+   stays open" (mobile Firefox/Chrome). Gating :hover leaves touch reveal to the JS .share-open
+   toggle, which the close clears cleanly. */
+.share-tooltip:focus-within .menu-wrapper { display: block; }
+@media (hover: hover) {
+  .share-tooltip:hover .menu-wrapper { display: block; }
+}
 /* Tap/click opens a PERSISTENT state (app.js .share-open) -- a mobile tap does not hold :hover or
    :focus-within, so without this the menu never stays open on a phone. Same positioning as hover
    (absolute; the max-width:440px block below makes it the centered fixed overlay on phones). */
