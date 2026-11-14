@@ -1350,19 +1350,26 @@ blockquote.quotation .blockquote-context:has(img.author-image) .src {
 .code-select.js-fully-loaded {
   overflow: visible; padding-left: 40px; white-space: pre-wrap; overflow-wrap: anywhere;
 }
+/* Centred over its code-select, sized to ONE-LINE content (width:max-content) and capped at the
+   viewport. max-content is load-bearing: without it, wrapping collapses the tooltip to the narrow
+   52px copy-card container and renders it VERTICALLY (one char per line), overlapping + BLOCKING
+   the cards. Centring (not left:6px) keeps an edge card's toast on-screen without needing to wrap. */
 .code-select .tooltip2 {
-  position: absolute; top: -39px; left: 6px; background: var(--surface); color: var(--link);
+  position: absolute; top: -39px; left: 50%; transform: translateX(-50%);
+  background: var(--surface); color: var(--link);
   border: 1px solid var(--link); padding: 6px 10px; border-radius: 6px; z-index: 1010;
   font-weight: bold; font-size: 14px; display: none; white-space: nowrap;
-  font-family: Courier, monospace; max-width: calc(100vw - 16px); box-sizing: border-box;
+  font-family: Courier, monospace; width: max-content; max-width: calc(100vw - 16px); box-sizing: border-box;
 }
-/* On a phone the "Copied to clipboard!" toast is wider than the viewport as one nowrap line and
-   clips off the right edge. Let it wrap within the max-width cap above so it stays on-screen. */
 @media (max-width: 480px) {
-  .code-select .tooltip2 { white-space: normal; }
+  /* Hide the per-copy-card tooltip on a phone: it is wider than the 52px card and has nowhere to
+     sit (white-space wrapping it collapses to a vertical sliver that BLOCKS the cards). The global
+     "Copied." toast gives the copy feedback, and "Click = Copy" is a desktop hover hint. The URL
+     code-select's own tooltip (a wide code-select, centred over itself) is fine and stays. */
+  .code-select.cs-image .tooltip2 { display: none !important; }  /* beat .copied + :hover show states */
 }
 .code-select .tooltip2::after {
-  content: " "; position: absolute; top: 100%; left: 7px; border-width: 7px;
+  content: " "; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border-width: 7px;
   border-style: solid; border-color: var(--link) transparent transparent transparent;
 }
 .code-select .tooltip2 .copied { display: none; }
@@ -2400,10 +2407,12 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
    element emits that class -- so the old size rule is removed.) */
 .page-home .align-center > p,
 .page-home .align-right > p { max-width: none; margin-inline: auto; }
-/* Homepage centered lists ({{Align|middle|* ...}}): text-align:center alone leaves the bullet
-   markers orphaned at the far left, detached from the centered text. Drop the markers so a
-   centered list reads as clean centered lines (matches the dark-band promo sections). */
-.page-home .align-center :is(ul, ol) { list-style: none; padding-left: 0; margin-left: 0; }
+/* Centered homepage section bodies ({{Align|middle|...}} inside a section): keep the readable
+   ~66ch column the other section bodies use -- full-width centered lines read too long. Prose
+   stays centered; a feature list reads as a normal left-aligned bulleted list in that centered
+   column, matching the other homepage lists. */
+.page-home .cv-section .align-center > p { max-width: 66ch; margin-inline: auto; }
+.page-home .cv-section .align-center > :is(ul, ol) { max-width: 66ch; margin-inline: auto; text-align: left; }
 /* Homepage content sections: a centered <h2> (set below) over a LEFT-anchored 66ch body reads as
    two different alignments. Put each section body in a centered max-width column, left-aligned
    inside for readability -- the Ubuntu u-fixed-width / Qubes col-offset / Tailwind prose mx-auto
@@ -2565,11 +2574,12 @@ sup.reference:target {
   color: var(--muted); text-decoration: none;
   display: inline-flex; align-items: center; justify-content: center;
   min-width: 24px; min-height: 24px; padding: 0 0.15em; vertical-align: middle;
-  /* vertical-align:middle centers the box on the parent's x-height center, which sits ~0.15em
-     (of this 0.75em affordance) BELOW the heading's CAP-height optical center. Lift both
-     affordance icons by the SAME em amount so their centers land on the cap-height line AND stay
-     aligned with each other at every heading level (the offset is a constant fraction of em). */
-  transform: translateY(-0.15em);
+  /* Center the VISIBLE GLYPH INK (not the box) between the heading's cap-top and baseline. The
+     FontAwesome glyph sits high in its em-box, so box-centering alone leaves the ink riding high
+     (exceeding cap-top, gapping the baseline). A small SHARED em nudge drops the ink onto the
+     optical middle; it is a constant fraction of em, so both icons stay centered + mutually
+     aligned at every heading level. */
+  transform: translateY(-0.035em);
 }
 .mw-editsection a:hover { color: var(--link); text-decoration: none; }
 .share-tooltip { position: relative; display: inline-block; margin-left: 0.45rem;
@@ -2583,10 +2593,10 @@ sup.reference:target {
      so it renders identically to the footer/authored <a>. font:inherit keeps the 0.75em glyph
      (a button does not inherit font-size) and the .share-tooltip gap/color stay as set. */
   background: none; border: 0; margin: 0; padding: 0; font: inherit; line-height: 1; cursor: pointer;
-  /* Same cap-height lift as .mw-editsection a (identical em -> the two stay mutually aligned).
+  /* Same ink-centering nudge as .mw-editsection a (identical em -> the two stay mutually aligned).
      Safe on the button: the share menu-wrapper is a sibling, not a descendant, so this transform
      does not become its containing block (the @440px position:fixed menu is unaffected). */
-  transform: translateY(-0.15em);
+  transform: translateY(-0.035em);
 }
 .share-tooltip .headline-anchor:hover { color: var(--link); text-decoration: none; }
 /* Visible manually-placed anchors ({{Anchor|...|show=true}} -> span.mpa-visible) -- prod
@@ -3245,10 +3255,13 @@ sup.reference:target {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-.page-home .cv-section:has(> .section-download) > h2 > .share-tooltip > .headline-anchor,
-.page-home .cv-section:has(.cv-darkband) > h2 > .share-tooltip > .headline-anchor,
-.page-home .cv-section:has(> .section-download) > h2 > .mw-editsection > a,
-.page-home .cv-section:has(.cv-darkband) > h2 > .mw-editsection > a { color: #cbd5e1; }
+/* the edit+share affordances sit inside the .heading-actions cluster (h2 > .heading-actions >
+   ...), so the dark-band light color must reach through it -- else they fall to --muted (#5c626a),
+   ~2.05:1 on the #273445 band, and the edit <a> picks up the generic dark-band link blue. */
+.page-home .cv-section:has(> .section-download) > h2 > .heading-actions > .share-tooltip > .headline-anchor,
+.page-home .cv-section:has(.cv-darkband) > h2 > .heading-actions > .share-tooltip > .headline-anchor,
+.page-home .cv-section:has(> .section-download) > h2 > .heading-actions > .mw-editsection > a,
+.page-home .cv-section:has(.cv-darkband) > h2 > .heading-actions > .mw-editsection > a { color: #cbd5e1; }
 .page-home .section-download.dark-section {
   margin: 0;
   padding: 0;
@@ -3458,29 +3471,58 @@ sup.reference:target {
    uniform cell width above -- inside a gallery caption, let it wrap. */
 .gallery .gallerytext .nowrap { white-space: normal; }
 .gallery a:hover img { transform: scale(1.1); }
-/* ISO/TOC thumb galleries hold WIDE screenshots, not square icons: the square cell above leaves
-   ~80% empty vertical space around a wide image, so let the cell size to the image aspect and
-   widen the box so the screenshot reads larger. */
-.gallery.thumb-gallery-style .thumb { aspect-ratio: auto; padding: 0.25rem; }
-.gallery.thumb-gallery-style .gallerybox { max-width: 15rem; }
 .justify-left { justify-content: left; }
 .justify-center { justify-content: center; }
 .justify-right { justify-content: right; }
-/* thumb-gallery-style: the framed "See Also" cards */
-.gallery.thumb-gallery-style { margin: 20px 0; gap: 10px; }
+/* thumb-gallery-style = idiomatic GRID CARDS (Material for MkDocs pattern), replacing the heavy
+   bordered + drop-shadowed "See Also" card: a responsive auto-fit grid of hairline cards, NO
+   resting shadow, a soft lift on hover, the WHOLE card clickable (a stretched caption link), the
+   label a plain bold title (not an underlined blue caption). */
+.gallery.thumb-gallery-style {
+  margin: 20px 0; display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 13rem));
+}
+.gallery.thumb-gallery-style .thumb {
+  aspect-ratio: auto; padding: 0; border: none; background: none;
+}
+.gallery.thumb-gallery-style .thumb img { max-height: 5.5rem; width: auto; border: none; }
 .gallery.thumb-gallery-style .gallerybox {
-  justify-content: space-between; border: 1px solid var(--border); background-color: var(--surface);
-  border-radius: 8px; box-shadow: 3px 3px 5px rgb(0 0 0 / 0.1); padding: 0;
+  position: relative; width: auto; max-width: none; box-sizing: border-box;
+  justify-content: flex-start; gap: 0.55rem;
+  border: 1px solid var(--border-soft); background-color: var(--surface);
+  border-radius: 8px; box-shadow: none; padding: 0.9rem 0.8rem;
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+}
+.gallery.thumb-gallery-style .gallerybox:hover {
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.12); transform: translateY(-3px); border-color: var(--border);
 }
 .gallery.thumb-gallery-style.gallery-white .gallerybox { background-color: white; }
-.gallery.thumb-gallery-style .gallerybox > .thumb { margin-left: -2px; }
-.gallery.thumb-gallery-style .gallerybox > .thumb img { border: none; }
+.gallery.thumb-gallery-style .gallerybox > .thumb { margin: 0; }
 .gallery.thumb-gallery-style .gallerytext {
-  padding: 0 6px 5px; text-align: center; color: var(--muted); font-style: italic;
+  padding: 0; min-height: 0; text-align: center; color: var(--fg); font-style: normal; font-weight: 600;
 }
-@media (max-width: 500px) {
-  .gallery.thumb-gallery-style .gallerybox { display: block; width: 100%; }
-  .gallery.thumb-gallery-style .gallerybox > .thumb { margin: 15px auto 10px; }
+.gallery.thumb-gallery-style .gallerytext a { color: var(--fg); text-decoration: none; font-weight: 600; }
+/* whole card clickable: stretch the caption link over the box */
+.gallery.thumb-gallery-style .gallerytext a::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+/* the card lift IS the hover affordance here -- drop the per-image zoom */
+.gallery.thumb-gallery-style a:hover img { transform: none; }
+/* step-index: a numbered badge for a LINEAR step sequence (the ISO install flow) */
+.gallery.thumb-gallery-style.step-index { counter-reset: step; }
+.gallery.thumb-gallery-style.step-index .gallerybox { counter-increment: step; }
+.gallery.thumb-gallery-style.step-index .gallerybox::before {
+  content: counter(step); position: absolute; top: 8px; left: 8px; z-index: 2; pointer-events: none;
+  width: 1.45rem; height: 1.45rem; border-radius: 50%;
+  background: var(--surface-2); color: var(--fg-soft);
+  font: 600 0.82rem/1.45rem ui-monospace, monospace; text-align: center;
+}
+/* Frameless floated media: a decorative lead graphic/illustration (|frameless|right|) floats beside
+   the body text with NO frame -- the matte thumbnail frame is reserved for screenshots. */
+.wiki-content .mfloat-right, .wiki-content .mfloat-left { display: block; width: fit-content; max-width: 100%; }
+.wiki-content .mfloat-right { float: right; clear: right; margin: 0.4em 0 0.8em 1.4em; }
+.wiki-content .mfloat-left { float: left; clear: left; margin: 0.4em 1.4em 0.8em 0; }
+.wiki-content .mfloat-right img, .wiki-content .mfloat-left img { display: block; max-width: 100%; height: auto; }
+@media (max-width: 560px) {
+  .wiki-content .mfloat-right, .wiki-content .mfloat-left { float: none; margin: 0.8em auto; }
 }
 /* {{ThumbGallery}} expands to div.thumb-gallery holding floated .thumbframe <figure> boxes
    (pandoc wraps them in a <p>). Prod flexes it into a wrapping row; without this rule the
