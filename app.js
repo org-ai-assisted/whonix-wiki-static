@@ -1110,6 +1110,47 @@
     return n;
   }
 
+  // Page-preview summaries may carry a tiny whitelist of inline formatting tags ({{os}} ->
+  // "<u>o</u>perating <u>s</u>ystem (OS)"), already sanitized to bare tags by the generator
+  // (mwstatic/preview_summary.py). Under require-trusted-types-for 'script' no HTML-string sink
+  // is allowed, so parse that bare-tag markup and rebuild it with createElement/createTextNode
+  // only. Keep this list in sync with ALLOWED_TAGS in preview_summary.py; a tag one side keeps
+  // and the other drops just degrades to plain text.
+  var PREVIEW_INLINE_TAGS = { b:1, strong:1, i:1, em:1, u:1, s:1, del:1, ins:1, sub:1, sup:1,
+    small:1, mark:1, code:1, abbr:1, kbd:1, samp:1, "var":1, q:1, cite:1 };
+  var PREVIEW_TAG_RE = /<(\/?)([a-zA-Z][a-zA-Z0-9]*)[^>]*>/g;
+  function decodeBasicEntities(s) {
+    // The generator escapes only & < > (quote=False); decode & LAST so "&amp;lt;" -> "&lt;".
+    return s.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+  }
+  // Append a whitelisted-inline-HTML summary to `root` as real DOM. The `=== 1` membership test
+  // neutralizes prototype keys (__proto__/constructor -> dropped); an unknown or unbalanced tag
+  // degrades to plain text, so this stays XSS-safe even if the fetched index were tampered with.
+  function appendInlineHTML(root, htmlStr) {
+    var stack = [root], pos = 0, m;
+    function tip() { return stack[stack.length - 1]; }
+    function addText(s) {
+      if (s) tip().appendChild(document.createTextNode(decodeBasicEntities(s)));
+    }
+    PREVIEW_TAG_RE.lastIndex = 0;
+    while ((m = PREVIEW_TAG_RE.exec(htmlStr)) !== null) {
+      addText(htmlStr.slice(pos, m.index));
+      pos = PREVIEW_TAG_RE.lastIndex;
+      var name = m[2].toLowerCase();
+      if (PREVIEW_INLINE_TAGS[name] !== 1) continue;  // non-whitelisted tag -> drop (text kept)
+      if (m[1]) {                                     // closing tag: pop to its matching open
+        for (var i = stack.length - 1; i > 0; i--) {
+          if (stack[i].localName === name) { stack.length = i; break; }
+        }
+      } else {
+        var node = document.createElement(name);
+        tip().appendChild(node);
+        stack.push(node);
+      }
+    }
+    addText(htmlStr.slice(pos));
+  }
+
   // Download-button modal: a download button marked .dlbtn-modal opens a donation
   // appeal + a countdown, then proceeds to the file. No fetch (CSP connect-src
   // 'none') and no inline crypto panel (its images are article-only); donate links
@@ -1396,7 +1437,9 @@
       if (!p || !p.d) return null;  // only pages with a summary
       var box = el("div", "hovercard-page");
       box.appendChild(el("div", "hovercard-title", p.t || key));
-      box.appendChild(el("p", "hovercard-extract", p.d));
+      var extract = el("p", "hovercard-extract");
+      appendInlineHTML(extract, p.d);  // p.d is whitelisted inline HTML, rendered as DOM (TT-safe)
+      box.appendChild(extract);
       return [box];
     }
     function scheduleCard(nodes, a) {
