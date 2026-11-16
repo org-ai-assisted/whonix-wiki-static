@@ -3714,6 +3714,35 @@ sup.reference:target {
   background: var(--surface-2); color: var(--fg-soft);
   font: 600 0.82rem/1.45rem ui-monospace, monospace; text-align: center;
 }
+/* gallery-steps: a numbered SCREENSHOT WALKTHROUGH (e.g. the VirtualBox import flow). The bare
+   icon-row crushes a landscape UI screenshot into the 8.5rem square cell; here each screenshot is
+   shown ONE PER ROW at full content width and its NATIVE aspect ratio, with a step-number badge --
+   the idiomatic docs pattern (GitHub/GitLab/Material docs). The lightbox stays the optional enlarge.
+   Higher specificity (.gallery.gallery-steps ...) overrides the icon-row width/aspect rules above. */
+.gallery.gallery-steps { display: block; counter-reset: step; }
+.gallery.gallery-steps .gallerybox {
+  counter-increment: step; position: relative;
+  width: 100%; max-width: 46rem; margin: 1.5rem auto 0; font-size: 0.95rem;
+}
+.gallery.gallery-steps .gallerybox:first-child { margin-top: 0; }
+.gallery.gallery-steps .thumb {
+  aspect-ratio: auto; display: block; padding: 0; max-width: 100%;
+  border: 1px solid var(--border); border-radius: var(--radius-sm, 4px); background: var(--surface);
+}
+.gallery.gallery-steps .thumb img {
+  display: block; width: 100%; height: auto; max-height: none; object-fit: contain; border-radius: inherit;
+}
+/* step badge on the image corner (decorative: the step number is also in the caption text for AT). */
+.gallery.gallery-steps .gallerybox::before {
+  content: counter(step); position: absolute; top: 10px; left: 10px; z-index: 2; pointer-events: none;
+  width: 1.7rem; height: 1.7rem; border-radius: 50%;
+  background: var(--surface-2); color: var(--fg); border: 1px solid var(--border);
+  font: 600 0.9rem/1.7rem ui-monospace, monospace; text-align: center;
+}
+.gallery.gallery-steps .gallerytext {
+  display: block; margin-top: 0.5rem; text-align: center; min-height: 0; color: var(--fg); font-weight: 600;
+}
+.gallery.gallery-steps a:hover img { transform: none; }  /* lightbox is the enlarge; no hover-zoom overflow */
 /* Frameless floated media: a decorative lead graphic/illustration (|frameless|right|) floats beside
    the body text with NO frame -- the matte thumbnail frame is reserved for screenshots. */
 .wiki-content .mfloat-right, .wiki-content .mfloat-left { display: block; width: fit-content; max-width: 100%; }

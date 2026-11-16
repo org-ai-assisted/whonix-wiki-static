@@ -653,30 +653,20 @@
   function initSearch() {
     var input = document.getElementById("search-input");
     if (!input) return;
-    // Focus the field the moment the search opens (CSS :checked reveals it; JS moves the caret in
-    // so the user can type immediately -- the magnifier toggles #search-toggle).
+    // Focus the field the moment the search opens so the user types immediately; on touch this
+    // also pops the soft keyboard. Bind CLICK on the toggle -- tapping the lens LABEL dispatches a
+    // click to #search-toggle with .checked ALREADY flipped, synchronously inside the tap gesture.
+    // iOS Safari opens the keyboard only for a focus() run in that gesture turn, and a click is the
+    // reliable user-activation point (a change-driven focus can bounce to <body> on iOS). No
+    // rAF/timeout: a deferred focus leaves the gesture and iOS suppresses the keyboard.
     var searchToggle = document.getElementById("search-toggle");
     if (searchToggle) {
-      searchToggle.addEventListener("change", function () {
-        // The field reveals via a 0.18s width/visibility transition and is NOT focusable until it
-        // settles: a focus() call mid-transition silently no-ops (the caret never enters, the
-        // magnifier label keeps focus). Retry focus each frame until it sticks (or ~20 frames
-        // pass) -- self-correcting, with no coupling to the CSS transition duration.
-        if (!searchToggle.checked) return;
-        // Auto-focus only on precise-pointer (mouse/desktop) devices. On touch, focusing the field
-        // pops the on-screen keyboard, which shifts the page on open + collapse -- so there the box
-        // just opens and the user taps it to type (keyboard appears only then). (pointer:fine) is
-        // the primary "has a mouse / no soft keyboard" test; (hover:hover) guards the rare touch
-        // device that still reports fine.
-        if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-        var tries = 0;
-        (function putCaret() {
-          if (!searchToggle.checked) return;   // reclosed mid-retry
-          input.focus();
-          if (document.activeElement !== input && tries++ < 20) {
-            requestAnimationFrame(putCaret);
-          }
-        })();
+      searchToggle.addEventListener("click", function () {
+        if (!searchToggle.checked) return;   // a closing click -> let the field blur
+        // Flush the :checked style (collapsed visibility:hidden -> visible) so the field is
+        // focusable NOW, in this same gesture turn; preventScroll avoids an overlay jump.
+        void input.offsetWidth;
+        input.focus({ preventScroll: true });
       });
     }
     var root = rootPrefix();
