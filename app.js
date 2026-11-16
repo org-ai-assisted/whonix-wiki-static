@@ -322,8 +322,12 @@
           // encodeURIComponent so a raw %/space in the id survives an Open-in-new-tab / copy-link
           // (the href is the shared URL); syncTabsFromHash decodeURIComponent's it back on load.
           a.href = hid ? ("#" + encodeURIComponent(hid)) : "#";
-          var img = sec.querySelector(":scope > .tcc-image img");
-          if (img) a.appendChild(img);
+          // Carry the section's declared icon into the pill: an <img> from [[File:...]] OR a
+          // FontAwesome <i> (|image=<i ...>). Scoped to the section's OWN direct-child .tcc-image
+          // so a nested controller's image is never hoisted into this outer pill.
+          var tccImage = sec.querySelector(":scope > .tcc-image");
+          var icon = tccImage ? tccImage.querySelector("img, i") : null;
+          if (icon) a.appendChild(icon);
           // Label from the title text ONLY -- a section title is also a real heading, so it
           // carries BOTH injected affordances (.share-tooltip permalink menu + .mw-editsection
           // edit-icon link); strip both by element so neither leaks into the tab label.
@@ -700,6 +704,61 @@
     results.className = "search-results";
     results.hidden = true;
     input.parentNode.appendChild(results);
+    // ARIA combobox (APG "list autocomplete"): DOM focus STAYS in the input; the highlighted
+    // result is tracked via aria-activedescendant, never by moving real focus. That is also why
+    // the page-level book-nav arrow handler (which bails on a focused input) stays dormant here.
+    results.id = "mw-search-results";
+    results.setAttribute("role", "listbox");
+    results.setAttribute("aria-label", "Search results");
+    input.setAttribute("role", "combobox");
+    input.setAttribute("aria-autocomplete", "list");
+    input.setAttribute("aria-controls", "mw-search-results");
+    input.setAttribute("aria-expanded", "false");
+    // -1 = no active option: aria-activedescendant empty, so Enter keeps the bestMatch fallback.
+    var activeIndex = -1;
+    function setExpanded(open) { input.setAttribute("aria-expanded", open ? "true" : "false"); }
+    // Highlight via CSSOM (.style.*, not gated by style-src -- CSP-safe, same idiom as
+    // results.style.top): a --surface-2 fill PLUS an inset --link ring, so the keyboard-active
+    // option is distinct from a mere :hover (fill only) and from the link text (--fg). No
+    // style.css rule, so the feature ships from app.js alone with no asset-fingerprint coupling.
+    function paint(li, on) {
+      var a = li.firstElementChild;   // every option li carries exactly one <a> (appendResult)
+      a.style.background = on ? "var(--surface-2)" : "";
+      a.style.outline = on ? "2px solid var(--link)" : "";
+      a.style.outlineOffset = on ? "-2px" : "";   // inset so the listbox's overflow never clips it
+    }
+    // Move the active option to index i (-1 = none, i.e. back to the typed query). Clears the old
+    // highlight + aria-selected, paints the new one, and keeps aria-activedescendant pointing at a
+    // PRESENT option id or "" -- it must never dangle to a removed row.
+    // Callers only ever pass a valid index or a negative sentinel, and every clear happens while
+    // the active row is still present (before a rebuild), so activeIndex>=0 always resolves.
+    function setActive(i) {
+      var opts = results.children;
+      if (activeIndex >= 0) {
+        opts[activeIndex].setAttribute("aria-selected", "false");
+        paint(opts[activeIndex], false);
+      }
+      if (i < 0) {   // none: back to the typed query
+        activeIndex = -1;
+        input.setAttribute("aria-activedescendant", "");
+        return;
+      }
+      activeIndex = i;
+      var li = opts[i];
+      li.setAttribute("aria-selected", "true");
+      paint(li, true);
+      input.setAttribute("aria-activedescendant", li.id);
+      if (li.scrollIntoView) li.scrollIntoView({ block: "nearest" });   // guarded: absent in old engines
+    }
+    function clearActive() { setActive(-1); }
+    // Pointer + keyboard share ONE highlight: moving the mouse over a row makes it the active
+    // option (so Enter follows the pointer too). mousemove (not mouseover) so a stationary cursor
+    // left hovering after a keyboard move does not steal the highlight back.
+    results.addEventListener("mousemove", function (e) {
+      var li = e.target.closest("li");   // null when the pointer is over the panel's own padding
+      if (!li) return;
+      setActive(Array.prototype.indexOf.call(results.children, li));
+    });
     // The index is DATA fetched on first focus, memoized single-flight: a page view with no
     // search pays nothing. Until it resolves, queries no-op (no-JS Browse link is the fallback);
     // a late arrival is still honored -- the input/keydown handlers run their body after the
@@ -743,6 +802,9 @@
       var href = root + e.u;
       if (!navSafe(href, false)) return false;   // drop a row whose (tampered) target is not same-origin
       var li = document.createElement("li");
+      li.setAttribute("role", "option");
+      li.setAttribute("aria-selected", "false");
+      li.id = "mw-sr-" + results.children.length;   // this row's index; unique + stable per render
       var a = document.createElement("a");
       a.setAttribute("href", href);
       a.textContent = e.t;
@@ -786,7 +848,7 @@
             shownCount++;
             added++;
           }
-          if (added) { results.hidden = false; positionPanel(); }
+          if (added) { results.hidden = false; setExpanded(true); positionPanel(); }
         });
       });
     }
@@ -824,8 +886,9 @@
       ensureIndex().then(function () {
         var q = input.value.trim().toLowerCase();
         var gen = ++queryGen;
+        clearActive();   // reset highlight + aria-activedescendant before the rows are rebuilt
         while (results.firstChild) results.removeChild(results.firstChild);
-        if (q.length < 2) { results.hidden = true; return; }
+        if (q.length < 2) { results.hidden = true; setExpanded(false); return; }
         // Title pass (instant, no extra fetch): substring title matches, tracked by pageId so the
         // full-text pass never double-lists a page.
         var shownIds = {}, shown = 0;
@@ -838,6 +901,7 @@
           shown++;
         }
         results.hidden = shown === 0;
+        setExpanded(shown > 0);
         positionPanel();
         // Full-text pass (async, appended when the on-demand shards arrive). A namespace-qualified
         // query stays title-only -- its body words would wrongly surface main-namespace pages.
@@ -849,17 +913,54 @@
     // location.assign (not a noreferrer anchor like the download path): search targets are
     // always internal "root + e.u" pages, so a same-origin Referer is normal and harmless.
     input.addEventListener("keydown", function (e) {
-      if (e.key !== "Enter") return;
-      // Ignore the Enter that CONFIRMS an IME candidate (CJK etc.), else a provisional
-      // query navigates away mid-composition. isComposing covers most engines; keyCode
-      // 229 is the Safari fallback where isComposing is not set on this keydown.
+      // Ignore keys that CONFIRM/MOVE an IME candidate (CJK etc.), else a provisional query
+      // navigates or the list steps mid-composition. isComposing covers most engines; keyCode
+      // 229 is the Safari fallback where isComposing is not set. Same guard book-nav uses.
       if (e.isComposing || e.keyCode === 229) return;
+      var opts = results.children, n = opts.length;
+      // Arrow navigation only while the dropdown is on screen. Cycle THROUGH the input: stepping
+      // past either end lands on -1 (no active option, the typed query in view), then re-enters
+      // the list -- so the user can always get back to their raw query (DocSearch/APG wrap).
+      if ((e.key === "ArrowDown" || e.key === "ArrowUp") && !results.hidden) {
+        e.preventDefault();
+        if (e.key === "ArrowDown") setActive(activeIndex + 1 >= n ? -1 : activeIndex + 1);
+        else setActive(activeIndex < 0 ? n - 1 : activeIndex - 1);   // from none -> last; from 0 -> none
+        return;
+      }
+      if (e.key === "Escape") {
+        // Stage 1 (dropdown open): dismiss it, KEEP the typed query (aria-activedescendant never
+        // overwrote input.value, so the query is intact). stopPropagation so the document-level
+        // Escape does not ALSO collapse the lens. Stage 2 (already dismissed): fall through, and
+        // the document handler collapses the lens.
+        if (!results.hidden) {
+          e.preventDefault();
+          e.stopPropagation();
+          clearActive();
+          setExpanded(false);
+          // Invalidate any in-flight full-text shard batch so its late arrival cannot REOPEN
+          // the panel we are dismissing (its gen !== queryGen guard then drops it) -- same
+          // reason closeSearch bumps queryGen; stopPropagation keeps closeSearch from running.
+          queryGen++;
+          results.hidden = true;
+          while (results.firstChild) results.removeChild(results.firstChild);
+        }
+        return;
+      }
+      if (e.key !== "Enter") return;
       e.preventDefault();
+      // A keyboard-selected option wins; navigate straight to it. Its href was already navSafe-
+      // validated at append (a failed row is never added), so no re-check is needed.
+      if (activeIndex >= 0) {
+        window.location.assign(opts[activeIndex].firstElementChild.getAttribute("href"));
+        return;
+      }
+      // No active option: the existing bestMatch fallback -- prefer an exact/substring TITLE match,
+      // else the top rendered row (may be a body-only full-text hit), so Enter is never inert while
+      // results are on screen. This site has no server results page, so this is the whole no-active
+      // behaviour (DocSearch-sanctioned).
       var q = input.value.trim().toLowerCase();
       if (q.length < 2) return;   // empty query matches everything via indexOf("")
       ensureIndex().then(function () {
-        // Prefer an exact/substring TITLE match; else fall back to the top rendered row (which may
-        // be a body-only full-text hit) so Enter is never inert while results are on screen.
         var href = bestMatch(q);
         if (href === null) {
           var firstLink = results.querySelector("li a");
@@ -879,6 +980,8 @@
       // closing (its gen !== queryGen guard then drops it).
       queryGen++;
       if (toggle) toggle.checked = false;
+      clearActive();       // drop any highlight + aria-activedescendant while the rows still exist
+      setExpanded(false);
       results.hidden = true;
       while (results.firstChild) results.removeChild(results.firstChild);
     }
@@ -1027,9 +1130,25 @@
       // rounding down is lossless for the feature while revealing far less precise timing.
       try { localStorage.setItem(LS_FLYIN, String(now - (now % DAY))); } catch (err) {}
       panel.classList.remove("flyin-shown");
-      panel.addEventListener("transitionend", function te() {
-        panel.hidden = true; panel.removeEventListener("transitionend", te);
-      });
+      // Robust hide: a bare transitionend never fires if the transition is zeroed (reduced-motion /
+      // transition:none), interrupted (transitioncancel), or the tab is backgrounded -- leaving the
+      // toast stuck visible. Read the actual duration; hide synchronously when there is none, else
+      // hide on transitionend OR a wall-clock fallback, whichever first. hide() is idempotent.
+      var done = false;
+      function hide(e) {
+        if (e && e.target !== panel) return;            // ignore bubbled child transitions
+        if (done) return;
+        done = true;
+        panel.removeEventListener("transitionend", hide);
+        panel.removeEventListener("transitioncancel", hide);
+        panel.hidden = true;
+      }
+      var cs = getComputedStyle(panel);
+      var secs = (parseFloat(cs.transitionDuration) || 0) + (parseFloat(cs.transitionDelay) || 0);
+      if (secs <= 0) { hide(); return; }                // reduced-motion / transition:none -> sync
+      panel.addEventListener("transitionend", hide);
+      panel.addEventListener("transitioncancel", hide);
+      setTimeout(hide, secs * 1000 + 50);               // fallback: never stuck visible
     }
     var btn = panel.querySelector(".close-panel");
     if (btn) {
@@ -1038,6 +1157,10 @@
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); close(); }
       });
     }
+    // #169: Esc dismisses the toast while shown (consistent with the hovercard/modal idiom).
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !panel.hidden) close();
+    });
   }
 
   // Generic modal (MiniModal): a .mini-modal element toggled active; closed by its
@@ -1495,6 +1618,15 @@
     }
     content.addEventListener("mouseover", onEnter);
     content.addEventListener("mouseout", function () { hovered = null; clearTimeout(showTimer); hideSoon(); });
+    // Keyboard parity (WCAG 2.1.1 + 1.4.13): a FOCUSED citation / internal link opens the same
+    // preview, not only mouse hover -- onEnter's 200ms delay debounces Tab-through. Dismiss when
+    // focus leaves the trigger and does not move into the card. Esc (below) + Left/Right already
+    // serve an open card; focus stays on the trigger.
+    content.addEventListener("focusin", onEnter);
+    content.addEventListener("focusout", function (e) {
+      if (card && e.relatedTarget && card.contains(e.relatedTarget)) return;  // focus moved INTO the card
+      hovered = null; clearTimeout(showTimer); hideSoon();
+    });
     // While a reference card is open, Left/Right arrows step through the footnotes in place
     // (same wrap as the prev/next buttons); Escape dismisses any open card. Gated on a reference
     // card being shown (.hovercard-ref present) so arrows never hijack a page-preview card.
@@ -1856,6 +1988,58 @@
     nav.addEventListener("focusout", function (e) { if (!nav.contains(e.relatedTarget)) closeAll(); });
   }
 
+  // Keyboard page-turn for the authored WikiBookIndex "book" chain: Left/Right move to the
+  // previous/next book page. PROGRESSIVE enhancement over the visible .wiki-book-index Prev/Next
+  // buttons (they work with no JS) -- the target is read from <link rel=prev/next> in <head> (as
+  // Material for MkDocs and Sphinx do), emitted only on indexed pages, so an un-indexed page has
+  // no links and this silently no-ops. Only the HORIZONTAL pair is bound; Up/Down/PageUp/PageDown/
+  // Space stay free so vertical scrolling is never swallowed (mdBook's rule). The guard set bails
+  // whenever the key belongs to the browser, an editable field, or an in-page widget that owns
+  // arrows, so native scroll / IME / tablist / menubar / modal / lightbox / hovercard all keep it.
+  function initBookNav() {
+    var nextLink = document.querySelector('link[rel="next"]');
+    var prevLink = document.querySelector('link[rel="prev"]');
+    if (!nextLink && !prevLink) return;              // un-indexed page: nothing to navigate to
+    var nextHref = nextLink ? nextLink.href : "";    // .href is the resolved absolute URL
+    var prevHref = prevLink ? prevLink.href : "";
+    var rtl = document.documentElement.dir === "rtl";
+    document.addEventListener("keydown", function (e) {
+      // A modifier means the key is the browser's/OS's (Alt+Arrow = back/forward) or a text
+      // selection (Shift+Arrow) -- never ours.
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      // Mid-IME-composition (CJK etc.): isComposing covers most engines, keyCode 229 is the
+      // Safari fallback -- same guard the search box uses.
+      if (e.isComposing || e.keyCode === 229) return;
+      // keydown targets the focused element, so e.target owns the key (house idiom; the wiki has
+      // no shadow DOM, so composedPath / an e.target existence guard would only add an unreachable
+      // branch).
+      var t = e.target;
+      // Editable focus owns arrows (caret movement) -- an input/select, or anywhere inside a
+      // contenteditable region (the attribute form matches nested focus and works headless too,
+      // unlike the isContentEditable property).
+      var tag = t.nodeName.toLowerCase();
+      if (tag === "input" || tag === "textarea" || tag === "select") return;
+      if (t.closest('[contenteditable]:not([contenteditable="false"])')) return;
+      // A focused composite widget owns Left/Right (tabs + top-menubar roving: initTabs /
+      // initNavKeyboard). Leave them to it.
+      if (t.closest('[role="tablist"],[role="menubar"]')) return;
+      // An open modal or gallery lightbox (both via the shared modals system) traps focus and
+      // binds its own arrow/Escape keys.
+      if (document.body.classList.contains("mini-modal-active")) return;
+      // An open reference/page-preview hovercard steps footnotes with Left/Right in place.
+      if (document.querySelector(".hovercard:not([hidden])")) return;
+      // A FOCUSED horizontally-scrollable region (wide code block .viewport / wide table) keeps
+      // Left/Right for native scroll -- these are made keyboard-focusable for exactly that.
+      var sc = t.closest("[tabindex]");
+      if (sc && sc.scrollWidth > sc.clientWidth + 1) return;
+      var dest = (rtl ? (e.key === "ArrowRight") : (e.key === "ArrowLeft")) ? prevHref : nextHref;
+      if (!dest) return;                             // no neighbour this direction (chain end)
+      e.preventDefault();
+      window.location.assign(dest);
+    });
+  }
+
   // Per-heading share menus are DEDUPED to ONE page-level <template class="share-proto"> that
   // carries the full menu with opaque sentinels; each heading's .share-tooltip carries only its
   // 7 real per-context values as data-sh-*. On first HOVER, press or focus of a heading's share button
@@ -1901,6 +2085,73 @@
       btn.textContent = collapsed ? "Show more" : "Show less";
       btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
     });
+  }
+
+  // Native [popover] confirm/info cards -- the share "Open in <network>" confirm (.share-open-panel),
+  // the comparison (i) info notes (.info-popover), and the anti-spam e-mail reasons
+  // (.antispam-email-reasons) -- are opened by a <button popovertarget> and live in the TOP LAYER
+  // (UA position:fixed, viewport containing block). CSS anchor positioning is Chromium-only, so
+  // tether in JS -- the same measure-and-place idiom as the reference hovercard place(): on the
+  // popover's `toggle` -> open, read the opener's viewport rect and write fixed top/left via CSSOM
+  // (allowed under strict CSP -- a property write, not an inline style= attribute). Below the opener
+  // by default, flipped above when there is no room, clamped into the viewport, centred on a phone
+  // (a small confirm reads as "about the icon you tapped"). JS off -> the native viewport-centred
+  // popover stays. Close buttons carry popovertargetaction="hide", so the OPENER is the
+  // popovertarget control that is NOT a hide.
+  function initPopoverTether() {
+    var GAP = 6, MARGIN = 8;
+    var active = null;  // { pop, opener } currently open + tracked on scroll/resize
+    function openerFor(pop) {
+      if (!pop.id) return null;
+      var sel = '[popovertarget="' + (window.CSS && CSS.escape ? CSS.escape(pop.id) : pop.id) + '"]';
+      var ctrls = document.querySelectorAll(sel);
+      for (var i = 0; i < ctrls.length; i++) {
+        if (ctrls[i].getAttribute("popovertargetaction") !== "hide") return ctrls[i];  // the opener
+      }
+      return null;
+    }
+    function place(pop, opener) {
+      // Own the position: override the UA `inset:0; margin:auto` centring AND any stylesheet
+      // transform (the @media phone rule uses translate(-50%,-50%)) so our top/left win outright.
+      pop.style.position = "fixed";
+      pop.style.margin = "0";
+      pop.style.inset = "auto";
+      pop.style.transform = "none";
+      var r = opener.getBoundingClientRect();
+      var vw = document.documentElement.clientWidth, vh = window.innerHeight;
+      var pw = pop.offsetWidth, ph = pop.offsetHeight;   // measured while OPEN (toggle fires after show)
+      var top, left;
+      if (vw <= 480) {                                   // phone: centre, clamped on-screen
+        left = Math.max(MARGIN, (vw - pw) / 2);
+        top = Math.max(MARGIN, (vh - ph) / 2);
+      } else {
+        top = r.bottom + GAP;                            // below the opener
+        if (top + ph > vh - MARGIN && r.top - GAP - ph > MARGIN) top = r.top - GAP - ph;  // flip above
+        left = Math.max(MARGIN, Math.min(r.left, vw - pw - MARGIN));
+        top = Math.max(MARGIN, Math.min(top, vh - ph - MARGIN));
+      }
+      pop.style.top = top + "px";
+      pop.style.left = left + "px";
+    }
+    function reposition() { place(active.pop, active.opener); }  // only attached while open -> active is set
+    // `toggle` does NOT bubble, but a CAPTURING document listener still receives it at the target.
+    // Guard on the `popover` attribute so a <details> toggle (also a ToggleEvent) is ignored.
+    document.addEventListener("toggle", function (e) {
+      var pop = e.target;
+      if (!pop.hasAttribute("popover")) return;   // a <details> ToggleEvent carries no popover attr
+      if (e.newState === "open") {
+        var opener = openerFor(pop);
+        if (!opener) return;                             // no invoker -> leave the native default
+        place(pop, opener);
+        active = { pop: pop, opener: opener };
+        window.addEventListener("scroll", reposition, true);
+        window.addEventListener("resize", reposition);
+      } else if (active && active.pop === pop) {
+        window.removeEventListener("scroll", reposition, true);
+        window.removeEventListener("resize", reposition);
+        active = null;
+      }
+    }, true);
   }
 
   function initShareLazy() {
@@ -1970,6 +2221,9 @@
       tip.classList.toggle("share-open", open);
       t.setAttribute("aria-expanded", open ? "true" : "false");
       if (!open && tip.contains(document.activeElement)) document.activeElement.blur();
+      // On reopen, clear any x-dismiss display override (see the .menu-close handler) so the
+      // menu can show again.
+      if (open) { var w = tip.querySelector(".menu-wrapper"); if (w) w.style.display = ""; }
     }
     function closeAll(except) {
       var open = document.querySelectorAll(".share-tooltip.share-open");
@@ -2008,7 +2262,19 @@
       var x = e.target && e.target.closest ? e.target.closest(".menu-close") : null;
       if (!x) return;
       var tip = x.closest(".share-tooltip");
-      if (tip) setOpen(tip, false);
+      if (!tip) return;
+      setOpen(tip, false);
+      // Beat the sticky desktop :hover (@media(hover:hover) .share-tooltip:hover .menu-wrapper
+      // {display:block}), which re-reveals the menu while the pointer still sits on the (x). An
+      // inline display:none wins the cascade; cleared when the pointer leaves the tooltip so a
+      // fresh hover re-opens (an explicit reopen clears it via setOpen too). Touch has no :hover to
+      // fight; the override is harmless there and cleared on the next tap-reopen.
+      var wrap = tip.querySelector(".menu-wrapper");
+      if (wrap) {
+        wrap.style.display = "none";
+        var clear = function () { wrap.style.display = ""; tip.removeEventListener("pointerleave", clear); };
+        tip.addEventListener("pointerleave", clear);
+      }
     });
   }
 
@@ -2055,6 +2321,7 @@
     window.addEventListener("hashchange", syncTabsFromHash);
     initNavToggle();
     initNavKeyboard();
+    initBookNav();
     initToolsToggle();
     initConsentBanner();
     initStageBanner();
@@ -2080,6 +2347,7 @@
       initHovercards();
       initStorageViewer();
       initShareLazy();
+      initPopoverTether();
       initHeroVideo();
       initEndorsementMore();
       initImageWarmAhead();

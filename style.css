@@ -282,20 +282,9 @@ img, video { max-width: 100%; height: auto; }
 /* Keep a token together across a line wrap (e.g. a project name + its trailing TM/R sup, so
    the mark never orphans onto its own line -- see render/pipeline._bind_trademarks). */
 .nowrap { white-space: nowrap; }
-/* Inline wiki cross-link icon ({{kicksecure_wiki}} etc.): the source File is a bare 50x50 px
-   image placed inline before a link, so cap it to a text-sized inline glyph instead of a giant
-   block (overrides the presentational width/height attrs). */
-.kicksecure-wiki-link-icon {
-  display: inline; width: auto; height: 1.15em; vertical-align: -0.18em;
-}
-/* The icon is its OWN <a> (File link=), a ~17px glyph sitting right beside a same-URL text link
-   -- a tiny crowded tap target that fails axe target-size (WCAG 2.5.8). Give that anchor a >=24x24
-   hit box (centered glyph), like the archive/reference markers; size-based, so the adjacent prose
-   text link (inline-exempt) needs no gap. */
-a:has(> img.kicksecure-wiki-link-icon) {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 24px; min-height: 24px;
-}
+/* Cross-wiki link icons ({{kicksecure_wiki}}/{{whonix_wiki}}) are decorative inline
+   <img class="link-icon"> (empty File link= -> no anchor) -- see the unified inline link-icon
+   family below. No own anchor, so no WCAG-2.5.8 tap-box rule is needed. */
 /* WCAG 2.5.8 Target Size (Minimum, AA): a link that is the whole content of a content list item,
    table cell, definition, caption, or info-box is a STANDALONE tap target -- NOT the inline-
    sentence exception. At body-text height (~20px) stacked in a list/cell these fail 2.5.8:
@@ -574,6 +563,25 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
   .download-button-v2 .op-sys { width: 1px; }
   .download-button-v2 .op-sys > img { object-fit: contain; }
 }
+/* Verify-asset download links (Template:DownloadTableUnified + signing-key subtemplates):
+   secondary to the primary download CTA, so a quiet Qubes-style bordered box (one uniform
+   fa-download arrow + label), stacked full-width -- not the solid primary fill. */
+.download-button-v2.dlb-verify {
+  display: flex; width: 100%; margin: 0 0 8px; box-shadow: none; padding-right: 0;
+  background: var(--bg); color: var(--btn-secondary-fg);
+  border: 1px solid var(--btn-secondary-border); font-size: 14px;
+}
+.download-button-v2.dlb-verify:hover { background: var(--surface); }
+.download-button-v2.dlb-verify .dbutton {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  background: transparent; color: var(--btn-secondary-fg); font-weight: 700; padding: 9px 14px;
+}
+.download-button-v2.dlb-verify:hover .dbutton { background: transparent; color: var(--btn-secondary-fg); }
+.download-button-v2.dlb-verify .dbutton::before { content: none; }
+.download-button-v2.dlb-verify .dbutton > i {
+  position: static; left: auto; top: auto; flex: 0 0 auto; color: var(--muted); font-size: 0.95em;
+}
+.download-button-v2.dlb-verify .dbutton > span { position: static; top: auto; }
 
 /* ---- chrome: header + nav (pure-CSS toggle) ---- */
 .site-header {
@@ -1829,8 +1837,14 @@ code:empty { display: none; }
   text-decoration: underline;
 }
 /* info-box callouts sit on a LIGHT ~7% tint where --link blue clears 4.5:1 (~4.75:1), so callout
-   links stay the SAME blue as ordinary prose links (the case the operator flagged) -- just underline. */
-.wiki-content .info-box a {
+   links stay the SAME blue as ordinary prose links (the case the operator flagged) -- just underline.
+   EXCLUDE the button-link classes: a solid-fill button in a callout (download-button-v2 / hero /
+   cta) is not a prose link; its own `text-decoration:none` only TIES this rule on specificity, so
+   without the exclusion source order underlines the button label. The exclusion is wrapped in
+   :where() so it adds ZERO specificity -- the rule stays (0,2,1): raising it to (0,3,1) would
+   out-specify the `.mininav.mn-switcher a` tab-underline reset (0,2,1) and underline every switcher
+   tab. With :where() the excluded buttons simply stop matching, and every tie is unchanged. */
+.wiki-content .info-box a:where(:not(.cta-button, .button, .pill, .download-button-v2, .hero-download-button)) {
   text-decoration: underline;
 }
 /* Homepage .explainer tinted panel (--surface-2): the bright --link is ~4.35:1 there (just under 4.5),
@@ -1908,7 +1922,15 @@ code:empty { display: none; }
    defeating the 1.2em pill cap) and the download button's OS-logo cell (.op-sys -- the ISO logo
    blew to 46px, defeating its 16px cap). Both are icons with their OWN cap; the 46px blanket is
    for donor/content logos, not these. */
-.info-box :not(.info-box-icon, .info-box-icon *, .thumbframe, .thumbframe *, .mn-switcher *, .op-sys) > img:not(.ia-archive-icon, .media-sized, .link-icon, .kicksecure-wiki-link-icon) { height: 46px !important; width: auto !important; max-width: 100%; }
+.info-box :not(.info-box-icon, .info-box-icon *, .thumbframe, .thumbframe *, .mn-switcher *, .op-sys) > img:not(.ia-archive-icon, .media-sized, .link-icon) { height: 46px !important; width: auto !important; max-width: 100%; }
+
+/* File: page main image is a link to its full-resolution media. Idiomatic "enlarges"
+   affordance (MediaWiki MultimediaViewer uses zoom-in), reinforced by a light CSS-only
+   hover/focus cue -- no JS, CSP-clean. :focus-visible gives keyboard users the same cue. */
+.fullres-link { display: inline-block; cursor: zoom-in; }
+.fullres-link img { transition: box-shadow 0.12s ease, filter 0.12s ease; }
+.fullres-link:hover img,
+.fullres-link:focus-visible img { box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25); filter: brightness(1.04); }
 
 /* Numbered section/step badge (production "padded-content-icon" widget): a bold
    numeral, coloured by the element's cs-* --callout. pci-style-circle makes it a
@@ -2942,29 +2964,20 @@ sup.reference:target {
   background: var(--btn-icon-chrome); color: var(--muted); font-size: 1.05rem; line-height: 1;
 }
 .popover-close:hover { color: var(--fg); }
-/* Pin under the invoking icon where CSS anchor positioning exists (Chromium); a popover's invoker
-   is its implicit anchor, so no explicit anchor-name is needed. Firefox ESR 128 lacks anchor
-   positioning and falls back to the UA default -- a small viewport-centred card, which reads fine
-   as a confirm. Both are top-layer, so neither touches the menu's height. */
-@supports (anchor-name: --a) {
-  .share-open-panel:popover-open {
-    margin: 0; inset: auto; top: anchor(bottom); left: anchor(left);
-    /* A right-edge icon's panel would run off-screen with left-anchoring; flip to the opposite
-       edge (and/or above) when the default placement overflows the viewport. */
-    position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;
-  }
-}
+/* Positioned by app.js initPopoverTether: on `toggle` it tethers the confirm under its invoking
+   icon (CSSOM top/left, flipped + viewport-clamped, top-layer fixed) -- cross-browser, unlike the
+   Chromium-only CSS anchor positioning this replaces (which left Firefox/Tor uncentred and dropped
+   to top-left when the implicit anchor did not resolve). JS off -> the native viewport-centred
+   popover stays (a fine see-the-URL-first confirm at Tor Safest). */
 /* The long URL scrolls inside the code-select viewport (overflow-x:auto) rather than widening the
    panel: min-width:0 lets the flex item shrink below its pre-wrapped content so the viewport clips. */
 .share-open-panel .code-select { font-size: 0.8rem; word-break: break-all; min-width: 0; max-width: 100%; }
 @media (max-width: 480px) {
-  /* On a phone, render the confirm as a small CENTRED card (the native popover's no-anchor default
-     -- Firefox already centres it), constrained to the viewport. This fixes BOTH the right-edge
-     overflow AND the "detached in a corner, disconnected from the share widget" look of a bottom
-     sheet: a centred confirm reads as "about the icon you just tapped". Overrides the anchor block. */
+  /* On a phone, render the confirm as a small CENTRED card constrained to the viewport: a centred
+     confirm reads as "about the icon you just tapped", and avoids the right-edge overflow. This is
+     the JS-OFF fallback -- initPopoverTether also centres on a phone (vw<=480) when JS runs, and its
+     inline top/left/transform override this rule. */
   .share-open-panel:popover-open {
-    /* `inset:auto` FIRST to clear the anchor block's inset/top/left, THEN centre -- the shorthand
-       would otherwise reset the top/left set before it. */
     position: fixed; inset: auto; top: 50%; left: 50%; transform: translate(-50%, -50%);
     margin: 0; max-width: calc(100vw - 32px); width: max-content;
   }
@@ -3040,8 +3053,13 @@ sup.reference:target {
 @media (min-width: 441px) {
   /* The footer icon sits at the LEFT of the brand line, so anchor the 315px menu to the left
      edge and open it UPWARD (footer is at the page bottom). The >=800px rule anchors it right,
-     which would run the menu off the left edge. */
-  .footer-share .menu-wrapper { top: auto; bottom: calc(100% + 0.3rem); left: 0; right: auto; }
+     which would run the menu off the left edge.
+     The 0.3rem button->menu gap is INTERNAL padding of the (hovered) wrapper, NOT an external
+     `bottom` offset -- an external offset leaves a dead zone that drops :hover on a slow mouse-up,
+     so the menu closes before the pointer reaches it. Mirrors the heading menu's downward bridge
+     (`top:100%; padding-top:0.3rem`), flipped for the upward footer menu. */
+  .footer-share .menu-wrapper { top: auto; bottom: 100%; left: 0; right: auto;
+    padding-top: 0; padding-bottom: 0.3rem; }
 }
 /* :not() so this standalone float applies ONLY to a bare floated image / the Contributor box,
    NOT the flex .left-right-image-text widget, whose `image-right` token is merely a
@@ -3112,15 +3130,9 @@ sup.reference:target {
    wraps to its left (the popover is small, so a reserved header row would waste its width). */
 .info-close { float: right; margin: 0 0 0.3rem 0.5rem; }
 .info-close:hover { color: #333; }
-/* Pin under the invoking icon where CSS anchor positioning exists (Chromium); a popover's invoker
-   is its implicit anchor, so no explicit anchor-name is needed. Firefox ESR 128 lacks anchor
-   positioning and falls back to the UA default (a small viewport-centred card), which reads fine. */
-@supports (anchor-name: --a) {
-  .info-popover:popover-open {
-    position: absolute; margin: 0; inset: auto; top: anchor(bottom); left: anchor(left);
-    position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;
-  }
-}
+/* Positioned by app.js initPopoverTether: on `toggle` it tethers the note under its (i) icon
+   (CSSOM top/left, flipped + viewport-clamped) -- cross-browser, replacing the Chromium-only CSS
+   anchor positioning. JS off -> the native viewport-centred popover stays. */
 /* No underline on links inside the comparison (VPN) table -- prod parity; the feature + tooltip
    links read as plain text. Scoped higher than `.wiki-content p a` (style.css:234) so it wins. */
 .wiki-content .comparison-table a, .wiki-content .comparison-table a:hover { text-decoration: none; }
@@ -3943,6 +3955,9 @@ sup.reference:target {
   height: 1.2em; width: auto; min-width: 1.2em; object-fit: contain;
   vertical-align: middle; margin-right: 6px;
 }
+/* A declared FontAwesome <i> icon carried into the pill (app.js) gets the SAME leading-icon
+   gap + alignment as an <img>; it is a font glyph (sized by font-size), so no height/width box. */
+.mininav.mn-switcher li > * > i { margin-right: 6px; vertical-align: middle; }
 .mininav:empty { display: none; }
 /* Special pages (Settings/AllPages/RecentChanges/Version/SpecialPages) carry the switcher as
    .mn-special: give the pill bar breathing room before the page body (it sits flush otherwise,
@@ -4204,15 +4219,9 @@ sup.reference:target {
 }
 .antispam-email-reasons:popover-open { display: block; }
 .antispam-email-reasons .icon-bullet-list { margin-top: 0.4rem; }
-/* Pin under the invoking icon where CSS anchor positioning exists (Chromium); a popover's invoker
-   is its implicit anchor. Firefox ESR / Tor Browser lack anchor positioning and fall back to the UA
-   default (a viewport-centred card with ::backdrop + light-dismiss), which reads fine on mobile. */
-@supports (anchor-name: --a) {
-  .antispam-email-reasons:popover-open {
-    position: absolute; margin: 0; inset: auto; top: anchor(bottom); left: anchor(left);
-    position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;
-  }
-}
+/* Positioned by app.js initPopoverTether: on `toggle` it tethers the note under its (i) icon
+   (CSSOM top/left, flipped + viewport-clamped) -- cross-browser, replacing the Chromium-only CSS
+   anchor positioning. JS off -> the native viewport-centred popover stays. */
 
 /* --- consent / privacy banner (no-JS shows it; JS dismiss -> localStorage) --- */
 /* Fixed translucent overlay pinned to the viewport bottom that follows on scroll,
