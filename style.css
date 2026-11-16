@@ -57,6 +57,7 @@
   /* Link inside a COLORED qualitative cell (.cell-*): the bright --link fails 4.5:1 on the tint,
      so a (rare) link there uses this darker-but-still-blue. Clears 4.5:1 on every tint, both themes. */
   --link-on-shade: #0f4c81;
+  --link-icon-size: 1.1em;   /* unified inline link-icon family (GitHub, cross-wiki, external brand icons); theme-invariant */
   /* Redlink (target page missing): MediaWiki's redlink red. 5.9:1 on white (AA text), and
      darker-yet-redder than near-black body text -- a LIGHTNESS difference, not hue alone. */
   --link-new: #ba0000;
@@ -443,6 +444,12 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
    butts against the text. inline-flex + gap (the icon-bullet-list idiom) spaces it and scales
    with the font; this rule follows the group so it wins the display. */
 .github-link-widget { display: inline-flex; align-items: center; gap: 0.4em; }
+/* Unified inline link-icon family: .link-icon-widget wraps a small brand <img class="link-icon">
+   beside the link text (one size token, markup-sized). .link-icon is EXCLUDED from the info-box
+   46px cap below so a callout can never blow it up -- the root fix for the cross-wiki (Authenticode)
+   oversize. GitHub, cross-wiki, and external brand icons all route through this shape. */
+.link-icon-widget { display: inline-flex; align-items: center; gap: 0.4em; }
+.link-icon { display: inline; width: auto; height: var(--link-icon-size); vertical-align: -0.18em; }
 .mw-ui-button {
   background: var(--btn-secondary-bg); border-color: var(--btn-secondary-border);
   border-radius: var(--btn-radius); color: var(--btn-secondary-fg);
@@ -1901,7 +1908,7 @@ code:empty { display: none; }
    defeating the 1.2em pill cap) and the download button's OS-logo cell (.op-sys -- the ISO logo
    blew to 46px, defeating its 16px cap). Both are icons with their OWN cap; the 46px blanket is
    for donor/content logos, not these. */
-.info-box :not(.info-box-icon, .info-box-icon *, .thumbframe, .thumbframe *, .mn-switcher *, .op-sys) > img:not(.ia-archive-icon, .media-sized) { height: 46px !important; width: auto !important; max-width: 100%; }
+.info-box :not(.info-box-icon, .info-box-icon *, .thumbframe, .thumbframe *, .mn-switcher *, .op-sys) > img:not(.ia-archive-icon, .media-sized, .link-icon, .kicksecure-wiki-link-icon) { height: 46px !important; width: auto !important; max-width: 100%; }
 
 /* Numbered section/step badge (production "padded-content-icon" widget): a bold
    numeral, coloured by the element's cs-* --callout. pci-style-circle makes it a

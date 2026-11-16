@@ -289,7 +289,11 @@
         var ul = document.createElement("ul");
         for (var j = 0; j < sections.length; j++) {
           var sec = sections[j];
-          var title = sec.querySelector(".tcc-title");
+          // Direct-child scope (not a descendant lookup): this section's OWN title/image, never
+          // one belonging to a nested .tab-content-controller in its body. Unscoped, a section
+          // whose own .tcc-image is an <i> icon (no <img>) would reach down and MOVE the first
+          // nested tab's image into this outer pill, leaving that nested pill imageless.
+          var title = sec.querySelector(":scope > .tcc-title");
           var heading = title && title.querySelector("h1, h2, h3, h4, h5, h6");
           var hid = heading && heading.id;
           var li = document.createElement("li");
@@ -318,7 +322,7 @@
           // encodeURIComponent so a raw %/space in the id survives an Open-in-new-tab / copy-link
           // (the href is the shared URL); syncTabsFromHash decodeURIComponent's it back on load.
           a.href = hid ? ("#" + encodeURIComponent(hid)) : "#";
-          var img = sec.querySelector(".tcc-image img");
+          var img = sec.querySelector(":scope > .tcc-image img");
           if (img) a.appendChild(img);
           // Label from the title text ONLY -- a section title is also a real heading, so it
           // carries BOTH injected affordances (.share-tooltip permalink menu + .mw-editsection
