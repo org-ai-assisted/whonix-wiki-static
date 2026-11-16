@@ -3078,15 +3078,16 @@ sup.reference:target {
   border: 0; padding: 0; background: none; cursor: pointer; font: inherit; line-height: 1;
 }
 /* CSS-drawn "i" badge: fa-circle-info is NOT in the FA subset (renders as tofu -- the "broken blue
-   info sign"), so draw a small filled circle with a white "i" instead. Shared by the comparison
-   tooltip AND the antispam e-mail info invoker so both show a real icon regardless of the subset. */
-.info-tooltip > i, .antispam-email-info > i {
+   info sign"), so draw a small filled circle with a white "i" instead. Used by every info invoker
+   (the comparison tooltip AND the antispam e-mail help, both <button class="info-tooltip">) so each
+   shows a real icon regardless of the subset. */
+.info-tooltip > i {
   font-family: inherit; font-style: normal; font-weight: bold;
   display: inline-flex; align-items: center; justify-content: center;
   width: 15px; height: 15px; border-radius: 50%; background: #5594c7; color: #fff;
   font-size: 11px; line-height: 1;
 }
-.info-tooltip > i::before, .antispam-email-info > i::before { content: "i"; }
+.info-tooltip > i::before { content: "i"; }
 /* NO base `display` on the [popover]: a base display overrides the UA
    `[popover]:not(:popover-open){display:none}`, so every CLOSED note would leak inline and add
    layout width. Layout is applied only when the popover is OPEN. A popover-unaware browser has no
@@ -4174,23 +4175,19 @@ sup.reference:target {
 /* current-page selflink: bold everywhere (used outside the mininav too). */
 .mw-selflink, a.selflink { font-weight: 700; color: var(--fg); cursor: default; }
 
-/* Anti-spam e-mail (Template:Name-email): the obfuscated address stays visible; the reasons
-   ("please do not e-mail for...") reveal purely via CSS :hover / :focus-within -- NO JavaScript
-   and NO Popover API, so it works on every browser, including Tor Browser with JS disabled and
-   older Firefox ESR that lacks [popover]. The wrapper span is tabindex="0" so a tap anywhere on
-   the snippet (not just the tiny icon) focuses it -> :focus-within reveal on touch; a precise
-   pointer reveals on :hover of the address or the icon. It dismisses when the pointer leaves or
-   focus moves away -- no explicit close control needed. */
-.antispam-email-tooltip { position: relative; }
-.antispam-email-info {  /* small info-icon after the address (decorative; the "i" badge is drawn in CSS) */
-  display: inline-flex; vertical-align: middle; margin-left: 4px; color: var(--link); line-height: 1;
-}
-.antispam-email-tooltip:hover .antispam-email-info,
-.antispam-email-tooltip:focus-within .antispam-email-info { color: var(--link-hover); }
-/* Hidden until hover/focus; `display:block` on reveal makes it a block container so the reasons
-   (incl. the icon-bullet-list block) stay inside the card. */
+/* Anti-spam e-mail (Template:Name-email): the obfuscated address stays plain, selectable text
+   OUTSIDE any trigger -- so revealing the help never blocks copying it (the Impressum concern).
+   The reasons ("please do not e-mail for...") are a native [popover], same idiom as .info-popover /
+   #infotooltip: an info <button class="info-tooltip" popovertarget> opens the sibling [popover];
+   an explicit (x) / Esc / tap-outside light-dismiss closes it (mobile-safe, top-layer). Declarative,
+   no JS, CSP/Trusted-Types-inert, native in Tor Browser / Firefox ESR. Wider than .info-popover
+   because the note carries the full contact-policy bullet list. */
+/* NO base `display`: a base display overrides the UA `[popover]:not(:popover-open){display:none}`,
+   leaking the note inline (and its width) when closed. Layout applies only when OPEN; a
+   popover-unaware browser has no UA hide and ignores :popover-open, so the note shows inline as a
+   harmless static note. max-height/overflow keep the long list scrollable inside the card when the
+   UA renders it viewport-centred (Firefox ESR / Tor Browser, which lack anchor positioning). */
 .antispam-email-reasons {
-  display: none; position: absolute; top: calc(100% + 4px); left: 0; z-index: 30;
   width: max-content; max-width: min(90vw, 30rem);
   max-height: calc(100dvh - 2rem); overflow-y: auto; overscroll-behavior: contain;
   padding: 0.7rem 0.9rem; text-align: left; font-weight: normal; font-size: 0.88rem;
@@ -4198,16 +4195,15 @@ sup.reference:target {
   border: 1px solid var(--border); border-radius: var(--radius-md, 6px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
-.antispam-email-tooltip:hover .antispam-email-reasons,
-.antispam-email-tooltip:focus-within .antispam-email-reasons { display: block; }
+.antispam-email-reasons:popover-open { display: block; }
 .antispam-email-reasons .icon-bullet-list { margin-top: 0.4rem; }
-@media (max-width: 480px) {
-  /* The wide card would spill past the right edge on phones. Pin it to the viewport so it always
-     fits with no horizontal overflow, and cap its height so a long list scrolls inside the card. */
-  .antispam-email-tooltip:hover .antispam-email-reasons,
-  .antispam-email-tooltip:focus-within .antispam-email-reasons {
-    position: fixed; inset: auto; left: 8px; right: 8px; top: 60px;
-    width: auto; max-width: none; max-height: calc(100dvh - 68px);
+/* Pin under the invoking icon where CSS anchor positioning exists (Chromium); a popover's invoker
+   is its implicit anchor. Firefox ESR / Tor Browser lack anchor positioning and fall back to the UA
+   default (a viewport-centred card with ::backdrop + light-dismiss), which reads fine on mobile. */
+@supports (anchor-name: --a) {
+  .antispam-email-reasons:popover-open {
+    position: absolute; margin: 0; inset: auto; top: anchor(bottom); left: anchor(left);
+    position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;
   }
 }
 
