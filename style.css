@@ -916,6 +916,21 @@ html:not(.client-js) .site-search .search-field { display: none; }
   .site-header-inner:has(#search-toggle:checked) .site-nav { display: none; }
   .search-toggle:checked ~ .search-field { width: min(50vw, 22rem); box-shadow: none; }
 }
+/* Desktop (>720px): the lens expands the field INLINE into an in-header search bar, not a
+   floating overlay -- in-flow after the magnifier, so it reads as a real header search box.
+   The header is pinned nowrap here so the growing field can NEVER reflow the row to a 2nd line
+   (the sole reason the field was kept absolute); the nav yields (display:none) while the bar is
+   open to free the room the small nav->lens slack cannot. Mobile (<=720px) keeps the overlay. */
+@media (min-width: 721px) {
+  .site-header-inner { flex-wrap: nowrap; }
+  .search-field { position: static; top: auto; right: auto; box-shadow: none; }
+  /* A usable inline bar needs more room than the ~60-120px nav->lens slack, so the nav yields
+     to the search WHILE IT IS OPEN (it returns on close). :has() keys the ancestor off the
+     toggle, which sits AFTER the nav in the DOM (a `~` combinator cannot reach a preceding
+     sibling). The header stays nowrap so the bar never reflows the row to a 2nd line. */
+  .site-header-inner:has(#search-toggle:checked) .site-nav { display: none; }
+  .search-toggle:checked ~ .search-field { width: min(50vw, 22rem); box-shadow: none; }
+}
 .edit-source { color: var(--muted); font-size: 0.9rem; }
 /* Header Donate call-to-action (production parity). Red heart glyph + link. */
 .header-donate {
@@ -2058,6 +2073,8 @@ code:empty { display: none; }
 details.mw-collapsible > summary {
   cursor: pointer;
   list-style: none;
+  /* contain the right-floated .mwc-toggle pill so the collapsible body flows the full card width BELOW it, not squeezed into the strip beside it (which left an empty band under the pill) */
+  display: flow-root;
 }
 details.mw-collapsible > summary::-webkit-details-marker { display: none; }
 details.mw-collapsible > summary > p { margin: 0; }
@@ -2492,7 +2509,7 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 }
 .left-right-image-text.image-right { flex-direction: row-reverse; }
 /* Balanced ~48% image column + ONE uniform 16:9 box (object-fit:cover): every alternating row gets
-   the same image WIDTH and HEIGHT, so the rows line up into a clean grid (production promo look). A
+   the same image WIDTH and HEIGHT, so the rows line up into a clean grid (production image-text row look). A
    bare 40% column at each image's natural aspect read small + ragged (asymmetrical). */
 .left-right-image-text > .image { flex: 0 0 48%; max-width: 48%; }
 .left-right-image-text > .image img {
@@ -2500,13 +2517,30 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   display: block; border-radius: 6px;
 }
 .left-right-image-text > .text { flex: 1 1 0; min-width: 0; }
+/* Align the image with its heading. The row is flex-start so the image box top and the text box
+   top already coincide, but two default margins broke the visual alignment: the image's <p>
+   wrapper left ~14px dead space UNDER the picture, and the heading's own top margin dropped the
+   first line ~26px BELOW the image top -- so the image floated above, unmoored from its text.
+   Zero both: the picture fills its box and the heading's cap aligns with the image top. */
+.left-right-image-text > .image p { margin: 0; }
+.left-right-image-text > .text > :first-child { margin-top: 0; }
 @media (max-width: 640px) {
   /* Name .image-right too: its row-reverse rule is (0,2,0) and would otherwise beat a bare
      .left-right-image-text column rule (0,1,0) and keep the image-right rows side-by-side on a
      phone. Both must stack to one column. */
+  /* nowrap is the fix: the desktop base rule sets flex-wrap:wrap (so a too-wide row can wrap on
+     desktop), but once the row is a COLUMN that wrap packs the image and text into compressed flex
+     LINES -- the image's line is sized SHORTER than the <img> inside it (e.g. a 169px line box vs a
+     214px picture), and overflow:visible lets the picture spill ~33px down over the text below (the
+     reported mobile "image overlaps text"). A stacked row is one image over one text: nowrap keeps
+     it a single-line column where the image line takes its natural height and the text clears it. */
   .left-right-image-text,
-  .left-right-image-text.image-right { flex-direction: column; align-items: stretch; gap: 0.75rem; }
-  .left-right-image-text > .image { max-width: 100%; }
+  .left-right-image-text.image-right {
+    flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 0.75rem;
+  }
+  /* Drop the desktop `flex: 0 0 48%`: 48% is a WIDTH basis on desktop but becomes a meaningless
+     MAIN-axis (height) basis once stacked. flex: 0 0 auto sizes the image to its natural height. */
+  .left-right-image-text > .image { flex: 0 0 auto; max-width: 100%; }
 }
 .references, .footnotes { font-size: 0.9rem; color: var(--fg-soft); }
 /* In-text citation marker [N]: a real SUPERSCRIPT (idiomatic -- matches MediaWiki/Wikipedia's
@@ -3902,47 +3936,40 @@ sup.reference:target {
 /* current-page selflink: bold everywhere (used outside the mininav too). */
 .mw-selflink, a.selflink { font-weight: 700; color: var(--fg); cursor: default; }
 
-/* Anti-spam e-mail (Template:Name-email): the obfuscated address stays visible; an info-icon
-   <button popovertarget> after it opens the "please do not e-mail for..." reasons as a native
-   [popover] via a popovertargetaction="show" button (click/tap/Enter all open it; it never
-   toggles shut on a second activation). On a precise-pointer device app.js (initHoverPopovers)
-   also opens it on hover. Dismiss with the (x), Esc, an outside tap, or moving the pointer away;
-   touch keeps the deliberate tap and never opens on a stray touch. */
-/* anchor-scope confines the shared --antispam-info name to each wrapper, so every popover anchors
-   to the icon in ITS OWN instance (the page transcludes this template many times). */
-.antispam-email-tooltip { position: relative; anchor-scope: --antispam-info; }
-.antispam-email-info {  /* small info-icon invoker after the address; strip the UA button chrome */
-  display: inline-flex; vertical-align: middle; margin-left: 4px; anchor-name: --antispam-info;
-  border: 0; padding: 0; background: none; cursor: pointer; color: var(--link); font: inherit; line-height: 1;
+/* Anti-spam e-mail (Template:Name-email): the obfuscated address stays visible; the reasons
+   ("please do not e-mail for...") reveal purely via CSS :hover / :focus-within -- NO JavaScript
+   and NO Popover API, so it works on every browser, including Tor Browser with JS disabled and
+   older Firefox ESR that lacks [popover]. The wrapper span is tabindex="0" so a tap anywhere on
+   the snippet (not just the tiny icon) focuses it -> :focus-within reveal on touch; a precise
+   pointer reveals on :hover of the address or the icon. It dismisses when the pointer leaves or
+   focus moves away -- no explicit close control needed. */
+.antispam-email-tooltip { position: relative; }
+.antispam-email-info {  /* small info-icon after the address (decorative; the "i" badge is drawn in CSS) */
+  display: inline-flex; vertical-align: middle; margin-left: 4px; color: var(--link); line-height: 1;
 }
-.antispam-email-info:hover { color: var(--link-hover); }
-/* NO base `display`: it is a native [popover] (the UA hides it until open); layout only on
-   :popover-open, so the wide reasons card never adds inline width when closed. */
-.antispam-email-popover {
+.antispam-email-tooltip:hover .antispam-email-info,
+.antispam-email-tooltip:focus-within .antispam-email-info { color: var(--link-hover); }
+/* Hidden until hover/focus; `display:block` on reveal makes it a block container so the reasons
+   (incl. the icon-bullet-list block) stay inside the card. */
+.antispam-email-reasons {
+  display: none; position: absolute; top: calc(100% + 4px); left: 0; z-index: 30;
   width: max-content; max-width: min(90vw, 30rem);
+  max-height: calc(100dvh - 2rem); overflow-y: auto; overscroll-behavior: contain;
   padding: 0.7rem 0.9rem; text-align: left; font-weight: normal; font-size: 0.88rem;
   background: var(--surface); color: var(--fg);
   border: 1px solid var(--border); border-radius: var(--radius-md, 6px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
-.antispam-email-popover:popover-open { display: block; }
-.antispam-email-popover .icon-bullet-list { margin-top: 0.4rem; }
-/* Pin under the invoking icon via an EXPLICIT position-anchor (the implicit popovertarget anchor
-   did not resolve -- the card landed off-screen -- and is not set at all when app.js hover-opens
-   it). An engine without anchor positioning (e.g. Firefox ESR 128) falls back to the UA-centred
-   card. */
-@supports (anchor-name: --a) {
-  .antispam-email-popover:popover-open {
-    position: absolute; position-anchor: --antispam-info; margin: 0; inset: auto;
-    top: anchor(bottom); left: anchor(left);
-    position-try-fallbacks: flip-block, flip-inline, flip-inline flip-block;
-  }
-}
+.antispam-email-tooltip:hover .antispam-email-reasons,
+.antispam-email-tooltip:focus-within .antispam-email-reasons { display: block; }
+.antispam-email-reasons .icon-bullet-list { margin-top: 0.4rem; }
 @media (max-width: 480px) {
-  /* The wide reasons card would spill past the right edge on phones. Pin it to the viewport (like
-     the share tooltip) so it fits with no horizontal overflow -- overrides the anchor block above. */
-  .antispam-email-popover:popover-open {
-    position: fixed; left: 8px; right: 8px; top: 60px; width: auto; max-width: none; inset: auto; margin: 0;
+  /* The wide card would spill past the right edge on phones. Pin it to the viewport so it always
+     fits with no horizontal overflow, and cap its height so a long list scrolls inside the card. */
+  .antispam-email-tooltip:hover .antispam-email-reasons,
+  .antispam-email-tooltip:focus-within .antispam-email-reasons {
+    position: fixed; inset: auto; left: 8px; right: 8px; top: 60px;
+    width: auto; max-width: none; max-height: calc(100dvh - 68px);
   }
 }
 
@@ -3996,6 +4023,15 @@ sup.reference:target {
   border-top: 2px solid #e0a800;
 }
 .stage-banner strong { color: #7a1f00; }
+/* DIRTY pill -- STAGE builds off an uncommitted generator tree (MW_STATIC_DIRTY). A loud inline
+   tag beside the "Staging server." label so a work-in-progress stage render is not mistaken for
+   one built from a clean checkout. Inline-block (no layout shift), banner palette inverted. */
+.stage-dirty-pill {
+  display: inline-block; vertical-align: baseline;
+  padding: 0.05rem 0.4rem; border-radius: var(--radius-sm, 4px);
+  background: #7a1f00; color: #ffcf33;
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em;
+}
 .stage-dismiss {
   border: 1px solid #b07d00; background: rgba(0, 0, 0, 0.06); color: #3a2500;
   padding: 0.2rem 0.9rem; border-radius: var(--radius-sm, 4px); cursor: pointer;
@@ -4130,7 +4166,7 @@ body:has(.stage-banner) { padding-bottom: 4.5rem; }
 .donor-card.range-s .range > div.s, .donor-card.range-m .range > div.m,
 .donor-card.range-l .range > div.l, .donor-card.range-xl .range > div.xl { display: block; }
 
-/* Site-notice banner (#siteNotice, the id=38 donation promo) -- adapted from
+/* Site-notice banner (#siteNotice, the id=38 donation banner) -- adapted from
    Sitenotice.css: shown by default (no-JS friendly), JS dismisses; a vendored FA
    icon replaces the former wiki image. */
 /* Flash-free dismiss: the <head> pre-paint (page.py THEME_INIT_JS) marks <html> when
@@ -4188,7 +4224,7 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
 
 /* Fly-in donate toast (#fly-in-notification-panel) -- adapted from
    FlyInNotification.css. JS-only gadget: the [hidden] attribute keeps it hidden
-   until app.js shows it. The former promo photo is dropped. */
+   until app.js shows it. The former banner photo is dropped. */
 #fly-in-notification-panel {
   width: 300px; background: #fff; color: #555; box-shadow: 3px 3px 7px rgba(0,0,0,.2);
   border-radius: 10px 0 0 10px; position: fixed; right: 0; top: calc(50% - 160px);
@@ -4253,7 +4289,7 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
 }
 .sitenotice-end-of-year > .eoy-right > .eoy-donate-button:hover { background-color: #fffccf; }
 .sitenotice-end-of-year > .eoy-left > p { font-size: 15px; margin: 10px 0 15px; }
-/* prod shows the promo as a fixed 215px-tall letterbox stretched to full column width
+/* prod shows the banner as a fixed 215px-tall letterbox stretched to full column width
    (object-fit:cover crops the photo into it): prod .eoy-image computes width:556px height:215px.
    width:100% + height:auto aspect-scaled to ~398px (556 * 215/300) -- too tall; width:100% alone
    (no height) does the same. PIN height:215px (prod's value, matching the img's height=215 attr)

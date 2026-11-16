@@ -1355,6 +1355,10 @@
     "d": "Mount Whonix-Workstation<sup>&trade;</sup> files on your Host using sshfs.",
     "t": "Sshfs into Whonix-Workstation"
   },
+  "wiki/Starting_Project": {
+    "d": "How to Start Whonix and Troubleshooting Whonix Startup Issues",
+    "t": "Starting Project"
+  },
   "wiki/Stay_Tuned": {
     "d": "Users should follow official Whonix news, especially the important-news category. Important News is used for critical announcements such as security advisories, possible upgrade issues, and important stable releases.",
     "t": "Stay Tuned"
