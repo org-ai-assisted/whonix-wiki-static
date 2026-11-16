@@ -663,6 +663,16 @@
     // bounce to <body> on iOS).
     var searchToggle = document.getElementById("search-toggle");
     if (searchToggle) {
+      // Desktop Safari/WebKit moves focus to the (hidden) checkbox on a mouse click of the lens
+      // LABEL, stealing the caret from the field below. preventDefault on the MOUSE pointerdown
+      // suppresses that focus shift without blocking the click that toggles the box open. Gated to
+      // mouse: a touch preventDefault here cancels the tap -> the box never opens on mobile.
+      var searchLabel = document.querySelector('label[for="search-toggle"]');
+      if (searchLabel) {
+        searchLabel.addEventListener("pointerdown", function (e) {
+          if (e.pointerType === "mouse") e.preventDefault();
+        });
+      }
       searchToggle.addEventListener("click", function () {
         if (!searchToggle.checked) return;   // a closing click -> let the field blur
         // The field reveals via a width:0 -> full transition and is NOT focusable while that width
@@ -675,10 +685,9 @@
         // keyboard (a deferred focus leaves the gesture and iOS suppresses it).
         input.focus({ preventScroll: true });
         requestAnimationFrame(function () { input.style.transition = ""; });   // restore close anim
-        // Desktop Safari/WebKit re-focuses the (hidden) checkbox AFTER a label click, stealing the
-        // caret; a deferred re-focus (after that settles) lands the caret in the field so desktop
-        // users type without a second click. Harmless where the sync focus already stuck (focusing
-        // the already-focused field is a no-op, so no keyboard flicker on touch).
+        // Mobile WebKit re-focuses the checkbox after a TAP (where the mouse-gated preventDefault
+        // above does not apply); a deferred re-focus lands the caret once that settles. Harmless
+        // where the sync focus already stuck (re-focusing the focused field is a no-op).
         setTimeout(function () { if (searchToggle.checked) input.focus({ preventScroll: true }); }, 0);
       });
     }

@@ -30,12 +30,13 @@
   --pre-bg: #f8f9fa;
   --pre-fg: #1f2328;   /* near-black on #f8f9fa ~15:1 -- MediaWiki/GitHub light code block (was #595959/#ddd ~5:1) */
 
-  /* syntax-highlight tokens (codeselect lang=): AA (>=4.5:1) on the .code-select --surface ground */
+  /* syntax-highlight tokens (codeselect lang=): AA (>=4.5:1) on the WORST-CASE .code-select
+     ground -- the hover state --surface-2 (#eceff2), darker than the resting --surface */
   --hl-comment: #57606a;
   --hl-keyword: #cf222e;
   --hl-string: #0a3069;
   --hl-number: #0550ae;
-  --hl-function: #8250df;
+  --hl-function: #7c3fd6;
   --hl-variable: #953800;
   --hl-builtin: #116329;
   --hl-tag: #116329;
@@ -93,6 +94,9 @@
 
   /* rhythm + measure */
   --maxw: 60rem;   /* production content column ~960px */
+  /* Shared width of the homepage VPN-comparison card: the comparison table AND the "Learn More"
+     box below it both cap at this, so their edges stay aligned and cannot drift. */
+  --comparison-width: 820px;
   /* Anchor landing offset: a fragment-targeted heading scrolls to here, clear of the sticky
      header. Sized for the TALLEST header state (82px when the desktop nav wraps at ~768-820px),
      not just the 45-51px common case, so a deep link never lands under the header. */
@@ -3142,7 +3146,7 @@ sup.reference:target {
      centered and capped near its prior size. */
   table-layout: fixed;
   width: 100%;
-  max-width: 820px;
+  max-width: var(--comparison-width);
 }
 /* Equal compared columns: pin ONLY the two compared columns (Kicksecure, Debian) to one width, so
    they always render identical regardless of header/content length. The label column is left auto;
@@ -3267,11 +3271,16 @@ sup.reference:target {
    centered button cell shows, and the column-2 frame bottom-rounds at it (as production does). */
 .comparison-table tr:last-child td:first-child,
 .comparison-table tr:last-child td:last-child { background: transparent; border-color: transparent; }
-/* "Learn More" box (prod .learn-more-vpns): a bordered, centered panel below the table. */
+/* "Learn More" box (prod .learn-more-vpns): a bordered, centered panel below the table. Shares the
+   table's --comparison-width so the box edges line up with the table above it (one source, no drift). */
 .learn-more-vpns {
   border: 1px solid var(--border, #ccc); border-radius: 6px; padding: 0.6rem 1rem;
-  margin: 1rem auto; text-align: center; max-width: 960px;
+  margin: 1rem auto; text-align: center; max-width: var(--comparison-width);
 }
+/* Pandoc wraps the link in a <p>; the global .wiki-content p{max-width:66ch} would pin that <p> to
+   the box's LEFT edge, so text-align:center lands the link left of center. Drop the cap so centering
+   spans the full box (same idiom as .page-home .align-center > p and .built-on-label p). */
+.learn-more-vpns p { max-width: none; margin: 0; }
 /* Homepage "Trusted by Security Experts" endorsement gallery ({{#endorsementgrid}} of
    {{#endorsement}} cards, prod's press .col-container): each card is a source logo + the quote
    (both linking to the source) + an optional Internet-Archive link. Desktop: a 3-column grid;
