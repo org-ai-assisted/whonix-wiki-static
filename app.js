@@ -656,27 +656,30 @@
   function initSearch() {
     var input = document.getElementById("search-input");
     if (!input) return;
-    // Focus the field the moment the search opens so the user types immediately; on touch this
-    // also pops the soft keyboard. Bind CLICK on the toggle -- tapping the lens LABEL dispatches a
-    // click to #search-toggle with .checked ALREADY flipped, synchronously inside the tap gesture.
-    // iOS Safari opens the keyboard only for a focus() run in that gesture turn, and a click is the
-    // reliable user-activation point (a change-driven focus can bounce to <body> on iOS). The
-    // focus() itself is synchronous -- a deferred (rAF/timeout) focus leaves the gesture and iOS
-    // suppresses the keyboard.
+    // Focus the field the moment the search opens so the user types immediately -- no second
+    // click -- and on touch this also pops the soft keyboard. Bind CLICK on the toggle: tapping
+    // the lens LABEL dispatches a click to #search-toggle with .checked ALREADY flipped, inside
+    // the tap gesture (a click is the reliable user-activation point; a change-driven focus can
+    // bounce to <body> on iOS).
     var searchToggle = document.getElementById("search-toggle");
     if (searchToggle) {
       searchToggle.addEventListener("click", function () {
         if (!searchToggle.checked) return;   // a closing click -> let the field blur
-        // The field reveals via a width:0 -> full transition and is NOT focusable while that
-        // width animates (focus() no-ops on a ~0-width field). Dropping the transition applies the
+        // The field reveals via a width:0 -> full transition and is NOT focusable while that width
+        // animates (focus() no-ops on a ~0-width field). Dropping the transition applies the
         // :checked width + visibility INSTANTLY -- the correct per-breakpoint width still comes
-        // from CSS, nothing hardcoded -- so focus() lands synchronously INSIDE this tap gesture,
-        // which is what makes iOS Safari open the soft keyboard. Restore the transition next frame
-        // so the box still animates on close. preventScroll avoids an overlay jump.
+        // from CSS, nothing hardcoded. preventScroll avoids an overlay jump.
         input.style.transition = "none";
         void input.offsetWidth;
+        // SYNCHRONOUS focus, inside the gesture: this is what makes iOS Safari open the soft
+        // keyboard (a deferred focus leaves the gesture and iOS suppresses it).
         input.focus({ preventScroll: true });
-        requestAnimationFrame(function () { input.style.transition = ""; });
+        requestAnimationFrame(function () { input.style.transition = ""; });   // restore close anim
+        // Desktop Safari/WebKit re-focuses the (hidden) checkbox AFTER a label click, stealing the
+        // caret; a deferred re-focus (after that settles) lands the caret in the field so desktop
+        // users type without a second click. Harmless where the sync focus already stuck (focusing
+        // the already-focused field is a no-op, so no keyboard flicker on touch).
+        setTimeout(function () { if (searchToggle.checked) input.focus({ preventScroll: true }); }, 0);
       });
     }
     var root = rootPrefix();

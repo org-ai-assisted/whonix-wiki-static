@@ -1920,7 +1920,7 @@ code:empty { display: none; }
   display: inline-flex; align-items: center; justify-content: center;
   min-width: 24px; height: 24px; padding: 0 0.3em; border-radius: 5px;
   background: var(--callout, var(--accent)); color: #fff;
-  font-size: 0.875rem; line-height: 1; vertical-align: middle; margin-right: 0.5rem;
+  font-size: 0.875rem; line-height: 1; vertical-align: middle; margin-right: 0.25rem;
 }
 /* a light (yellow) chip needs dark text, not white (prod: #444). */
 .padded-content-icon.pci-text.iconset-false.cs-yellow,
@@ -1954,7 +1954,7 @@ code:empty { display: none; }
   display: inline-flex; align-items: center; justify-content: center;
   min-width: 24px; height: 24px; padding: 0 0.3em; border-radius: 5px;
   background: var(--callout, var(--accent)); color: #fff;
-  margin-right: 0.5rem; vertical-align: middle; line-height: 1;
+  margin-right: 0.25rem; vertical-align: middle; line-height: 1;
 }
 /* a light-coloured (yellow) badge needs DARK text, not the default white (prod: #444). */
 .padded-content-icon.cs-yellow, .padded-content-icon.cs-yellow-light { color: #444; }
@@ -1979,7 +1979,7 @@ code:empty { display: none; }
 .padded-content-icon.pci-style-circle {
   display: inline-flex; align-items: center; justify-content: center;
   width: 1.9em; height: 1.9em; border-radius: 50%; line-height: 1;
-  margin-right: 0.5rem; vertical-align: middle;
+  margin-right: 0.25rem; vertical-align: middle;
   background: var(--callout, var(--accent)); color: #fff;
 }
 /* A rounded text badge (e.g. the "CONGRATULATIONS!" banner) constrained to the
