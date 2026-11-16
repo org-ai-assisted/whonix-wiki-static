@@ -30,6 +30,17 @@
   --pre-bg: #f8f9fa;
   --pre-fg: #1f2328;   /* near-black on #f8f9fa ~15:1 -- MediaWiki/GitHub light code block (was #595959/#ddd ~5:1) */
 
+  /* syntax-highlight tokens (codeselect lang=): AA (>=4.5:1) on the .code-select --surface ground */
+  --hl-comment: #57606a;
+  --hl-keyword: #cf222e;
+  --hl-string: #0a3069;
+  --hl-number: #0550ae;
+  --hl-function: #8250df;
+  --hl-variable: #953800;
+  --hl-builtin: #116329;
+  --hl-tag: #116329;
+  --hl-attr: #0550ae;
+
   /* interaction */
   /* --link must clear BOTH axe audits, so it is a balance:
        - link-in-text-block (WCAG 1.4.1): link >=3:1 vs BODY TEXT. #1d70b8 = 3.3:1 vs --fg.
@@ -111,6 +122,17 @@
   --pre-bg: #23262b;
   --pre-fg: #b6bdc4;
 
+  /* syntax-highlight tokens (codeselect lang=): AA (>=4.5:1) on the dark .code-select ground */
+  --hl-comment: #9aa1a9;
+  --hl-keyword: #ff7b72;
+  --hl-string: #a5d6ff;
+  --hl-number: #79c0ff;
+  --hl-function: #d2a8ff;
+  --hl-variable: #ffa657;
+  --hl-builtin: #7ee787;
+  --hl-tag: #7ee787;
+  --hl-attr: #79c0ff;
+
   --link: #74b1ff;
   --link-hover: #9cc8ff;
   --link-on-shade: #aecfff;
@@ -157,6 +179,17 @@
     --code-bg: #1e2126;
     --pre-bg: #23262b;
     --pre-fg: #b6bdc4;
+
+    /* syntax-highlight tokens (codeselect lang=): AA (>=4.5:1) on the dark .code-select ground */
+    --hl-comment: #9aa1a9;
+    --hl-keyword: #ff7b72;
+    --hl-string: #a5d6ff;
+    --hl-number: #79c0ff;
+    --hl-function: #d2a8ff;
+    --hl-variable: #ffa657;
+    --hl-builtin: #7ee787;
+    --hl-tag: #7ee787;
+    --hl-attr: #79c0ff;
 
     --link: #74b1ff;
     --link-hover: #9cc8ff;
@@ -1636,6 +1669,26 @@ blockquote.quotation .blockquote-context img.author-image.logo-banner {
 }
 .code-select.inline-style .code, .code-select.inline-style { width: auto; white-space: unset; }
 .code-select.breaklines-style .code { white-space: pre-line; }
+/* Build-time syntax highlighting (Pygments token classes; codeselect lang=). Class-based,
+   themed via --hl-* tokens so contrast holds in light AND dark; no inline style, no JS,
+   strict-CSP 'self'. Only a .code-highlighted block carries token spans; its base text goes
+   neutral (--pre-fg) so unclassified text is not the plain-box --link blue. Unlisted tokens
+   (operators .o, whitespace .w, bare names) inherit that neutral base. */
+.code-select.code-highlighted { color: var(--pre-fg); }
+.code-select .c, .code-select .ch, .code-select .cm, .code-select .cp, .code-select .cpf,
+.code-select .c1, .code-select .cs { color: var(--hl-comment); font-style: italic; }
+.code-select .k, .code-select .kc, .code-select .kd, .code-select .kn, .code-select .kp,
+.code-select .kr, .code-select .kt { color: var(--hl-keyword); }
+.code-select .s, .code-select .sa, .code-select .sb, .code-select .sc, .code-select .dl,
+.code-select .sd, .code-select .s2, .code-select .se, .code-select .sh, .code-select .si,
+.code-select .sx, .code-select .sr, .code-select .s1, .code-select .ss { color: var(--hl-string); }
+.code-select .m, .code-select .mb, .code-select .mf, .code-select .mh, .code-select .mi,
+.code-select .mo, .code-select .il { color: var(--hl-number); }
+.code-select .nf, .code-select .fm, .code-select .nc, .code-select .nn { color: var(--hl-function); }
+.code-select .nv, .code-select .vc, .code-select .vg, .code-select .vi, .code-select .vm { color: var(--hl-variable); }
+.code-select .nb, .code-select .bp { color: var(--hl-builtin); }
+.code-select .nt { color: var(--hl-tag); }
+.code-select .na { color: var(--hl-attr); }
 /* Share copy-cards (prod parity): the Wikitext/Markdown/phpBB clipboard formats show as a
    logo button over a caption instead of a raw code field. .cs-image hides the raw value (it
    is still copied from data-code); the logo IS the copy control. */
@@ -1770,8 +1823,9 @@ code:empty { display: none; }
   text-decoration: underline;
 }
 /* Homepage .explainer tinted panel (--surface-2): the bright --link is ~4.35:1 there (just under 4.5),
-   so its links use the darker --link-on-shade blue -- a visible blue link that clears 4.5:1 both themes. */
-.explainer a {
+   so its links use the darker --link-on-shade blue -- a visible blue link that clears 4.5:1 both themes.
+   .cta-button excluded (solid-fill button keeps its own white text), matching the colored-cell rule. */
+.explainer a:not(.cta-button) {
   color: var(--link-on-shade);
   text-decoration: underline;
 }
@@ -1858,14 +1912,19 @@ code:empty { display: none; }
    sets (same specificity as the base rule, wins on source order) -- that gave "FAILURE" the
    icon-font's cramped metrics. The extra class outranks `.fa-solid`. */
 .padded-content-icon.pci-text { font-family: inherit; }
-/* A bare-character IconSet (iconset-false, e.g. the warning "!") is an INLINE status marker,
-   so it stays a bare ~1em glyph in its cs-* colour (severity shown by colour, not size) --
-   matching the {{Icon}} info/warn markers that share the base rule. No chip: the filled-chip
-   treatment is reserved for the numbered/callout tier (the numbered badges + the callout-box
-   icon). cs-yellow legibility is covered by the base `.padded-content-icon.cs-yellow { #444 }`. */
+/* A bare-character IconSet (iconset-false, e.g. the warning "!") is a CALLOUT-BOX title icon
+   ({{Collapsible}} |title=), NOT an inline-in-a-sentence marker -- so it joins the 24px filled
+   chip tier (same box as .info-box-icon + the numbered step badges): a white glyph on its cs-*
+   --callout. Truly-inline {{Icon}} glyphs stay bare via the base rule. */
 .padded-content-icon.pci-text.iconset-false {
-  margin-right: 0.35rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 24px; height: 24px; padding: 0 0.3em; border-radius: 5px;
+  background: var(--callout, var(--accent)); color: #fff;
+  font-size: 0.875rem; line-height: 1; vertical-align: middle; margin-right: 0.5rem;
 }
+/* a light (yellow) chip needs dark text, not white (prod: #444). */
+.padded-content-icon.pci-text.iconset-false.cs-yellow,
+.padded-content-icon.pci-text.iconset-false.cs-yellow-light { color: #444; }
 /* Step/section badges ({{IconSet|hN|M}}): ONE subordinate treatment across all four
    levels so the ordinal never out-shouts its heading (the heading says WHERE IN THE DOC,
    the number says WHERE IN THE LIST). Per-level hue stays (depth-as-color). */

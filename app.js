@@ -134,10 +134,13 @@
         vp.setAttribute("tabindex", "0");
         var code = document.createElement("span");
         code.className = "code";
-        code.textContent = text;
+        // Preserve the server-rendered content -- including build-time syntax-highlight
+        // token spans -- by MOVING the existing child nodes into the viewport. A DOM move
+        // of already-parsed nodes is Trusted-Types safe (no HTML-string sink); re-filling
+        // from data-code would drop the highlighting. Copy still uses the raw `text`.
+        while (block.firstChild) { code.appendChild(block.firstChild); }
         vp.appendChild(code);
         wrap.appendChild(vp);
-        block.textContent = "";
         block.appendChild(btn);
         block.appendChild(tip);
         block.appendChild(wrap);
@@ -657,16 +660,23 @@
     // also pops the soft keyboard. Bind CLICK on the toggle -- tapping the lens LABEL dispatches a
     // click to #search-toggle with .checked ALREADY flipped, synchronously inside the tap gesture.
     // iOS Safari opens the keyboard only for a focus() run in that gesture turn, and a click is the
-    // reliable user-activation point (a change-driven focus can bounce to <body> on iOS). No
-    // rAF/timeout: a deferred focus leaves the gesture and iOS suppresses the keyboard.
+    // reliable user-activation point (a change-driven focus can bounce to <body> on iOS). The
+    // focus() itself is synchronous -- a deferred (rAF/timeout) focus leaves the gesture and iOS
+    // suppresses the keyboard.
     var searchToggle = document.getElementById("search-toggle");
     if (searchToggle) {
       searchToggle.addEventListener("click", function () {
         if (!searchToggle.checked) return;   // a closing click -> let the field blur
-        // Flush the :checked style (collapsed visibility:hidden -> visible) so the field is
-        // focusable NOW, in this same gesture turn; preventScroll avoids an overlay jump.
+        // The field reveals via a width:0 -> full transition and is NOT focusable while that
+        // width animates (focus() no-ops on a ~0-width field). Dropping the transition applies the
+        // :checked width + visibility INSTANTLY -- the correct per-breakpoint width still comes
+        // from CSS, nothing hardcoded -- so focus() lands synchronously INSIDE this tap gesture,
+        // which is what makes iOS Safari open the soft keyboard. Restore the transition next frame
+        // so the box still animates on close. preventScroll avoids an overlay jump.
+        input.style.transition = "none";
         void input.offsetWidth;
         input.focus({ preventScroll: true });
+        requestAnimationFrame(function () { input.style.transition = ""; });
       });
     }
     var root = rootPrefix();
