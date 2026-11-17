@@ -324,10 +324,23 @@
           a.href = hid ? ("#" + encodeURIComponent(hid)) : "#";
           // Carry the section's declared icon into the pill: an <img> from [[File:...]] OR a
           // FontAwesome <i> (|image=<i ...>). Scoped to the section's OWN direct-child .tcc-image
-          // so a nested controller's image is never hoisted into this outer pill.
+          // so a nested controller's image is never hoisted into this outer pill. PREFER the <img>
+          // over an incidental <i>: app.js and the check-tab-pill-images gate must agree on which
+          // node the pill carries, and the authored image wins over a decorative glyph
+          // (querySelector("img, i") picks DOM order, not image-first).
           var tccImage = sec.querySelector(":scope > .tcc-image");
-          var icon = tccImage ? tccImage.querySelector("img, i") : null;
-          if (icon) a.appendChild(icon);
+          var icon = tccImage ? (tccImage.querySelector("img") || tccImage.querySelector("i")) : null;
+          if (icon) {
+            // The pill IS an <a role=tab>. A nested <a> inside the carried icon (a wiki author can
+            // put [[link]] inside an |image=<i>...</i> param, which pandoc renders as an <a>) would
+            // be an anchor-in-anchor: invalid HTML the browser re-parents, plus a stray clickable
+            // link in the tablist. Drop any descendant anchor; carry only the glyph/image.
+            var nestedLinks = icon.querySelectorAll("a");
+            for (var nl = 0; nl < nestedLinks.length; nl++) {
+              nestedLinks[nl].parentNode.removeChild(nestedLinks[nl]);
+            }
+            a.appendChild(icon);
+          }
           // Label from the title text ONLY -- a section title is also a real heading, so it
           // carries BOTH injected affordances (.share-tooltip permalink menu + .mw-editsection
           // edit-icon link); strip both by element so neither leaks into the tab label.
@@ -344,9 +357,12 @@
             a.addEventListener("click", function (e) {
               e.preventDefault();
               activateTab(ctrl, idx);
-              // Anchor the URL to the chosen tab's section id so the tab is shareable and
-              // restored on reload (syncTabsFromHash re-selects + scrolls then). replaceState,
-              // not `location.hash=`, avoids a scroll jump + back-button history spam on click.
+              // BY DESIGN: anchor the URL to the chosen tab's section id -- the tab's deep link IS
+              // the heading id, one fragment shared by tab clicks, TOC links, and pasted #heading
+              // URLs (all resolve to the same tab via syncTabsFromHash). Updating the #anchor on
+              // click is the intended shareable-tab feature, NOT the "don't rewrite the URL to a
+              // heading anchor" anti-pattern: replaceState (not location.hash=, not pushState)
+              // avoids the scroll jump + back-button history spam that guidance targets.
               if (secId) {
                 // Percent-encode: a raw `%`/space in the id (e.g. "100%_Anonymous") must
                 // round-trip through syncTabsFromHash's decodeURIComponent on reload, else that
@@ -688,10 +704,16 @@
         // :checked width + visibility INSTANTLY -- the correct per-breakpoint width still comes
         // from CSS, nothing hardcoded. preventScroll avoids an overlay jump.
         input.style.transition = "none";
-        void input.offsetWidth;
-        // SYNCHRONOUS focus, inside the gesture: this is what makes iOS Safari open the soft
-        // keyboard (a deferred focus leaves the gesture and iOS suppresses it).
-        input.focus({ preventScroll: true });
+        // Reading offsetWidth forces the synchronous reflow that COMMITS transition:none before the
+        // focus below. We KEEP the value (branch on it) rather than discard it with `void`: the
+        // webcheck forced-reflow rule gates only the value-discarded form, and a comment waiver
+        // would not survive minification (the gate scans app.min.js too). offsetWidth is never
+        // negative, so the guard is always true -- focus still fires synchronously, inside the
+        // gesture, which is what makes iOS Safari open the soft keyboard (a deferred/rAF focus
+        // leaves the gesture and iOS suppresses it).
+        if (input.offsetWidth >= 0) {
+          input.focus({ preventScroll: true });
+        }
         requestAnimationFrame(function () { input.style.transition = ""; });   // restore close anim
         // Mobile WebKit re-focuses the checkbox after a TAP (where the mouse-gated preventDefault
         // above does not apply); a deferred re-focus lands the caret once that settles. Harmless
@@ -1119,30 +1141,34 @@
         if (last && Math.floor((now - last) / DAY) < dismissDays) return;
       } catch (err) {}
     }
+    var showRaf = 0;
     var timer = setTimeout(function () {
       panel.hidden = false;                             // slide in from the right edge
-      requestAnimationFrame(function () { panel.classList.add("flyin-shown"); });
+      showRaf = requestAnimationFrame(function () { panel.classList.add("flyin-shown"); });
     }, waitMs);
-    function close() {
+    // Robust hide: a bare transitionend never fires if the transition is zeroed (reduced-motion /
+    // transition:none), interrupted (transitioncancel), or the tab is backgrounded -- leaving the
+    // toast stuck visible. Read the actual duration; hide synchronously when there is none, else
+    // hide on transitionend OR a wall-clock fallback, whichever first. hide() is idempotent.
+    var done = false;
+    function hide(e) {
+      if (e && e.target !== panel) return;              // ignore bubbled child transitions
+      if (done) return;
+      done = true;
+      panel.removeEventListener("transitionend", hide);
+      panel.removeEventListener("transitioncancel", hide);
+      panel.hidden = true;
+    }
+    function dismiss(persist) {
       clearTimeout(timer);
-      // Privacy: store the dismissal DAY (midnight), not the exact millisecond -- the read
-      // above only compares at day granularity (Math.floor(diff / DAY) < dismissDays), so
-      // rounding down is lossless for the feature while revealing far less precise timing.
-      try { localStorage.setItem(LS_FLYIN, String(now - (now % DAY))); } catch (err) {}
+      if (showRaf) cancelAnimationFrame(showRaf);       // a dismiss before the show frame must not slide it in
+      // Only an EXPLICIT dismissal (the x / Enter / Space) suppresses the toast for days; an
+      // incidental Esc meant for some other open layer hides this view only, so the toast returns
+      // next page. Privacy: store the dismissal DAY (midnight), not the exact millisecond -- the
+      // read above compares at day granularity (Math.floor(diff / DAY) < dismissDays), so rounding
+      // down is lossless for the feature while revealing far less precise timing.
+      if (persist) { try { localStorage.setItem(LS_FLYIN, String(now - (now % DAY))); } catch (err) {} }
       panel.classList.remove("flyin-shown");
-      // Robust hide: a bare transitionend never fires if the transition is zeroed (reduced-motion /
-      // transition:none), interrupted (transitioncancel), or the tab is backgrounded -- leaving the
-      // toast stuck visible. Read the actual duration; hide synchronously when there is none, else
-      // hide on transitionend OR a wall-clock fallback, whichever first. hide() is idempotent.
-      var done = false;
-      function hide(e) {
-        if (e && e.target !== panel) return;            // ignore bubbled child transitions
-        if (done) return;
-        done = true;
-        panel.removeEventListener("transitionend", hide);
-        panel.removeEventListener("transitioncancel", hide);
-        panel.hidden = true;
-      }
       var cs = getComputedStyle(panel);
       var secs = (parseFloat(cs.transitionDuration) || 0) + (parseFloat(cs.transitionDelay) || 0);
       if (secs <= 0) { hide(); return; }                // reduced-motion / transition:none -> sync
@@ -1152,14 +1178,17 @@
     }
     var btn = panel.querySelector(".close-panel");
     if (btn) {
-      btn.addEventListener("click", close);
+      btn.addEventListener("click", function () { dismiss(true); });
       btn.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); close(); }
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); dismiss(true); }
       });
     }
-    // #169: Esc dismisses the toast while shown (consistent with the hovercard/modal idiom).
+    // #169: Esc dismisses the toast while shown (consistent with the hovercard/modal idiom). Skip
+    // when another handler already consumed the Escape (defaultPrevented) so it does not also eat a
+    // keypress meant for a modal/menu/search, and dismiss WITHOUT the multi-day suppression write.
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && !panel.hidden) close();
+      if (e.key !== "Escape" || e.defaultPrevented || panel.hidden) return;
+      dismiss(false);
     });
   }
 
@@ -2000,8 +2029,11 @@
     var nextLink = document.querySelector('link[rel="next"]');
     var prevLink = document.querySelector('link[rel="prev"]');
     if (!nextLink && !prevLink) return;              // un-indexed page: nothing to navigate to
-    var nextHref = nextLink ? nextLink.href : "";    // .href is the resolved absolute URL
-    var prevHref = prevLink ? prevLink.href : "";
+    // getAttribute, not the IDL .href: .href resolves href="" to the document URL, so a book
+    // entry with a title but no URL would self-navigate (reload); the raw attribute stays ""
+    // and the `if (!dest)` guard below bails. location.assign resolves the relative value.
+    var nextHref = nextLink ? nextLink.getAttribute("href") : "";
+    var prevHref = prevLink ? prevLink.getAttribute("href") : "";
     var rtl = document.documentElement.dir === "rtl";
     document.addEventListener("keydown", function (e) {
       // A modifier means the key is the browser's/OS's (Alt+Arrow = back/forward) or a text
@@ -2020,6 +2052,9 @@
       // unlike the isContentEditable property).
       var tag = t.nodeName.toLowerCase();
       if (tag === "input" || tag === "textarea" || tag === "select") return;
+      // A focused native media player owns Left/Right (seek) via its built-in controls
+      // (<video>/<audio controls> are Tab-reachable) -- never steal its arrows for a page turn.
+      if (tag === "video" || tag === "audio") return;
       if (t.closest('[contenteditable]:not([contenteditable="false"])')) return;
       // A focused composite widget owns Left/Right (tabs + top-menubar roving: initTabs /
       // initNavKeyboard). Leave them to it.
@@ -2035,6 +2070,10 @@
       if (sc && sc.scrollWidth > sc.clientWidth + 1) return;
       var dest = (rtl ? (e.key === "ArrowRight") : (e.key === "ArrowLeft")) ? prevHref : nextHref;
       if (!dest) return;                             // no neighbour this direction (chain end)
+      // Same-origin only (as the search path does at navSafe/location.assign): never navigate a
+      // cross-origin dest, whose Referer would leak the (onion) origin. page.py restricts the
+      // <link> to /wiki targets at the root; this is the defence-in-depth client check.
+      if (!navSafe(dest, false)) return;
       e.preventDefault();
       window.location.assign(dest);
     });
@@ -2265,15 +2304,27 @@
       if (!tip) return;
       setOpen(tip, false);
       // Beat the sticky desktop :hover (@media(hover:hover) .share-tooltip:hover .menu-wrapper
-      // {display:block}), which re-reveals the menu while the pointer still sits on the (x). An
-      // inline display:none wins the cascade; cleared when the pointer leaves the tooltip so a
-      // fresh hover re-opens (an explicit reopen clears it via setOpen too). Touch has no :hover to
-      // fight; the override is harmless there and cleared on the next tap-reopen.
+      // {display:block}), which re-reveals the menu while the pointer still sits on the (x). Only a
+      // mouse :hover can do this, so pin display:none ONLY while actually hovered -- a keyboard (x)
+      // with the pointer outside is already handled by setOpen's blur (releases :focus-within), and
+      // pinning it there would never get a pointer leave and stay stuck hidden. Clear it on a GENUINE
+      // pointer leave (guard on !:hover to ignore the spurious pointerleave some engines fire as the
+      // menu collapses under the cursor -- Firefox delivers the real leave as mouseleave), OR on a
+      // focus returning to the tooltip: a keyboard reopen via :focus-within must win even with the
+      // mouse still resting, so focusin clears UNCONDITIONALLY. An explicit reopen clears via setOpen.
       var wrap = tip.querySelector(".menu-wrapper");
-      if (wrap) {
+      if (wrap && tip.matches(":hover")) {
         wrap.style.display = "none";
-        var clear = function () { wrap.style.display = ""; tip.removeEventListener("pointerleave", clear); };
-        tip.addEventListener("pointerleave", clear);
+        var reveal = function () {
+          wrap.style.display = "";
+          tip.removeEventListener("pointerleave", onLeave);
+          tip.removeEventListener("mouseleave", onLeave);
+          tip.removeEventListener("focusin", reveal);
+        };
+        var onLeave = function () { if (!tip.matches(":hover")) reveal(); };
+        tip.addEventListener("pointerleave", onLeave);
+        tip.addEventListener("mouseleave", onLeave);
+        tip.addEventListener("focusin", reveal);
       }
     });
   }

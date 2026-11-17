@@ -2490,28 +2490,8 @@
   },
   {
     "n": 1,
-    "t": "File:Icon-key.png",
-    "u": "wiki/File:Icon-key.png"
-  },
-  {
-    "n": 1,
     "t": "File:Icon-lock.png",
     "u": "wiki/File:Icon-lock.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Icon-openpgp.png",
-    "u": "wiki/File:Icon-openpgp.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Icon-sha512.png",
-    "u": "wiki/File:Icon-sha512.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Icon-sha512signify.png",
-    "u": "wiki/File:Icon-sha512signify.png"
   },
   {
     "n": 1,
@@ -7353,6 +7333,16 @@
   },
   {
     "n": 1,
+    "t": "Template:Footer legal intro",
+    "u": "wiki/Template:Footer_legal_intro"
+  },
+  {
+    "n": 1,
+    "t": "Template:Footer opensource note",
+    "u": "wiki/Template:Footer_opensource_note"
+  },
+  {
+    "n": 1,
     "t": "Template:Footnotes",
     "u": "wiki/Template:Footnotes"
   },
@@ -7395,11 +7385,6 @@
     "n": 1,
     "t": "Template:Git version control",
     "u": "wiki/Template:Git_version_control"
-  },
-  {
-    "n": 1,
-    "t": "Template:Github link",
-    "u": "wiki/Template:Github_link"
   },
   {
     "n": 1,
@@ -7568,6 +7553,16 @@
   },
   {
     "n": 1,
+    "t": "Template:Invidious instance",
+    "u": "wiki/Template:Invidious_instance"
+  },
+  {
+    "n": 1,
+    "t": "Template:Invidious onion",
+    "u": "wiki/Template:Invidious_onion"
+  },
+  {
+    "n": 1,
     "t": "Template:Ip hiding mininav",
     "u": "wiki/Template:Ip_hiding_mininav"
   },
@@ -7628,8 +7623,8 @@
   },
   {
     "n": 1,
-    "t": "Template:Kicksecure link",
-    "u": "wiki/Template:Kicksecure_link"
+    "t": "Template:Kicksecure onion",
+    "u": "wiki/Template:Kicksecure_onion"
   },
   {
     "n": 1,
@@ -7850,6 +7845,11 @@
     "n": 1,
     "t": "Template:Newline",
     "u": "wiki/Template:Newline"
+  },
+  {
+    "n": 1,
+    "t": "Template:Nitter instance",
+    "u": "wiki/Template:Nitter_instance"
   },
   {
     "n": 1,
@@ -8898,11 +8898,6 @@
   },
   {
     "n": 1,
-    "t": "Template:Tpo link",
-    "u": "wiki/Template:Tpo_link"
-  },
-  {
-    "n": 1,
     "t": "Template:Trim",
     "u": "wiki/Template:Trim"
   },
@@ -8950,11 +8945,6 @@
     "n": 1,
     "t": "Template:Tunnels Introduction",
     "u": "wiki/Template:Tunnels_Introduction"
-  },
-  {
-    "n": 1,
-    "t": "Template:Twitter link",
-    "u": "wiki/Template:Twitter_link"
   },
   {
     "n": 1,
@@ -9128,11 +9118,6 @@
   },
   {
     "n": 1,
-    "t": "Template:VideoLink",
-    "u": "wiki/Template:VideoLink"
-  },
-  {
-    "n": 1,
     "t": "Template:VirtualBox",
     "u": "wiki/Template:VirtualBox"
   },
@@ -9270,6 +9255,11 @@
     "n": 1,
     "t": "Template:Whonix TUNNEL FIREWALL vs standalone VPN-Firewall",
     "u": "wiki/Template:Whonix_TUNNEL_FIREWALL_vs_standalone_VPN-Firewall"
+  },
+  {
+    "n": 1,
+    "t": "Template:Whonix onion",
+    "u": "wiki/Template:Whonix_onion"
   },
   {
     "n": 1,

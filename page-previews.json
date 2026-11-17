@@ -1,6 +1,6 @@
 {
   "": {
-    "d": "Whonix can anonymize everything you do online! It runs like an App, is a Free, Open Source and Kicksecure<sup>&trade;</sup> hardened Linux distribution.",
+    "d": "Whonix can anonymize everything you do online! It runs like an App, is a Free, Open Source and Kicksecure<sup>&amp;trade;</sup> hardened Linux distribution.",
     "t": "Homepage"
   },
   "wiki/AI_Agents_Blocking": {
@@ -132,7 +132,7 @@
     "t": "Browser Tests"
   },
   "wiki/Build_Configuration": {
-    "d": "Non-Qubes-Whonix<sup>&trade;</sup> Build Configuration. APT Repository, Onion Sources, APT Cache, VM Settings, Skip Steps, Source Code Changes",
+    "d": "Non-Qubes-Whonix<sup>&amp;trade;</sup> Build Configuration. APT Repository, Onion Sources, APT Cache, VM Settings, Skip Steps, Source Code Changes",
     "t": "Build Configuration"
   },
   "wiki/Censorship_Circumvention_Tools": {
@@ -144,7 +144,7 @@
     "t": "Census"
   },
   "wiki/Chaining_Anonymizing_Gateways": {
-    "d": "By default, all Whonix-Workstation<sup>&trade;</sup> traffic is forced through Whonix-Gateway<sup>&trade;</sup>. Alternatively, a chain of anonymizing gateways can be built, with sample tunnel configurations outlined below.",
+    "d": "By default, all Whonix-Workstation<sup>&amp;trade;</sup> traffic is forced through Whonix-Gateway<sup>&amp;trade;</sup>. Alternatively, a chain of anonymizing gateways can be built, with sample tunnel configurations outlined below.",
     "t": "Chaining Anonymizing Gateways"
   },
   "wiki/Changelog": {
@@ -200,7 +200,7 @@
     "t": "Computer Security Education"
   },
   "wiki/Connections_between_Gateway_and_Workstation": {
-    "d": "Authenticated / Encrypted Connections between Whonix-Gateway<sup>&trade;</sup> and Whonix-Workstation<sup>&trade;</sup>, ARP spoofing defense, SSH, OpenVPN, Using additional (isolated) network interfaces. Remote Whonix-Gateway<sup>&trade;</sup>.",
+    "d": "Authenticated / Encrypted Connections between Whonix-Gateway<sup>&amp;trade;</sup> and Whonix-Workstation<sup>&amp;trade;</sup>, ARP spoofing defense, SSH, OpenVPN, Using additional (isolated) network interfaces. Remote Whonix-Gateway<sup>&amp;trade;</sup>.",
     "t": "Connections between Gateway and Workstation"
   },
   "wiki/Contact": {
@@ -372,7 +372,7 @@
     "t": "Dev/Gajim"
   },
   "wiki/Dev/Gateway": {
-    "d": "Whonix-Gateway<sup>&trade;</sup> Detailed Design Documentation",
+    "d": "Whonix-Gateway<sup>&amp;trade;</sup> Detailed Design Documentation",
     "t": "Dev/Gateway"
   },
   "wiki/Dev/Homepage": {
@@ -456,7 +456,7 @@
     "t": "Dev/Project friendly applications best practices"
   },
   "wiki/Dev/Qubes": {
-    "d": "Qubes-Whonix<sup>&trade;</sup> development notes.",
+    "d": "Qubes-Whonix<sup>&amp;trade;</sup> development notes.",
     "t": "Dev/Qubes"
   },
   "wiki/Dev/Qubes_Remote_Support": {
@@ -644,7 +644,7 @@
     "t": "Donate/Crypto"
   },
   "wiki/Donate/EUR": {
-    "d": "Euro \"&euro;\" (EUR), SEPA, IBAN, SWIFT",
+    "d": "Euro \"&amp;euro;\" (EUR), SEPA, IBAN, SWIFT",
     "t": "Donate/EUR"
   },
   "wiki/Donate/Ethereum": {
@@ -652,7 +652,7 @@
     "t": "Donate/Ethereum"
   },
   "wiki/Donate/GBP": {
-    "d": "Pound Sterling \"&pound;\" (GBP), UK sort code, Account number, IBAN, SWIFT, CHAPS, BACS, Faster Payments",
+    "d": "Pound Sterling \"&amp;pound;\" (GBP), UK sort code, Account number, IBAN, SWIFT, CHAPS, BACS, Faster Payments",
     "t": "Donate/GBP"
   },
   "wiki/Donate/Monero": {
@@ -724,7 +724,7 @@
     "t": "Essential Host Security"
   },
   "wiki/Essential_Tests": {
-    "d": "Help to test Whonix. Whonix-Gateway, Whonix-Workstation<sup>&trade;</sup>, browser and application tests.",
+    "d": "Help to test Whonix. Whonix-Gateway, Whonix-Workstation<sup>&amp;trade;</sup>, browser and application tests.",
     "t": "Essential Tests"
   },
   "wiki/Ethereum": {
@@ -784,7 +784,7 @@
     "t": "Forcing .onion on Project"
   },
   "wiki/Freenet": {
-    "d": "Freenet over Tor. Tunneling Freenet through Tor. Connection Schema: User &rarr; Tor &rarr; Freenet &rarr; Destination",
+    "d": "Freenet over Tor. Tunneling Freenet through Tor. Connection Schema: User &amp;rarr; Tor &amp;rarr; Freenet &amp;rarr; Destination",
     "t": "Freenet"
   },
   "wiki/Full_Disk_Encryption_and_Encrypted_Images": {
@@ -840,7 +840,7 @@
     "t": "Hostnames"
   },
   "wiki/I2P": {
-    "d": "I2P over Tor. Tunneling the I2P Anonymizing Network over the Tor Anonymizing Network. Connection Schema: Tor &rarr; I2P &rarr; Destination.",
+    "d": "I2P over Tor. Tunneling the I2P Anonymizing Network over the Tor Anonymizing Network. Connection Schema: Tor &amp;rarr; I2P &amp;rarr; Destination.",
     "t": "I2P"
   },
   "wiki/IP_hiding_is_outdated": {
@@ -876,7 +876,7 @@
     "t": "Investors"
   },
   "wiki/JonDonym": {
-    "d": "Combining Whonix with JonDonym. JonDonym over Tor. Connecting to Tor before JonDonym (User &rarr; Tor &rarr; JonDonym &rarr; Internet ) OR Connecting to JonDonym before Tor (User &rarr; JonDonym &rarr; Tor &rarr; Internet ).",
+    "d": "Combining Whonix with JonDonym. JonDonym over Tor. Connecting to Tor before JonDonym (User &amp;rarr; Tor &amp;rarr; JonDonym &amp;rarr; Internet ) OR Connecting to JonDonym before Tor (User &amp;rarr; JonDonym &amp;rarr; Tor &amp;rarr; Internet ).",
     "t": "JonDonym"
   },
   "wiki/KVM": {
@@ -900,7 +900,7 @@
     "t": "Language"
   },
   "wiki/Lantern": {
-    "d": "Alternative Censorship Circumvention. Lantern over Tor. Combining Whonix with Lantern. Connecting to Lantern before Tor (<code>User</code> &rarr; <code>Lantern</code> &rarr; <code>Tor</code> &rarr; <code>Internet</code>). ''Possible'' alternative to Tor bridges.",
+    "d": "Alternative Censorship Circumvention. Lantern over Tor. Combining Whonix with Lantern. Connecting to Lantern before Tor (<code>User</code> &amp;rarr; <code>Lantern</code> &amp;rarr; <code>Tor</code> &amp;rarr; <code>Internet</code>). ''Possible'' alternative to Tor bridges.",
     "t": "Lantern"
   },
   "wiki/Leaks": {
@@ -920,7 +920,7 @@
     "t": "Live Mode"
   },
   "wiki/Local_Connections": {
-    "d": "Connect to Localhost from inside Whonix-Workstation<sup>&trade;</sup>. This might be useful for the use case of Hosting Location Hidden Services and Onion Services.",
+    "d": "Connect to Localhost from inside Whonix-Workstation<sup>&amp;trade;</sup>. This might be useful for the use case of Hosting Location Hidden Services and Onion Services.",
     "t": "Local Connections"
   },
   "wiki/Logging_in_to_captive_portals": {
@@ -964,7 +964,7 @@
     "t": "Metadata"
   },
   "wiki/Mixmaster": {
-    "d": "Send anonymous E-Mails. Mixmaster over Tor. Tunnelling mixmaster through Tor. Connection Schema: user &rarr; Tor &rarr; mixmaster &rarr; recipient",
+    "d": "Send anonymous E-Mails. Mixmaster over Tor. Tunnelling mixmaster through Tor. Connection Schema: user &amp;rarr; Tor &amp;rarr; mixmaster &amp;rarr; recipient",
     "t": "Mixmaster"
   },
   "wiki/Monero": {
@@ -996,7 +996,7 @@
     "t": "Mullvad Browser"
   },
   "wiki/Multiple_Qubes-Whonix_Templates": {
-    "d": "Compartmentalization. Managing multiple Qubes-Whonix<sup>&trade;</sup> Templates.",
+    "d": "Compartmentalization. Managing multiple Qubes-Whonix<sup>&amp;trade;</sup> Templates.",
     "t": "Multiple Qubes-Whonix Templates"
   },
   "wiki/Multiple_Whonix-Gateway": {
@@ -1076,11 +1076,11 @@
     "t": "Other Desktop Environments"
   },
   "wiki/Other_Gateways": {
-    "d": "Using Whonix-Workstation<sup>&trade;</sup> with a Gateway Other Than Whonix-Gateway<sup>&trade;</sup>.",
+    "d": "Using Whonix-Workstation<sup>&amp;trade;</sup> with a Gateway Other Than Whonix-Gateway<sup>&amp;trade;</sup>.",
     "t": "Other Gateways"
   },
   "wiki/Other_Operating_Systems": {
-    "d": "Anonymize any Operating System. Your operating system tunneled through the Tor Anonymity Network. Create your Whonix-Custom-Workstation<sup>&trade;</sup>.",
+    "d": "Anonymize any Operating System. Your operating system tunneled through the Tor Anonymity Network. Create your Whonix-Custom-Workstation<sup>&amp;trade;</sup>.",
     "t": "Other Operating Systems"
   },
   "wiki/PPC64": {
@@ -1176,7 +1176,7 @@
     "t": "Qubes"
   },
   "wiki/Qubes/Disposables": {
-    "d": "How to use Disposables in Qubes-Whonix<sup>&trade;</sup>.",
+    "d": "How to use Disposables in Qubes-Whonix<sup>&amp;trade;</sup>.",
     "t": "Qubes/Disposables"
   },
   "wiki/Qubes/Firewall": {
@@ -1232,7 +1232,7 @@
     "t": "Reasons for Freedom Software"
   },
   "wiki/Redirect_Whonix-Workstation_Ports_or_Unix_Domain_Socket_Files_to_Whonix-Gateway": {
-    "d": "Redirect ports or unix domain socket files from Whonix-Gateway<sup>&trade;</sup> localhost to Whonix-Workstation<sup>&trade;</sup>.",
+    "d": "Redirect ports or unix domain socket files from Whonix-Gateway<sup>&amp;trade;</sup> localhost to Whonix-Workstation<sup>&amp;trade;</sup>.",
     "t": "Redirect Whonix-Workstation Ports or Unix Domain Socket Files to Whonix-Gateway"
   },
   "wiki/Release_Upgrade": {
@@ -1256,7 +1256,7 @@
     "t": "Reliable IP Hiding"
   },
   "wiki/Remailer": {
-    "d": "Anonymous Mail/Messages. Remailer over Tor. Tunnelling remailer through Tor. Connection Schema: user &rarr; Tor &rarr; remailer &rarr; recipient",
+    "d": "Anonymous Mail/Messages. Remailer over Tor. Tunnelling remailer through Tor. Connection Schema: user &amp;rarr; Tor &amp;rarr; remailer &amp;rarr; recipient",
     "t": "Remailer"
   },
   "wiki/Remote_Administration": {
@@ -1308,7 +1308,7 @@
     "t": "Search Engines"
   },
   "wiki/SecBrowser": {
-    "d": "It is recommended to stop using SecBrowser&trade;.",
+    "d": "It is recommended to stop using SecBrowser&amp;trade;.",
     "t": "SecBrowser"
   },
   "wiki/Security_Guide": {
@@ -1352,7 +1352,7 @@
     "t": "Speculative Tor Attacks"
   },
   "wiki/Sshfs_into_Whonix-Workstation": {
-    "d": "Mount Whonix-Workstation<sup>&trade;</sup> files on your Host using sshfs.",
+    "d": "Mount Whonix-Workstation<sup>&amp;trade;</sup> files on your Host using sshfs.",
     "t": "Sshfs into Whonix-Workstation"
   },
   "wiki/Starting_Project": {
@@ -1400,7 +1400,7 @@
     "t": "System Audit"
   },
   "wiki/System_Hardening_Checklist": {
-    "d": "Security hardening instructions for Whonix and Qubes-Whonix<sup>&trade;</sup>. Improving Linux, Windows and macOS host computer security and networking configurations. Safe Tor, Tor Browser and other online activities.",
+    "d": "Security hardening instructions for Whonix and Qubes-Whonix<sup>&amp;trade;</sup>. Improving Linux, Windows and macOS host computer security and networking configurations. Safe Tor, Tor Browser and other online activities.",
     "t": "System Hardening Checklist"
   },
   "wiki/System_Requirements": {
@@ -1516,43 +1516,43 @@
     "t": "Trust"
   },
   "wiki/Tunnel_UDP_over_Tor": {
-    "d": "Workaround for Tunneling UDP over Tor. Connection Scheme: User &rarr; Tor &rarr; Destination",
+    "d": "Workaround for Tunneling UDP over Tor. Connection Scheme: User &amp;rarr; Tor &amp;rarr; Destination",
     "t": "Tunnel UDP over Tor"
   },
   "wiki/Tunnels/Connecting_to_SSH_before_Tor": {
-    "d": "Instructions on how to connect to SSH before Tor. (User &rarr; SSH &rarr; Tor &rarr; Internet)",
+    "d": "Instructions on how to connect to SSH before Tor. (User &amp;rarr; SSH &amp;rarr; Tor &amp;rarr; Internet)",
     "t": "Tunnels/Connecting to SSH before Tor"
   },
   "wiki/Tunnels/Connecting_to_Tor_before_SSH": {
-    "d": "Instructions on how to connect to Tor before SSH. (User &rarr; Tor &rarr; SSH &rarr; Internet)",
+    "d": "Instructions on how to connect to Tor before SSH. (User &amp;rarr; Tor &amp;rarr; SSH &amp;rarr; Internet)",
     "t": "Tunnels/Connecting to Tor before SSH"
   },
   "wiki/Tunnels/Connecting_to_Tor_before_a_VPN": {
-    "d": "Instructions on how to connect to Tor before a VPN. (<code>User</code> &rarr; <code>Tor</code> &rarr; <code>VPN</code> &rarr; <code>Internet</code>)",
+    "d": "Instructions on how to connect to Tor before a VPN. (<code>User</code> &amp;rarr; <code>Tor</code> &amp;rarr; <code>VPN</code> &amp;rarr; <code>Internet</code>)",
     "t": "Tunnels/Connecting to Tor before a VPN"
   },
   "wiki/Tunnels/Connecting_to_Tor_before_a_proxy": {
-    "d": "Instructions on how to connect to Tor before a proxy. (User &rarr; Tor &rarr; Proxy &rarr; Internet)",
+    "d": "Instructions on how to connect to Tor before a proxy. (User &amp;rarr; Tor &amp;rarr; Proxy &amp;rarr; Internet)",
     "t": "Tunnels/Connecting to Tor before a proxy"
   },
   "wiki/Tunnels/Connecting_to_Tor_before_a_proxy/Proxy_Settings_Method": {
-    "d": "Instructions on how to connect to Tor before a proxy (User &rarr; Tor &rarr; Proxy &rarr; Internet) using Proxy Settings Method",
+    "d": "Instructions on how to connect to Tor before a proxy (User &amp;rarr; Tor &amp;rarr; Proxy &amp;rarr; Internet) using Proxy Settings Method",
     "t": "Tunnels/Connecting to Tor before a proxy/Proxy Settings Method"
   },
   "wiki/Tunnels/Connecting_to_Tor_before_a_proxy/Proxyfier_Method": {
-    "d": "Instructions on how to connect to Tor before a proxy (User &rarr; Tor &rarr; Proxy &rarr; Internet) using Proxyfier Method",
+    "d": "Instructions on how to connect to Tor before a proxy (User &amp;rarr; Tor &amp;rarr; Proxy &amp;rarr; Internet) using Proxyfier Method",
     "t": "Tunnels/Connecting to Tor before a proxy/Proxyfier Method"
   },
   "wiki/Tunnels/Connecting_to_Tor_before_a_proxy/Transparent_Proxying_Method": {
-    "d": "Instructions on how to connect to Tor before a proxy (User &rarr; Tor &rarr; Proxy &rarr; Internet) using Transparent Proxying Method",
+    "d": "Instructions on how to connect to Tor before a proxy (User &amp;rarr; Tor &amp;rarr; Proxy &amp;rarr; Internet) using Transparent Proxying Method",
     "t": "Tunnels/Connecting to Tor before a proxy/Transparent Proxying Method"
   },
   "wiki/Tunnels/Connecting_to_a_VPN_before_Tor": {
-    "d": "Instructions on how to connect to a VPN before Tor. (User &rarr; VPN &rarr; Tor &rarr; Internet)",
+    "d": "Instructions on how to connect to a VPN before Tor. (User &amp;rarr; VPN &amp;rarr; Tor &amp;rarr; Internet)",
     "t": "Tunnels/Connecting to a VPN before Tor"
   },
   "wiki/Tunnels/Connecting_to_a_proxy_before_Tor": {
-    "d": "Instructions on how to connect to a proxy before Tor. (User &rarr; proxy &rarr; Tor &rarr; Internet)",
+    "d": "Instructions on how to connect to a proxy before Tor. (User &amp;rarr; proxy &amp;rarr; Tor &amp;rarr; Internet)",
     "t": "Tunnels/Connecting to a proxy before Tor"
   },
   "wiki/Tunnels/Examples": {
@@ -1560,7 +1560,7 @@
     "t": "Tunnels/Examples"
   },
   "wiki/Tunnels/Introduction": {
-    "d": "Information on and how-to combine Tor with tunnels such as VPN, SSH, or proxies. Covers whether this makes Tor more or less secure. (User &rarr; Tor &rarr; proxy/VPN/SSH &rarr; Internet) (User &rarr; proxy/VPN/SSH &rarr; Tor &rarr; Internet)",
+    "d": "Information on and how-to combine Tor with tunnels such as VPN, SSH, or proxies. Covers whether this makes Tor more or less secure. (User &amp;rarr; Tor &amp;rarr; proxy/VPN/SSH &amp;rarr; Internet) (User &amp;rarr; proxy/VPN/SSH &amp;rarr; Tor &amp;rarr; Internet)",
     "t": "Tunnels/Introduction"
   },
   "wiki/Tunnels/Prevent_Bypassing_the_Tunnel-Link": {
@@ -1692,11 +1692,11 @@
     "t": "What we do"
   },
   "wiki/Whonix-Gateway": {
-    "d": "The Whonix-Gateway is a software component that runs Tor, which moves data across multiple servers called Tor relays to keep users anonymous on the Internet, and it connects any virtual machine properly to the Internet using Tor only, while user applications should be run inside the Whonix-Workstation<sup>&trade;</sup>.",
+    "d": "The Whonix-Gateway is a software component that runs Tor, which moves data across multiple servers called Tor relays to keep users anonymous on the Internet, and it connects any virtual machine properly to the Internet using Tor only, while user applications should be run inside the Whonix-Workstation<sup>&amp;trade;</sup>.",
     "t": "Whonix-Gateway"
   },
   "wiki/Whonix-Gateway_Firewall": {
-    "d": "General information about Whonix-Gateway<sup>&trade;</sup> firewall. How-To: Changing firewall settings and Open a Port in Whonix-Gateway<sup>&trade;</sup> Firewall.",
+    "d": "General information about Whonix-Gateway<sup>&amp;trade;</sup> firewall. How-To: Changing firewall settings and Open a Port in Whonix-Gateway<sup>&amp;trade;</sup> Firewall.",
     "t": "Whonix-Gateway Firewall"
   },
   "wiki/Whonix-Gateway_Own_Traffic_Transparent_Proxy": {
@@ -1708,11 +1708,11 @@
     "t": "Whonix-Gateway Security"
   },
   "wiki/Whonix-Gateway_Security_Hardening": {
-    "d": "Optional Whonix-Gateway<sup>&trade;</sup> Security Hardening for advanced users.",
+    "d": "Optional Whonix-Gateway<sup>&amp;trade;</sup> Security Hardening for advanced users.",
     "t": "Whonix-Gateway Security Hardening"
   },
   "wiki/Whonix-Gateway_System_DNS": {
-    "d": "Information about Whonix-Gateway<sup>&trade;</sup> System DNS, /etc/resolv.conf, and nslookup. Getting System DNS working on Whonix-Gateway<sup>&trade;</sup>.",
+    "d": "Information about Whonix-Gateway<sup>&amp;trade;</sup> System DNS, /etc/resolv.conf, and nslookup. Getting System DNS working on Whonix-Gateway<sup>&amp;trade;</sup>.",
     "t": "Whonix-Gateway System DNS"
   },
   "wiki/Whonix-Host": {
@@ -1724,15 +1724,15 @@
     "t": "Whonix-Workstation"
   },
   "wiki/Whonix-Workstation_Firewall": {
-    "d": "How-To: Open a Port in Whonix-Workstation<sup>&trade;</sup> Firewall, Restrict Outgoing IPs, Additional User Custom Firewall Rules and other settings for advanced users.",
+    "d": "How-To: Open a Port in Whonix-Workstation<sup>&amp;trade;</sup> Firewall, Restrict Outgoing IPs, Additional User Custom Firewall Rules and other settings for advanced users.",
     "t": "Whonix-Workstation Firewall"
   },
   "wiki/Whonix-Workstation_Security": {
-    "d": "This page is targeted at users who wish to improve the security of their Whonix-Workstation<sup>&trade;</sup> to become even more secure.",
+    "d": "This page is targeted at users who wish to improve the security of their Whonix-Workstation<sup>&amp;trade;</sup> to become even more secure.",
     "t": "Whonix-Workstation Security"
   },
   "wiki/Whonix-Workstation_Security_Hardening": {
-    "d": "Whonix-Workstation<sup>&trade;</sup> Security Hardening. This page is targeted at users who wish to improve the security of their Whonix-Workstation<sup>&trade;</sup> to become even more secure.",
+    "d": "Whonix-Workstation<sup>&amp;trade;</sup> Security Hardening. This page is targeted at users who wish to improve the security of their Whonix-Workstation<sup>&amp;trade;</sup> to become even more secure.",
     "t": "Whonix-Workstation Security Hardening"
   },
   "wiki/Whonix-Workstation_to_Whonix-Workstation_Connections": {
@@ -1792,7 +1792,7 @@
     "t": "Yt-dlp"
   },
   "wiki/ZeroNet": {
-    "d": "Combining Whonix with ZeroNet. ZeroNet over Tor. Connecting to Tor before ZeroNet (User &rarr; Tor &rarr; ZeroNet &rarr; Internet).",
+    "d": "Combining Whonix with ZeroNet. ZeroNet over Tor. Connecting to Tor before ZeroNet (User &amp;rarr; Tor &amp;rarr; ZeroNet &amp;rarr; Internet).",
     "t": "ZeroNet"
   }
 }

@@ -439,6 +439,14 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
    oversize. GitHub, cross-wiki, and external brand icons all route through this shape. */
 .link-icon-widget { display: inline-flex; align-items: center; gap: 0.4em; }
 .link-icon { display: inline; width: auto; height: var(--link-icon-size); vertical-align: -0.18em; }
+/* WCAG 2.5.8 target-size: the trailing icon-only .onion-link (tor glyph, no text label) is a
+   STANDALONE tap target, so it needs a >=24x24 CSS-px hit box -- the glyph keeps its small size,
+   centred in the box. Sizing the ANCHOR (not the <img>) keeps the box >=24 even before the lazy
+   icon loads, which is the real geometry an a11y tap-target check measures. */
+.onion-link {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 24px; min-height: 24px; vertical-align: middle;
+}
 .mw-ui-button {
   background: var(--btn-secondary-bg); border-color: var(--btn-secondary-border);
   border-radius: var(--btn-radius); color: var(--btn-secondary-fg);
@@ -559,9 +567,11 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
 @media (max-width: 480px) {
   .download-button-v2 .dbutton { white-space: normal; }
   /* width:1px makes the anonymous-table OS-icon cell shrink to its content (no nowrap -- that
-     could push a multi-icon list past a narrow viewport); object-fit keeps the icon undistorted. */
+     could push a multi-icon list past a narrow viewport). min-width FLOORS the icon: without it
+     the width:auto img collapses to 0 inside the shrunk anonymous-table cell, so the OS logo
+     vanishes on phones (width:auto still governs wider logos). object-fit keeps it undistorted. */
   .download-button-v2 .op-sys { width: 1px; }
-  .download-button-v2 .op-sys > img { object-fit: contain; }
+  .download-button-v2 .op-sys > img { object-fit: contain; min-width: 16px; }
 }
 /* Verify-asset download links (Template:DownloadTableUnified + signing-key subtemplates):
    secondary to the primary download CTA, so a quiet Qubes-style bordered box (one uniform
@@ -2645,6 +2655,12 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 .wiki-content .thumbframe.tleft { float: left; clear: left; margin: 0.4em 1.4em 0.8em 0; }
 .wiki-content .thumbframe.tcenter { float: none; margin: 0.4em auto 0.8em; }
 .wiki-content .thumbframe.tnone { float: none; margin: 0.4em 0 0.8em; }
+/* Opt-in lead treatments (File class=lead-wide / lead-hero): block, full content width, never
+   floated. The image keeps `.thumbframe img` (max-width:100%), so a large source fills the column
+   and a small one centers -- no upscale. lead-hero is emitted ABOVE the title (page.py); lead-wide
+   sits below it. Both already span full width on a phone (no float to unfloat). */
+.wiki-content .thumbframe.lead-wide { float: none; clear: both; width: 100%; max-width: 100%; margin: 0.4em 0 1.2em; }
+.wiki-content .thumbframe.lead-hero { float: none; clear: both; width: 100%; max-width: 100%; margin: 0 0 1.2em; }
 .wiki-content .thumbframe p { margin: 0; }   /* defensive: neutralize any pandoc <p> wrap */
 .wiki-content .thumbframe img {
   /* The bare image is the whole figure now -- no inner border, no forced bg (a forced --bg behind
@@ -2995,6 +3011,25 @@ sup.reference:target {
   background: var(--surface-2); color: var(--link-hover); font-size: 0.9rem; text-decoration: none;
 }
 .share-open-panel .share-open:hover { text-decoration: none; background: var(--surface); }
+/* Inline privacy-mirror trigger (page.py _decorate_external_links + the video widget): a <button
+   popovertarget> styled as a plain inline link ("nitter"/"invidious"), since it sits in running
+   text. It opens the .mirror-open-panel confirm and never connects to the third party itself. */
+.mirror-confirm {
+  border: 0; padding: 0; background: none; cursor: pointer; font: inherit;
+  color: var(--link); text-decoration: underline; text-underline-offset: 0.15em;
+}
+.mirror-confirm:hover { color: var(--link-hover); }
+/* WCAG 2.5.8 target-size: the video-widget privacy-mirror icon buttons (Invidious/onion logos, no
+   text label) are STANDALONE tap targets -- give each a >=24x24 CSS-px hit box, the logo centred.
+   Scoped to .video-link so the INLINE text mirror trigger (e.g. "nitter" in running prose, already
+   large enough / inline-exempt) keeps its plain-link flow. Box on the BUTTON, so it stays >=24 even
+   before the lazy logo loads. */
+.video-link .mirror-confirm {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 24px; min-height: 24px; vertical-align: middle;
+}
+/* The anonymous-operator caution inside .mirror-open-panel: small, muted, above the URL. */
+.mirror-disclaimer { margin: 0.1rem 0 0.3rem; font-size: 0.8rem; color: var(--muted); }
 /* Per-network brand colours, SINGLE SOURCE: each .si-<network> sets the --brand custom
    property, which every surface that shows the badge reads -- the share tooltip/panel icons
    (background: var(--brand) above) AND the footer social row (.footer-social-icons .icon-link).
