@@ -2517,8 +2517,11 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
    as links, not muted body text. */
 .footer-freedom a, .footer-links a { color: var(--link); }
 .footer-freedom a:hover, .footer-links a:hover { color: var(--link-hover); text-decoration: underline; }
-.darkmode-toggle { display: inline-block; margin: 0.9rem 0 0; }
-.footer-settings { display: inline-block; margin: 0.9rem 0 0 0.6rem; }
+/* Utility toggles trail the brand column at its bottom; the preceding block's 0.9rem bottom
+   margin supplies the gap, so no own top margin -- one uniform column rhythm (an inline-block
+   top margin would NOT collapse and would double the gap). 0.6rem separates the two buttons. */
+.darkmode-toggle { display: inline-block; margin: 0; }
+.footer-settings { display: inline-block; margin: 0 0 0 0.6rem; }
 .copyright { margin: 0.6rem 0 0; }
 
 /* ---- misc content hooks ---- */

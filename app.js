@@ -1810,19 +1810,25 @@
         }
       }
     }
-    // Coalesce EVERY sync trigger (RO batch, resize, each late image load) into ONE measurement
-    // per frame. Otherwise each in-table image that finishes decoding calls sync() in its own
-    // task, and its scrollWidth read runs while layout is dirty from the decode -> a full forced
-    // synchronous layout per image (~41ms on a dense page with many in-table images). A rAF
-    // callback still runs before the frame's layout, so the frame's first read is one forced
-    // layout -- the win is collapsing a burst into one, not zero.
+    // scheduleSync coalesces the triggers that fire MID-TASK (an in-table image finishing its
+    // decode; the no-RO resize fallback) into ONE rAF measurement per frame. Each such trigger
+    // runs while layout is dirty, so its scrollWidth read forces a synchronous layout; coalescing
+    // a burst of late image loads into one rAF caps that at one forced layout per frame, not one
+    // per image (~41ms on a dense page with many in-table images). The ResizeObserver path below
+    // does NOT go through here -- it reads for free (see below).
     var raf = 0;
     function scheduleSync() {
       if (raf) { return; }
       raf = requestAnimationFrame(function () { raf = 0; sync(); });
     }
     if (typeof ResizeObserver !== "undefined") {
-      var ro = new ResizeObserver(scheduleSync);
+      // Read in the ResizeObserver callback DIRECTLY, not via rAF. An RO callback is delivered
+      // AFTER the browser's layout pass, so reading scrollWidth there returns an already-computed
+      // value and forces NO synchronous reflow -- the same post-layout free read initBottomStackSpacer
+      // relies on. Bouncing it through rAF (which runs BEFORE the frame's layout) is exactly what
+      // turned this free read into the Lighthouse-flagged forced reflow on the homepage. The initial
+      // observe fires once (first measure) and also covers resize + any content-box-changing reflow.
+      var ro = new ResizeObserver(function () { sync(); });
       items.forEach(function (item) { ro.observe(item.table); });
     } else {
       sync();   // no-RO path keeps the immediate first measure (js-test asserts rails post-init)
