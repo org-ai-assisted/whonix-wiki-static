@@ -4085,20 +4085,27 @@ sup.reference:target {
 .wiki-book-index.wbi-for-firstheading > .prev { grid-area: prev; justify-self: start; align-self: start; }
 .wiki-book-index.wbi-for-firstheading > .next { grid-area: next; justify-self: end; align-self: start; }
 
-/* Prev / Next: compact chips sized to their own label (NOT stretched to the rail width). */
+/* Prev / Next: fixed, EQUAL-width gutter chips. The firstheading .wbi-label is a fixed width (below),
+   so Prev and Next are identical regardless of title length and never resize page to page; the title
+   ellipsizes within it. Hover highlights both the fill AND the border (link colour). */
 .wiki-book-index .prev, .wiki-book-index .next {
   display: inline-flex; align-items: center; gap: 0.5rem; min-width: 0; width: max-content; max-width: 100%;
   border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);
-  padding: 0.5rem 0.75rem; text-decoration: none; color: var(--fg); transition: background-color 0.15s;
+  padding: 0.5rem 0.75rem; text-decoration: none; color: var(--fg);
+  transition: background-color 0.15s, border-color 0.15s;
 }
 .wiki-book-index .next { flex-direction: row-reverse; }
-.wiki-book-index .prev:hover, .wiki-book-index .next:hover { background: var(--surface-2); }
+.wiki-book-index .prev:hover, .wiki-book-index .next:hover { background: var(--surface-2); border-color: var(--link); }
 .wiki-book-index i { flex: none; color: var(--link); }
 .wiki-book-index .wbi-label { display: flex; flex-direction: column; min-width: 0; }
+/* Fixed label width on the desktop gutter chips -> Prev and Next are EQUAL, stable page to page. Fits
+   the 11rem gutter (~1.05rem icon + 0.5rem gap + 1.5rem padding + 7.5rem = ~10.6rem). The footer
+   (mobile) instance keeps auto width + a wrapping label (the 900px block overrides white-space). */
+.wiki-book-index.wbi-for-firstheading .wbi-label { width: 7.5rem; }
 .wiki-book-index .wbi-cap { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
 .wiki-book-index .text {
-  font-size: 0.9rem; font-weight: 600; color: var(--link); white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis; max-width: 14ch;
+  width: 100%; font-size: 0.9rem; font-weight: 600; color: var(--link); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
 }
 .wiki-book-index .info { display: none; }   /* redundant a11y text; the aria-label carries the name */
 
