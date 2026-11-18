@@ -78,6 +78,11 @@
   --btn-icon-radius: 50%;
   --btn-icon-media: rgba(0, 0, 0, 0.5);
   --btn-icon-chrome: var(--surface-2);
+  /* Close-control (dismiss-X) family: one shared hit-target size. --close-size is the comfortable
+     default (>=24px WCAG 2.5.8, near-AAA 2.5.5) for the popover/modal close; --close-size-compact
+     fits the thin one-line sitenotice bar and the small fly-in toast whose box caps the control. */
+  --close-size: 44px;
+  --close-size-compact: 36px;
 
   /* callout accents (referenced by .cs-* below) */
   --c-red: #d33426;
@@ -1839,16 +1844,19 @@ code:empty { display: none; }
   background: color-mix(in srgb, var(--surface) 55%, var(--bg));
 }
 .table-wrap { overflow-x: auto; }
-/* Mobile: pin content tables to fixed layout so column widths cannot renegotiate by image load
-   state. Under the default auto layout a cell image feeds its load-state-dependent width into the
-   column's preferred width -- a broken image renders at its attr width, a loaded one is scaled to
-   the column by max-width:100% -- so the columns, and the text wrapping they drive, differ between
-   the image-present and image-absent render, reflowing the table by thousands of px on a phone
-   (the About "Kicksecure Hardening Features" table: -2770px). Fixed layout + width:100% size the
-   columns from the table width alone, identical in both states. Desktop keeps auto layout + the
-   overflow-x scroll for wide tables -- the reflow is mobile-only (desktop has room). */
+/* Mobile: an in-cell floated image renders WIDER when its load is blocked (a broken image takes its
+   attr width, uncapped) than when loaded (scaled to the column by max-width:100%). Under auto
+   table-layout the wider broken box grows its column and rewraps the text, reflowing the table by
+   thousands of px on a phone (the About "Kicksecure Hardening Features" table: -2770px when its
+   images are absent). Pin ONLY the image-bearing tables (:has(.thumbframe)) to fixed layout, so
+   column widths come from the table width alone -- identical whether the image loads or not, and no
+   image is shrunk. The nowrap command/sysctl tables carry no thumbframe, so :has() leaves them on
+   auto-layout + the overflow-x scroll: a fixed layout there would overflow an unbreakable cell
+   instead of scrolling it. Mobile-only -- desktop has room, no reflow. Residual edge (rare, not in
+   About/ISO): a table with BOTH a thumbframe AND an unbreakable nowrap-wide cell still gets fixed
+   layout and could overflow that cell; reserve the in-cell image box if that ever appears. */
 @media (max-width: 480px) {
-  .wiki-content table:not(.toc):not(.storage-table):not(.comparison-table) {
+  .wiki-content table:has(.thumbframe):not(.toc):not(.storage-table):not(.comparison-table) {
     display: table;
     table-layout: fixed;
     width: 100%;
@@ -3068,10 +3076,11 @@ sup.reference:target {
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 /* The close: a ghost ICON BUTTON with a subtle filled rounded-rect -- clearly a button (not a faint
-   glyph), with a 44px tap target and an aria-label. One rule for every surface via .popover-close. */
+   glyph), on the shared --close-size tap target with an aria-label. One rule for every surface via
+   .popover-close. */
 .popover-close {
   flex: none; display: inline-flex; align-items: center; justify-content: center;
-  width: 44px; height: 44px; padding: 0; border: 0;
+  width: var(--close-size); height: var(--close-size); padding: 0; border: 0;
   border-radius: var(--btn-radius); cursor: pointer;
   background: var(--btn-icon-chrome); color: var(--muted); font-size: 1.05rem; line-height: 1;
 }
@@ -3815,13 +3824,25 @@ html.client-js .section-download .tab-content-controller .tcc-content { padding-
 .toc-toggle:focus-visible ~ .toc-title { outline: 2px solid var(--link); outline-offset: 2px; }
 .toc ul { list-style: none; margin: 0.5rem 0 0; padding: 0; }
 .toc li { margin: 0.15rem 0; }
-/* Indent by RELATIVE nesting depth (build_toc emits toc-l1..toc-l6). */
-.toc-l1 { padding-left: 0; }
-.toc-l2 { padding-left: 1.2rem; }
-.toc-l3 { padding-left: 2.4rem; }
-.toc-l4 { padding-left: 3.6rem; }
-.toc-l5 { padding-left: 4.8rem; }
-.toc-l6 { padding-left: 6rem; }
+/* Per-section collapse: build_toc nests each parent section's subsections inside a
+   <details class="toc-sec">, so indentation comes from the nesting (a fixed step per
+   level), NOT absolute per-depth padding (which would compound with the nesting). */
+.toc-l1, .toc-l2, .toc-l3, .toc-l4, .toc-l5, .toc-l6 { padding-left: 0; }
+.toc .toc-sec > ul { padding-left: 1.2rem; }
+/* Each parent section is a native <details> (no-JS, CSP-safe): drop the default
+   disclosure triangle for a +/- marker and show its direct-subsection count. */
+.toc .toc-sec > summary {
+  list-style: none; cursor: pointer; user-select: none;
+  display: inline-flex; align-items: baseline; gap: 0.3rem;
+}
+.toc .toc-sec > summary::-webkit-details-marker { display: none; }
+.toc .toc-sec > summary::before {
+  content: "+"; flex: none; width: 0.9em; text-align: center;
+  color: var(--muted); font-weight: 600;
+}
+.toc .toc-sec[open] > summary::before { content: "\2212"; }
+.toc .toc-sec > summary:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+.toc-count { color: var(--muted); font-size: 0.9em; }
 .toc .tocnumber { color: var(--muted); margin-right: 0.4rem; }
 /* inline-block + vertical padding gives each TOC link a >=24px tap target and spacing
    (a11y target-size, flagged on desktop). */
@@ -4643,7 +4664,7 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
   /* Ghost dismiss (idiomatic Primer/Carbon icon-button): a small glyph in a transparent,
      padded hit box -- never a filled square. The hit box stays >=24px CSS-px for WCAG 2.5.8;
      positive offsets only (the #89/#91 guard forbids negatives that cause mobile overflow). */
-  width: 34px; height: 34px; position: absolute; top: 50%; right: 6px; z-index: 10;
+  width: var(--close-size-compact); height: var(--close-size-compact); position: absolute; top: 50%; right: 6px; z-index: 10;
   transform: translateY(-50%);
   display: inline-flex; align-items: center; justify-content: center;
   cursor: pointer; border: 0; border-radius: var(--btn-radius);
@@ -4654,6 +4675,12 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
 /* Placement by shape: center-right on the thin default bar (above); top-right CORNER on the
    tall EOY card, where a vertically-centred close would float in the middle of the card. */
 .sitenotice:has(.sitenotice-end-of-year) .sitenotice-close { top: 14px; transform: none; }
+/* Default thin bar: a vertically-centred X reads clean on one desktop line, but on a narrow phone
+   the bar flex-wraps to several rows and the centred X floats mid-card. Pin it to the top-right
+   corner once the bar can wrap (positive offsets only, per the #89/#91 guard). */
+@media (max-width: 600px) {
+  .sitenotice-banner[data-banner-id="39"] .sitenotice-close { top: 7px; transform: none; }
+}
 .sitenotice-banner[data-banner-id="39"] {
   /* Placement A neutral bar: theme-aware surface, left-aligned content, the Donate button
      right-aligned (margin-left:auto) so on a narrow phone it wraps to the RIGHT under the
@@ -4665,7 +4692,6 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
   border: 1px solid var(--border); border-radius: var(--radius-sm);
   font-size: 0.95rem; line-height: 1.35;
 }
-.sitenotice-banner[data-banner-id="39"] .icon { flex: 0 0 auto; color: #f80000; font-size: 1.15rem; }   /* red heart, matches the header Donate heart (.header-donate .fa-heart) */
 .sitenotice-banner[data-banner-id="39"] .sitenotice-text { flex: 1 1 10rem; min-width: 0; font-weight: 600; }
 .sitenotice-banner[data-banner-id="39"] .sitenotice-cta { flex: 0 0 auto; margin-left: auto; white-space: nowrap; }
 
@@ -4691,11 +4717,13 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
   }
 }
 #fly-in-notification-panel .close-panel {
-  /* Decent glyph, big hit box: a 16px mark centred in a 36px padded target (>=24px, WCAG 2.5.8).
-     Pinned top-left -- the corner away from the screen's right edge the toast docks against. */
+  /* Real <button> (native Enter/Space + focus), on the shared dismiss-X size token: a 16px mark
+     centred in the --close-size-compact target (>=24px, WCAG 2.5.8). Pinned top-left -- the corner
+     away from the screen's right edge the toast docks against. */
   color: #fff; font-size: 16px; cursor: pointer; position: absolute;
-  left: 3px; top: 3px; z-index: 10; padding: 0;
-  width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;
+  left: 3px; top: 3px; z-index: 10; padding: 0; border: 0; background: transparent;
+  width: var(--close-size-compact); height: var(--close-size-compact);
+  display: inline-flex; align-items: center; justify-content: center;
   text-shadow: 0 0 1px #000, 0 0 2px #000, 0 0 3px #000;
 }
 #fly-in-notification-panel .close-panel:hover { transform: scale(1.2); }
@@ -4730,14 +4758,6 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
   border-bottom: 3px solid currentColor; margin-bottom: 19px; color: #c00;
   line-height: normal;   /* prod; else inherits body 1.6 and runs ~6px tall */
 }
-.sitenotice-end-of-year > .eoy-right > .eoy-donate-button {
-  border: 3px solid currentColor; border-radius: 10px; text-align: center; font-weight: bold;
-  font-size: 21px; letter-spacing: 1px; margin-top: 20px; display: block;
-  /* prod: line-height:normal + no padding -> a single-line ~34px button; inheriting body 1.6
-     (33.6px/line) plus 6px padding ran it ~51px tall (worse when a long label wraps to 2 lines). */
-  text-decoration: none; color: #22a7df; line-height: normal; padding: 0;
-}
-.sitenotice-end-of-year > .eoy-right > .eoy-donate-button:hover { background-color: #fffccf; }
 .sitenotice-end-of-year > .eoy-left > p { font-size: 15px; margin: 10px 0 15px; }
 /* prod shows the banner as a fixed 215px-tall letterbox stretched to full column width
    (object-fit:cover crops the photo into it): prod .eoy-image computes width:556px height:215px.
@@ -4873,6 +4893,7 @@ body.mini-modal-active { overflow: hidden; }
   color: var(--btn-secondary-fg);
 }
 .popover-close,
+#fly-in-notification-panel .close-panel,
 .gallery-lightbox .glb-nav {
   cursor: pointer;
   transition: filter 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
@@ -4895,6 +4916,7 @@ body.mini-modal-active { overflow: hidden; }
 .stage-dismiss:focus-visible,
 .sitenotice-close:focus-visible,
 .popover-close:focus-visible,
+#fly-in-notification-panel .close-panel:focus-visible,
 .gallery-lightbox .glb-nav:focus-visible {
   outline: 2px solid transparent; outline-offset: 2px;
   box-shadow: 0 0 0 2px var(--focus);
@@ -4935,6 +4957,7 @@ body.mini-modal-active { overflow: hidden; }
   .stage-dismiss,
   .sitenotice-close,
   .popover-close,
+  #fly-in-notification-panel .close-panel,
   .gallery-lightbox .glb-nav { transition: none; }
   .cta-button:active,
   .hero-download-button:active,

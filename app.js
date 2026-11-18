@@ -1231,13 +1231,9 @@
       panel.addEventListener("transitioncancel", hide);
       setTimeout(hide, secs * 1000 + 50);               // fallback: never stuck visible
     }
+    // A real <button>: native Enter/Space already fire a click, so no hand-wired key handler.
     var btn = panel.querySelector(".close-panel");
-    if (btn) {
-      btn.addEventListener("click", function () { dismiss(true); });
-      btn.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); dismiss(true); }
-      });
-    }
+    if (btn) { btn.addEventListener("click", function () { dismiss(true); }); }
     // #169: Esc dismisses the toast while shown (consistent with the hovercard/modal idiom). Skip
     // when another handler already consumed the Escape (defaultPrevented) so it does not also eat a
     // keypress meant for a modal/menu/search, and dismiss WITHOUT the multi-day suppression write.
