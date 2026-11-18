@@ -946,6 +946,12 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 .nav-toggle-label .nav-ico-close { display: none; }   /* 2 classes: beat FontAwesome's .fa-solid (loaded after) */
 .nav-toggle:checked ~ .nav-toggle-label .nav-ico-open { display: none; }
 .nav-toggle:checked ~ .nav-toggle-label .nav-ico-close { display: inline-block; }
+/* Fixed-width glyph box: fa-bars (~20px) and fa-xmark (~17px) have different advance widths,
+   so without it the bars->xmark swap on open shrinks the label and shifts the logo beside it
+   ~3px left (a header layout shift). Same width normalization the other header glyphs get below.
+   width only (no display) so the :checked show/hide rules above still govern visibility. */
+.nav-toggle-label .nav-ico-open,
+.nav-toggle-label .nav-ico-close { width: 1.25em; text-align: center; }
 /* Production Vector search: a magnifier ICON that expands the search box on click
    (pure-CSS checkbox toggle) so the header stays compact like prod. */
 .site-search {
@@ -1903,7 +1909,10 @@ code:empty { display: none; }
   display: flow-root; position: relative; padding-left: 46px;
 }
 .info-box-icon {
-  position: absolute; left: 12px; top: 9px; margin: 0;
+  /* top optically centers the 24px badge on the FIRST text line (12px pad-top +
+     (25.6px line-height - 24px)/2), level with line 1 -- the admonition idiom
+     (GitHub/MkDocs/Docusaurus), NOT centered on the whole multi-line box. */
+  position: absolute; left: 12px; top: 13px; margin: 0;
   width: 24px; height: 24px; font-size: 0;   /* kill the inline whitespace gap */
 }
 /* the glyph becomes a filled round badge coloured by its OWN cs-* --callout, white icon
@@ -1913,7 +1922,11 @@ code:empty { display: none; }
   width: 24px; height: 24px; border-radius: 5px; font-size: 0.875rem;  /* prod: rounded square; chip tier */
   background: var(--callout, var(--accent)); color: #fff;
 }
-.info-box-icon > img { width: 24px; height: auto; }   /* Ambox image icon: match the 24px icon box */
+/* A yellow badge needs a DARK glyph: the bright --c-yellow (#fff23e) fails non-text contrast under
+   the badge's default white glyph (mirrors the .pci-text yellow-chip treatment). Covers the mapped
+   {{mbox}} warning triangle and any hand-authored {{mbox|icon=fa-... cs-yellow}}. */
+.info-box-icon > i.cs-yellow, .info-box-icon > i.cs-yellow-light { color: #444; }
+.info-box-icon > img { width: 24px; height: auto; }   /* non-mapped info-box image icon: 24px box */
 /* An UNSIZED decorative logo/cue in an info-box BODY sizes to 46px so a tall glyph cannot stretch
    the box past its text. EXCLUDE:
      - the icons that live in the callout but are not body content: the type icon's image (nested
@@ -2216,7 +2229,7 @@ code:empty { display: none; }
 /* Nested tab panes + info/notice boxes each add horizontal padding; stacked several levels
    deep on a phone (tabs-in-infobox-in-tabs) they squeeze the innermost content to ~180px so
    its text overruns the box. Trim the nesting containers' horizontal padding on phones to keep
-   a readable width. (.info-box.has-icon keeps its 55px left room for the absolute icon -- its
+   a readable width. (.info-box.has-icon keeps its 46px left room for the absolute icon -- its
    (0,2,0) selector outranks the .info-box here, so the icon never overlaps the text.) */
 @media (max-width: 480px) {
   .tcc-content { padding-left: 0.35rem; padding-right: 0.35rem; }
@@ -2550,8 +2563,8 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 /* `.wiki-content` prefix raises specificity above `.wiki-content p{margin:0 0 1rem}`
    (0,1,1) -- without it that rule beat `.intro-like > *` (0,1,0) and re-added a 1rem gap
    between the paragraphs, breaking the box into disconnected slabs. */
-.wiki-content .intro-like > *,
-.wiki-content .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail)) {
+.wiki-content .intro-like > :not(:where(.info-box, .mbox, .community-support-info)),
+.wiki-content .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail, .info-box, .mbox, .community-support-info)) {
   /* Specificity is tuned, not accidental: the `.wiki-content` prefix + `:not(:where())`
      put this base slab rule at (0,2,0) -- high enough to keep `margin:0` winning over the
      `.wiki-content p` margin:0 0 1rem rule (0,1,1) (else a 1rem gap re-breaks the band), yet
@@ -2567,13 +2580,13 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
      full measure -- the 66ch prose cap does not apply here. */
   margin: 0 -12px; padding: 0.4em 12px; max-width: none;
 }
-.intro-like > :first-child,
-.wiki-content .pre-intro-p + *,
-.wiki-content .pre-intro-p + .hidden-thumbnail + * {
+.intro-like > :first-child:not(:where(.info-box, .mbox, .community-support-info)),
+.wiki-content .pre-intro-p + :not(:where(.info-box, .mbox, .community-support-info)),
+.wiki-content .pre-intro-p + .hidden-thumbnail + :not(:where(.info-box, .mbox, .community-support-info)) {
   padding-top: 1em;
 }
-.intro-like > :last-child,
-.wiki-content .pre-intro-p ~ :has(+ .post-intro-p) {
+.intro-like > :last-child:not(:where(.info-box, .mbox, .community-support-info)),
+.wiki-content .pre-intro-p ~ :has(+ .post-intro-p):not(:where(.info-box, .mbox, .community-support-info)) {
   padding-bottom: 1.1em;
 }
 /* The content-intro box (between .pre-intro-p / .post-intro-p) has no wrapper to carry the
@@ -2585,11 +2598,13 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
    `prev` gutter): the band's -12px left bleed has nowhere to sit, so it shoves the lead text
    12px off the page-title's left axis. Cancel the LEFT bleed there -- text stays flush with the
    heading (the right bleed into the rail gutter is unaffected). has-booknav pages keep the bleed. */
-.wiki-content:not(.has-booknav) .intro-like > :not(blockquote),
-.wiki-content:not(.has-booknav) .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail, blockquote)) {
-  /* blockquote excluded: it carries its own border-left + indent, so zeroing padding-left would
-     collapse its text against the bar -- it keeps the band treatment. Plain text paragraphs (the
-     lead the gate measures) get the flush-left reset. */
+.wiki-content:not(.has-booknav) .intro-like > :not(:where(blockquote, .info-box, .mbox, .community-support-info)),
+.wiki-content:not(.has-booknav) .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail, blockquote, .info-box, .mbox, .community-support-info)) {
+  /* blockquote + callout boxes excluded: each carries its own box model (border-left/indent, or a
+     full border + the .info-box.has-icon 46px left inset that clears the absolutely-positioned type
+     icon). Zeroing padding-left here (0,3,0) outranks .info-box.has-icon (0,2,0), so an {{mbox}}/
+     {{stub}} placed inside an {{intro}} lost that inset and its icon overlapped the first word. They
+     render as their own self-contained boxes; only plain lead paragraphs get the flush-left reset. */
   margin-left: 0; padding-left: 0;
 }
 /* Homepage hero: match prod's centered slogan + sub-slogan (h2.slogan 34px centered #333;
@@ -3788,6 +3803,11 @@ sup.reference:target {
      a no-op for the wide-screenshot `.thumb-gallery-style` cells (aspect-ratio:auto -> no definite
      height to resolve 100% against), so those keep sizing to the image. */
 }
+/* #134: a bare gallery that declared a non-square box (generator adds .gallery-aspect) drops the
+   square cell so each image keeps its real aspect -- a 10:1 banner renders wide, not letterboxed
+   into the 8.5rem square. aspect-ratio:auto leaves no definite height, so .thumb img's max-height:100%
+   becomes a no-op and the cell sizes to the image (same mechanism as .thumb-gallery-style). */
+.gallery.gallery-aspect .thumb { aspect-ratio: auto; }
 .gallery .gallerytext { display: block; margin-top: 0.3rem; text-align: center; line-height: 1.3; min-height: 2.6em; }
 /* a {{nowrap}} caption (e.g. the Architecture labels) must not force its tile wider than the
    uniform cell width above -- inside a gallery caption, let it wrap. */
@@ -4028,9 +4048,11 @@ sup.reference:target {
 /* --- book prev/index/next nav --- */
 /* Book prev/next nav. The "Contents" (index) control was dropped. DESKTOP: the firstheading
    instance becomes GUTTER affordances via `display: contents` -- Prev in the left gutter, Next in
-   the right gutter above the related rail -- so the headline keeps its natural top position (no
-   bar above the content). MOBILE: the gutters collapse; the footer instance renders inline prev/
-   next at the end of the article (the idiomatic mobile form), and the gutter instance is hidden. */
+   the right gutter above the related rail -- so the headline keeps its natural top position
+   (prev | headline | next, no bar above the content). The long neighbour titles that would overflow
+   a gutter chip are shortened at source by the book-nav short-label map (booknav-short-titles.tsv).
+   MOBILE: the gutters collapse; the footer instance renders inline prev/next at the end of the
+   article (the idiomatic mobile form), and the gutter instance is hidden. */
 
 /* Grid shell: [left gutter | content | right gutter (Next + rail)]. Stacks to one column on mobile.
    Defined here (not with .related-rail) so the book-nav-only page gets the same grid. */
@@ -4453,9 +4475,10 @@ body:has(.stage-banner) { padding-bottom: 4.5rem; }
 .donor-card.range-s .range > div.s, .donor-card.range-m .range > div.m,
 .donor-card.range-l .range > div.l, .donor-card.range-xl .range > div.xl { display: block; }
 
-/* Site-notice banner (#siteNotice, the id=38 donation banner) -- adapted from
-   Sitenotice.css: shown by default (no-JS friendly), JS dismisses; a vendored FA
-   icon replaces the former wiki image. */
+/* Site-notice banner (#siteNotice, the data-banner-id=39 donation banner) -- adapted from
+   Sitenotice.css: shown by default (no-JS friendly), JS dismisses. Placement A: a neutral
+   theme-aware surface bar -- heart icon + ask + a unified-system Donate button
+   (.mw-ui-progressive), with a ghost close pinned to the right edge. */
 /* Flash-free dismiss: the <head> pre-paint (page.py THEME_INIT_JS) marks <html> when
    a previously-dismissed banner should stay hidden, so it never paints then vanishes. */
 html.sitenotice-hidden #siteNotice,
@@ -4485,24 +4508,34 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
 #siteNotice + main.wiki-content > .first-heading { margin-top: 0.4rem; }
 .sitenotice { position: relative; display: inline-block; max-width: 100%; }
 .sitenotice-close {
-  /* Kept INSIDE the banner with positive offsets: the #89/#91 guard forbids negative offsets,
-     which poke past the viewport right edge and cause mobile horizontal overflow. */
-  width: 44px; height: 44px; position: absolute; top: 4px; right: 4px; z-index: 10;
+  /* Ghost dismiss (idiomatic Primer/Carbon icon-button): a small glyph in a transparent,
+     padded hit box -- never a filled square. The hit box stays >=24px CSS-px for WCAG 2.5.8;
+     positive offsets only (the #89/#91 guard forbids negatives that cause mobile overflow). */
+  width: 34px; height: 34px; position: absolute; top: 50%; right: 6px; z-index: 10;
+  transform: translateY(-50%);
   display: inline-flex; align-items: center; justify-content: center;
   cursor: pointer; border: 0; border-radius: var(--btn-radius);
-  background: #111; color: #fff; padding: 0; font-size: 18px; line-height: 1;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
+  background: transparent; color: inherit; opacity: 0.65; padding: 0; font-size: 15px; line-height: 1;
+  transition: opacity 0.12s ease, background 0.12s ease;
 }
-.sitenotice-banner[data-banner-id="38"] > a {
-  /* right padding reserves room for the absolute 35px close button (top/right:4px) so
-     it never overlaps the banner text. */
-  display: inline-flex; align-items: center; padding: 7px 44px 7px 12px;
-  background: linear-gradient(#22a7df, #43b3f1); color: #fff; font-size: 20px;
-  border-radius: 10px; border: 1px solid #22a7df; text-decoration: none;
+.sitenotice-close:hover { opacity: 1; background: color-mix(in srgb, currentColor 12%, transparent); }
+/* Placement by shape: center-right on the thin default bar (above); top-right CORNER on the
+   tall EOY card, where a vertically-centred close would float in the middle of the card. */
+.sitenotice:has(.sitenotice-end-of-year) .sitenotice-close { top: 14px; transform: none; }
+.sitenotice-banner[data-banner-id="39"] {
+  /* Placement A neutral bar: theme-aware surface, left-aligned content, the Donate button
+     right-aligned (margin-left:auto) so on a narrow phone it wraps to the RIGHT under the
+     close -- never marooned at the left gutter. The right padding reserves the close gutter. */
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.7rem;
+  max-width: 100%; text-align: left;
+  padding: 0.5rem 2.75rem 0.5rem 0.85rem;
+  background: var(--surface); color: var(--fg);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 0.95rem; line-height: 1.35;
 }
-.sitenotice-banner[data-banner-id="38"] > a:hover { background: linear-gradient(#1297cf, #43b3f1); }
-.sitenotice-banner[data-banner-id="38"] .icon { font-size: 28px; margin-right: 12px; }
-.sitenotice-banner[data-banner-id="38"] span { text-shadow: 1px 1px 2px rgb(0 0 0 / 10%); }
+.sitenotice-banner[data-banner-id="39"] .icon { flex: 0 0 auto; color: var(--accent); font-size: 1.15rem; }
+.sitenotice-banner[data-banner-id="39"] .sitenotice-text { flex: 1 1 10rem; min-width: 0; font-weight: 600; }
+.sitenotice-banner[data-banner-id="39"] .sitenotice-cta { flex: 0 0 auto; margin-left: auto; white-space: nowrap; }
 
 /* Fly-in donate toast (#fly-in-notification-panel) -- adapted from
    FlyInNotification.css. JS-only gadget: the [hidden] attribute keeps it hidden
@@ -4526,8 +4559,11 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
   }
 }
 #fly-in-notification-panel .close-panel {
-  color: #fff; font-size: 26px; padding: 10px; cursor: pointer; position: absolute;
-  left: 3px; top: -1px; z-index: 10;
+  /* Decent glyph, big hit box: a 16px mark centred in a 36px padded target (>=24px, WCAG 2.5.8).
+     Pinned top-left -- the corner away from the screen's right edge the toast docks against. */
+  color: #fff; font-size: 16px; cursor: pointer; position: absolute;
+  left: 3px; top: 3px; z-index: 10; padding: 0;
+  width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;
   text-shadow: 0 0 1px #000, 0 0 2px #000, 0 0 3px #000;
 }
 #fly-in-notification-panel .close-panel:hover { transform: scale(1.2); }
@@ -4704,13 +4740,11 @@ body.mini-modal-active { overflow: hidden; }
   background: var(--surface-2); border-color: var(--btn-secondary-border);
   color: var(--btn-secondary-fg);
 }
-.sitenotice-close,
 .popover-close,
 .gallery-lightbox .glb-nav {
   cursor: pointer;
   transition: filter 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
 }
-.sitenotice-close:hover,
 .popover-close:hover,
 .gallery-lightbox .glb-nav:hover {
   filter: brightness(1.1); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
@@ -4747,8 +4781,11 @@ body.mini-modal-active { overflow: hidden; }
 .stage-dismiss:active {
   transform: translateY(1px);
 }
-.sitenotice-close:active,
 .popover-close:active { transform: scale(0.9); }
+/* Ghost close: a background-deepen press, NEVER a transform. A transform here would replace the
+   base centering (translateY(-50%) on the thin bar; none on the EOY card), shifting the button
+   out from under the pointer on mousedown so the dismiss click lands on the banner, not the X. */
+.sitenotice-close:active { background: color-mix(in srgb, currentColor 20%, transparent); }
 .gallery-lightbox .glb-nav:active { transform: translateY(-50%) scale(0.9); }
 @media (prefers-reduced-motion: reduce) {
   .cta-button,
@@ -4779,7 +4816,6 @@ body.mini-modal-active { overflow: hidden; }
   .slogan-pills .pill a:active,
   .consent-dismiss:active,
   .stage-dismiss:active,
-  .sitenotice-close:active,
   .popover-close:active { transform: none; }
   .gallery-lightbox .glb-nav:active { transform: translateY(-50%); }
 }
