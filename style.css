@@ -1202,7 +1202,10 @@ html:not(.client-js) .site-search .search-field { display: none; }
   /* prod's VISIBLE header->content gap is 23px (its .mw-body 28px margin-top collapses with the
      skin page-base above it; our flex main does NOT collapse, so set the measured 23 directly --
      with the title margin-top zeroed below this is also the header->title gap). */
-  margin: 23px auto 3rem;
+  /* bottom 0: the same no-collapse under the body flex-column means a content bottom margin
+     would STACK on `.site-footer` margin-top (60px), not collapse into it -- a doubled pre-footer
+     band. The footer owns the content->footer separator; the content block adds none. */
+  margin: 23px auto 0;
   padding: 0 12px;   /* prod body text sits 12px inside the 960 content column */
   /* Break an over-long word/URL/badge instead of letting it force a horizontally
      scrolling page on narrow (mobile) viewports. */
@@ -3698,7 +3701,7 @@ sup.reference:target {
 :root[data-theme="dark"] .text-yellow { color: #e0c341; }
 
 @media (max-width: 480px) {
-  .wiki-content { margin: 1.25rem auto 2rem; padding: 0 1rem; }
+  .wiki-content { margin: 1.25rem auto 0; padding: 0 1rem; }   /* bottom 0: footer mt owns the gap (see base rule) */
   .image-right:not(.left-right-image-text) { float: none; margin: 1rem 0; max-width: 100%; }
   .wiki-content .float-right, .wiki-content .float-left { float: none; margin: 1rem 0; max-width: 100%; }
 }
