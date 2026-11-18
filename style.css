@@ -2460,19 +2460,19 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 .footer-subhead {
   margin: 0 0 14px; font-weight: bold; color: var(--fg);
 }
-/* Open Source / Freedom Software badges (OSI + GNU logos), a row above the text links,
-   sized to production's ~50px. */
-.footer-badges { display: flex; align-items: center; gap: 0.75rem; margin: 0 0 0.9rem; }
+/* Open Source / Freedom Software + "Hardened by Kicksecure" badges, a row above the text links.
+   flex-wrap so the three cards wrap instead of overflowing a narrow brand column. */
+.footer-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin: 0 0 0.9rem; }
 /* each badge sits in a white rounded card like production (not bare on the gray footer) */
 .footer-badges a {
   display: inline-flex; align-items: center; justify-content: center;
-  background: #fff; border-radius: 8px; padding: 8px 10px;
+  background: #fff; border-radius: 8px; padding: 7px 8px;
 }
-/* Equal 56x56 BOX for both badges so they read as the same size. The GNU (100x98, ~square)
-   and OSI (100x120, tall) logos differ in aspect, so constraining a single axis makes the other
-   unequal (fixed width -> unequal height; fixed height -> GNU wider than OSI). object-fit:contain
-   fits each logo inside the shared box, aspect preserved, no distortion. */
-.footer-badges img { width: 56px; height: 56px; object-fit: contain; display: block; }
+/* Equal 46x46 BOX for all three badges so they read as the same size (46, not 56, so GNU + OSI +
+   the Kicksecure seal fit one row in the brand column). The GNU (100x98, ~square), OSI (100x120,
+   tall) and seal (192x192, square) logos differ in aspect; object-fit:contain fits each inside the
+   shared box, aspect preserved, no distortion. */
+.footer-badges img { width: 46px; height: 46px; object-fit: contain; display: block; }
 .footer-badges a:hover { opacity: 0.85; }
 .footer-social-icons {
   /* >=0.6rem gap keeps each 34px round badge's tap target clear of its neighbours' when the row
