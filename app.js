@@ -909,23 +909,51 @@
       var ti = e.t.indexOf(":");
       return ti !== -1 && e.t.slice(0, ti).toLowerCase() === q.slice(0, ci);
     }
-    // Best page for a query: an EXACT (case-insensitive) title match wins over a mere
-    // substring hit, so "api" + Enter lands on the "API" page even when other titles
-    // (e.g. "...API...") also contain the term. Scans the whole index, not just the
-    // rendered top 20. Returns the root-relative href or "".
+    // Title-match tier for a (lowercased) title t against the (lowercased) query q:
+    // 0 = exact, 1 = prefix, 2 = infix, -1 = no match. Exact/prefix beat a mere infix hit so
+    // "iso" ranks the "ISO" page (exact) and "ISO Live Mode" (prefix) above "Comparison" (infix,
+    // compar-ISO-n) and the "...Isolation" pages. Shared by the dropdown title pass AND the
+    // Enter-key bestMatch, so both agree on the best page.
+    function titleRank(t, q) {
+      if (t === q) return 0;
+      var idx = t.indexOf(q);
+      if (idx === 0) return 1;
+      return idx === -1 ? -1 : 2;
+    }
+    // Index ids whose title matches q, ranked (tier, then shorter title, then index order).
+    // Scans the WHOLE index (ranking needs every candidate, not just the first 20). Shared by
+    // the dropdown title pass and the Special:Search results page so their ordering is identical.
+    function rankedTitleIds(q) {
+      var cand = [];
+      for (var i = 0; i < index.length; i++) {
+        var e = index[i];
+        if (!nsEligible(e, q)) continue;   // namespaced page: only for its own namespace query
+        var tier = titleRank(e.t.toLowerCase(), q);
+        if (tier !== -1) cand.push([tier, e.t.length, i]);
+      }
+      cand.sort(function (a, b) { return a[0] - b[0] || a[1] - b[1] || a[2] - b[2]; });
+      return cand.map(function (x) { return x[2]; });
+    }
+    // Best page for a query: ranked exact > prefix > infix (shorter title breaks a tie), so "api"
+    // + Enter lands on the "API" page and "iso" + Enter on "ISO", even when other titles also
+    // contain the term. Returns the root-relative href or null.
     function bestMatch(q) {
       // null (not "") is the no-match sentinel: the Homepage index entry has u="" and,
       // on the root page, root="" too, so a valid homepage href is the empty string --
       // treating "" as "no match" would skip it and mis-pick a later substring hit.
-      var first = null;
+      var bestHref = null, bestTier = 3, bestLen = Infinity;
       for (var i = 0; i < index.length; i++) {
         var e = index[i];
         if (!nsEligible(e, q)) continue;   // namespaced page: only for its own namespace query
         var t = e.t.toLowerCase();
-        if (t === q) return root + e.u;
-        if (first === null && t.indexOf(q) !== -1) first = root + e.u;
+        var tier = titleRank(t, q);
+        if (tier === 0) return root + e.u;   // exact title: unbeatable, take the first
+        if (tier === -1) continue;
+        if (tier < bestTier || (tier === bestTier && t.length < bestLen)) {
+          bestTier = tier; bestLen = t.length; bestHref = root + e.u;
+        }
       }
-      return first;
+      return bestHref;
     }
     input.addEventListener("input", function () {
       // Render after the index resolves (a microtask once loaded); before then, no-op.
@@ -935,15 +963,13 @@
         clearActive();   // reset highlight + aria-activedescendant before the rows are rebuilt
         while (results.firstChild) results.removeChild(results.firstChild);
         if (q.length < 2) { results.hidden = true; setExpanded(false); return; }
-        // Title pass (instant, no extra fetch): substring title matches, tracked by pageId so the
-        // full-text pass never double-lists a page.
+        // Title pass (instant, no extra fetch): ranked title matches (exact > prefix > infix),
+        // tracked by pageId so the full-text pass never double-lists a page.
         var shownIds = {}, shown = 0;
-        for (var i = 0; i < index.length && shown < 20; i++) {
-          var e = index[i];
-          if (!nsEligible(e, q)) continue;   // namespaced page: only for its own namespace query
-          if (e.t.toLowerCase().indexOf(q) === -1) continue;
-          if (!appendResult(e)) continue;    // a dropped (tampered) target adds no row -> no count
-          shownIds[i] = 1;
+        var ids = rankedTitleIds(q);
+        for (var i = 0; i < ids.length && shown < 20; i++) {
+          if (!appendResult(index[ids[i]])) continue;   // a dropped (tampered) target adds no row -> no count
+          shownIds[ids[i]] = 1;
           shown++;
         }
         results.hidden = shown === 0;

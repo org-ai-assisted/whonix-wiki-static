@@ -295,7 +295,12 @@ img, video { max-width: 100%; height: auto; }
    differ only by text-node siblings, which CSS cannot test -- so the GENERATOR, which sees the
    paragraph's content, marks only the standalone figure .media-figure (media.py
    mark_standalone_figures), and this rule targets that class. Inline icons keep their inline flow. */
-img.media-figure { display: block; min-height: 0; }
+img.media-figure { display: block; min-height: 0; contain: size; overflow: hidden; }
+/* Reserve each frameless sized image's box from its width/height attrs, so a blocked/broken image
+   renders the SAME box as a loaded one (zero broken-image CLS). contain:size sizes the box from the
+   attr-derived presentational width/height (never the broken-glyph content); overflow:hidden clips
+   the glyph. Safe here because .media-sized carries width/height attrs and no width:auto override. */
+img.media-sized:not(.media-figure) { contain: size; overflow: hidden; display: inline-block; }
 /* Keep a token together across a line wrap (e.g. a project name + its trailing TM/R sup, so
    the mark never orphans onto its own line -- see render/pipeline._bind_trademarks). */
 .nowrap { white-space: nowrap; }
@@ -1454,8 +1459,8 @@ blockquote.quotation .blockquote-context > a:has(img.author-image) {
 blockquote.quotation .blockquote-context img.author-image {
   /* no circular crop: a round 40x40 cover-fit cut off parts of the author's face. Show the whole
      image at its natural aspect ratio, bounded, like production. */
-  max-height: 80px; max-width: 80px; height: auto; width: auto;
-  object-fit: contain; display: block; border-radius: 4px;
+  width: 80px; height: 80px;
+  object-fit: contain; display: block; border-radius: 4px; overflow: hidden;
 }
 blockquote.quotation .blockquote-context:has(img.author-image) .nm,
 blockquote.quotation .blockquote-context:has(img.author-image) .rl,
@@ -1609,7 +1614,7 @@ blockquote.quotation .blockquote-context img.author-image.logo-banner {
    the button BELOW the box. The PayPal wordmark rides INLINE in the title, sized to the text line
    (not the 200px panel logo) and baseline-aligned. */
 .paypal > .headline .pp-logo {
-  height: 1.15em; width: auto; vertical-align: -0.2em; max-width: 100%; display: inline;
+  height: 1.15em; width: auto; vertical-align: -0.2em; max-width: 100%; display: inline-block; overflow: hidden;
 }
 /* The two notes each drop to their OWN line below the title (3 lines total). */
 .paypal > .headline .account-info {
@@ -1647,6 +1652,9 @@ blockquote.quotation .blockquote-context img.author-image.logo-banner {
 .payitem.line > * { font-size: 0.9rem; }
 .payitem .qr-button { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; }
 .payitem .qr-button .icon { width: 1.4rem; height: 1.4rem; object-fit: contain; }
+/* Payment-method icons all share the ~128/77 ratio: pin an explicit box (height + that ratio) so a
+   broken icon reserves the same space as a loaded one (zero CLS), independent of width:auto. */
+.donation-panel a > img.icon { height: 2.5rem; width: auto; aspect-ratio: 128 / 77; object-fit: contain; max-width: 100%; overflow: hidden; display: inline-block; }
 /* prod shows a small QR glyph before the coin name and a dropdown caret after it (both are
    ::before/::after on .name). CSP-safe: the QR uses the self-hosted Font Awesome glyph. */
 /* `/ ""` gives each decorative glyph an EMPTY alternative text, so the QR/caret stay out of
@@ -1831,6 +1839,21 @@ code:empty { display: none; }
   background: color-mix(in srgb, var(--surface) 55%, var(--bg));
 }
 .table-wrap { overflow-x: auto; }
+/* Mobile: pin content tables to fixed layout so column widths cannot renegotiate by image load
+   state. Under the default auto layout a cell image feeds its load-state-dependent width into the
+   column's preferred width -- a broken image renders at its attr width, a loaded one is scaled to
+   the column by max-width:100% -- so the columns, and the text wrapping they drive, differ between
+   the image-present and image-absent render, reflowing the table by thousands of px on a phone
+   (the About "Kicksecure Hardening Features" table: -2770px). Fixed layout + width:100% size the
+   columns from the table width alone, identical in both states. Desktop keeps auto layout + the
+   overflow-x scroll for wide tables -- the reflow is mobile-only (desktop has room). */
+@media (max-width: 480px) {
+  .wiki-content table:not(.toc):not(.storage-table):not(.comparison-table) {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+  }
+}
 /* Wide tables get a dual (top + bottom) horizontal scrollbar, ALWAYS visible -- even on
    mobile, where native bars are overlay (hidden until a scroll) so a reader cannot tell a
    table scrolls sideways. Reproduces the production ScrollAutoWrapper/CustomScrollbar
@@ -3830,7 +3853,7 @@ html.client-js .section-download .tab-content-controller .tcc-content { padding-
   min-width: 24px; min-height: 24px;
 }
 .video-link .icons img { height: 1.1em; width: 1.1em; flex: none; }
-.video-link .indicator img { height: 1.1em; width: auto; }
+.video-link .indicator img { height: 1.1em; width: auto; contain: size; overflow: hidden; display: inline-block; }
 
 /* --- gallery (native image grid) --- */
 /* Galleries: production card grid (Utility.css). render_galleries emits
@@ -3877,6 +3900,10 @@ html.client-js .section-download .tab-content-controller .tcc-content { padding-
    square cell so each image keeps its real aspect -- a 10:1 banner renders wide, not letterboxed
    into the 8.5rem square. aspect-ratio:auto leaves no definite height, so .thumb img's max-height:100%
    becomes a no-op and the cell sizes to the image (same mechanism as .thumb-gallery-style). */
+/* Square gallery cells: force the img box square so a broken image reserves the same cell as a
+   loaded one. The cell is aspect-ratio:1 but content-width-derived, so the img needs its own
+   square ratio; the four variants below opt out (their cells are not square). */
+.gallery:not(.gallery-aspect):not(.thumb-gallery-style):not(.gallery-steps):not(.step-index) .thumb img { aspect-ratio: 1; overflow: hidden; }
 .gallery.gallery-aspect .thumb { aspect-ratio: auto; }
 .gallery .gallerytext { display: block; margin-top: 0.3rem; text-align: center; line-height: 1.3; min-height: 2.6em; }
 /* a {{nowrap}} caption (e.g. the Architecture labels) must not force its tile wider than the
