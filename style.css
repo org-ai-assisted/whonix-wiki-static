@@ -4088,6 +4088,18 @@ sup.reference:target {
 .wiki-book-index.wbi-for-firstheading > .prev { grid-area: prev; justify-self: start; align-self: start; }
 .wiki-book-index.wbi-for-firstheading > .next { grid-area: next; justify-self: end; align-self: start; }
 
+/* Book-nav page carrying the REGULAR donation banner: page.py emits #siteNotice as the content
+   column's FIRST child (not the full-width sibling above <main>), so the top-aligned gutter
+   Prev/Next flank it -- prev | banner | next -- with the headline on the row below. Dismissing it
+   (html.sitenotice-hidden -> display:none, rule above) drops the headline to the column top, so
+   Prev/Next flank the headline instead: a pure-CSS reflow, no JS. The sibling #siteNotice spacing
+   rules do not match here (it is inside <main> now), so set the in-column spacing directly: no top
+   margin (the banner is the column top, level with the gutter chips), a gap below to the headline,
+   left-aligned to the content axis like the body. */
+.wiki-content.has-booknav-banner > .content-col > #siteNotice {
+  margin: 0 0 1rem; padding: 0; text-align: left;
+}
+
 /* Prev / Next: fixed, EQUAL-width gutter chips. The firstheading .wbi-label is a fixed width (below),
    so Prev and Next are identical regardless of title length and never resize page to page; the title
    ellipsizes within it. Hover highlights both the fill AND the border (link colour). */
