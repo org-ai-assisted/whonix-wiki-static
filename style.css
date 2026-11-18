@@ -2737,6 +2737,13 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   /* Set the caption apart by TYPE, not a box: centered under the image, smaller, muted. */
   text-align: center; line-height: 1.4; padding-top: 0.35rem;
   font-size: 0.85rem; color: var(--fg-soft);
+  /* A caption must NOT widen the shrink-wrapped figure (.thumbframe is width:fit-content). A long
+     single-line caption would otherwise push the figure's max-content width far past the image, so
+     a floated thumb balloons to the caption width and crushes the intro/body text beside it at
+     narrow-but-unstacked viewports. width:0 drops the caption from the figure's intrinsic-width
+     calc (the figure then tracks the IMAGE); min-width:100% lays the caption out at that image
+     width so it WRAPS beneath the image instead (the MediaWiki thumb idiom). */
+  width: 0; min-width: 100%; box-sizing: border-box;
 }
 /* Phone: a floated thumb on a narrow column crowds the text -- let it span full width. */
 @media (max-width: 560px) {
