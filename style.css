@@ -1558,12 +1558,24 @@ blockquote.quotation .blockquote-context img.author-image.logo-banner {
    (MediaWiki CSS extension, dropped under strict CSP); reproduced here. Floats right of the
    appeal text as a compact box; each coin row shows its icon, name and copyable address with
    the QR collapsed by default (prod's default view -- the address stays copyable). --- */
-/* Contain the float at the WRAPPER, not .donate-area: the donation panel floats right and
-   the sibling .content-area learn text must wrap to its LEFT (prod). flow-root on
-   .donate-area would trap the float so the learn text drops below the whole panel. */
-.content-wrapper { display: flow-root; }
-.donate-area { display: block; }
-.donation-panel { float: right; width: 360px; max-width: 100%; margin: 0.2rem 0 1rem 1.5rem; }
+/* Two-column layout (prod parity): appeal text + media float LEFT as a fluid column, the
+   donate widget floats RIGHT as a ~360px card; flow-root on .content-wrapper contains both.
+   .content-area MUST float (not merely wrap beside a floated panel): it leads with a 500px
+   media image, which cannot shrink into the narrow gap next to a right float, so a wrap-only
+   layout drops the whole learn block BELOW the panel (empty left gutter). Giving .content-area
+   a defined-width float lets its images (global img max-width:100%) shrink into the column. */
+.content-wrapper { display: flow-root; container-type: inline-size; }
+.content-wrapper > .content-area { min-width: 0; }
+/* Two-column only when the CONTENT COLUMN itself is wide enough (container query on
+   .content-wrapper, NOT the viewport): the static desktop chrome adds a sidebar that narrows
+   .content-wrapper to ~461px at a 901px viewport, where a viewport breakpoint would still
+   two-column and crush .content-area -- and its 500px lead image -- to ~81px. Below the
+   threshold both stack full-width in DOM order (widget, then appeal text), as on mobile. */
+@container (min-width: 720px) {
+  .content-wrapper > .content-area { float: left; width: calc(100% - 380px); }
+  .content-wrapper > .donate-area { float: right; max-width: 360px; }
+}
+.donation-panel { width: 100%; max-width: 100%; margin: 0.2rem 0 1rem; }
 .donation-panel > p { margin: 0; }
 .crypto { background: var(--surface); }
 /* Section sub-headlines double as rounded bordered boxes (prod: 1px #bbb, radius 10px,
@@ -1683,9 +1695,6 @@ blockquote.quotation .blockquote-context img.author-image.logo-banner {
 .more .expand-checkbox:checked ~ .more-content { display: block; }
 .donation-panel .info, .donate-legal-disclaimer {
   font-size: 0.78rem; color: var(--muted); padding: 0.55rem 0.85rem;
-}
-@media (max-width: 640px) {
-  .donation-panel { float: none; width: 100%; margin: 1rem 0; }
 }
 .code-select .tooltip2 .copied > i { margin-right: 3px; position: relative; top: 1px; }
 .code-select > .cbutton:hover ~ .tooltip2 { display: inline-block; }
@@ -2681,6 +2690,11 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
    sits below it. Both already span full width on a phone (no float to unfloat). */
 .wiki-content .thumbframe.lead-wide { float: none; clear: both; width: 100%; max-width: 100%; margin: 0.4em 0 1.2em; }
 .wiki-content .thumbframe.lead-hero { float: none; clear: both; width: 100%; max-width: 100%; margin: 0 0 1.2em; }
+/* Height cap so a tall/large source does not fill the viewport and push the title + intro below
+   the fold. Non-cropping: width+height stay auto, so the image scales to fit the box preserving
+   aspect ratio (a wide source centers with side gaps rather than being cut). Tune the cap here. */
+.wiki-content .thumbframe.lead-wide img,
+.wiki-content .thumbframe.lead-hero img { width: auto; height: auto; max-height: 24rem; }
 .wiki-content .thumbframe p { margin: 0; }   /* defensive: neutralize any pandoc <p> wrap */
 .wiki-content .thumbframe img {
   /* The bare image is the whole figure now -- no inner border, no forced bg (a forced --bg behind
@@ -4250,7 +4264,9 @@ sup.reference:target {
   border: 1px solid var(--border); border-radius: var(--radius);
   background: var(--bg); overflow: hidden; box-shadow: var(--shadow-sm);
 }
-.related-card-title {
+/* `.wiki-content` prefix raises this to (0,2,0) so `margin:0` beats `.wiki-content p`
+   (0,1,1), which otherwise re-adds a 1rem title gap (same idiom as .intro-like above). */
+.wiki-content .related-card-title {
   margin: 0; padding: 0.55rem 0.75rem;
   background: var(--surface-2); color: var(--heading);
   font-weight: 600; font-size: 0.9rem; line-height: 1.35;
