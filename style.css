@@ -279,6 +279,21 @@ body {
    fixed height would otherwise distort when the width cap shrinks it. (Generated videos are
    width-only anyway; an authored <video height> is rare and better scaled than distorted.) */
 img, video { max-width: 100%; height: auto; }
+/* A frameless explicit-px image that is a standalone block figure (the sole, DIRECT child of its
+   content paragraph) must reserve the SAME box whether it loads or not, so a slow/blocked/broken
+   image never shifts the text below it (the images-blocked CLS gate, check-img-blocked-shift). As
+   an inline <img> it builds a line box: present, it sits on the baseline with a font descender
+   below it; broken, that descender collapses asymmetrically AND Chromium floors the broken box a
+   couple px taller than the loaded one -- so the following paragraph moves. display:block drops the
+   line box entirely (no baseline, no descender) and min-height:0 lets the broken box collapse to
+   the attr-derived height, so loaded and blocked render an identical box. height stays auto (base
+   rule above) -- the width/height attrs still drive the aspect.
+   SCOPE `p > img.media-sized` (DIRECT child): media.py tags EVERY frameless sized image
+   .media-sized, including inline icons/logos that sit in a link or an .info-box-icon (rendered
+   `a > img`, `p > a > img`, `span.info-box-icon > a > img`) -- making those block would stack a
+   horizontal icon/logo row onto separate lines. A direct `p > img` is the standalone figure case;
+   the link-wrapped inline icons are excluded and keep their inline flow. */
+p > img.media-sized { display: block; min-height: 0; }
 /* Keep a token together across a line wrap (e.g. a project name + its trailing TM/R sup, so
    the mark never orphans onto its own line -- see render/pipeline._bind_trademarks). */
 .nowrap { white-space: nowrap; }
@@ -387,7 +402,7 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
 .ext-link-to-archive > a:hover { color: var(--link); text-decoration: none; }
 /* The archive marker is the Internet Archive logo (a self-hosted PNG, CSP img-src 'self',
    Tor-Safest-compatible raster) centered in the 24px target. */
-.ext-link-to-archive .ia-archive-icon { height: 18px; width: auto; display: block; }
+.ext-link-to-archive .ia-archive-icon { height: 18px; width: auto; display: block; contain: size; overflow: hidden; }  /* contain:size + overflow:hidden -> zero-CLS, see .explainer-check */
 :focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
@@ -438,7 +453,7 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
    46px cap below so a callout can never blow it up -- the root fix for the cross-wiki (Authenticode)
    oversize. GitHub, cross-wiki, and external brand icons all route through this shape. */
 .link-icon-widget { display: inline-flex; align-items: center; gap: 0.4em; }
-.link-icon { display: inline; width: auto; height: var(--link-icon-size); vertical-align: -0.18em; }
+.link-icon { display: inline-block; contain: size; overflow: hidden; width: auto; height: var(--link-icon-size); vertical-align: -0.18em; }  /* contain:size + overflow:hidden -> zero-CLS, see .explainer-check */
 /* WCAG 2.5.8 target-size: the trailing icon-only .onion-link (tor glyph, no text label) is a
    STANDALONE tap target, so it needs a >=24x24 CSS-px hit box -- the glyph keeps its small size,
    centred in the box. Sizing the ANCHOR (not the <img>) keeps the box >=24 even before the lazy
@@ -2200,14 +2215,21 @@ code:empty { display: none; }
    50px square, but prod renders it as a ~23px inline tab marker. Cap it so a 500x500
    logo is not a giant block atop the active section. */
 .tcc-image img { height: 23px; width: auto; vertical-align: middle; }
-/* Once the JS mininav switcher is built, hide the WHOLE inactive section (production);
-   no-JS shows every section (progressive enhancement). */
-.tab-content-controller.mininav-ready .tcc-section:not(.active) { display: none; }
-.tab-content-controller.mininav-ready .tcc-section { border: none; margin: 0; }
+/* Collapse to the active panel at FIRST PAINT, keyed off the pre-paint client-js marker
+   (page.py THEME_INIT_JS sets it in <head> before body render), NOT the JS-runtime
+   .mininav-ready. Hiding only once app.js adds .mininav-ready happens AFTER first paint, so a
+   tab-heavy page rendered every stacked panel then collapsed ~all of them upward -- a large
+   content shift on every (re)load. no-JS (no client-js) keeps all panels stacked + readable. */
+html.client-js .tab-content-controller .tcc-section:not(.active) { display: none; }
+/* No panel marked active=true -> reveal the first, matching app.js initTabs (def = index 0),
+   so a controller relying on the JS default is not blanked pre-paint. Scoped to each
+   controller's OWN direct sections (nesting-safe); :has beats the hide rule on specificity. */
+html.client-js .tab-content-controller:not(:has(> .tcc-content > .tcc-section.active)) > .tcc-content > .tcc-section:first-child { display: block; }
+html.client-js .tab-content-controller .tcc-section { border: none; margin: 0; }
 /* With the pill switcher built + the title sr-only, the content's own top border becomes a
    redundant separator line DIRECTLY under the pill bar -- an extra bordered level prod does
    not show. Drop it so a tabbed section reads as one mininav bar + one expand box (prod). */
-.tab-content-controller.mininav-ready .tcc-content { border-top: none; padding-top: 0.3rem; padding-bottom: 0; }
+html.client-js .tab-content-controller .tcc-content { border-top: none; padding-top: 0.3rem; padding-bottom: 0; }
 /* A short/collapsed box ending a (possibly nested) tab pane stacked each pane's bottom padding
    + the box's own bottom margin into a big empty gap under it inside a numbered-step box (vs a
    normally-filled step). The enclosing box's padding is the only bottom spacing wanted, so the
@@ -3214,7 +3236,7 @@ sup.reference:target {
    legacy text use, and size the icons. */
 .cmp-yes { color: #157f15; font-weight: 600; white-space: nowrap; }
 .cmp-no { color: #c0392b; font-weight: 600; white-space: nowrap; }
-.cmp-icon { height: 30px; width: auto; vertical-align: middle; }
+.cmp-icon { display: inline-block; contain: size; overflow: hidden; height: 30px; width: auto; vertical-align: middle; }  /* contain:size + overflow:hidden -> zero-CLS, see .explainer-check */
 /* dark mode: the darker light-mode green/red fail WCAG AA contrast on the dark cell bg
    (and the old #1a8a1a green was already ~4.48:1 on white, under AA) -- lighten for dark. */
 :root[data-theme="dark"] .cmp-yes { color: #5cc95c; }
@@ -3392,7 +3414,7 @@ sup.reference:target {
 /* Definite HEIGHT (not max-height) so an SVG logo with no intrinsic width (The Guardian / The
    Intercept) gets a sizing basis and scales by its viewBox ratio instead of collapsing to 0 in the
    flex column; raster logos scale to the same height, giving a uniform logo row. */
-.endorsement-logo { height: 48px; width: auto; max-width: 90%; object-fit: contain; }
+.endorsement-logo { display: inline-block; contain: size; overflow: hidden; height: 48px; width: auto; max-width: 90%; object-fit: contain; }  /* contain:size + overflow:hidden -> zero-CLS, see .explainer-check */
 .endorsement-name { font-weight: 600; color: var(--fg); font-size: 1.05rem; }
 .endorsement-text { margin: 0; font-style: italic; color: var(--fg); line-height: 1.45; }
 /* the quote inherits the card text colour (not --link blue) so the italic pull-quote reads as a
@@ -3444,7 +3466,19 @@ sup.reference:target {
   line-height: 1.9;
 }
 .explainer p { margin: 0; }
-.explainer-check { vertical-align: middle; margin-right: 0.35rem; position: relative; top: -1px; }
+/* Zero-CLS for fixed-box content icons (explainer-check / cmp-icon / link-icon / ia-archive-icon /
+   endorsement-logo). Chromium sizes a BROKEN <img> from its alt text (or a ~16px placeholder),
+   IGNORING its width/height attrs AND CSS width/height -- so a missing / blocked / mid-reencode
+   image grows its box and reflows neighbours. Two independent effects, two fixes:
+     - contain: size   -> the BOX ignores the replaced content and sizes purely from CSS/attrs
+                          (the width/height attrs give an aspect-ratio, so a fixed height + auto
+                          width still resolves to the loaded width). Needs a non-inline display.
+     - overflow: hidden -> the broken-image ALT TEXT still PAINTS and joins the line box even with
+                          contain:size (reported box stays put, but a LONG alt that wraps pushes the
+                          following content down); clipping it to the box stops that.
+   Proven loaded-box == blocked-box, long alt included, by tools/check-img-blocked-shift.py
+   (geometry diff, images route-aborted). */
+.explainer-check { display: inline-block; contain: size; overflow: hidden; vertical-align: middle; margin-right: 0.35rem; position: relative; top: -1px; }
 /* Homepage: section headings are centered (prod), unlike article headings. Scoped to .page-home
    (the Whonix/Kicksecure homepage body class) so article headings stay left-aligned. */
 .page-home .wiki-content h2 { text-align: center; }
@@ -3514,10 +3548,10 @@ sup.reference:target {
 }
 .section-download .tcc-section.active .tcc-title { color: #fff; box-shadow: none; }
 .section-download .tcc-content { border-top: none; padding: 0; }
-/* JS adds .mininav-ready at runtime, which re-applies a light-prose padding-top:0.3rem that
-   out-specifies the padding:0 above -- the active download card then sits ~4.8px top-heavy. Zero
+/* The client-js tab-pane rule above re-applies a light-prose padding-top:0.3rem that
+   out-specifies the padding:0 here -- the active download card then sits ~4.8px top-heavy. Zero
    it so the card whitespace is symmetric top/bottom (pairs with the col-container margin-block). */
-.section-download .tab-content-controller.mininav-ready .tcc-content { padding-top: 0; }
+html.client-js .section-download .tab-content-controller .tcc-content { padding-top: 0; }
 /* The dark band is #273445, but .tcc-section's base `background: var(--bg)` (white) + border
    paint a white card behind the OS tiles. Clear both so the tiles sit directly on the dark band
    (prod has no white card); covers the no-JS bordered state and the mininav-ready state. */
@@ -3969,7 +4003,12 @@ sup.reference:target {
    1fr columns shrink to keep the same 3-up rows. The fixed logo-box height makes a tall logo and a
    wide wordmark occupy the SAME slot (object-fit:contain scales each to fit). */
 .wiki-content .thumb-gallery.mode-logos {
-  display: grid; grid-template-columns: repeat(3, 1fr);
+  display: grid;
+  /* minmax(0, 1fr), not 1fr: a plain 1fr track floors at the cell's MIN-CONTENT width, so a
+     broken / blocked / mid-reencode logo (which sizes to its alt text, not its attrs) widens its
+     track and steals width from its neighbours -> the whole logo row reflows. minmax(0, ...) lets
+     the tracks ignore content min-width and stay equal in every load state (zero CLS). */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   max-width: 34rem; margin-inline: auto;
   gap: 1.5rem 1.75rem; justify-items: center; align-items: start;
 }
@@ -3980,6 +4019,8 @@ sup.reference:target {
 .wiki-content .thumb-gallery.mode-logos .thumbframe > a,
 .wiki-content .thumb-gallery.mode-logos .thumbframe > p > a {
   width: 100%; height: 4.5rem; padding: 0;   /* equal logo slot for every aspect ratio */
+  display: flex; align-items: center; justify-content: center;   /* centre the aspect-sized logo */
+  overflow: hidden;   /* clip a broken/blocked logo's alt-text box to the slot -> no reflow (zero CLS) */
 }
 /* "Built on free software" strip: each upstream logo in its ORIGINAL brand colour -- a credits strip
    honours each project (uniform grayscale is a sales-wall convention; Tor/Mozilla brand guidelines
@@ -3987,6 +4028,13 @@ sup.reference:target {
    desaturation. No hover-restore (dated; nothing to reveal, and no hover on touch). */
 .wiki-content .thumb-gallery.mode-logos .thumbframe img {
   border-radius: 0;
+  /* Size each logo to its OWN aspect at the fixed slot HEIGHT (width:auto, not 100%): a tall logo
+     must not fill the whole wide cell or the srcset serves a variant for the full box while only a
+     letterboxed sliver shows (check-img-responsiveness: wasted bytes). The flex-centred parent
+     places it; contain:size keeps a broken/blocked logo at height x aspect (from its width/height
+     attrs) instead of its alt-text box, and the parent's overflow:hidden clips the alt -> the img's
+     own rect and its neighbours are stable in every load state (zero CLS, see .explainer-check). */
+  width: auto; height: 100%; max-width: 100%; object-fit: contain; contain: size;
 }
 .wiki-content .thumb-gallery.mode-logos .thumbcaption {
   text-align: center; color: var(--fg-soft); font-size: 0.82rem; padding-top: 0.3rem;

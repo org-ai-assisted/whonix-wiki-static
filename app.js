@@ -24,6 +24,30 @@
     }
   }
 
+  // Shared geometry batcher: every ResizeObserver-driven measure on the page runs through ONE
+  // observer, whose callback executes EVERY widget's read before ANY widget's write. Each widget
+  // reads-then-writes correctly on its own, but two independent observers interleave in a single
+  // dispatch -- the bottom-stack observer writes body.paddingBottom (dirtying global layout), then
+  // the wide-table observer reads scrollWidth and forces a synchronous relayout (the PageSpeed
+  // "forced reflow"). One observer, one callback, guarantees read-before-write with no
+  // cross-observer and no microtask-timing assumption. A widget keeps its own rAF path when
+  // ResizeObserver is absent. geomObserver(measure, write): register a widget's measure/write pair
+  // ONCE (measure() returns the value write() applies) and return an observe(el) bound to the shared
+  // observer -- a widget observes as many elements as it likes under its single pair.
+  var _geomPairs = [];
+  var _geomRO = null;
+  function geomObserver(measure, write) {
+    _geomPairs.push([measure, write]);
+    if (!_geomRO) {
+      _geomRO = new ResizeObserver(function () {
+        var vals = [], k;
+        for (k = 0; k < _geomPairs.length; k++) { vals.push(_geomPairs[k][0]()); }  // READ phase
+        for (k = 0; k < _geomPairs.length; k++) { _geomPairs[k][1](vals[k]); }      // WRITE phase
+      });
+    }
+    return function (el) { _geomRO.observe(el); };
+  }
+
   // Single source of truth for every localStorage key this site may set. The
   // Browser Storage page enumerates THIS (no separate hardcoded list), and the
   // feature code below references the constants -- so each key name lives once.
@@ -1028,28 +1052,33 @@
   // the reservation collapses to 0 once every banner is gone (no leftover gap below the
   // footer). The CSS body:has(.stage-banner) rule is the no-JS fallback -- without JS the
   // banners are never dismissable, so a fixed reservation is always correct there.
-  function remeasureBottomStack() {
+  // Measure the bottom-stack's rendered height (read), then apply it as body padding + a
+  // back-to-top lift (write) -- split so the shared geometry batcher runs this read alongside
+  // every other widget's read, before any write. -1 = no stack (leave body padding untouched).
+  function _bottomStackHeight() {
     var stack = document.querySelector(".bottom-stack");
-    // Read the geometry ONCE, before any style write: reading offsetHeight again AFTER writing
-    // body.paddingBottom would force a second synchronous relayout (a ~69ms forced reflow on this
-    // large page). One read, then both writes, so the layout is flushed at most once.
-    var h = stack ? stack.offsetHeight : 0;
-    if (stack) document.body.style.paddingBottom = h + "px";
+    return stack ? stack.offsetHeight : -1;
+  }
+  function _applyBottomStack(h) {
+    if (h >= 0) { document.body.style.paddingBottom = h + "px"; }
     // Lift the back-to-top button above the fixed bottom banner stack so they do not overlap;
     // drops back to 20px once the stack collapses (banners dismissed). CSSOM, so CSP-safe.
     var btt = document.querySelector(".back-to-top");
-    if (btt) btt.style.bottom = (h ? h + 20 : 20) + "px";
+    if (btt) { btt.style.bottom = (h > 0 ? h + 20 : 20) + "px"; }
   }
+  // Immediate resync for the banner-dismiss click handlers (off the shared batcher: a user action
+  // wants a synchronous update, and a lone click-time read is not the load-path PageSpeed finding).
+  function remeasureBottomStack() { _applyBottomStack(_bottomStackHeight()); }
   function initBottomStackSpacer() {
     var stack = document.querySelector(".bottom-stack");
     if (!stack) return;
     if (typeof ResizeObserver !== "undefined") {
-      // Drive the measure from a ResizeObserver: its callback runs AFTER the browser's own layout
-      // pass, so reading offsetHeight never forces a SYNCHRONOUS relayout inside the blocking init
-      // task (the ~51ms forced reflow Lighthouse flagged at remeasureBottomStack). The initial
-      // observe fires once (first spacer set) and it also covers window-resize + font/content
-      // reflow + banner-dismiss (the stack shrinks -> refires) with no init-time cost.
-      new ResizeObserver(function () { remeasureBottomStack(); }).observe(stack);
+      // Drive the measure from the SHARED geometry batcher: its single observer runs every widget's
+      // read before any write, so this offsetHeight read and the wide-table scrollWidth read never
+      // see each other's layout-dirtying write (the cross-observer forced reflow). The initial
+      // observe fires once (first spacer set) and covers window-resize + font/content reflow +
+      // banner-dismiss (the stack shrinks -> refires) with no init-time cost.
+      geomObserver(_bottomStackHeight, _applyBottomStack)(stack);
     } else {
       // No ResizeObserver (very old browser / jsdom): defer the first read with rAF so even the
       // fallback does not force a synchronous layout in the init task; resize keeps it in sync.
@@ -1791,15 +1820,30 @@
     // load would skip all three (the reported bug). Build each rail lazily, the first
     // time its table is actually overwide; hide it again if it later fits.
     //
-    // Batched: READ every table's geometry into `measures` FIRST, THEN apply every style
-    // write. No write sits between two reads, so layout is flushed at most once per sync.
-    function sync() {
+    // Batched: READ every table's geometry FIRST, THEN apply every style write. Split so the shared
+    // geometry batcher runs these reads alongside every other widget's read, before any write -- a
+    // write between two reads (here OR in a sibling observer) forces a synchronous relayout.
+    // RESIDUAL forced reflow (accepted; baselined on Dev/wikitest): the FIRST scrollWidth read
+    // here can still force ONE synchronous layout on a table-heavy page -- the RO initial-observe
+    // is delivered while the page's initial layout is still dirty (lazy images decoding, font
+    // swap), so no post-layout moment is truly clean yet, and placement (ready vs idle) does not
+    // change that. ROOT FIX (deferred, coordinated site-wide change): move overflow off each
+    // <table> onto a wrapper <div> so the <table> itself lays out at full content width, then take
+    // that width from the ResizeObserver ENTRY (entry.borderBoxSize[0].inlineSize) instead of
+    // reading scrollWidth. An entry read never forces layout and self-heals on later image/font
+    // reflow (so the in-table image observe below also goes away). It needs CSS (overflow + the
+    // custom scrollbar move to the wrapper) and the generator's table markup, hence not done here.
+    function measureTables() {
       var i, measures = [];
       for (i = 0; i < items.length; i++) {
         var t = items[i].table;
         var sw = t.scrollWidth, cw = t.clientWidth;
         measures.push({ overwide: sw > cw + 1, scrollWidth: sw });
       }
+      return measures;
+    }
+    function writeTables(measures) {
+      var i;
       for (i = 0; i < items.length; i++) {
         var item = items[i], m = measures[i];
         if (m.overwide && !item.rail) { build(item); }
@@ -1810,40 +1854,46 @@
         }
       }
     }
-    // scheduleSync coalesces the triggers that fire MID-TASK (an in-table image finishing its
-    // decode; the no-RO resize fallback) into ONE rAF measurement per frame. Each such trigger
-    // runs while layout is dirty, so its scrollWidth read forces a synchronous layout; coalescing
-    // a burst of late image loads into one rAF caps that at one forced layout per frame, not one
-    // per image (~41ms on a dense page with many in-table images). The ResizeObserver path below
-    // does NOT go through here -- it reads for free (see below).
+    function sync() { writeTables(measureTables()); }
+    // scheduleSync is the LEGACY (no-ResizeObserver) fallback ONLY: it coalesces resize + late
+    // image-load re-syncs into one rAF measurement per frame. A rAF runs BEFORE the frame's layout,
+    // so its scrollWidth read forces a synchronous layout -- accepted only because a browser lacking
+    // ResizeObserver is one this project does not otherwise support. The RO path below reads for free
+    // (post-layout) and never goes through here.
     var raf = 0;
     function scheduleSync() {
       if (raf) { return; }
       raf = requestAnimationFrame(function () { raf = 0; sync(); });
     }
     if (typeof ResizeObserver !== "undefined") {
-      // Read in the ResizeObserver callback DIRECTLY, not via rAF. An RO callback is delivered
-      // AFTER the browser's layout pass, so reading scrollWidth there returns an already-computed
-      // value and forces NO synchronous reflow -- the same post-layout free read initBottomStackSpacer
-      // relies on. Bouncing it through rAF (which runs BEFORE the frame's layout) is exactly what
-      // turned this free read into the Lighthouse-flagged forced reflow on the homepage. The initial
-      // observe fires once (first measure) and also covers resize + any content-box-changing reflow.
-      var ro = new ResizeObserver(function () { sync(); });
-      items.forEach(function (item) { ro.observe(item.table); });
-    } else {
-      sync();   // no-RO path keeps the immediate first measure (js-test asserts rails post-init)
-      window.addEventListener("resize", scheduleSync);
-    }
-    // A late image load can grow scrollWidth WITHOUT changing the (max-width:100%-capped)
-    // border box, so ResizeObserver never fires for it -- re-sync on each image load too.
-    items.forEach(function (item) {
-      item.table.querySelectorAll("img").forEach(function (img) {
-        if (!img.complete) {
-          img.addEventListener("load", scheduleSync);
-          img.addEventListener("error", scheduleSync);  // a broken image also changes layout
-        }
+      // Measure every wide table through the SHARED geometry batcher: its single observer reads all
+      // tables (and the bottom-stack, and any other widget) before any of them writes, so a sibling
+      // observer's layout-dirtying write can never force this scrollWidth read (the cross-observer
+      // forced reflow a lone-observer design shipped on image-heavy, bottom-stack pages like
+      // Dev/wikitest). Observe each table, plus each not-yet-loaded in-table image -- an unsized
+      // image's own box changes 0 -> intrinsic on decode, firing a FREE post-layout re-measure
+      // (the old img.load -> requestAnimationFrame path read scrollWidth PRE-layout and forced it).
+      var observe = geomObserver(measureTables, writeTables);
+      items.forEach(function (item) {
+        observe(item.table);
+        item.table.querySelectorAll("img").forEach(function (img) {
+          if (!img.complete) { observe(img); }
+        });
       });
-    });
+    } else {
+      // No ResizeObserver (legacy only): first measure now, then rAF-coalesced resize + image-load
+      // re-syncs (one forced layout per frame, on a path modern browsers never take).
+      sync();   // immediate first measure (js-test asserts rails post-init)
+      window.addEventListener("resize", scheduleSync);
+      items.forEach(function (item) {
+        item.table.querySelectorAll("img").forEach(function (img) {
+          if (!img.complete) {
+            img.addEventListener("load", scheduleSync);
+            img.addEventListener("error", scheduleSync);  // a broken image also changes layout
+          }
+        });
+      });
+    }
   }
 
   // Gallery lightbox: clicking a gallery thumbnail opens a full-viewport overlay with the
