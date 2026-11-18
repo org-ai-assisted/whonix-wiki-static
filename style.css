@@ -946,12 +946,14 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 .nav-toggle-label .nav-ico-close { display: none; }   /* 2 classes: beat FontAwesome's .fa-solid (loaded after) */
 .nav-toggle:checked ~ .nav-toggle-label .nav-ico-open { display: none; }
 .nav-toggle:checked ~ .nav-toggle-label .nav-ico-close { display: inline-block; }
-/* Fixed-width glyph box: fa-bars (~20px) and fa-xmark (~17px) have different advance widths,
-   so without it the bars->xmark swap on open shrinks the label and shifts the logo beside it
-   ~3px left (a header layout shift). Same width normalization the other header glyphs get below.
-   width only (no display) so the :checked show/hide rules above still govern visibility. */
+/* Fixed-width glyph box so the bars->xmark swap on open does not resize the label and shift the
+   logo beside it (fa-bars and fa-xmark differ in advance width: ~3px left shift otherwise).
+   Width = fa-bars' intrinsic advance (448/512em): the box equals the CLOSED glyph, so it adds no
+   width to the tight one-row mobile header (a wider box wraps the Donate heart to a 2nd row); the
+   narrower xmark just centers in it. width only (no display) so the :checked show/hide rules above
+   still govern visibility. */
 .nav-toggle-label .nav-ico-open,
-.nav-toggle-label .nav-ico-close { width: 1.25em; text-align: center; }
+.nav-toggle-label .nav-ico-close { width: 0.875em; text-align: center; }
 /* Production Vector search: a magnifier ICON that expands the search box on click
    (pure-CSS checkbox toggle) so the header stays compact like prod. */
 .site-search {
@@ -4533,7 +4535,7 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
   border: 1px solid var(--border); border-radius: var(--radius-sm);
   font-size: 0.95rem; line-height: 1.35;
 }
-.sitenotice-banner[data-banner-id="39"] .icon { flex: 0 0 auto; color: var(--accent); font-size: 1.15rem; }
+.sitenotice-banner[data-banner-id="39"] .icon { flex: 0 0 auto; color: #f80000; font-size: 1.15rem; }   /* red heart, matches the header Donate heart (.header-donate .fa-heart) */
 .sitenotice-banner[data-banner-id="39"] .sitenotice-text { flex: 1 1 10rem; min-width: 0; font-weight: 600; }
 .sitenotice-banner[data-banner-id="39"] .sitenotice-cta { flex: 0 0 auto; margin-left: auto; white-space: nowrap; }
 
