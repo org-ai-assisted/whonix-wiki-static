@@ -2,10 +2,18 @@
 # Staging-only serve-time transform for the GitHub Pages artifact.
 #
 # WHY: the committed HTML is the pristine production (--prod) build -- real www.* canonical,
-# no robots noindex, an indexable robots.txt + sitemap. Served unchanged on the *-stage.github.io
-# preview domain it would get indexed. This step transforms ONLY the built _site artifact in CI
-# (never the committed HTML), so the stage mirror stays out of search indexes regardless of which
-# build mode produced the commit.
+# no robots noindex. Served unchanged on the *-stage.github.io preview domain it would get
+# indexed. This step transforms ONLY the built _site artifact in CI (never the committed HTML),
+# so the stage mirror stays out of search indexes regardless of which build mode produced the
+# commit.
+#
+# Index posture: per-page noindex,nofollow meta + a deterministic, fully crawlable robots.txt
+# (STAGE_ROBOTS). noindex keeps an HTML page out of the index, and a crawler only reads it if it is
+# ALLOWED to fetch the page -- so HTML stays crawlable (a blanket `Disallow: /` would DEFEAT
+# de-indexing: the crawler never reads the meta). Non-HTML assets (images, media, js/css, feed/
+# sitemap/search/api) get NO robots block: GitHub Pages cannot noindex them, and a robots Disallow
+# blocks crawling without guaranteeing de-indexing anyway; the nofollow on every page stops crawlers
+# discovering the assets through the pages. The transform WRITES robots.txt verbatim (not patched).
 #
 # Mode is ALWAYS explicit (transform | verify); a bare invocation is a usage error -- the
 # transform must never run by accident. Invoked via its shebang (chmod +x), never `python3 <this>`.
@@ -22,16 +30,21 @@ from pathlib import Path
 # commented-out or single-quoted robots meta -- so the regexes below need not handle arbitrary
 # hand-authored HTML. verify (below) is the fail-loud guard that confirms the real output.
 #
-# noindex is the one directive that actually keeps a page out of the index. robots.txt Disallow
-# alone cannot, and pairing Disallow: / WITH this noindex is a DELIBERATE operator decision
-# (belt-and-suspenders) -- a disallowed crawler will not see the meta, which is accepted; do not
-# "fix" the pairing. nofollow matches the generator's own --stage convention.
+# nofollow matches the generator's own --stage convention.
 ROBOTS_CONTENT = "noindex,nofollow"
 ROBOTS_META = '<meta name="robots" content="%s">' % ROBOTS_CONTENT
 
-# A robots.txt line that disallows the WHOLE site: the root path exactly, not a prefix such as
-# `Disallow: /private` and not a `# ...` comment. Matched per stripped line in verify.
-_RE_DISALLOW_ALL = re.compile(r'Disallow:\s*/\s*', re.IGNORECASE)
+# The robots.txt the transform writes verbatim onto the served artifact: fully crawlable, so the
+# per-page noindex is read and the HTML is reliably de-indexed. Deliberately NO Disallow -- a
+# blanket one would stop the crawler reading the noindex, and a per-asset one cannot guarantee
+# de-indexing (robots.txt blocks crawling, not URL listing) and GitHub Pages cannot noindex non-HTML
+# anyway; the noindex,nofollow on every page already stops crawlers discovering the assets through
+# the pages. Written WHOLE (not patched), so the posture is deterministic for any committed build
+# mode -- no need to parse arbitrary robots.txt shapes; verify exact-matches it.
+STAGE_ROBOTS = (
+    "User-agent: *\n"
+    "Allow: /\n"
+)
 
 # A <meta name="robots" ...> whose content is captured in group 2 (name before content, which is
 # how the generator emits it, e.g. the --prod `max-image-preview:large`).
@@ -83,6 +96,18 @@ def rewrite_card_hosts(html, host):
     return _RE_CARD_ORIGIN.sub(lambda m: m.group(1) + "https://" + host, html)
 
 
+def write_stage_robots(root):
+    """Write STAGE_ROBOTS onto the served artifact (overwriting whatever the build emitted), so
+    the stage robots.txt posture is deterministic and correct for any build mode. Idempotent.
+    Returns True if the file changed."""
+    robots = root / "robots.txt"
+    existing = robots.read_text(encoding="utf-8") if robots.is_file() else None
+    if existing == STAGE_ROBOTS:
+        return False
+    robots.write_text(STAGE_ROBOTS, encoding="utf-8")
+    return True
+
+
 def iter_html(root):
     return sorted(p for p in root.rglob("*.html") if p.is_file())
 
@@ -99,7 +124,9 @@ def cmd_transform(args):
         if out != original:
             path.write_text(out, encoding="utf-8")
             changed += 1
-    print("pages-transform: transformed %d file(s); stage host %s" % (changed, host))
+    robots_changed = write_stage_robots(root)
+    print("pages-transform: transformed %d file(s); stage host %s; robots.txt %s"
+          % (changed, host, "written" if robots_changed else "already current"))
     return 0
 
 
@@ -118,20 +145,20 @@ def cmd_verify(args):
         if "noindex" not in tokens:
             failures.append("missing noindex robots meta: %s" % path.relative_to(root))
     robots = root / "robots.txt"
+    # The served robots.txt must be exactly STAGE_ROBOTS (HTML crawlable so the noindex is read,
+    # non-HTML assets crawl-blocked). Exact match -- transform writes it verbatim, so any drift
+    # (a blocking shape the transform did not run, a hand edit) fails the deploy loud.
     if not robots.is_file():
         failures.append("missing robots.txt")
-    # A whole-line root Disallow, not a substring: `Disallow: /private` or `# Disallow: /` must
-    # NOT pass.
-    elif not any(_RE_DISALLOW_ALL.fullmatch(ln.strip())
-                 for ln in robots.read_text(encoding="utf-8").splitlines()):
-        failures.append("robots.txt does not Disallow: /")
+    elif robots.read_text(encoding="utf-8") != STAGE_ROBOTS:
+        failures.append("robots.txt is not the stage policy (expected HTML crawlable + non-HTML blocked)")
     if failures:
         for f in failures:
             print("pages-transform: FAIL: %s" % f, file=sys.stderr)
         print("pages-transform: verify FAILED (%d issue(s), %d html checked)"
               % (len(failures), total), file=sys.stderr)
         return 1
-    print("pages-transform: verify OK (%d html noindexed, robots.txt Disallow: /)" % total)
+    print("pages-transform: verify OK (%d html noindexed, robots.txt = stage policy)" % total)
     return 0
 
 
@@ -139,12 +166,12 @@ def main(argv):
     parser = argparse.ArgumentParser(
         prog="pages-transform", description="Staging-only serve-time transform of the _site artifact.")
     sub = parser.add_subparsers(dest="mode", required=True)
-    t = sub.add_parser("transform", help="inject noindex + rewrite card hosts in <dir>/**/*.html")
+    t = sub.add_parser("transform", help="inject noindex + rewrite card hosts + write stage robots.txt in <dir>")
     t.add_argument("dir", help="the built site artifact directory (e.g. _site)")
     t.add_argument("--stage-host", default=None,
                    help="override the served host (default: from GITHUB_REPOSITORY)")
     t.set_defaults(func=cmd_transform)
-    v = sub.add_parser("verify", help="assert every page is noindexed and robots.txt Disallow: /")
+    v = sub.add_parser("verify", help="assert every page is noindexed and robots.txt is the stage policy")
     v.add_argument("dir", help="the built site artifact directory (e.g. _site)")
     v.set_defaults(func=cmd_verify)
     args = parser.parse_args(argv)
