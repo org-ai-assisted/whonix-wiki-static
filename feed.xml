@@ -4,8 +4,53 @@
   <link rel="self" href="https://www.whonix.org/feed.xml"/>
   <link href="https://www.whonix.org/"/>
   <id>https://www.whonix.org/feed.xml</id>
-  <updated>2026-11-18T18:51:43-05:00</updated>
+  <updated>2026-11-19T12:49:04-05:00</updated>
   <author><name>Whonix</name></author>
+  <entry>
+    <title>Features</title>
+    <link href="https://www.whonix.org/wiki/Features"/>
+    <id>https://www.whonix.org/wiki/Features</id>
+    <updated>2026-11-19T12:49:04-05:00</updated>
+    <author><name>claude (dev1696 a716a746-d7c6-47d2-b358-35e8bd7032bb)</name></author>
+    <summary>Fix dangling in-page anchors on shipped pages</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/f775df8262c0e70e940b395cf365469d018a514d"/>
+  </entry>
+  <entry>
+    <title>Testpage4</title>
+    <link href="https://www.whonix.org/wiki/Testpage4"/>
+    <id>https://www.whonix.org/wiki/Testpage4</id>
+    <updated>2026-11-19T12:49:04-05:00</updated>
+    <author><name>claude (dev1696 a716a746-d7c6-47d2-b358-35e8bd7032bb)</name></author>
+    <summary>Fix dangling in-page anchors on shipped pages</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/f775df8262c0e70e940b395cf365469d018a514d"/>
+  </entry>
+  <entry>
+    <title>Trust</title>
+    <link href="https://www.whonix.org/wiki/Trust"/>
+    <id>https://www.whonix.org/wiki/Trust</id>
+    <updated>2026-11-19T12:49:04-05:00</updated>
+    <author><name>claude (dev1696 a716a746-d7c6-47d2-b358-35e8bd7032bb)</name></author>
+    <summary>Fix dangling in-page anchors on shipped pages</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/f775df8262c0e70e940b395cf365469d018a514d"/>
+  </entry>
+  <entry>
+    <title>Verify the images</title>
+    <link href="https://www.whonix.org/wiki/Verify_the_images"/>
+    <id>https://www.whonix.org/wiki/Verify_the_images</id>
+    <updated>2026-11-19T12:49:04-05:00</updated>
+    <author><name>claude (dev1696 a716a746-d7c6-47d2-b358-35e8bd7032bb)</name></author>
+    <summary>Fix dangling in-page anchors on shipped pages</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/f775df8262c0e70e940b395cf365469d018a514d"/>
+  </entry>
+  <entry>
+    <title>Whonix versus Proxies</title>
+    <link href="https://www.whonix.org/wiki/Whonix_versus_Proxies"/>
+    <id>https://www.whonix.org/wiki/Whonix_versus_Proxies</id>
+    <updated>2026-11-19T12:49:04-05:00</updated>
+    <author><name>claude (dev1696 a716a746-d7c6-47d2-b358-35e8bd7032bb)</name></author>
+    <summary>Fix dangling in-page anchors on shipped pages</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/f775df8262c0e70e940b395cf365469d018a514d"/>
+  </entry>
   <entry>
     <title>Access Gateway Port From Host</title>
     <link href="https://www.whonix.org/wiki/Access_Gateway_Port_From_Host"/>
@@ -406,51 +451,6 @@
     <title>Dev/tor-launcher</title>
     <link href="https://www.whonix.org/wiki/Dev/tor-launcher"/>
     <id>https://www.whonix.org/wiki/Dev/tor-launcher</id>
-    <updated>2026-11-18T18:51:43-05:00</updated>
-    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
-    <summary>Backfill explicit alt text for wiki images</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
-  </entry>
-  <entry>
-    <title>Dev/videos</title>
-    <link href="https://www.whonix.org/wiki/Dev/videos"/>
-    <id>https://www.whonix.org/wiki/Dev/videos</id>
-    <updated>2026-11-18T18:51:43-05:00</updated>
-    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
-    <summary>Backfill explicit alt text for wiki images</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
-  </entry>
-  <entry>
-    <title>Dev/wikitest</title>
-    <link href="https://www.whonix.org/wiki/Dev/wikitest"/>
-    <id>https://www.whonix.org/wiki/Dev/wikitest</id>
-    <updated>2026-11-18T18:51:43-05:00</updated>
-    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
-    <summary>Backfill explicit alt text for wiki images</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
-  </entry>
-  <entry>
-    <title>Disaster Recovery</title>
-    <link href="https://www.whonix.org/wiki/Disaster_Recovery"/>
-    <id>https://www.whonix.org/wiki/Disaster_Recovery</id>
-    <updated>2026-11-18T18:51:43-05:00</updated>
-    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
-    <summary>Backfill explicit alt text for wiki images</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
-  </entry>
-  <entry>
-    <title>Documentation</title>
-    <link href="https://www.whonix.org/wiki/Documentation"/>
-    <id>https://www.whonix.org/wiki/Documentation</id>
-    <updated>2026-11-18T18:51:43-05:00</updated>
-    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
-    <summary>Backfill explicit alt text for wiki images</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
-  </entry>
-  <entry>
-    <title>Download</title>
-    <link href="https://www.whonix.org/wiki/Download"/>
-    <id>https://www.whonix.org/wiki/Download</id>
     <updated>2026-11-18T18:51:43-05:00</updated>
     <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
     <summary>Backfill explicit alt text for wiki images</summary>

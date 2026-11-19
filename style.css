@@ -2698,14 +2698,19 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   padding: 0; margin: 10px 0 12px; text-align: center;
   font-size: 34px; line-height: 1.2;
 }
-.page-home .wiki-content .intro-like > *,
-.page-home .intro-like > :first-child,
-.page-home .intro-like > :last-child,
-.page-home .wiki-content .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail)) {
+.page-home .wiki-content .intro-like > :not(:where(.info-box, .mbox, .community-support-info)),
+.page-home .intro-like > :first-child:not(:where(.info-box, .mbox, .community-support-info)),
+.page-home .intro-like > :last-child:not(:where(.info-box, .mbox, .community-support-info)),
+.page-home .wiki-content .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail, .info-box, .mbox, .community-support-info)) {
   /* centered hero: no tint, no gutter bleed (margin-inline:0 cancels the band's -12px). Covers
      BOTH the {{IntroLike}} div form AND the {{Intro}} pre/post-intro-p marker form -- the homepage
      lead uses the marker form, so without that selector the hero sub-slogan fell back to the base
-     italic grey band instead of this centered non-italic slogan. */
+     italic grey band instead of this centered non-italic slogan. Callout boxes excluded (same as
+     the general + non-booknav intro rules above): this block's (0,3,0) padding:0 / background:
+     transparent outranks .info-box.has-icon (0,2,0), so an {{mbox}}/{{stub}} inside an {{intro}} on
+     the HOMEPAGE would lose its 46px icon inset (icon overlaps the first word) and its background --
+     the exclusion lets the callout keep its own self-contained box. :where() is 0-specificity, so
+     the hero text cascade is unchanged. */
   background: transparent; padding: 0; margin-inline: 0;
   font-style: normal; text-align: center; color: var(--fg); font-size: 1.19rem;
 }
