@@ -1,0 +1,13 @@
+# Whonix
+
+> The most watertight privacy operating system in the world.
+
+## Key pages
+- [Download](https://www.whonix.org/wiki/Download): FREE Download Whonix. Privacy Protection. Anonymity Online. For Windows, macOS, Linux.
+- [About](https://www.whonix.org/wiki/About): Privacy protection. Anonymity online. Anonymous Operating System. Whonix routes all Internet traffic through the Tor anonymity network. Security by Isolation. Based on Debian. Whonix Architecture.
+- [Docs](https://www.whonix.org/wiki/Documentation): A Crash Course in Anonymity and Security on the Internet.
+- [Community](https://www.whonix.org/wiki/Contribute): Spread, Follow, Develop, Testing, Donate. Contribute to Freedom Software / Open Source.
+- [Support](https://www.whonix.org/wiki/Support): Various Ways to get Help with Whonix. Free, Plus and Premium Support available.
+
+## Optional
+- [Sitemap](https://www.whonix.org/sitemap.xml): every indexable page URL

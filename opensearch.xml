@@ -3,6 +3,6 @@
   <ShortName>Whonix</ShortName>
   <Description>Search the Whonix wiki</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Url type="text/html" method="get" template="https://whonix-stage.github.io/wiki/Special:Search#q={searchTerms}"/>
-  <moz:SearchForm>https://whonix-stage.github.io/wiki/Special:Search</moz:SearchForm>
+  <Url type="text/html" method="get" template="https://www.whonix.org/wiki/Special:Search#q={searchTerms}"/>
+  <moz:SearchForm>https://www.whonix.org/wiki/Special:Search</moz:SearchForm>
 </OpenSearchDescription>
