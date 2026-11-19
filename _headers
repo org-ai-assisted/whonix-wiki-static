@@ -22,10 +22,6 @@
   ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
-/media/Architectures-combi-logo.svg
-  ! Content-Security-Policy
-  Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
-
 /media/Arm64-logo.svg
   ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
@@ -35,10 +31,6 @@
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 
 /media/Coming-soon-icon.svg
-  ! Content-Security-Policy
-  Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
-
-/media/Evolution-host-logo-text.svg
   ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
 

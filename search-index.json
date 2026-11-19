@@ -416,18 +416,6 @@
     "u": "wiki/Dev/Host"
   },
   {
-    "t": "Dev/ImageResize",
-    "u": "wiki/Dev/ImageResize"
-  },
-  {
-    "t": "Dev/ImageResize2",
-    "u": "wiki/Dev/ImageResize2"
-  },
-  {
-    "t": "Dev/ImageResize3",
-    "u": "wiki/Dev/ImageResize3"
-  },
-  {
     "t": "Dev/Inspiration",
     "u": "wiki/Dev/Inspiration"
   },
@@ -935,11 +923,6 @@
   },
   {
     "n": 1,
-    "t": "File:234234234236kvm.png",
-    "u": "wiki/File:234234234236kvm.png"
-  },
-  {
-    "n": 1,
     "t": "File:24.png",
     "u": "wiki/File:24.png"
   },
@@ -975,11 +958,6 @@
   },
   {
     "n": 1,
-    "t": "File:2FA.jpg",
-    "u": "wiki/File:2FA.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:2pcsx86.png",
     "u": "wiki/File:2pcsx86.png"
   },
@@ -1002,11 +980,6 @@
     "n": 1,
     "t": "File:32.png",
     "u": "wiki/File:32.png"
-  },
-  {
-    "n": 1,
-    "t": "File:32bit213123.png",
-    "u": "wiki/File:32bit213123.png"
   },
   {
     "n": 1,
@@ -1120,11 +1093,6 @@
   },
   {
     "n": 1,
-    "t": "File:5050.png",
-    "u": "wiki/File:5050.png"
-  },
-  {
-    "n": 1,
     "t": "File:51.png",
     "u": "wiki/File:51.png"
   },
@@ -1160,18 +1128,8 @@
   },
   {
     "n": 1,
-    "t": "File:ACH2.png",
-    "u": "wiki/File:ACH2.png"
-  },
-  {
-    "n": 1,
     "t": "File:API123123.jpg",
     "u": "wiki/File:API123123.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Access12323.jpg",
-    "u": "wiki/File:Access12323.jpg"
   },
   {
     "n": 1,
@@ -1205,33 +1163,8 @@
   },
   {
     "n": 1,
-    "t": "File:Airgapped12321.jpg",
-    "u": "wiki/File:Airgapped12321.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Alternativeremode123123.jpg",
-    "u": "wiki/File:Alternativeremode123123.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Ambox notice.png",
-    "u": "wiki/File:Ambox_notice.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Ambox warning pn.svg.png",
-    "u": "wiki/File:Ambox_warning_pn.svg.png"
-  },
-  {
-    "n": 1,
     "t": "File:Amiunique.png",
     "u": "wiki/File:Amiunique.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Anaglyph-102548640.jpg",
-    "u": "wiki/File:Anaglyph-102548640.jpg"
   },
   {
     "n": 1,
@@ -1247,11 +1180,6 @@
     "n": 1,
     "t": "File:Android App Support 2.png",
     "u": "wiki/File:Android_App_Support_2.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Android23432.png",
-    "u": "wiki/File:Android23432.png"
   },
   {
     "n": 1,
@@ -1290,16 +1218,6 @@
   },
   {
     "n": 1,
-    "t": "File:Aptfiles1614223640.jpg",
-    "u": "wiki/File:Aptfiles1614223640.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Architectures-combi-logo.svg",
-    "u": "wiki/File:Architectures-combi-logo.svg"
-  },
-  {
-    "n": 1,
     "t": "File:Arm64-logo.svg",
     "u": "wiki/File:Arm64-logo.svg"
   },
@@ -1322,31 +1240,6 @@
     "n": 1,
     "t": "File:BackToTheTopButton2.png",
     "u": "wiki/File:BackToTheTopButton2.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Backdoor-23423523523.jpg",
-    "u": "wiki/File:Backdoor-23423523523.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Backgrounds-164099640.jpg",
-    "u": "wiki/File:Backgrounds-164099640.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Backupraw123123.jpg",
-    "u": "wiki/File:Backupraw123123.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Bacs Payment Schemes Limited logo.svg.png",
-    "u": "wiki/File:Bacs_Payment_Schemes_Limited_logo.svg.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Balloon-776686640.jpg",
-    "u": "wiki/File:Balloon-776686640.jpg"
   },
   {
     "n": 1,
@@ -1405,11 +1298,6 @@
   },
   {
     "n": 1,
-    "t": "File:Bisq123123.jpg",
-    "u": "wiki/File:Bisq123123.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Bisqclient.png",
     "u": "wiki/File:Bisqclient.png"
   },
@@ -1422,11 +1310,6 @@
     "n": 1,
     "t": "File:Bitcoin-core.png",
     "u": "wiki/File:Bitcoin-core.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Bitcoin234234234.jpg",
-    "u": "wiki/File:Bitcoin234234234.jpg"
   },
   {
     "n": 1,
@@ -1455,11 +1338,6 @@
   },
   {
     "n": 1,
-    "t": "File:Bitmessage.png",
-    "u": "wiki/File:Bitmessage.png"
-  },
-  {
-    "n": 1,
     "t": "File:Bitmessagelogo.png",
     "u": "wiki/File:Bitmessagelogo.png"
   },
@@ -1467,11 +1345,6 @@
     "n": 1,
     "t": "File:Bittorrent.svg.png",
     "u": "wiki/File:Bittorrent.svg.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Blocks-968874640.jpg",
-    "u": "wiki/File:Blocks-968874640.jpg"
   },
   {
     "n": 1,
@@ -1510,11 +1383,6 @@
   },
   {
     "n": 1,
-    "t": "File:Bugs-1757709640.jpg",
-    "u": "wiki/File:Bugs-1757709640.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Buildconfiguration12354.png",
     "u": "wiki/File:Buildconfiguration12354.png"
   },
@@ -1550,16 +1418,6 @@
   },
   {
     "n": 1,
-    "t": "File:Carriage-clock-797833640.jpg",
-    "u": "wiki/File:Carriage-clock-797833640.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Cd-699786640.jpg",
-    "u": "wiki/File:Cd-699786640.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Cd-rom-icon.png",
     "u": "wiki/File:Cd-rom-icon.png"
   },
@@ -1575,11 +1433,6 @@
   },
   {
     "n": 1,
-    "t": "File:Changerepositorygui234234.png",
-    "u": "wiki/File:Changerepositorygui234234.png"
-  },
-  {
-    "n": 1,
     "t": "File:Chaos22.png",
     "u": "wiki/File:Chaos22.png"
   },
@@ -1587,11 +1440,6 @@
     "n": 1,
     "t": "File:Checktorproject.png",
     "u": "wiki/File:Checktorproject.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Chimpanzee-978809640.jpg",
-    "u": "wiki/File:Chimpanzee-978809640.jpg"
   },
   {
     "n": 1,
@@ -1620,16 +1468,6 @@
   },
   {
     "n": 1,
-    "t": "File:Cli3.png",
-    "u": "wiki/File:Cli3.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Cli6.png",
-    "u": "wiki/File:Cli6.png"
-  },
-  {
-    "n": 1,
     "t": "File:Click import4.png",
     "u": "wiki/File:Click_import4.png"
   },
@@ -1652,16 +1490,6 @@
     "n": 1,
     "t": "File:Cloaking your typing style 2.png",
     "u": "wiki/File:Cloaking_your_typing_style_2.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Coat-of-mail-948960640.jpg",
-    "u": "wiki/File:Coat-of-mail-948960640.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Coldbootattack12312421.png",
-    "u": "wiki/File:Coldbootattack12312421.png"
   },
   {
     "n": 1,
@@ -1710,11 +1538,6 @@
   },
   {
     "n": 1,
-    "t": "File:Coredumps.png",
-    "u": "wiki/File:Coredumps.png"
-  },
-  {
-    "n": 1,
     "t": "File:Cornues.png",
     "u": "wiki/File:Cornues.png"
   },
@@ -1740,16 +1563,6 @@
   },
   {
     "n": 1,
-    "t": "File:Cryptohardwarethreat.jpg",
-    "u": "wiki/File:Cryptohardwarethreat.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Cryptothreats123.jpg",
-    "u": "wiki/File:Cryptothreats123.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Cyber Security Best Practices 1.png",
     "u": "wiki/File:Cyber_Security_Best_Practices_1.png"
   },
@@ -1767,16 +1580,6 @@
     "n": 1,
     "t": "File:Debian10minimaltorbrowser.png",
     "u": "wiki/File:Debian10minimaltorbrowser.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Debianinafolder234234.png",
-    "u": "wiki/File:Debianinafolder234234.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Debug-misc31231.jpg",
-    "u": "wiki/File:Debug-misc31231.jpg"
   },
   {
     "n": 1,
@@ -1830,28 +1633,13 @@
   },
   {
     "n": 1,
-    "t": "File:Documentation.jpg",
-    "u": "wiki/File:Documentation.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Doileak.png",
     "u": "wiki/File:Doileak.png"
   },
   {
     "n": 1,
-    "t": "File:Donate Cryptocurrency.jpg",
-    "u": "wiki/File:Donate_Cryptocurrency.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Donate-page.jpg",
     "u": "wiki/File:Donate-page.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Donatetoyou.png",
-    "u": "wiki/File:Donatetoyou.png"
   },
   {
     "n": 1,
@@ -1862,11 +1650,6 @@
     "n": 1,
     "t": "File:Download-arm64.jpg",
     "u": "wiki/File:Download-arm64.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Download-button-438937640.png",
-    "u": "wiki/File:Download-button-438937640.png"
   },
   {
     "n": 1,
@@ -1887,11 +1670,6 @@
     "n": 1,
     "t": "File:Download-riscv64.jpg",
     "u": "wiki/File:Download-riscv64.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Dumbbell-940375640.jpg",
-    "u": "wiki/File:Dumbbell-940375640.jpg"
   },
   {
     "n": 1,
@@ -1975,16 +1753,6 @@
   },
   {
     "n": 1,
-    "t": "File:Encryptedemail.jpg",
-    "u": "wiki/File:Encryptedemail.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Enigmailsecuresettings.png",
-    "u": "wiki/File:Enigmailsecuresettings.png"
-  },
-  {
-    "n": 1,
     "t": "File:Enterfullscreenkvm.png",
     "u": "wiki/File:Enterfullscreenkvm.png"
   },
@@ -2002,21 +1770,6 @@
     "n": 1,
     "t": "File:Ethereumlogo.png",
     "u": "wiki/File:Ethereumlogo.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Evilaem123123.jpg",
-    "u": "wiki/File:Evilaem123123.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Evolution-host logo text large.png",
-    "u": "wiki/File:Evolution-host_logo_text_large.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Evolution-host-logo-text.svg",
-    "u": "wiki/File:Evolution-host-logo-text.svg"
   },
   {
     "n": 1,
@@ -2045,11 +1798,6 @@
   },
   {
     "n": 1,
-    "t": "File:Factoryreset13124512.png",
-    "u": "wiki/File:Factoryreset13124512.png"
-  },
-  {
-    "n": 1,
     "t": "File:Faq-463379640.jpg",
     "u": "wiki/File:Faq-463379640.jpg"
   },
@@ -2065,11 +1813,6 @@
   },
   {
     "n": 1,
-    "t": "File:Faster Payments logo.svg.png",
-    "u": "wiki/File:Faster_Payments_logo.svg.png"
-  },
-  {
-    "n": 1,
     "t": "File:Firefox logo.png",
     "u": "wiki/File:Firefox_logo.png"
   },
@@ -2077,16 +1820,6 @@
     "n": 1,
     "t": "File:Firefox-verified-flatpak.png",
     "u": "wiki/File:Firefox-verified-flatpak.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Firmwareupdate.jpg",
-    "u": "wiki/File:Firmwareupdate.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Five-elements-379106640.jpg",
-    "u": "wiki/File:Five-elements-379106640.jpg"
   },
   {
     "n": 1,
@@ -2100,18 +1833,8 @@
   },
   {
     "n": 1,
-    "t": "File:Flashleaktest.png",
-    "u": "wiki/File:Flashleaktest.png"
-  },
-  {
-    "n": 1,
     "t": "File:Forestcanary.jpg",
     "u": "wiki/File:Forestcanary.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Fornesic324234.jpg",
-    "u": "wiki/File:Fornesic324234.jpg"
   },
   {
     "n": 1,
@@ -2127,16 +1850,6 @@
     "n": 1,
     "t": "File:Freenet.png",
     "u": "wiki/File:Freenet.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Full Online Tray RGB.png",
-    "u": "wiki/File:Full_Online_Tray_RGB.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Fulldeskencryption423423.jpg",
-    "u": "wiki/File:Fulldeskencryption423423.jpg"
   },
   {
     "n": 1,
@@ -2170,11 +1883,6 @@
   },
   {
     "n": 1,
-    "t": "File:Gateway123123.jpg",
-    "u": "wiki/File:Gateway123123.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Gateway2-1.png",
     "u": "wiki/File:Gateway2-1.png"
   },
@@ -2187,11 +1895,6 @@
     "n": 1,
     "t": "File:Gatewayhardening.jpg",
     "u": "wiki/File:Gatewayhardening.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Gear-192875640.jpg",
-    "u": "wiki/File:Gear-192875640.jpg"
   },
   {
     "n": 1,
@@ -2230,36 +1933,6 @@
   },
   {
     "n": 1,
-    "t": "File:Greencoinmarketcap.png",
-    "u": "wiki/File:Greencoinmarketcap.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Grub logo.png",
-    "u": "wiki/File:Grub_logo.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Grub-live mode indicator in debian.cleaned.png",
-    "u": "wiki/File:Grub-live_mode_indicator_in_debian.cleaned.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Grub-live mode indicator in kicksecure.cleaned.png",
-    "u": "wiki/File:Grub-live_mode_indicator_in_kicksecure.cleaned.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Grub-persistent mode indicator in debian.cleaned.png",
-    "u": "wiki/File:Grub-persistent_mode_indicator_in_debian.cleaned.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Grub-persistent mode indicator in kicksecure.cleaned.png",
-    "u": "wiki/File:Grub-persistent_mode_indicator_in_kicksecure.cleaned.png"
-  },
-  {
-    "n": 1,
     "t": "File:Gui-preview-Whonix-Workstation.jpg",
     "u": "wiki/File:Gui-preview-Whonix-Workstation.jpg"
   },
@@ -2282,26 +1955,6 @@
     "n": 1,
     "t": "File:Hardening-13423213.jpg",
     "u": "wiki/File:Hardening-13423213.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Hardenkernel.jpg",
-    "u": "wiki/File:Hardenkernel.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Hardware-159264640.png",
-    "u": "wiki/File:Hardware-159264640.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Hardwareminimize.jpg",
-    "u": "wiki/File:Hardwareminimize.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Hardwarewalletthreat.jpg",
-    "u": "wiki/File:Hardwarewalletthreat.jpg"
   },
   {
     "n": 1,
@@ -2365,11 +2018,6 @@
   },
   {
     "n": 1,
-    "t": "File:Host232security23434234.jpg",
-    "u": "wiki/File:Host232security23434234.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Hostfirewall213213.jpg",
     "u": "wiki/File:Hostfirewall213213.jpg"
   },
@@ -2387,11 +2035,6 @@
     "n": 1,
     "t": "File:HostingAdvise-Whonix.jpg",
     "u": "wiki/File:HostingAdvise-Whonix.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Hostlive.png",
-    "u": "wiki/File:Hostlive.png"
   },
   {
     "n": 1,
@@ -2475,16 +2118,6 @@
   },
   {
     "n": 1,
-    "t": "File:I2plogo.png",
-    "u": "wiki/File:I2plogo.png"
-  },
-  {
-    "n": 1,
-    "t": "File:IBAN.png",
-    "u": "wiki/File:IBAN.png"
-  },
-  {
-    "n": 1,
     "t": "File:IP Hiding outdated123.jpg",
     "u": "wiki/File:IP_Hiding_outdated123.jpg"
   },
@@ -2515,21 +2148,6 @@
   },
   {
     "n": 1,
-    "t": "File:Information-275708-640.png",
-    "u": "wiki/File:Information-275708-640.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Insecurechromiumrepo.jpg",
-    "u": "wiki/File:Insecurechromiumrepo.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Insecurity123.png",
-    "u": "wiki/File:Insecurity123.png"
-  },
-  {
-    "n": 1,
     "t": "File:Install Virtualbox.png",
     "u": "wiki/File:Install_Virtualbox.png"
   },
@@ -2545,11 +2163,6 @@
   },
   {
     "n": 1,
-    "t": "File:Installationofwhonixusb123143.jpg",
-    "u": "wiki/File:Installationofwhonixusb123143.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Installing whonix.png",
     "u": "wiki/File:Installing_whonix.png"
   },
@@ -2562,11 +2175,6 @@
     "n": 1,
     "t": "File:Internet Archive logo.png",
     "u": "wiki/File:Internet_Archive_logo.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Investors.jpg",
-    "u": "wiki/File:Investors.jpg"
   },
   {
     "n": 1,
@@ -2595,16 +2203,6 @@
   },
   {
     "n": 1,
-    "t": "File:Jondonym-1757709640.jpg",
-    "u": "wiki/File:Jondonym-1757709640.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Justmamrmweijriwrj.png",
-    "u": "wiki/File:Justmamrmweijriwrj.png"
-  },
-  {
-    "n": 1,
     "t": "File:Kernel Self Protection Settings 1.png",
     "u": "wiki/File:Kernel_Self_Protection_Settings_1.png"
   },
@@ -2615,28 +2213,8 @@
   },
   {
     "n": 1,
-    "t": "File:Kernelhardening13123.jpg",
-    "u": "wiki/File:Kernelhardening13123.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Keyboardlayout1282268640.jpg",
-    "u": "wiki/File:Keyboardlayout1282268640.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Keysigning.jpg",
     "u": "wiki/File:Keysigning.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Keystroke.png",
-    "u": "wiki/File:Keystroke.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Kicksecure-badge.png",
-    "u": "wiki/File:Kicksecure-badge.png"
   },
   {
     "n": 1,
@@ -2675,21 +2253,6 @@
   },
   {
     "n": 1,
-    "t": "File:Kicksecureabout.jpg",
-    "u": "wiki/File:Kicksecureabout.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Kicksecurehardenedmalloc.jpg",
-    "u": "wiki/File:Kicksecurehardenedmalloc.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Kisspng-automated-clearing-house-payment-wire-transfer-log.jpg",
-    "u": "wiki/File:Kisspng-automated-clearing-house-payment-wire-transfer-log.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Kvm-new-logo.png",
     "u": "wiki/File:Kvm-new-logo.png"
   },
@@ -2725,16 +2288,6 @@
   },
   {
     "n": 1,
-    "t": "File:Ledger Nano S - Hard Wallet - Cold Storage for Cryptocurrency 04.jpg",
-    "u": "wiki/File:Ledger_Nano_S_-_Hard_Wallet_-_Cold_Storage_for_Cryptocurrency_04.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Linuxexperience324.png",
-    "u": "wiki/File:Linuxexperience324.png"
-  },
-  {
-    "n": 1,
     "t": "File:Linuxkerneltux.png",
     "u": "wiki/File:Linuxkerneltux.png"
   },
@@ -2765,11 +2318,6 @@
   },
   {
     "n": 1,
-    "t": "File:Loginspoofing132.png",
-    "u": "wiki/File:Loginspoofing132.png"
-  },
-  {
-    "n": 1,
     "t": "File:Logo box.png",
     "u": "wiki/File:Logo_box.png"
   },
@@ -2790,11 +2338,6 @@
   },
   {
     "n": 1,
-    "t": "File:Logo-kvm-500x500.png",
-    "u": "wiki/File:Logo-kvm-500x500.png"
-  },
-  {
-    "n": 1,
     "t": "File:Logo-linux-500x500.png",
     "u": "wiki/File:Logo-linux-500x500.png"
   },
@@ -2805,23 +2348,8 @@
   },
   {
     "n": 1,
-    "t": "File:Logo-qubes-500x500.png",
-    "u": "wiki/File:Logo-qubes-500x500.png"
-  },
-  {
-    "n": 1,
     "t": "File:Logo-ubuntusvg.png",
     "u": "wiki/File:Logo-ubuntusvg.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Logo-usb-500x500.png",
-    "u": "wiki/File:Logo-usb-500x500.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Logo-virtualbox-500x500.png",
-    "u": "wiki/File:Logo-virtualbox-500x500.png"
   },
   {
     "n": 1,
@@ -2845,43 +2373,8 @@
   },
   {
     "n": 1,
-    "t": "File:MITM.jpg",
-    "u": "wiki/File:MITM.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Macsecbrowser1231.png",
-    "u": "wiki/File:Macsecbrowser1231.png"
-  },
-  {
-    "n": 1,
     "t": "File:Main page.png",
     "u": "wiki/File:Main_page.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Malloc423.jpg",
-    "u": "wiki/File:Malloc423.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Malware-1446109640.jpg",
-    "u": "wiki/File:Malware-1446109640.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Mandatoryaccesscontrol.jpg",
-    "u": "wiki/File:Mandatoryaccesscontrol.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Mans-best-friend-1870870640.png",
-    "u": "wiki/File:Mans-best-friend-1870870640.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Mastomys-332686640.jpg",
-    "u": "wiki/File:Mastomys-332686640.jpg"
   },
   {
     "n": 1,
@@ -2905,21 +2398,6 @@
   },
   {
     "n": 1,
-    "t": "File:Menger-702837640.jpg",
-    "u": "wiki/File:Menger-702837640.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Mentalcomputer4801544640.png",
-    "u": "wiki/File:Mentalcomputer4801544640.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Miro-chaps.png",
-    "u": "wiki/File:Miro-chaps.png"
-  },
-  {
-    "n": 1,
     "t": "File:Mitm.png",
     "u": "wiki/File:Mitm.png"
   },
@@ -2927,11 +2405,6 @@
     "n": 1,
     "t": "File:Mixmaster.jpg",
     "u": "wiki/File:Mixmaster.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Mobile-1231889640.jpg",
-    "u": "wiki/File:Mobile-1231889640.jpg"
   },
   {
     "n": 1,
@@ -2947,16 +2420,6 @@
     "n": 1,
     "t": "File:Monerogui.png",
     "u": "wiki/File:Monerogui.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Moneroheader.png",
-    "u": "wiki/File:Moneroheader.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Mountoptions.jpg",
-    "u": "wiki/File:Mountoptions.jpg"
   },
   {
     "n": 1,
@@ -3025,28 +2488,13 @@
   },
   {
     "n": 1,
-    "t": "File:Newerlinux161108640.png",
-    "u": "wiki/File:Newerlinux161108640.png"
-  },
-  {
-    "n": 1,
     "t": "File:Newidentityicon.png",
     "u": "wiki/File:Newidentityicon.png"
   },
   {
     "n": 1,
-    "t": "File:News-574739640.jpg",
-    "u": "wiki/File:News-574739640.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Nhekologo.png",
     "u": "wiki/File:Nhekologo.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Nontanonymous213132.jpg",
-    "u": "wiki/File:Nontanonymous213132.jpg"
   },
   {
     "n": 1,
@@ -3075,11 +2523,6 @@
   },
   {
     "n": 1,
-    "t": "File:Notfound14123523.png",
-    "u": "wiki/File:Notfound14123523.png"
-  },
-  {
-    "n": 1,
     "t": "File:Nymservers-6010640.jpg",
     "u": "wiki/File:Nymservers-6010640.jpg"
   },
@@ -3092,11 +2535,6 @@
     "n": 1,
     "t": "File:Oldstablewhonix.jpg",
     "u": "wiki/File:Oldstablewhonix.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Onetimepage13123123.png",
-    "u": "wiki/File:Onetimepage13123123.png"
   },
   {
     "n": 1,
@@ -3115,18 +2553,8 @@
   },
   {
     "n": 1,
-    "t": "File:Onion-161611640.png",
-    "u": "wiki/File:Onion-161611640.png"
-  },
-  {
-    "n": 1,
     "t": "File:OnionShare logo.png",
     "u": "wiki/File:OnionShare_logo.png"
-  },
-  {
-    "n": 1,
-    "t": "File:OnionShare.jpg",
-    "u": "wiki/File:OnionShare.jpg"
   },
   {
     "n": 1,
@@ -3200,33 +2628,8 @@
   },
   {
     "n": 1,
-    "t": "File:Openpgpmeme.png",
-    "u": "wiki/File:Openpgpmeme.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Opensourcehardware.png",
-    "u": "wiki/File:Opensourcehardware.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Operatingsystemupdated234234.jpg",
-    "u": "wiki/File:Operatingsystemupdated234234.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Orcascreenreader131233.png",
-    "u": "wiki/File:Orcascreenreader131233.png"
-  },
-  {
-    "n": 1,
     "t": "File:Organize-27344 640.png",
     "u": "wiki/File:Organize-27344_640.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Oshardening34234.jpg",
-    "u": "wiki/File:Oshardening34234.jpg"
   },
   {
     "n": 1,
@@ -3237,21 +2640,6 @@
     "n": 1,
     "t": "File:Other-browsers21312.png",
     "u": "wiki/File:Other-browsers21312.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Otherversions-1695760640.jpg",
-    "u": "wiki/File:Otherversions-1695760640.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Outofbandmanagement.jpg",
-    "u": "wiki/File:Outofbandmanagement.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:OwnCloudlogo.png",
-    "u": "wiki/File:OwnCloudlogo.png"
   },
   {
     "n": 1,
@@ -3267,21 +2655,6 @@
     "n": 1,
     "t": "File:Paragraph-684509 1920.jpg",
     "u": "wiki/File:Paragraph-684509_1920.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Password2781614640.jpg",
-    "u": "wiki/File:Password2781614640.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Passwords2132341.jpg",
-    "u": "wiki/File:Passwords2132341.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Payment.jpg",
-    "u": "wiki/File:Payment.jpg"
   },
   {
     "n": 1,
@@ -3310,28 +2683,8 @@
   },
   {
     "n": 1,
-    "t": "File:Place-name-sign-1647341640.jpg",
-    "u": "wiki/File:Place-name-sign-1647341640.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Plugins.png",
     "u": "wiki/File:Plugins.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Pointrelease213123.jpg",
-    "u": "wiki/File:Pointrelease213123.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Portal.jpg",
-    "u": "wiki/File:Portal.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Postquantum.jpg",
-    "u": "wiki/File:Postquantum.jpg"
   },
   {
     "n": 1,
@@ -3350,28 +2703,8 @@
   },
   {
     "n": 1,
-    "t": "File:Priority32423.jpg",
-    "u": "wiki/File:Priority32423.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Privacypolicy.jpg",
-    "u": "wiki/File:Privacypolicy.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Professional12313.jpg",
-    "u": "wiki/File:Professional12313.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Project policies.png",
     "u": "wiki/File:Project_policies.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Protectionagainst234234234.jpg",
-    "u": "wiki/File:Protectionagainst234234234.jpg"
   },
   {
     "n": 1,
@@ -3400,11 +2733,6 @@
   },
   {
     "n": 1,
-    "t": "File:Quantum-869533640.jpg",
-    "u": "wiki/File:Quantum-869533640.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Quaternion.png",
     "u": "wiki/File:Quaternion.png"
   },
@@ -3412,6 +2740,11 @@
     "n": 1,
     "t": "File:Qubeclonerenaming.png",
     "u": "wiki/File:Qubeclonerenaming.png"
+  },
+  {
+    "n": 1,
+    "t": "File:Qubes-Whonix-Gateway Template Qubes VM Manager Settings.png",
+    "u": "wiki/File:Qubes-Whonix-Gateway_Template_Qubes_VM_Manager_Settings.png"
   },
   {
     "n": 1,
@@ -3442,11 +2775,6 @@
     "n": 1,
     "t": "File:QubesWhonixDesktop.png",
     "u": "wiki/File:QubesWhonixDesktop.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Qubesapparmor123123123.png",
-    "u": "wiki/File:Qubesapparmor123123123.png"
   },
   {
     "n": 1,
@@ -3490,28 +2818,8 @@
   },
   {
     "n": 1,
-    "t": "File:Qubesupdate12312345.png",
-    "u": "wiki/File:Qubesupdate12312345.png"
-  },
-  {
-    "n": 1,
     "t": "File:Qubesupdateproxy31231235.png",
     "u": "wiki/File:Qubesupdateproxy31231235.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Qubeswhonix23324.jpg",
-    "u": "wiki/File:Qubeswhonix23324.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Question-1441184640.jpg",
-    "u": "wiki/File:Question-1441184640.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Quickstart.jpg",
-    "u": "wiki/File:Quickstart.jpg"
   },
   {
     "n": 1,
@@ -3525,18 +2833,8 @@
   },
   {
     "n": 1,
-    "t": "File:RAMAdjustedDesktopStarter.png",
-    "u": "wiki/File:RAMAdjustedDesktopStarter.png"
-  },
-  {
-    "n": 1,
     "t": "File:RSSlogo.png",
     "u": "wiki/File:RSSlogo.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Randomizationclock321423.jpg",
-    "u": "wiki/File:Randomizationclock321423.jpg"
   },
   {
     "n": 1,
@@ -3550,11 +2848,6 @@
   },
   {
     "n": 1,
-    "t": "File:Read-live23231.jpg",
-    "u": "wiki/File:Read-live23231.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Realworldexplosion.jpg",
     "u": "wiki/File:Realworldexplosion.jpg"
   },
@@ -3565,11 +2858,6 @@
   },
   {
     "n": 1,
-    "t": "File:Recovery312123.jpg",
-    "u": "wiki/File:Recovery312123.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Recovery43324.jpg",
     "u": "wiki/File:Recovery43324.jpg"
   },
@@ -3577,11 +2865,6 @@
     "n": 1,
     "t": "File:Redirect12123.png",
     "u": "wiki/File:Redirect12123.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Releasenots.png",
-    "u": "wiki/File:Releasenots.png"
   },
   {
     "n": 1,
@@ -3610,18 +2893,8 @@
   },
   {
     "n": 1,
-    "t": "File:Repository3243245.jpg",
-    "u": "wiki/File:Repository3243245.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Research123123.jpg",
     "u": "wiki/File:Research123123.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Resistance-1832389640.jpg",
-    "u": "wiki/File:Resistance-1832389640.jpg"
   },
   {
     "n": 1,
@@ -3665,28 +2938,8 @@
   },
   {
     "n": 1,
-    "t": "File:Road-sign-464653 960 720.jpg",
-    "u": "wiki/File:Road-sign-464653_960_720.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Roadmap.jpg",
     "u": "wiki/File:Roadmap.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Root123123.jpg",
-    "u": "wiki/File:Root123123.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Router.png",
-    "u": "wiki/File:Router.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Rsysr32.cleaned.jpg",
-    "u": "wiki/File:Rsysr32.cleaned.jpg"
   },
   {
     "n": 1,
@@ -3722,26 +2975,6 @@
     "n": 1,
     "t": "File:SDK5-2.jpg",
     "u": "wiki/File:SDK5-2.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:SIM32423.jpg",
-    "u": "wiki/File:SIM32423.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:SSH.jpg",
-    "u": "wiki/File:SSH.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:SWIFT logo.svg.png",
-    "u": "wiki/File:SWIFT_logo.svg.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Sandboxing123123.png",
-    "u": "wiki/File:Sandboxing123123.png"
   },
   {
     "n": 1,
@@ -3805,36 +3038,6 @@
   },
   {
     "n": 1,
-    "t": "File:Secbrowser2342341412.jpg",
-    "u": "wiki/File:Secbrowser2342341412.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Secbrowser31123.png",
-    "u": "wiki/File:Secbrowser31123.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Secbrowser3431.jpg",
-    "u": "wiki/File:Secbrowser3431.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Securedownloads.jpg",
-    "u": "wiki/File:Securedownloads.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Securityguide123132.jpg",
-    "u": "wiki/File:Securityguide123132.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Securitymisc.jpg",
-    "u": "wiki/File:Securitymisc.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Select Import2.png",
     "u": "wiki/File:Select_Import2.png"
   },
@@ -3852,11 +3055,6 @@
     "n": 1,
     "t": "File:Self-support.jpg",
     "u": "wiki/File:Self-support.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Sepa-lastschrift-vector-logo.png",
-    "u": "wiki/File:Sepa-lastschrift-vector-logo.png"
   },
   {
     "n": 1,
@@ -3905,33 +3103,13 @@
   },
   {
     "n": 1,
-    "t": "File:Signalmessenger.png",
-    "u": "wiki/File:Signalmessenger.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Signatureverification123123.jpg",
-    "u": "wiki/File:Signatureverification123123.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Signify Logo.svg.png",
     "u": "wiki/File:Signify_Logo.svg.png"
   },
   {
     "n": 1,
-    "t": "File:Signify1323.jpg",
-    "u": "wiki/File:Signify1323.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Signing Key.png",
     "u": "wiki/File:Signing_Key.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Signingkeykvm.jpg",
-    "u": "wiki/File:Signingkeykvm.jpg"
   },
   {
     "n": 1,
@@ -3942,11 +3120,6 @@
     "n": 1,
     "t": "File:SimpleX Logo Small.png",
     "u": "wiki/File:SimpleX_Logo_Small.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Skip-97632640.png",
-    "u": "wiki/File:Skip-97632640.png"
   },
   {
     "n": 1,
@@ -3965,23 +3138,8 @@
   },
   {
     "n": 1,
-    "t": "File:Socialengineering123142.jpg",
-    "u": "wiki/File:Socialengineering123142.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Software-557615640.jpg",
-    "u": "wiki/File:Software-557615640.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Source-code-icon.png",
     "u": "wiki/File:Source-code-icon.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Sourcecode123123.jpg",
-    "u": "wiki/File:Sourcecode123123.jpg"
   },
   {
     "n": 1,
@@ -3992,11 +3150,6 @@
     "n": 1,
     "t": "File:Speculativetor.jpg",
     "u": "wiki/File:Speculativetor.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Speechlimitation123123.png",
-    "u": "wiki/File:Speechlimitation123123.png"
   },
   {
     "n": 1,
@@ -4012,11 +3165,6 @@
     "n": 1,
     "t": "File:Ssl warning.png",
     "u": "wiki/File:Ssl_warning.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Stability-23423542354.jpg",
-    "u": "wiki/File:Stability-23423542354.jpg"
   },
   {
     "n": 1,
@@ -4085,11 +3233,6 @@
   },
   {
     "n": 1,
-    "t": "File:Suidhardener.jpg",
-    "u": "wiki/File:Suidhardener.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Supermenu.png",
     "u": "wiki/File:Supermenu.png"
   },
@@ -4105,11 +3248,6 @@
   },
   {
     "n": 1,
-    "t": "File:Support-487515640.jpg",
-    "u": "wiki/File:Support-487515640.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Swap File Creator 1.png",
     "u": "wiki/File:Swap_File_Creator_1.png"
   },
@@ -4120,18 +3258,8 @@
   },
   {
     "n": 1,
-    "t": "File:Swapfile21312345.png",
-    "u": "wiki/File:Swapfile21312345.png"
-  },
-  {
-    "n": 1,
     "t": "File:Swift 128.png",
     "u": "wiki/File:Swift_128.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Sysrq12312d21.jpg",
-    "u": "wiki/File:Sysrq12312d21.jpg"
   },
   {
     "n": 1,
@@ -4160,18 +3288,8 @@
   },
   {
     "n": 1,
-    "t": "File:Systemconfiguration.png",
-    "u": "wiki/File:Systemconfiguration.png"
-  },
-  {
-    "n": 1,
     "t": "File:Systemd-logo.svg",
     "u": "wiki/File:Systemd-logo.svg"
-  },
-  {
-    "n": 1,
-    "t": "File:TBBWITHOUTOR-2929843640.jpg",
-    "u": "wiki/File:TBBWITHOUTOR-2929843640.jpg"
   },
   {
     "n": 1,
@@ -4187,11 +3305,6 @@
     "n": 1,
     "t": "File:TBfingerprint2.png",
     "u": "wiki/File:TBfingerprint2.png"
-  },
-  {
-    "n": 1,
-    "t": "File:TLS1432.jpg",
-    "u": "wiki/File:TLS1432.jpg"
   },
   {
     "n": 1,
@@ -4260,16 +3373,6 @@
   },
   {
     "n": 1,
-    "t": "File:Team12321321.jpg",
-    "u": "wiki/File:Team12321321.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Telegramovertor12354.jpg",
-    "u": "wiki/File:Telegramovertor12354.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Telegramphoneregistration.png",
     "u": "wiki/File:Telegramphoneregistration.png"
   },
@@ -4287,11 +3390,6 @@
     "n": 1,
     "t": "File:Tempestupdate5.png",
     "u": "wiki/File:Tempestupdate5.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Tester234234.jpg",
-    "u": "wiki/File:Tester234234.jpg"
   },
   {
     "n": 1,
@@ -4317,11 +3415,6 @@
     "n": 1,
     "t": "File:The Internet is a Precarious Tower of Dependencies.png",
     "u": "wiki/File:The_Internet_is_a_Precarious_Tower_of_Dependencies.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Threats123123.jpg",
-    "u": "wiki/File:Threats123123.jpg"
   },
   {
     "n": 1,
@@ -4560,11 +3653,6 @@
   },
   {
     "n": 1,
-    "t": "File:Timestamps.jpg",
-    "u": "wiki/File:Timestamps.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Timezone123123451.png",
     "u": "wiki/File:Timezone123123451.png"
   },
@@ -4770,16 +3858,6 @@
   },
   {
     "n": 1,
-    "t": "File:Tormyths325234523.jpg",
-    "u": "wiki/File:Tormyths325234523.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Torqubes234234.jpg",
-    "u": "wiki/File:Torqubes234234.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Torrc page.png",
     "u": "wiki/File:Torrc_page.png"
   },
@@ -4790,28 +3868,8 @@
   },
   {
     "n": 1,
-    "t": "File:Torversioning243231.png",
-    "u": "wiki/File:Torversioning243231.png"
-  },
-  {
-    "n": 1,
     "t": "File:ToxLogo234234.png",
     "u": "wiki/File:ToxLogo234234.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Trademark234234.jpg",
-    "u": "wiki/File:Trademark234234.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Transportudp2314234.jpg",
-    "u": "wiki/File:Transportudp2314234.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Troubleshooting-114197640.jpg",
-    "u": "wiki/File:Troubleshooting-114197640.jpg"
   },
   {
     "n": 1,
@@ -4822,11 +3880,6 @@
     "n": 1,
     "t": "File:Typing-fingerprint.jpg",
     "u": "wiki/File:Typing-fingerprint.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:USBsymbol.png",
-    "u": "wiki/File:USBsymbol.png"
   },
   {
     "n": 1,
@@ -4845,33 +3898,18 @@
   },
   {
     "n": 1,
-    "t": "File:Upgrade-1672367640.jpg",
-    "u": "wiki/File:Upgrade-1672367640.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Upgrade.jpg",
     "u": "wiki/File:Upgrade.jpg"
   },
   {
     "n": 1,
-    "t": "File:Usd-coin-usdc-logo.png",
-    "u": "wiki/File:Usd-coin-usdc-logo.png"
+    "t": "File:Usb installation.jpg",
+    "u": "wiki/File:Usb_installation.jpg"
   },
   {
     "n": 1,
     "t": "File:Usenet-23423525234.png",
     "u": "wiki/File:Usenet-23423525234.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Useraccountisolatiom123123.jpg",
-    "u": "wiki/File:Useraccountisolatiom123123.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Usesearchengine.jpg",
-    "u": "wiki/File:Usesearchengine.jpg"
   },
   {
     "n": 1,
@@ -4890,26 +3928,6 @@
   },
   {
     "n": 1,
-    "t": "File:Vboxsecissue-40122240.jpg",
-    "u": "wiki/File:Vboxsecissue-40122240.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Vboxtroubleshoot123123.jpg",
-    "u": "wiki/File:Vboxtroubleshoot123123.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Verification123151231.jpg",
-    "u": "wiki/File:Verification123151231.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Verifiedboot1245.png",
-    "u": "wiki/File:Verifiedboot1245.png"
-  },
-  {
-    "n": 1,
     "t": "File:Verify images on linux.png",
     "u": "wiki/File:Verify_images_on_linux.png"
   },
@@ -4922,16 +3940,6 @@
     "n": 1,
     "t": "File:Verify-whonix-windows-images.jpg",
     "u": "wiki/File:Verify-whonix-windows-images.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Verifyingsignature1231233.png",
-    "u": "wiki/File:Verifyingsignature1231233.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Verifysystem.jpg",
-    "u": "wiki/File:Verifysystem.jpg"
   },
   {
     "n": 1,
@@ -4995,16 +4003,6 @@
   },
   {
     "n": 1,
-    "t": "File:Virtualbox-and-whonix.png",
-    "u": "wiki/File:Virtualbox-and-whonix.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Virtualizationsec2342342.jpg",
-    "u": "wiki/File:Virtualizationsec2342342.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Virtualizer Friendly 1.png",
     "u": "wiki/File:Virtualizer_Friendly_1.png"
   },
@@ -5040,23 +4038,8 @@
   },
   {
     "n": 1,
-    "t": "File:Vnc.jpeg",
-    "u": "wiki/File:Vnc.jpeg"
-  },
-  {
-    "n": 1,
     "t": "File:Vpnfirewall1234322134.jpg",
     "u": "wiki/File:Vpnfirewall1234322134.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:WS-GWBlurred-GUI.PNG",
-    "u": "wiki/File:WS-GWBlurred-GUI.PNG"
-  },
-  {
-    "n": 1,
-    "t": "File:WSBlurred-GW-GUI.PNG",
-    "u": "wiki/File:WSBlurred-GW-GUI.PNG"
   },
   {
     "n": 1,
@@ -5067,11 +4050,6 @@
     "n": 1,
     "t": "File:Wait6.png",
     "u": "wiki/File:Wait6.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Wanted12312412.jpg",
-    "u": "wiki/File:Wanted12312412.jpg"
   },
   {
     "n": 1,
@@ -5090,23 +4068,8 @@
   },
   {
     "n": 1,
-    "t": "File:Websitetest.jpg",
-    "u": "wiki/File:Websitetest.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Whatisgw2123123.jpg",
-    "u": "wiki/File:Whatisgw2123123.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Whatismybrowser.png",
     "u": "wiki/File:Whatismybrowser.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Whatisws42343.jpg",
-    "u": "wiki/File:Whatisws42343.jpg"
   },
   {
     "n": 1,
@@ -5147,11 +4110,6 @@
     "n": 1,
     "t": "File:Whonix Profile Dark.svg",
     "u": "wiki/File:Whonix_Profile_Dark.svg"
-  },
-  {
-    "n": 1,
-    "t": "File:Whonix Profile Light.png",
-    "u": "wiki/File:Whonix_Profile_Light.png"
   },
   {
     "n": 1,
@@ -5255,11 +4213,6 @@
   },
   {
     "n": 1,
-    "t": "File:Whonix logo600x321.png",
-    "u": "wiki/File:Whonix_logo600x321.png"
-  },
-  {
-    "n": 1,
     "t": "File:Whonix main logo bottle.jpg",
     "u": "wiki/File:Whonix_main_logo_bottle.jpg"
   },
@@ -5287,11 +4240,6 @@
     "n": 1,
     "t": "File:Whonix old logo.png",
     "u": "wiki/File:Whonix_old_logo.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Whonix onUSB.jpg",
-    "u": "wiki/File:Whonix_onUSB.jpg"
   },
   {
     "n": 1,
@@ -5365,11 +4313,6 @@
   },
   {
     "n": 1,
-    "t": "File:Whonix-Gateway-Xfce.jpg",
-    "u": "wiki/File:Whonix-Gateway-Xfce.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Whonix-Gateway-Xfce.png",
     "u": "wiki/File:Whonix-Gateway-Xfce.png"
   },
@@ -5410,21 +4353,6 @@
   },
   {
     "n": 1,
-    "t": "File:Whonix-WS-GWblurred.png",
-    "u": "wiki/File:Whonix-WS-GWblurred.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Whonix-WSblurred-GW.png",
-    "u": "wiki/File:Whonix-WSblurred-GW.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Whonix-Workstation-CLI.jpg",
-    "u": "wiki/File:Whonix-Workstation-CLI.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Whonix-Workstation-CLI.png",
     "u": "wiki/File:Whonix-Workstation-CLI.png"
   },
@@ -5432,11 +4360,6 @@
     "n": 1,
     "t": "File:Whonix-Workstation-LXQt.png",
     "u": "wiki/File:Whonix-Workstation-LXQt.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Whonix-Workstation-Xfce.jpg",
-    "u": "wiki/File:Whonix-Workstation-Xfce.jpg"
   },
   {
     "n": 1,
@@ -5462,11 +4385,6 @@
     "n": 1,
     "t": "File:Whonix-explainer-title.jpg",
     "u": "wiki/File:Whonix-explainer-title.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Whonix-homepage-main.jpg",
-    "u": "wiki/File:Whonix-homepage-main.jpg"
   },
   {
     "n": 1,
@@ -5635,28 +4553,13 @@
   },
   {
     "n": 1,
-    "t": "File:Whonixcheckhard.jpg",
-    "u": "wiki/File:Whonixcheckhard.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Whonixgatewaysecur23234234.jpg",
     "u": "wiki/File:Whonixgatewaysecur23234234.jpg"
   },
   {
     "n": 1,
-    "t": "File:Whonixlive.jpg",
-    "u": "wiki/File:Whonixlive.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Whonixlock old.png",
     "u": "wiki/File:Whonixlock_old.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Whonixonly.jpg",
-    "u": "wiki/File:Whonixonly.jpg"
   },
   {
     "n": 1,
@@ -5690,16 +4593,6 @@
   },
   {
     "n": 1,
-    "t": "File:Whonixsigningkey.jpg",
-    "u": "wiki/File:Whonixsigningkey.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Whonixusetor.jpg",
-    "u": "wiki/File:Whonixusetor.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:WhonixvsVPNontheleft.jpg",
     "u": "wiki/File:WhonixvsVPNontheleft.jpg"
   },
@@ -5710,28 +4603,13 @@
   },
   {
     "n": 1,
-    "t": "File:Whonixworkstationkde.png",
-    "u": "wiki/File:Whonixworkstationkde.png"
-  },
-  {
-    "n": 1,
     "t": "File:Whyhatewindows10.png",
     "u": "wiki/File:Whyhatewindows10.png"
   },
   {
     "n": 1,
-    "t": "File:Whykvm157638640.png",
-    "u": "wiki/File:Whykvm157638640.png"
-  },
-  {
-    "n": 1,
     "t": "File:Whyslowww.jpg",
     "u": "wiki/File:Whyslowww.jpg"
-  },
-  {
-    "n": 1,
-    "t": "File:Wickr12312312.png",
-    "u": "wiki/File:Wickr12312312.png"
   },
   {
     "n": 1,
@@ -5752,16 +4630,6 @@
     "n": 1,
     "t": "File:Windows installer 7za-exe.png",
     "u": "wiki/File:Windows_installer_7za-exe.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Windows23231.png",
-    "u": "wiki/File:Windows23231.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Windowsquickstart.jpg",
-    "u": "wiki/File:Windowsquickstart.jpg"
   },
   {
     "n": 1,
@@ -5795,11 +4663,6 @@
   },
   {
     "n": 1,
-    "t": "File:Workstationhardening.jpg",
-    "u": "wiki/File:Workstationhardening.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Wsandgwmeeting213.jpg",
     "u": "wiki/File:Wsandgwmeeting213.jpg"
   },
@@ -5807,16 +4670,6 @@
     "n": 1,
     "t": "File:XFmCp.png",
     "u": "wiki/File:XFmCp.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Xenproject.png",
-    "u": "wiki/File:Xenproject.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Xfce logo.svg.png",
-    "u": "wiki/File:Xfce_logo.svg.png"
   },
   {
     "n": 1,
@@ -5840,11 +4693,6 @@
   },
   {
     "n": 1,
-    "t": "File:Yellowcoinmarketcap.png",
-    "u": "wiki/File:Yellowcoinmarketcap.png"
-  },
-  {
-    "n": 1,
     "t": "File:Your connection to Tor is not being managed by Tor Browser.png",
     "u": "wiki/File:Your_connection_to_Tor_is_not_being_managed_by_Tor_Browser.png"
   },
@@ -5852,11 +4700,6 @@
     "n": 1,
     "t": "File:Youtubedllogo.png",
     "u": "wiki/File:Youtubedllogo.png"
-  },
-  {
-    "n": 1,
-    "t": "File:Youtubedownload.png",
-    "u": "wiki/File:Youtubedownload.png"
   },
   {
     "n": 1,
@@ -8083,6 +6926,11 @@
   },
   {
     "n": 1,
+    "t": "Template:PayPal Donate Button",
+    "u": "wiki/Template:PayPal_Donate_Button"
+  },
+  {
+    "n": 1,
     "t": "Template:Payments",
     "u": "wiki/Template:Payments"
   },
@@ -8105,11 +6953,6 @@
     "n": 1,
     "t": "Template:Post Install Advice",
     "u": "wiki/Template:Post_Install_Advice"
-  },
-  {
-    "n": 1,
-    "t": "Template:Pp-meta",
-    "u": "wiki/Template:Pp-meta"
   },
   {
     "n": 1,

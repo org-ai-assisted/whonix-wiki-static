@@ -1848,15 +1848,20 @@ code:empty { display: none; }
    attr width, uncapped) than when loaded (scaled to the column by max-width:100%). Under auto
    table-layout the wider broken box grows its column and rewraps the text, reflowing the table by
    thousands of px on a phone (the About "Kicksecure Hardening Features" table: -2770px when its
-   images are absent). Pin ONLY the image-bearing tables (:has(.thumbframe)) to fixed layout, so
-   column widths come from the table width alone -- identical whether the image loads or not, and no
-   image is shrunk. The nowrap command/sysctl tables carry no thumbframe, so :has() leaves them on
-   auto-layout + the overflow-x scroll: a fixed layout there would overflow an unbreakable cell
-   instead of scrolling it. Mobile-only -- desktop has room, no reflow. Residual edge (rare, not in
-   About/ISO): a table with BOTH a thumbframe AND an unbreakable nowrap-wide cell still gets fixed
-   layout and could overflow that cell; reserve the in-cell image box if that ever appears. */
+   images are absent -- the Malware img's 220px width attr drives the broken box, not its alt text).
+   Pin ONLY image-bearing tables (:has(.thumbframe)) to fixed layout, so column widths come from the
+   table width alone -- identical whether the image loads or not, and no image is shrunk.
+   - :not(:has(table .thumbframe)) -- :has() matches ANCESTOR tables, so a thumbframe in a nested
+     table would wrongly pin the OUTER table; pin only the innermost table that directly holds it.
+   - :not(.toc):not(.storage-table):not(.comparison-table) -- these manage their own layout.
+   Residual edge (rare, not in About/ISO): a table with BOTH a thumbframe AND a genuinely unbreakable
+   wide cell (e.g. a long nowrap command) still gets fixed layout and could overflow that cell. NOT
+   guarded on .nowrap: the trademark binder (_bind_trademarks) wraps every "Name<sup>..</sup>" run in
+   <span class="nowrap"> body-wide, so :not(:has(.nowrap)) would exclude -- and reflow-regress -- the
+   many image tables that merely name a trademarked project. Reserve the in-cell image box instead if
+   that edge ever appears. Mobile-only -- desktop has room, no reflow. */
 @media (max-width: 480px) {
-  .wiki-content table:has(.thumbframe):not(.toc):not(.storage-table):not(.comparison-table) {
+  .wiki-content table:has(.thumbframe):not(:has(table .thumbframe)):not(.toc):not(.storage-table):not(.comparison-table) {
     display: table;
     table-layout: fixed;
     width: 100%;
@@ -3823,25 +3828,29 @@ html.client-js .section-download .tab-content-controller .tcc-content { padding-
 .toc-toggle:not(:checked) ~ ul { display: none; }
 .toc-toggle:focus-visible ~ .toc-title { outline: 2px solid var(--link); outline-offset: 2px; }
 .toc ul { list-style: none; margin: 0.5rem 0 0; padding: 0; }
-.toc li { margin: 0.15rem 0; }
-/* Per-section collapse: build_toc nests each parent section's subsections inside a
-   <details class="toc-sec">, so indentation comes from the nesting (a fixed step per
-   level), NOT absolute per-depth padding (which would compound with the nesting). */
-.toc-l1, .toc-l2, .toc-l3, .toc-l4, .toc-l5, .toc-l6 { padding-left: 0; }
+/* Every item reserves a left gutter for the disclosure toggle so a parent (toggle in the
+   gutter) and a leaf (empty gutter) at the same level align; per-level indent comes from the
+   nested <ul>, not per-depth padding. position:relative anchors the absolute toggle. */
+.toc li { margin: 0.15rem 0; position: relative; padding-left: 1.7rem; }
 .toc .toc-sec > ul { padding-left: 1.2rem; }
-/* Each parent section is a native <details> (no-JS, CSP-safe): drop the default
-   disclosure triangle for a +/- marker and show its direct-subsection count. */
-.toc .toc-sec > summary {
+/* Per-section collapse: each parent section's subsections live in a native
+   <details class="toc-sec"> (no-JS, CSP-safe). The section link is a SEPARATE SIBLING before
+   the <details> (never inside <summary>, so no interactive-in-interactive -- axe
+   nested-interactive), and the <summary class="toc-expander"> is an empty, dedicated
+   disclosure toggle boxed to a >=24px target (WCAG 2.5.8 target-size), absolutely placed in
+   the item's left gutter and aligned with the link's first line. +/- marker, no native
+   triangle. */
+.toc .toc-expander {
+  position: absolute; left: 0; top: 0; box-sizing: border-box;
+  width: 24px; height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
   list-style: none; cursor: pointer; user-select: none;
-  display: inline-flex; align-items: baseline; gap: 0.3rem;
-}
-.toc .toc-sec > summary::-webkit-details-marker { display: none; }
-.toc .toc-sec > summary::before {
-  content: "+"; flex: none; width: 0.9em; text-align: center;
   color: var(--muted); font-weight: 600;
 }
-.toc .toc-sec[open] > summary::before { content: "\2212"; }
-.toc .toc-sec > summary:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+.toc .toc-expander::-webkit-details-marker { display: none; }
+.toc .toc-expander::before { content: "+"; }
+.toc .toc-sec[open] > .toc-expander::before { content: "\2212"; }
+.toc .toc-expander:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-radius: 4px; }
 .toc-count { color: var(--muted); font-size: 0.9em; }
 .toc .tocnumber { color: var(--muted); margin-right: 0.4rem; }
 /* inline-block + vertical padding gives each TOC link a >=24px tap target and spacing
@@ -4679,7 +4688,7 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
    the bar flex-wraps to several rows and the centred X floats mid-card. Pin it to the top-right
    corner once the bar can wrap (positive offsets only, per the #89/#91 guard). */
 @media (max-width: 600px) {
-  .sitenotice-banner[data-banner-id="39"] .sitenotice-close { top: 7px; transform: none; }
+  .sitenotice:has(.sitenotice-banner[data-banner-id="39"]) .sitenotice-close { top: 7px; transform: none; }
 }
 .sitenotice-banner[data-banner-id="39"] {
   /* Placement A neutral bar: theme-aware surface, left-aligned content, the Donate button

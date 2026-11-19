@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Whonix -- recent changes</title>
+  <link rel="self" href="https://www.whonix.org/feed.xml"/>
+  <link href="https://www.whonix.org/"/>
+  <id>https://www.whonix.org/feed.xml</id>
+  <updated>2026-11-18T18:51:43-05:00</updated>
+  <author><name>Whonix</name></author>
+  <entry>
+    <title>Access Gateway Port From Host</title>
+    <link href="https://www.whonix.org/wiki/Access_Gateway_Port_From_Host"/>
+    <id>https://www.whonix.org/wiki/Access_Gateway_Port_From_Host</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Access Local Network or Host or Clearnet Internet from VM</title>
+    <link href="https://www.whonix.org/wiki/Access_Local_Network_or_Host_or_Clearnet_Internet_from_VM"/>
+    <id>https://www.whonix.org/wiki/Access_Local_Network_or_Host_or_Clearnet_Internet_from_VM</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Advanced Deanonymization Attacks</title>
+    <link href="https://www.whonix.org/wiki/Advanced_Deanonymization_Attacks"/>
+    <id>https://www.whonix.org/wiki/Advanced_Deanonymization_Attacks</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Advanced Documentation</title>
+    <link href="https://www.whonix.org/wiki/Advanced_Documentation"/>
+    <id>https://www.whonix.org/wiki/Advanced_Documentation</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Anbox</title>
+    <link href="https://www.whonix.org/wiki/Anbox"/>
+    <id>https://www.whonix.org/wiki/Anbox</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Anon Connection Wizard</title>
+    <link href="https://www.whonix.org/wiki/Anon_Connection_Wizard"/>
+    <id>https://www.whonix.org/wiki/Anon_Connection_Wizard</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Art Gallery</title>
+    <link href="https://www.whonix.org/wiki/Art_Gallery"/>
+    <id>https://www.whonix.org/wiki/Art_Gallery</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Bisq</title>
+    <link href="https://www.whonix.org/wiki/Bisq"/>
+    <id>https://www.whonix.org/wiki/Bisq</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>BitMessage</title>
+    <link href="https://www.whonix.org/wiki/BitMessage"/>
+    <id>https://www.whonix.org/wiki/BitMessage</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Bitcoin</title>
+    <link href="https://www.whonix.org/wiki/Bitcoin"/>
+    <id>https://www.whonix.org/wiki/Bitcoin</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Bitcoin Core</title>
+    <link href="https://www.whonix.org/wiki/Bitcoin_Core"/>
+    <id>https://www.whonix.org/wiki/Bitcoin_Core</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Bridges</title>
+    <link href="https://www.whonix.org/wiki/Bridges"/>
+    <id>https://www.whonix.org/wiki/Bridges</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Browser Plugins</title>
+    <link href="https://www.whonix.org/wiki/Browser_Plugins"/>
+    <id>https://www.whonix.org/wiki/Browser_Plugins</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Browser Tests</title>
+    <link href="https://www.whonix.org/wiki/Browser_Tests"/>
+    <id>https://www.whonix.org/wiki/Browser_Tests</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Build Configuration</title>
+    <link href="https://www.whonix.org/wiki/Build_Configuration"/>
+    <id>https://www.whonix.org/wiki/Build_Configuration</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Chaining Anonymizing Gateways</title>
+    <link href="https://www.whonix.org/wiki/Chaining_Anonymizing_Gateways"/>
+    <id>https://www.whonix.org/wiki/Chaining_Anonymizing_Gateways</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Changelog</title>
+    <link href="https://www.whonix.org/wiki/Changelog"/>
+    <id>https://www.whonix.org/wiki/Changelog</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Chat</title>
+    <link href="https://www.whonix.org/wiki/Chat"/>
+    <id>https://www.whonix.org/wiki/Chat</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Chrome</title>
+    <link href="https://www.whonix.org/wiki/Chrome"/>
+    <id>https://www.whonix.org/wiki/Chrome</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Chromium</title>
+    <link href="https://www.whonix.org/wiki/Chromium"/>
+    <id>https://www.whonix.org/wiki/Chromium</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Common CLI Commands</title>
+    <link href="https://www.whonix.org/wiki/Common_CLI_Commands"/>
+    <id>https://www.whonix.org/wiki/Common_CLI_Commands</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Comparison of Whonix-Gateway and Whonix-Workstation</title>
+    <link href="https://www.whonix.org/wiki/Comparison_of_Whonix-Gateway_and_Whonix-Workstation"/>
+    <id>https://www.whonix.org/wiki/Comparison_of_Whonix-Gateway_and_Whonix-Workstation</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Comparison with Kicksecure</title>
+    <link href="https://www.whonix.org/wiki/Comparison_with_Kicksecure"/>
+    <id>https://www.whonix.org/wiki/Comparison_with_Kicksecure</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Contributors</title>
+    <link href="https://www.whonix.org/wiki/Contributors"/>
+    <id>https://www.whonix.org/wiki/Contributors</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Corridor</title>
+    <link href="https://www.whonix.org/wiki/Corridor"/>
+    <id>https://www.whonix.org/wiki/Corridor</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Data Collection Techniques</title>
+    <link href="https://www.whonix.org/wiki/Data_Collection_Techniques"/>
+    <id>https://www.whonix.org/wiki/Data_Collection_Techniques</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Debian</title>
+    <link href="https://www.whonix.org/wiki/Debian"/>
+    <id>https://www.whonix.org/wiki/Debian</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Debian Packages</title>
+    <link href="https://www.whonix.org/wiki/Debian_Packages"/>
+    <id>https://www.whonix.org/wiki/Debian_Packages</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>DeltaChat</title>
+    <link href="https://www.whonix.org/wiki/DeltaChat"/>
+    <id>https://www.whonix.org/wiki/DeltaChat</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Deprecated/Ricochet IM</title>
+    <link href="https://www.whonix.org/wiki/Deprecated/Ricochet_IM"/>
+    <id>https://www.whonix.org/wiki/Deprecated/Ricochet_IM</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Deprecated</title>
+    <link href="https://www.whonix.org/wiki/Deprecated"/>
+    <id>https://www.whonix.org/wiki/Deprecated</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/Build Documentation/Physical Isolation</title>
+    <link href="https://www.whonix.org/wiki/Dev/Build_Documentation/Physical_Isolation"/>
+    <id>https://www.whonix.org/wiki/Dev/Build_Documentation/Physical_Isolation</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/Leak Tests</title>
+    <link href="https://www.whonix.org/wiki/Dev/Leak_Tests"/>
+    <id>https://www.whonix.org/wiki/Dev/Leak_Tests</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/Logo</title>
+    <link href="https://www.whonix.org/wiki/Dev/Logo"/>
+    <id>https://www.whonix.org/wiki/Dev/Logo</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/OnionShare</title>
+    <link href="https://www.whonix.org/wiki/Dev/OnionShare"/>
+    <id>https://www.whonix.org/wiki/Dev/OnionShare</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/Porting</title>
+    <link href="https://www.whonix.org/wiki/Dev/Porting"/>
+    <id>https://www.whonix.org/wiki/Dev/Porting</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/Project Networking</title>
+    <link href="https://www.whonix.org/wiki/Dev/Project_Networking"/>
+    <id>https://www.whonix.org/wiki/Dev/Project_Networking</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/TPO Trademark</title>
+    <link href="https://www.whonix.org/wiki/Dev/TPO_Trademark"/>
+    <id>https://www.whonix.org/wiki/Dev/TPO_Trademark</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/Technical Introduction</title>
+    <link href="https://www.whonix.org/wiki/Dev/Technical_Introduction"/>
+    <id>https://www.whonix.org/wiki/Dev/Technical_Introduction</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/VirtualBox</title>
+    <link href="https://www.whonix.org/wiki/Dev/VirtualBox"/>
+    <id>https://www.whonix.org/wiki/Dev/VirtualBox</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/Windows Installer/OLD</title>
+    <link href="https://www.whonix.org/wiki/Dev/Windows_Installer/OLD"/>
+    <id>https://www.whonix.org/wiki/Dev/Windows_Installer/OLD</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/Windows Installer</title>
+    <link href="https://www.whonix.org/wiki/Dev/Windows_Installer"/>
+    <id>https://www.whonix.org/wiki/Dev/Windows_Installer</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/Windows Starter</title>
+    <link href="https://www.whonix.org/wiki/Dev/Windows_Starter"/>
+    <id>https://www.whonix.org/wiki/Dev/Windows_Starter</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/research</title>
+    <link href="https://www.whonix.org/wiki/Dev/research"/>
+    <id>https://www.whonix.org/wiki/Dev/research</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/tor-launcher</title>
+    <link href="https://www.whonix.org/wiki/Dev/tor-launcher"/>
+    <id>https://www.whonix.org/wiki/Dev/tor-launcher</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/videos</title>
+    <link href="https://www.whonix.org/wiki/Dev/videos"/>
+    <id>https://www.whonix.org/wiki/Dev/videos</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Dev/wikitest</title>
+    <link href="https://www.whonix.org/wiki/Dev/wikitest"/>
+    <id>https://www.whonix.org/wiki/Dev/wikitest</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Disaster Recovery</title>
+    <link href="https://www.whonix.org/wiki/Disaster_Recovery"/>
+    <id>https://www.whonix.org/wiki/Disaster_Recovery</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Documentation</title>
+    <link href="https://www.whonix.org/wiki/Documentation"/>
+    <id>https://www.whonix.org/wiki/Documentation</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+  <entry>
+    <title>Download</title>
+    <link href="https://www.whonix.org/wiki/Download"/>
+    <id>https://www.whonix.org/wiki/Download</id>
+    <updated>2026-11-18T18:51:43-05:00</updated>
+    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
+    <summary>Backfill explicit alt text for wiki images</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
+  </entry>
+</feed>

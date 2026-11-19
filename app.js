@@ -844,18 +844,20 @@
       }
       return shardCache[name];
     }
-    function appendResult(e) {              // TT-safe: textContent + setAttribute only, no HTML-string sink
+    function appendResult(e, sink) {        // TT-safe: textContent + setAttribute only, no HTML-string sink
       var href = root + e.u;
       if (!navSafe(href, false)) return false;   // drop a row whose (tampered) target is not same-origin
       var li = document.createElement("li");
-      li.setAttribute("role", "option");
-      li.setAttribute("aria-selected", "false");
-      li.id = "mw-sr-" + results.children.length;   // this row's index; unique + stable per render
+      if (sink.option) {                    // dropdown listbox option; the results page uses plain items
+        li.setAttribute("role", "option");
+        li.setAttribute("aria-selected", "false");
+        li.id = "mw-sr-" + sink.list.children.length;   // this row's index; unique + stable per render
+      }
       var a = document.createElement("a");
       a.setAttribute("href", href);
       a.textContent = e.t;
       li.appendChild(a);
-      results.appendChild(li);
+      sink.list.appendChild(li);
       return true;                          // caller counts a row only when one was really added
     }
     // The open field is an ABSOLUTE overlay; anchor the panel just below its rendered box (CSSOM
@@ -863,19 +865,21 @@
     function positionPanel() {
       if (!results.hidden) results.style.top = (input.offsetTop + input.offsetHeight + 4) + "px";
     }
-    // Monotonic query id: an async shard batch that resolves after a newer keystroke is dropped.
+    // The header dropdown's monotonic query id: an async shard batch resolving after a newer
+    // dropdown keystroke (or a close) is dropped. The results page has its own counter (pageGen),
+    // so the two surfaces never cancel each other's in-flight batches.
     var queryGen = 0;
     // Augment the (already rendered) title hits with body matches the title scan missed. Appends
     // BM25-ranked body-only pages after the title hits, up to the 20 cap. Skipped for a
     // namespace-qualified query (that path stays title-only, main namespace).
-    function fullText(q, gen, shownIds, shownCount) {
+    function fullText(q, gen, shownIds, shownCount, sink) {
       ensureManifest().then(function (man) {
-        if (!man || gen !== queryGen) return;
+        if (!man || gen !== sink.curGen()) return;   // superseded ON THIS surface -> drop the batch
         var terms = [], seen = Object.create(null);   // null-proto: a term "constructor" etc. must not hit Object.prototype
         tokenize(q).forEach(function (t) { if (!seen[t]) { seen[t] = 1; terms.push(t); } });
         if (!terms.length) return;
         Promise.all(terms.map(function (t) { return ensureShard(man, t); })).then(function (objs) {
-          if (gen !== queryGen) return;
+          if (gen !== sink.curGen()) return;
           var lists = [];
           for (var i = 0; i < terms.length; i++) {
             // Own-property guard: a shard is a JSON object, so objs[i]["constructor"] would
@@ -886,15 +890,15 @@
             lists.push(pl);
           }
           var ranked = scoreBM25(man, terms, lists), added = 0;
-          for (var j = 0; j < ranked.length && shownCount < 20; j++) {
+          for (var j = 0; j < ranked.length && shownCount < sink.cap; j++) {
             var id = ranked[j][0], e = index[id];
             if (shownIds[id] || !e || e.n) continue;   // already shown, or (defensively) namespaced
-            if (!appendResult(e)) continue;             // a dropped (tampered) target adds no row
+            if (!appendResult(e, sink)) continue;       // a dropped (tampered) target adds no row
             shownIds[id] = 1;
             shownCount++;
             added++;
           }
-          if (added) { results.hidden = false; setExpanded(true); positionPanel(); }
+          if (added && sink.onAppend) sink.onAppend(shownCount);
         });
       });
     }
@@ -941,20 +945,44 @@
       // null (not "") is the no-match sentinel: the Homepage index entry has u="" and,
       // on the root page, root="" too, so a valid homepage href is the empty string --
       // treating "" as "no match" would skip it and mis-pick a later substring hit.
-      var bestHref = null, bestTier = 3, bestLen = Infinity;
-      for (var i = 0; i < index.length; i++) {
-        var e = index[i];
-        if (!nsEligible(e, q)) continue;   // namespaced page: only for its own namespace query
-        var t = e.t.toLowerCase();
-        var tier = titleRank(t, q);
-        if (tier === 0) return root + e.u;   // exact title: unbeatable, take the first
-        if (tier === -1) continue;
-        if (tier < bestTier || (tier === bestTier && t.length < bestLen)) {
-          bestTier = tier; bestLen = t.length; bestHref = root + e.u;
-        }
+      // Single source of truth with the dropdown: the first rankedTitleIds id whose target is
+      // navSafe IS the dropdown's first row (same ranking basis, same navSafe filter appendResult
+      // applies), so Enter and the first row can never diverge -- no separate length/tier/safety
+      // path to drift (lowercased-length vs e.t.length, first-exact vs shortest, unsafe no-op).
+      var ids = rankedTitleIds(q);
+      for (var i = 0; i < ids.length; i++) {
+        var href = root + index[ids[i]].u;
+        if (navSafe(href, false)) return href;
       }
-      return bestHref;
+      return null;
     }
+    // Shared render: instant ranked title pass (exact > prefix > infix) + async full-text
+    // augmentation, into sink.list up to sink.cap rows, de-duped by pageId. sink.onAppend(count)
+    // fires after the title pass AND after each full-text batch that adds rows. Used by BOTH the
+    // header dropdown and the Special:Search results page, so their ranking + de-dup are identical.
+    function renderResults(q, gen, sink) {
+      var shownIds = {}, shown = 0;
+      var ids = rankedTitleIds(q);
+      for (var i = 0; i < ids.length && shown < sink.cap; i++) {
+        if (!appendResult(index[ids[i]], sink)) continue;   // a dropped (tampered) target adds no row
+        shownIds[ids[i]] = 1;
+        shown++;
+      }
+      if (sink.onAppend) sink.onAppend(shown);
+      // A namespace-qualified query stays title-only -- its body words would wrongly surface
+      // main-namespace pages.
+      if (q.indexOf(":") === -1) fullText(q, gen, shownIds, shown, sink);
+      return shown;
+    }
+    // The header dropdown's sink: the overlay listbox. onAppend drives its show/position/aria;
+    // curGen returns the dropdown's OWN generation (queryGen) so a page-side search cannot cancel
+    // an in-flight dropdown batch, and vice versa.
+    var dropdownSink = { list: results, cap: 20, option: true, curGen: function () { return queryGen; },
+      onAppend: function (shown) {
+        results.hidden = shown === 0;
+        setExpanded(shown > 0);
+        positionPanel();
+      } };
     input.addEventListener("input", function () {
       // Render after the index resolves (a microtask once loaded); before then, no-op.
       ensureIndex().then(function () {
@@ -963,21 +991,7 @@
         clearActive();   // reset highlight + aria-activedescendant before the rows are rebuilt
         while (results.firstChild) results.removeChild(results.firstChild);
         if (q.length < 2) { results.hidden = true; setExpanded(false); return; }
-        // Title pass (instant, no extra fetch): ranked title matches (exact > prefix > infix),
-        // tracked by pageId so the full-text pass never double-lists a page.
-        var shownIds = {}, shown = 0;
-        var ids = rankedTitleIds(q);
-        for (var i = 0; i < ids.length && shown < 20; i++) {
-          if (!appendResult(index[ids[i]])) continue;   // a dropped (tampered) target adds no row -> no count
-          shownIds[ids[i]] = 1;
-          shown++;
-        }
-        results.hidden = shown === 0;
-        setExpanded(shown > 0);
-        positionPanel();
-        // Full-text pass (async, appended when the on-demand shards arrive). A namespace-qualified
-        // query stays title-only -- its body words would wrongly surface main-namespace pages.
-        if (q.indexOf(":") === -1) fullText(q, gen, shownIds, shown);
+        renderResults(q, gen, dropdownSink);
       });
     });
     // No <form> (CSP form-action 'none'), so Enter is inert by default: navigate to the
@@ -1071,6 +1085,98 @@
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") closeSearch();
     });
+
+    // Special:Search results PAGE (absent on normal pages -> no-op): build a search field +
+    // results list inside the [data-search-page] container (so no content <input> is emitted for
+    // the sanitizer to strip), read the initial query from the URL (#q= fragment, or ?q=), and
+    // render ranked results with the SAME index + comparator as the dropdown. A plain navigable
+    // list, not the combobox -- no overlay, no aria-activedescendant.
+    (function setupResultsPage() {
+      var wrap = document.querySelector("[data-search-page]");
+      if (!wrap || wrap.dataset.searchReady) return;   // absent here, or already built (re-entrant init)
+      wrap.dataset.searchReady = "1";
+      var pinput = document.createElement("input");
+      pinput.type = "search";
+      pinput.id = "search-page-input";
+      pinput.className = "search-page-input";
+      pinput.setAttribute("aria-label", "Search this wiki");
+      pinput.setAttribute("placeholder", "Search");
+      pinput.setAttribute("autocomplete", "off");
+      pinput.setAttribute("aria-controls", "search-page-results");
+      var pstatus = document.createElement("p");
+      pstatus.className = "search-page-status";
+      pstatus.setAttribute("role", "status");
+      pstatus.setAttribute("aria-live", "polite");
+      var plist = document.createElement("ul");
+      plist.id = "search-page-results";
+      plist.className = "search-page-results";
+      plist.setAttribute("aria-label", "Search results");
+      // Modest CSSOM styling (CSP-safe, same idiom as the dropdown highlight -- no style.css rule,
+      // so the page ships from app.js with no asset-fingerprint coupling).
+      pinput.style.width = "100%";
+      pinput.style.boxSizing = "border-box";
+      pinput.style.maxWidth = "32rem";
+      pinput.style.padding = "0.5em 0.7em";
+      pinput.style.fontSize = "1rem";
+      pstatus.style.margin = "0.75rem 0 0";
+      plist.style.listStyle = "none";
+      plist.style.padding = "0";
+      plist.style.margin = "0.5rem 0 0";
+      plist.style.lineHeight = "1.9";
+      // Field/status/list go BEFORE the <noscript> fallback so it stays last in the box.
+      wrap.insertBefore(plist, wrap.firstChild);
+      wrap.insertBefore(pstatus, wrap.firstChild);
+      wrap.insertBefore(pinput, wrap.firstChild);
+      // The page's OWN generation counter, independent of the dropdown's queryGen: a stale
+      // full-text batch is dropped when a NEWER page query supersedes it, but a dropdown search
+      // (which bumps queryGen) never cancels an in-flight page batch, and vice versa.
+      var pageGen = 0;
+      var pageSink = { list: plist, cap: 50, option: false, curGen: function () { return pageGen; },
+        onAppend: function () {
+          var n = plist.children.length;
+          pstatus.textContent = n ? (n + (n === 1 ? " result" : " results")) : "No results found.";
+        } };
+      function runPage() {
+        ensureIndex().then(function () {
+          var q = pinput.value.trim().toLowerCase();
+          var gen = ++pageGen;
+          while (plist.firstChild) plist.removeChild(plist.firstChild);
+          if (q.length < 2) { pstatus.textContent = ""; return; }
+          renderResults(q, gen, pageSink);
+        });
+      }
+      // Query from the URL fragment ONLY: #q=<term>. That is the single form the whole feature emits
+      // (Root.mw links, the header dropdown, the OpenSearch descriptor) and the privacy-correct one --
+      // the term rides the fragment, never the wire. A query string (?q=) is deliberately NOT read:
+      // nothing generates it, and honoring it would both leak the term to the server and make the URL
+      // a two-source query (fragment vs query string) whose Back/clear sync cannot be reconciled
+      // without either wiping typed input or leaving stale results. One source => neither hazard.
+      // The value runs to END-OF-STRING, so a '&' is PART of the term, not a separator: our links
+      // percent-encode '&', but Chromium's OpenSearch fragment substitution leaves '&' RAW (EscapePath,
+      // no '?' in the template), and stopping at the first '&' would truncate "R&D" to "R". '+' stays a
+      // literal '+' (a fragment is not form-urlencoded; decode only).
+      function urlQuery() {
+        var hm = /(?:^|&)q=(.*)$/.exec((location.hash || "").replace(/^#/, ""));
+        if (hm) { try { return decodeURIComponent(hm[1]); } catch (e) { return hm[1]; } }
+        return "";
+      }
+      function syncFromUrl() { pinput.value = urlQuery(); runPage(); }
+      var q0 = urlQuery();
+      if (q0) { pinput.value = q0; runPage(); }
+      pinput.addEventListener("input", runPage);
+      // An address-bar OpenSearch re-search (or an in-page dropdown pick) changes only the #q=
+      // fragment, and a fragment-only navigation does NOT reload the document -- so re-read + re-run
+      // on a #q= hashchange. React ONLY to a q= fragment: the page input is NEVER written to the URL
+      // (typing does not touch the hash), so an empty or non-q fragment -- a skip-link/TOC jump, or
+      // Back to the bare URL -- carries NO query intent. Do NOT also sync on an empty fragment:
+      // syncFromUrl() would set the box to urlQuery()==="" and WIPE a typed-but-unsubmitted query
+      // (input data loss). Leaving the last results visible after Back is the deliberately-accepted
+      // lesser evil; a reload clears them, whereas destroyed in-progress input cannot be undone.
+      window.addEventListener("hashchange", function () {
+        if (/(?:^|&)q=/.test(location.hash.replace(/^#/, ""))) syncFromUrl();   // location.hash is always a string
+      });
+      pinput.focus({ preventScroll: true });   // a dedicated search page: land the caret for typing
+    })();
   }
 
   // Fixed bottom stack (consent + stage banners) overlaps the footer, so reserve its
