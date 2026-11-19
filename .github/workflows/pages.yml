@@ -44,6 +44,17 @@ jobs:
             --exclude='debian' --exclude='make-helper-overrides.bsh' \
             --exclude='README*' --exclude='openpgp-policy.toml' \
             ./ _site/
+      - name: Staging transforms (noindex meta, card hosts, robots disallow)
+        # The committed HTML is the pristine production (--prod) build: real www.* canonical, no
+        # robots noindex, an indexable robots.txt + sitemap. Transform the BUILT ARTIFACT only
+        # (never the commit), so this stage preview stays out of search indexes regardless of the
+        # build mode that produced the commit. robots-disallow.txt is a static file carried in the
+        # tree; renaming it to robots.txt here is the ONLY thing that activates the disallow --
+        # production (www.*) never runs this workflow, so its robots.txt stays indexable.
+        run: |
+          .github/pages-transform.py transform _site
+          mv _site/robots-disallow.txt _site/robots.txt
+          .github/pages-transform.py verify _site
       - name: Configure Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d  # v6.0.0
       - name: Upload artifact
