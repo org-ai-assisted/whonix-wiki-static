@@ -401,7 +401,10 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
 /* The marker is a >=24x24 tap target (WCAG 2.5.8 / Lighthouse target-size) with a larger,
    centered glyph so the hit box is filled, not mostly empty padding. This deviates from
    production's tiny superscript -- a deliberate a11y choice. */
-.ext-link-to-archive { margin-left: 0.15em; white-space: nowrap; vertical-align: middle; }
+/* vertical-align:middle overrides the <sup> UA 'vertical-align:super' (which raised the marker
+   above the line and inflated the heading); font-size:inherit drops the UA 'smaller' so the
+   nested <a>'s own middle-alignment references the HEADING x-height, not a shrunken one. */
+.ext-link-to-archive { margin-left: 0.15em; white-space: nowrap; vertical-align: middle; font-size: inherit; }
 .ext-link-to-archive > a {
   color: var(--muted);
   display: inline-flex;
@@ -409,12 +412,23 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
   justify-content: center;
   width: 24px;
   height: 24px;
-  font-size: 1.5rem;   /* glyph nearly fills the 24px target (small inset) */
+  /* Full 24x24 WCAG 2.5.8 / axe target-size tap target, sitting within its OWN line (margin-block
+     defaults to 0). In flowing text (p / li / table cell) the marker's line may wrap, so any block
+     overhang would bleed into the neighbour line and axe counts the target as partially obscured
+     (24x23.3 < 24x24) -- hence NO negative block margin here; the heading-scoped rule below adds it
+     only where the line never wraps around the marker. */
+  vertical-align: middle;
 }
+/* In a HEADING (single line around the marker) shrink the 24px marker's line-box CONTRIBUTION to
+   the ~20px step badge via symmetric negative block margins, so an in-heading marker no longer
+   inflates the line (the Windows/Mac step = the Linux step). Safe ONLY in a heading: it is one
+   line, so the 24px border box's 2px overhang lands in the heading's own leading and obscures
+   nothing -- unlike a wrapped flowing-text line (see the obscuring note above). */
+:is(h1, h2, h3, h4, h5, h6) .ext-link-to-archive > a { margin-block: -2px; }
 .ext-link-to-archive > a:hover { color: var(--link); text-decoration: none; }
 /* The archive marker is the Internet Archive logo (a self-hosted PNG, CSP img-src 'self',
    Tor-Safest-compatible raster) centered in the 24px target. */
-.ext-link-to-archive .ia-archive-icon { height: 18px; width: auto; display: block; contain: size; overflow: hidden; }  /* contain:size + overflow:hidden -> zero-CLS, see .explainer-check */
+.ext-link-to-archive .ia-archive-icon { height: 16px; width: auto; display: block; contain: size; overflow: hidden; }  /* 16px: proportional to heading caps, not oversized; contain:size + overflow:hidden -> zero-CLS, see .explainer-check */
 :focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
@@ -580,25 +594,11 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
 }
 .download-button-v2 .dbutton > i { position: absolute; left: 14px; top: calc(50% - 0.55em); }
 .download-button-v2 .dbutton > span { position: relative; top: -1px; }
-.download-button-v2 .op-sys {
-  display: table-cell; text-align: center; position: relative; top: -2px; padding: 0 15px 0 10px;
-}
-.download-button-v2 .op-sys > img { height: 16px; width: auto; margin-right: 6px; }  /* width:auto keeps the OS-logo aspect ratio (Lighthouse image-aspect-ratio) at desktop too; the @media phone rule already handled mobile */
-.download-button-v2 .op-sys > img:last-child { margin-right: 0; }
 /* Narrow phones: a long label ("Download Whonix LXQt (VirtualBox) (stable) (FREE!)") in a
    nowrap table-cell capped at max-width:100% is clipped by the pill. Let it wrap to 2 lines
-   (the left icon is absolutely positioned, so multi-line text keeps its gutter). Keep the
-   OS-icon cell SHRINK-TO-FIT (width:1px in the anonymous table) so the now-wrapping label
-   cannot steal its width and squeeze the icon into a distorted sliver (a Lighthouse
-   best-practices image-aspect-ratio regression); object-fit:contain is belt-and-suspenders. */
+   (the left icon is absolutely positioned, so multi-line text keeps its gutter). */
 @media (max-width: 480px) {
   .download-button-v2 .dbutton { white-space: normal; }
-  /* width:1px makes the anonymous-table OS-icon cell shrink to its content (no nowrap -- that
-     could push a multi-icon list past a narrow viewport). min-width FLOORS the icon: without it
-     the width:auto img collapses to 0 inside the shrunk anonymous-table cell, so the OS logo
-     vanishes on phones (width:auto still governs wider logos). object-fit keeps it undistorted. */
-  .download-button-v2 .op-sys { width: 1px; }
-  .download-button-v2 .op-sys > img { object-fit: contain; min-width: 16px; }
 }
 /* Verify-asset download links (Template:DownloadTableUnified + signing-key subtemplates):
    secondary to the primary download CTA, so a quiet Qubes-style bordered box (one uniform
@@ -705,23 +705,26 @@ body.site-whonix .site-logo-img { width: auto; }
 }
 .tools-toggle:checked ~ .tools-menu { display: grid; }
 .tools-menu > .share-panel { grid-column: 1 / -1; }
-/* Hover bridge: the menu sits 0.4rem below the chevron (margin-top), and it opens on
-   `.tools:hover`. Without this, moving the pointer from the chevron DOWN into that gap leaves
-   `.tools` before reaching the panel, so `.tools:hover` drops and the menu closes under the
-   cursor. A transparent strip spanning the gap (a child of `.tools-menu`, hence of `.tools`)
-   keeps `.tools:hover` true across the whole chevron->panel path. */
-.tools-menu::before {
-  content: ""; position: absolute; left: -12px; right: -12px; bottom: 100%; height: 0.6rem;
-}
 /* Open supermenu swaps the chevron for an X (FA glyph override on the label's
    icon); the click toggle is the primary open/close on every device. */
 .tools-toggle:checked ~ .tools-label .fa-chevron-down::before { content: "\f00d"; }
-/* Production auto-expands on hover/focus (like the nav submenus) only where a
-   real pointer exists; on touch the hover state sticks and would block
-   tap-to-close, so gate it behind hover-capable devices. */
-@media (hover: hover) {
+/* Auto-expand on hover/focus (like the nav submenus) ONLY on the desktop tier (>=960px),
+   where .tools-menu is the dropdown anchored right below the chevron. Below 960px the menu is
+   the fixed full-width panel (the max-width:959.98px block) opened by tap; hover there would
+   open a panel the pointer cannot reach without crossing a gap that drops .tools:hover and
+   closes it under the cursor. Also gate on hover-capable devices: on touch the hover state
+   sticks and blocks tap-to-close. */
+@media (hover: hover) and (min-width: 960px) {
   .tools:hover .tools-menu,
   .tools:focus-within .tools-menu { display: grid; }
+  /* Hover bridge: the dropdown sits 0.4rem below the chevron (margin-top); without a bridge,
+     moving the pointer down into that gap leaves .tools before reaching the panel, so
+     .tools:hover drops and the menu closes under the cursor. A transparent strip spanning the
+     gap (a child of .tools-menu, hence of .tools) keeps .tools:hover true across the whole
+     chevron->panel path. Only meaningful with hover-open, so scoped to the desktop tier too. */
+  .tools-menu::before {
+    content: ""; position: absolute; left: -12px; right: -12px; bottom: 100%; height: 0.6rem;
+  }
 }
 .tools-item {
   display: flex; align-items: center; gap: 0.6rem; width: 100%;
@@ -755,7 +758,7 @@ body.site-whonix .site-logo-img { width: auto; }
    4.13 cannot see the underline. Match the surrounding --muted (axe treats a same-colour link as
    distinguished) and keep the underline affordance -- the heading/catlink-link treatment. */
 .share-note a { color: currentColor; text-decoration: underline; }
-@media (max-width: 720px) {
+@media (max-width: 959.98px) {   /* 959.98, not 960: meets the 960px desktop tier (see the header dead-zone note below) */
   /* Full-width dropped panel on phones/tablets: pin it across the article column. */
   .tools-menu {
     position: fixed; left: 8px; right: 8px; top: 52px; width: auto; max-width: none;
@@ -773,7 +776,8 @@ body.site-whonix .site-logo-img { width: auto; }
 /* Printable view: strip all chrome, print the article only (the supermenu Print action). */
 @media print {
   .site-header, .site-footer, .bottom-stack, .consent-banner, .stage-banner,
-  #fly-in-notification-panel, .sitenotice, #siteNotice, .back-to-top, .wiki-book-index {
+  #fly-in-notification-panel, .sitenotice, #siteNotice, .back-to-top, .wiki-book-index,
+  .h-anchor {   /* same-page permalink glyph: pure noise on paper */
     display: none !important;
   }
   .wiki-content { max-width: 100%; margin: 0; padding: 0; }
@@ -806,6 +810,7 @@ body.site-whonix .site-logo-img { width: auto; }
     --link: #1d70b8;
     --link-hover: #08409b;
     --link-new: #ba0000;
+    --link-on-shade: #0f4c81;
     --accent: #14866d;
     --accent-fg: #ffffff;
     --focus: #0b57d0;
@@ -981,14 +986,17 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
    still govern visibility. */
 .nav-toggle-label .nav-ico-open,
 .nav-toggle-label .nav-ico-close { width: 0.875em; text-align: center; }
-/* Production Vector search: a magnifier ICON that expands the search box on click
-   (pure-CSS checkbox toggle) so the header stays compact like prod. */
+/* Header search (Baymard-aligned): a VISIBLE real input -- never hidden behind a lone icon --
+   small at rest so it fits the header row beside the 5-group nav, expanding on focus to a
+   RIGHT-ANCHORED floating overlay so the row never reflows and the nav never shifts (the field
+   is absolute on desktop, so its growth only overlays the flexible gap, nothing moves). The
+   compact tier (<960px) keeps the compact lens that toggles a full overlay. */
 .site-search {
   margin-left: auto;
   display: flex;
   gap: 0.25rem;
   align-items: center;
-  position: relative;   /* anchor the open search overlay under the magnifier */
+  position: relative;   /* anchor the expanded field overlay + the results dropdown */
 }
 /* visually hidden yet focusable (screen readers + keyboard): NOT display:none, so the
    search toggle stays in the tab order -- tab to it, Space opens the box. */
@@ -1023,70 +1031,110 @@ body.site-whonix .site-tm { font-size: 0.72rem; }
 .search-toggle:focus-visible ~ .search-icon {
   outline: 2px solid var(--focus); outline-offset: 2px;
 }
+/* COMPACT base (<960px): the field is a hidden absolute overlay the lens toggles open; desktop
+   (>=960px, below) overrides it to an always-visible expand-on-focus field. */
 .search-field {
-  /* ALWAYS absolute (collapsed + open), anchored under the magnifier -- so the field never
-     occupies header flow and toggling it can never reflow the row to a 2nd line (the flicker
-     on a fast double-click). Open = a floating overlay panel, like prod's search popover. */
   position: absolute; top: calc(100% + 0.3rem); right: 0;
   width: 0; padding: 0; border: 0; opacity: 0; pointer-events: none;
-  /* visibility:hidden keeps the collapsed zero-width field OUT of the tab order (a
-     keyboard user never lands on an invisible input); it still animates open because
-     visibility is in the transition, so it stays visible through the shrink on close. */
+  /* visibility:hidden keeps the collapsed field OUT of the tab order; it is in the transition so
+     the field stays visible through the shrink on close. */
   visibility: hidden;
   background: var(--bg); color: var(--fg); font: inherit; font-size: 0.9rem;
   border-radius: var(--radius-sm);
   transition: width 0.18s ease, opacity 0.18s ease, padding 0.18s ease, visibility 0.18s ease;
 }
-.search-toggle:checked ~ .search-field {
-  width: min(92vw, 22rem); padding: 0.55rem 0.8rem; border: 1px solid var(--border);
-  opacity: 1; pointer-events: auto; visibility: visible; z-index: 50;
-  box-shadow: var(--shadow-md);
-}
-/* Open-state affordance on the magnifier so open vs closed is visually distinct (not a
-   "stuck" look): the icon carries the active surface while the box is open. */
+/* The checked-toggle overlay reveal is MOBILE-ONLY, scoped in the max-width:959.98px block below.
+   It must NOT live unscoped here: its 0,3,0 specificity would beat the desktop field rule (0,1,0),
+   so a toggle left :checked on a mobile->desktop resize would deform the desktop field over the nav
+   (the desktop tier hides the toggle, so nothing could re-collapse it). */
 .search-toggle:checked ~ .search-icon { background: var(--surface-2); }
-/* noJS: hide the dead toggle+field (live search needs JS) so only the Special:AllPages browse
-   link (.search-nojs-browse, shown by .show-for-nojs-only) remains as the magnifier. */
+/* Trailing clear-x + Search submit -- DESKTOP controls (revealed in the >=960px tier when the field
+   is engaged). Base = out of flow + hidden. app.js removes [hidden] from #search-clear only while
+   the field holds text. Mobile deliberately keeps the browser's NATIVE clear (its native cancel
+   glyph is suppressed only in the desktop tier, where the custom clear-x replaces it) plus the
+   dropdown's Special:Search footer row, so a phone is never left without a clear/submit affordance. */
+.search-clear {
+  position: absolute; z-index: 51; display: none;
+  align-items: center; justify-content: center;
+  width: 1.7rem; height: 1.7rem; padding: 0; border: 0; border-radius: var(--radius-sm);
+  background: none; color: var(--muted); cursor: pointer; font-size: 0.95rem;
+}
+.search-clear:hover { color: var(--fg); background: var(--surface-2); }
+.search-submit {
+  position: absolute; z-index: 51; display: none;
+  align-items: center; justify-content: center;
+  height: 1.7rem; padding: 0 0.7rem; border-radius: var(--btn-radius);
+  /* Site primary-action color (same token as .mw-ui-progressive), not the green --accent. */
+  background: var(--btn-primary); color: var(--btn-primary-fg); font-size: 0.85rem; font-weight: 600;
+  text-decoration: none; white-space: nowrap; cursor: pointer;
+}
+.search-submit:hover { text-decoration: none; background: var(--btn-primary-hover); }
+/* noJS: hide the dead field + live-only controls (live search needs JS); only the browse lens
+   (.search-nojs-browse, shown by .show-for-nojs-only) remains. */
 html:not(.client-js) .site-search .search-toggle,
 html:not(.client-js) .site-search label.search-icon,
-html:not(.client-js) .site-search .search-field { display: none; }
-/* Outside-click close is handled in app.js (initSearch): it unchecks #search-toggle AND
-   hides the live .search-results, and -- unlike a header-nested full-viewport label -- does
-   not swallow the mobile nav's own outside-tap close. No-JS still closes via the lens. */
+html:not(.client-js) .site-search .search-field,
+html:not(.client-js) .site-search .search-clear,
+html:not(.client-js) .site-search .search-submit { display: none; }
 .search-field:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 1px;
   border-color: var(--accent);
 }
-/* Desktop (>720px): the lens expands the field INLINE into an in-header search bar, not a
-   floating overlay -- in-flow after the magnifier, so it reads as a real header search box.
-   The header is pinned nowrap here so the growing field can NEVER reflow the row to a 2nd line
-   (the sole reason the field was kept absolute); the nav yields (display:none) while the bar is
-   open to free the room the small nav->lens slack cannot. Mobile (<=720px) keeps the overlay. */
-@media (min-width: 721px) {
+/* Desktop (>=960px): the inline nav + persistent search box. The full inline header (logo +
+   wordmark + nav + search + tools + Donate) only fits one row at this width; below it the logo +
+   full nav + Donate wrapped search to a 2nd row, so <960 uses the compact hamburger + lens-overlay
+   header instead (operator decision). The field is ALWAYS visible here (a small ~8rem real input in
+   a fixed slot) and expands on focus. The field is absolute + right-anchored, so its growth overlays
+   the flexible header gap to the LEFT -- the reserved .site-search slot keeps its width, so the nav
+   never moves and nothing drifts (the confusing part of an in-flow lens-expand). The leading
+   magnifier becomes a decorative in-field glyph; the clear-x and Search submit surface on focus. */
+@media (min-width: 960px) {
   .site-header-inner { flex-wrap: nowrap; }
-  .search-field { position: static; top: auto; right: auto; box-shadow: none; }
-  /* A usable inline bar needs more room than the ~60-120px nav->lens slack, so the nav yields
-     to the search WHILE IT IS OPEN (it returns on close). :has() keys the ancestor off the
-     toggle, which sits AFTER the nav in the DOM (a `~` combinator cannot reach a preceding
-     sibling). The header stays nowrap so the bar never reflows the row to a 2nd line. */
-  .site-header-inner:has(#search-toggle:checked) .site-nav { display: none; }
-  .search-toggle:checked ~ .search-field { width: min(50vw, 22rem); box-shadow: none; }
-}
-/* Desktop (>720px): the lens expands the field INLINE into an in-header search bar, not a
-   floating overlay -- in-flow after the magnifier, so it reads as a real header search box.
-   The header is pinned nowrap here so the growing field can NEVER reflow the row to a 2nd line
-   (the sole reason the field was kept absolute); the nav yields (display:none) while the bar is
-   open to free the room the small nav->lens slack cannot. Mobile (<=720px) keeps the overlay. */
-@media (min-width: 721px) {
-  .site-header-inner { flex-wrap: nowrap; }
-  .search-field { position: static; top: auto; right: auto; box-shadow: none; }
-  /* A usable inline bar needs more room than the ~60-120px nav->lens slack, so the nav yields
-     to the search WHILE IT IS OPEN (it returns on close). :has() keys the ancestor off the
-     toggle, which sits AFTER the nav in the DOM (a `~` combinator cannot reach a preceding
-     sibling). The header stays nowrap so the bar never reflows the row to a 2nd line. */
-  .site-header-inner:has(#search-toggle:checked) .site-nav { display: none; }
-  .search-toggle:checked ~ .search-field { width: min(50vw, 22rem); box-shadow: none; }
+  .search-toggle { display: none; }   /* no mobile toggle on desktop; the field is always visible */
+  .site-search { width: 8rem; height: 2.1rem; }   /* stable reserved slot in the row */
+  /* The mobile lens is not a trigger here (the field is always visible); hide it. The leading
+     magnifier is instead the FIELD's own left background image, so it tracks the field's left edge
+     at any width (a separate glyph pinned to the 8rem slot would drift to mid-field on expansion).
+     Mid-gray stroke reads in both themes. */
+  .site-search label.search-icon { display: none; }
+  .search-field {
+    position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+    width: 8rem; height: 2.1rem; padding: 0 0.6rem 0 1.9rem;
+    border: 1px solid var(--border); opacity: 1; visibility: visible; pointer-events: auto;
+    box-shadow: none; transition: width 0.18s ease, padding 0.18s ease;
+    background-color: var(--bg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23888' stroke-width='1.6'%3E%3Ccircle cx='7' cy='7' r='4.3'/%3E%3Cpath d='M10.3 10.3l3.4 3.4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: 0.6rem center; background-size: 0.95rem;
+  }
+  .site-search:focus-within .search-field {
+    width: min(24rem, 48vw); padding-right: 5rem; z-index: 50; box-shadow: var(--shadow-md);
+  }
+  /* The expanded field floats leftward OVER the nav; fade the nav out so no item is left
+     half-covered. A COVERING popover instead is fragile here -- the Kicksecure vs Whonix logos
+     differ in width, so no single field width covers the whole nav on both sites without either
+     leaving an item peeking or eating the logo. Fading depends on no width math: visibility:hidden
+     keeps the nav's layout (nothing reflows, the field's right edge stays anchored) and it fades
+     back on blur. This is Wikipedia Vector's own behavior (searchToggle yields the nav when search
+     cannot share the row). :has() keys the ancestor off the field's focus-within (the nav is a
+     PRECEDING sibling, so a `~` combinator cannot reach it). */
+  .site-nav { transition: opacity 0.15s ease, visibility 0.15s ease; }
+  .site-header-inner:has(.site-search:focus-within) .site-nav { opacity: 0; visibility: hidden; }
+  /* clear-x sits just left of the submit; submit pins to the field's right edge. Both only while
+     the field is engaged (focus-within); clear-x additionally only when text is present (app.js
+     removes [hidden]), so an idle field carrying stale text does not show a stray x. */
+  .site-search:focus-within .search-clear:not([hidden]) { display: inline-flex; right: 4.3rem; top: 50%; transform: translateY(-50%); }
+  .site-search:focus-within .search-submit { display: inline-flex; right: 0.35rem; top: 50%; transform: translateY(-50%); }
+  /* Suppress the browser's native type=search clear glyph HERE ONLY: desktop ships the custom
+     #search-clear, so both showing would be a double-x. Scoped to desktop so mobile (which has no
+     custom clear-x) keeps its native cancel button. */
+  .search-field::-webkit-search-cancel-button,
+  .search-field::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+  }
+  .search-results { right: 0; }
 }
 .edit-source { color: var(--muted); font-size: 0.9rem; }
 /* Header Donate call-to-action (production parity). Red heart glyph + link. */
@@ -1129,12 +1177,24 @@ html:not(.client-js) .site-search .search-field { display: none; }
   color: var(--fg);
 }
 .search-results a:hover { background: var(--surface-2); text-decoration: none; }
+/* The always-present "search for all" footer option -> Special:Search. Set apart from the page
+   hits with a top rule + italic (Wikipedia's "search for pages containing" row); keeps the normal
+   link color + the shared :hover / keyboard-active highlight so it reads as actionable. */
+.search-results .search-all { border-top: 1px solid var(--border); margin-top: 0.15rem; padding-top: 0.15rem; }
+.search-results .search-all a { font-style: italic; }
 
-/* Mobile header: prod (Vector legacy) collapses the nav to a hamburger at <=720px and
-   shrinks the logo to a 46x34 box; the wordmark + Donate text stay, the trademark mark
-   drops. Match that breakpoint + compaction so hamburger + logo + wordmark + search +
-   Donate fit ONE row (a 44px logo + 20px wordmark + TM had wrapped search to a 2nd row). */
-@media (max-width: 720px) {
+/* Compact header: collapse the nav to a hamburger and shrink the logo to a 46x34 box; the wordmark
+   + Donate text stay, the trademark mark drops. Prod (Vector legacy) does this at <=720px, but OUR
+   inline header is wider (logo + wordmark + full nav + search + Donate), so we collapse at <=959.98
+   instead -- the inline row only fits at >=960 (operator decision); below it the full nav + Donate
+   had wrapped search to a 2nd row. The compaction keeps the compact header itself on one row. */
+/* Compact header tier (hamburger + lens-overlay), capped at 959.98 (not 960) so it MEETS the 960px
+   desktop tier with no fractional-width dead-zone: at e.g. 959.25px (browser zoom / display scaling)
+   a 959/960 split would match NEITHER query, leaving the checked search field width:0/visibility:
+   hidden -- the lens checks the toggle but the field never reveals, so search cannot open. The -0.02
+   (vs a plain 960) avoids an exact-boundary OVERLAP that would let the mobile :checked reveal (0,3,0)
+   re-deform the persistent desktop field. */
+@media (max-width: 959.98px) {
   .site-header-inner { padding: 5px 1rem; gap: 0.3rem 0.5rem; }
   .site-logo { font-size: 17px; gap: 0.3rem; }
   .site-logo-img { height: 34px; width: 46px; }   /* prod mobile logo box */
@@ -1194,7 +1254,13 @@ html:not(.client-js) .site-search .search-field { display: none; }
   .site-search { order: 2; margin-left: auto; }
   .tools { order: 3; }
   .header-cta { order: 4; }
-  .search-toggle:checked ~ .search-field { width: min(80vw, 16rem); }   /* overlay, not inline */
+  /* Lens toggles the overlay open. Mobile-only (see the base note): kept out of the unscoped base
+     so a stale :checked cannot leak into the desktop tier. */
+  .search-toggle:checked ~ .search-field {
+    width: min(80vw, 16rem); padding: 0.55rem 0.8rem; border: 1px solid var(--border);
+    opacity: 1; pointer-events: auto; visibility: visible; z-index: 50;
+    box-shadow: var(--shadow-md);
+  }
 }
 /* Narrow phones: drop the "Donate" word (heart glyph only) so the CTA stays on the logo
    row. Our mobile header fits the heart+word on one row only at >=425px; below that the
@@ -1238,9 +1304,10 @@ html:not(.client-js) .site-search .search-field { display: none; }
      scrolling page on narrow (mobile) viewports. */
   overflow-wrap: break-word;
 }
-/* Production (Vector + Roboto) headings: NORMAL weight, smaller. h1/h2 section headings
-   carry a bottom rule (prod's underline lives on the .mw-heading WRAPPER, so measuring the
-   <hN> element alone reads 0px -- do NOT conclude "no underline" from that). */
+/* Heading hierarchy = size + weight + ASYMMETRIC spacing, with NO rule/underline beneath any
+   heading. The modern docs idiom (GOV.UK, USWDS, MDN, GitHub Primer, Tailwind prose, Starlight,
+   Docusaurus all do this); a bottom rule is a README/Markdown-render relic, and NN/g + Opquast
+   warn a line under text reads as a link affordance. */
 .wiki-content h1, .wiki-content h2, .wiki-content h3,
 .wiki-content h4, .wiki-content h5, .wiki-content h6 {
   color: var(--heading);   /* #1b1d1f near-black == body colour: full-dark headings (the docs idiom) */
@@ -1257,32 +1324,46 @@ html:not(.client-js) .site-search .search-field { display: none; }
 .wiki-content h1 { font-size: 30px; }
 .wiki-content h2 { font-size: 24px; }
 .wiki-content h3 { font-size: 20px; }
-/* Section-heading underline (prod Vector): h1/h2 get a bottom rule; the page TITLE
-   (#firstHeading / .first-heading box) and h3+ do not. */
-.wiki-content h1:not(#firstHeading):not(.first-heading), .wiki-content h2 {
-  border-bottom: 1px solid var(--border); padding-bottom: 0.2em;
-}
-.wiki-content h4 { font-size: 18px; }   /* weight 700 from the shared rule above */
+.wiki-content h4 { font-size: 18px; }
 .wiki-content h5 { font-size: 17px; }
 .wiki-content h6 { font-size: 16px; }
-/* Mobile tap-target clearance (WCAG 2.5.8 / axe target-size): each heading carries two 24px
-   affordance icons (share + edit). At narrow widths the heading text wraps, dropping one
-   heading's icon row within 24px of the next heading's -- axe flags the pair as mutually
-   obscured. A roomier top margin at mobile separates the icon rows; max() preserves the
-   em-scaled rhythm of the larger headings. Desktop does not wrap, so it is left untouched. */
-@media (max-width: 600px) {
-  .wiki-content :is(h1, h2, h3, h4, h5, h6) { margin-top: max(1.1em, 2rem); }
-}
 /* Heading-level clamp (page.py normalize_heading_levels) moves a skipped heading's semantic
-   <hN> tag to keep the outline contiguous; `hvis{authored}` pins the VISUAL back to the AUTHORED
-   level so appearance is unchanged. Higher specificity (2 classes) than the bare hN rules above.
-   h3-6 also clear the h1/h2 underline, since the authored (deeper) level never had one. */
+   <hN> tag to keep the outline contiguous; `hvis{authored}` pins the VISUAL size + weight back to
+   the AUTHORED level. Size/weight only -- the section top-margin is set per VISUAL level below. */
 .wiki-content .hvis1 { font-size: 30px; font-weight: 600; }
 .wiki-content .hvis2 { font-size: 24px; font-weight: 600; }
-.wiki-content .hvis3 { font-size: 20px; font-weight: 600; border-bottom: none; padding-bottom: 0; }
-.wiki-content .hvis4 { font-size: 18px; font-weight: 600; border-bottom: none; padding-bottom: 0; }
-.wiki-content .hvis5 { font-size: 17px; font-weight: 600; border-bottom: none; padding-bottom: 0; }
-.wiki-content .hvis6 { font-size: 16px; font-weight: 600; border-bottom: none; padding-bottom: 0; }
+.wiki-content .hvis3 { font-size: 20px; font-weight: 600; }
+.wiki-content .hvis4 { font-size: 18px; font-weight: 600; }
+.wiki-content .hvis5 { font-size: 17px; font-weight: 600; }
+.wiki-content .hvis6 { font-size: 16px; font-weight: 600; }
+/* Section rhythm: the top two VISUAL heading levels get a larger top margin so a new section is
+   scannable WITHOUT a divider rule; the shared 0.5em bottom margin (base rule) binds the heading
+   to its content (the asymmetric-spacing technique the rule-free docs systems rely on). UNCONDITIONAL
+   and keyed by VISUAL level so headings that look identical space identically whether or not
+   normalization moved their tag. The page TITLE is untouched (its #firstHeading id rule, higher
+   specificity, pins margin-top: 0). */
+.wiki-content h1, .wiki-content h2,
+.wiki-content .hvis1, .wiki-content .hvis2 { margin-top: 1.8em; }
+/* Reset for a NORMALIZED deep heading: an authored h3-h6 whose tag was bumped to h1/h2 (to keep
+   the outline contiguous) still carries its visual-level class (hvis3-hvis6). The bare h1/h2 rule
+   above would wrongly give such an element 1.8em, so pull deep VISUAL levels back to the base 1.1em.
+   Higher specificity (0,2,0) than the bare-tag rule (0,1,1), and after it in source -- so a
+   <h2 class="hvis3"> spaces like its un-normalized visual twin, not like a real h2. */
+.wiki-content .hvis3, .wiki-content .hvis4,
+.wiki-content .hvis5, .wiki-content .hvis6 { margin-top: 1.1em; }
+/* Mobile tap-target clearance (WCAG 2.5.8 / axe target-size): each heading carries two 24px
+   affordance icons (share + edit). At narrow widths the heading text wraps, dropping one heading's
+   icon row within 24px of the next's -- axe flags the pair as mutually obscured. A roomier top
+   margin separates the icon rows; max() preserves the em-scaled rhythm of the larger headings.
+   SINGLE boundary, LAST in source: this one query is the sole thing that competes with the rhythm
+   above, and it wins on mobile by the source-order tie-break (equal specificity, later). No second
+   (min-width) query exists, so there is no breakpoint gap/overlap under device-pixel rounding, and
+   a bare heading and its normalized twin get the SAME margin at every width. Covers the hvis classes
+   too (specificity (0,2,0)), so a clamped heading is raised to the floor on mobile like its tag. */
+@media (max-width: 600px) {
+  .wiki-content :is(h1, h2, h3, h4, h5, h6),
+  .wiki-content :is(.hvis1, .hvis2, .hvis3, .hvis4, .hvis5, .hvis6) { margin-top: max(1.1em, 2rem); }
+}
 /* A widget-embedded heading may wrap its text in a block <p> (leftrightimagetext inner pass);
    keep it inline so the appended edit/share affordances stay on the heading line (the generator
    also unwraps it -- this guards any stray case). */
@@ -1334,51 +1415,10 @@ html:not(.client-js) .site-search .search-field { display: none; }
    applies and the title text wraps around it at full width. */
 
 .wiki-content p { margin: 0 0 0.85em; }   /* prod paragraph spacing */
-/* Readable measure: cap prose line length. 66ch ~= Tailwind `prose` (65ch); `ch` runs wider
-   than a mean glyph so this renders ~73-80 actual chars -- the top of the 45-75 ideal / the
-   WCAG-80 ceiling. The intro band opts out below. */
-.wiki-content p, .wiki-content li, .wiki-content dd { max-width: 66ch; }
-/* Measure-cap exceptions, so the cap never constrains non-prose layout: a table cell (pandoc
-   wraps cell content in <p>) sizes to its content, and a list item / definition holding block
-   media (image, video, code block, nested table) keeps full width instead of squeezing the media
-   to the text measure. The media may be WRAPPED -- pandoc puts a loose-list image in <p>, and
-   [[File:|link=]] puts it in <a> -- so the exception covers the direct, <a>- and <p>-wrapped
-   shapes (and the wrapping <p> itself, else it re-caps the image it holds). */
-.wiki-content td > p, .wiki-content th > p,
-.wiki-content li:has(> img, > video, > pre, > table, > a > img, > a > video, > p > img, > p > video),
-.wiki-content dd:has(> img, > video, > pre, > table, > a > img, > a > video, > p > img, > p > video),
-.wiki-content li > p:has(> img, > video), .wiki-content dd > p:has(> img, > video) { max-width: none; }
-/* Readable measure: cap prose line length. 66ch ~= Tailwind `prose` (65ch); `ch` runs wider
-   than a mean glyph so this renders ~73-80 actual chars -- the top of the 45-75 ideal / the
-   WCAG-80 ceiling. The intro band opts out below. */
-.wiki-content p, .wiki-content li, .wiki-content dd { max-width: 66ch; }
-/* Measure-cap exceptions, so the cap never constrains non-prose layout: a table cell (pandoc
-   wraps cell content in <p>) sizes to its content, and a list item / definition holding block
-   media (image, video, code block, nested table) keeps full width instead of squeezing the media
-   to the text measure. The media may be WRAPPED -- pandoc puts a loose-list image in <p>, and
-   [[File:|link=]] puts it in <a> -- so the exception covers the direct, <a>- and <p>-wrapped
-   shapes (and the wrapping <p> itself, else it re-caps the image it holds). */
-.wiki-content td > p, .wiki-content th > p,
-.wiki-content li:has(> img, > video, > pre, > table, > a > img, > a > video, > p > img, > p > video),
-.wiki-content dd:has(> img, > video, > pre, > table, > a > img, > a > video, > p > img, > p > video),
-.wiki-content li > p:has(> img, > video), .wiki-content dd > p:has(> img, > video) { max-width: none; }
-/* Readable measure: cap prose line length. 66ch ~= Tailwind `prose` (65ch); `ch` runs wider
-   than a mean glyph so this renders ~73-80 actual chars -- the top of the 45-75 ideal / the
-   WCAG-80 ceiling. The intro band opts out below. */
-.wiki-content p, .wiki-content li, .wiki-content dd { max-width: 66ch; }
-/* Measure-cap exceptions, so the cap never constrains non-prose layout: a table cell (pandoc
-   wraps cell content in <p>) sizes to its content, and a list item / definition holding block
-   media (image, video, code block, nested table) keeps full width instead of squeezing the media
-   to the text measure. The media may be WRAPPED -- pandoc puts a loose-list image in <p>, and
-   [[File:|link=]] puts it in <a> -- so the exception covers the direct, <a>- and <p>-wrapped
-   shapes (and the wrapping <p> itself, else it re-caps the image it holds). */
-.wiki-content td > p, .wiki-content th > p,
-.wiki-content li:has(> img, > video, > pre, > table, > a > img, > a > video, > p > img, > p > video),
-.wiki-content dd:has(> img, > video, > pre, > table, > a > img, > a > video, > p > img, > p > video),
-.wiki-content li > p:has(> img, > video), .wiki-content dd > p:has(> img, > video) { max-width: none; }
-/* Readable measure: cap prose line length. 66ch ~= Tailwind `prose` (65ch); `ch` runs wider
-   than a mean glyph so this renders ~73-80 actual chars -- the top of the 45-75 ideal / the
-   WCAG-80 ceiling. The intro band opts out below. */
+/* Readable measure: cap prose line length at 66ch (~= Tailwind `prose` 65ch). `ch` is the '0'
+   advance -- wider than a mean glyph -- so on the real 16px body this renders a p90 ~64-66
+   chars/line (median ~58-62), measured by tools/check-typography.py on the live stage: inside the
+   45-75 ideal, under the WCAG-80 ceiling. The intro band opts out below. */
 .wiki-content p, .wiki-content li, .wiki-content dd { max-width: 66ch; }
 /* Measure-cap exceptions, so the cap never constrains non-prose layout: a table cell (pandoc
    wraps cell content in <p>) sizes to its content, and a list item / definition holding block
@@ -1790,6 +1830,22 @@ blockquote.quotation .blockquote-context img.author-image.logo-banner {
 .version-info { margin: 0.6rem 0; }
 .version-info dt { font-weight: 600; margin-top: 0.5rem; }
 .version-info dd { margin: 0 0 0 1rem; color: var(--muted); }
+/* Build-integrity rows (deploy completeness + source-tree clean/dirty): a green check (ok) /
+   red xmark (bad) glyph before the value, same self-hosted Font Awesome idiom + darkened
+   light-mode green (#157a33, clears WCAG 1.4.11 3:1) as the qualitative table cells. `/ ""` so
+   the glyph announces no alt text -- the dd value word already states the status. */
+.version-info dd.build-status::before {
+  font-family: "Font Awesome 6 Free"; font-weight: 900; font-style: normal;
+  margin-inline-end: 0.4em; text-decoration: none;
+}
+.version-info dd.build-status.ok::before  { content: "\f00c" / ""; color: #157a33; } /* check */
+.version-info dd.build-status.bad::before { content: "\f00d" / ""; color: var(--c-red); } /* xmark */
+@media screen {
+  :root[data-theme="dark"] .version-info dd.build-status.ok::before { color: var(--c-green); }
+}
+@media screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .version-info dd.build-status.ok::before { color: var(--c-green); }
+}
 /* Special:RecentChanges rows + pager */
 .recent-changes { list-style: none; margin: 0.6rem 0; padding: 0; }
 .recent-changes li { margin: 0.25rem 0; line-height: 1.5; }
@@ -1909,12 +1965,48 @@ code:empty { display: none; }
 .wiki-content table:not(.toc):not(.storage-table) th.cell-blue,
 .wiki-content table:not(.toc):not(.storage-table) td.cell-gray,
 .wiki-content table:not(.toc):not(.storage-table) th.cell-gray {
-  background: color-mix(in srgb, var(--callout) 32%, var(--surface)) !important;
+  background: color-mix(in srgb, var(--callout) 15%, var(--surface)) !important;
+}
+/* Leading status glyph per qualitative class (#261): a FontAwesome shape, so the status
+   survives greyscale and color blindness rather than resting on the tint alone (WCAG 1.4.1).
+   Painted via `content:` -- faicons.subset() collects these codepoints from the CSS and FAILS
+   the build if one is missing; decorative (a pseudo-element, outside the a11y tree), so a
+   screen reader still reads only the cell text, which already carries the status. Sits inside
+   the cell's <p> wrapper (status cells render <p>-wrapped) so it is inline before the text,
+   and takes the cell's own --callout hue (green/yellow darkened in light mode just below, for
+   WCAG 1.4.11 non-text contrast). Each `content:` carries `/ ""` so a screen reader announces
+   no alt text for the glyph (the cell text already states the status). */
+.wiki-content table:not(.toc):not(.storage-table) :is(td, th):is(.cell-green, .cell-red, .cell-yellow, .cell-blue, .cell-gray) > p:first-child::before {
+  font-family: "Font Awesome 6 Free"; font-weight: 900; font-style: normal;
+  margin-inline-end: 0.4em; color: var(--callout); text-decoration: none;
+}
+.wiki-content table:not(.toc):not(.storage-table) :is(td, th).cell-green  > p:first-child::before { content: "\f00c" / ""; } /* check */
+.wiki-content table:not(.toc):not(.storage-table) :is(td, th).cell-red    > p:first-child::before { content: "\f00d" / ""; } /* xmark */
+.wiki-content table:not(.toc):not(.storage-table) :is(td, th).cell-yellow > p:first-child::before { content: "\f071" / ""; } /* triangle-exclamation */
+.wiki-content table:not(.toc):not(.storage-table) :is(td, th).cell-blue   > p:first-child::before { content: "\f05a" / ""; } /* circle-info */
+.wiki-content table:not(.toc):not(.storage-table) :is(td, th).cell-gray   > p:first-child::before { content: "\f068" / ""; } /* minus */
+/* Green/yellow glyphs fail WCAG 1.4.11 (3:1 non-text) on their own light-mode 15% tint
+   (green --c-green #1a9e3f 2.76:1, yellow --c-yellow #fff23e 1.07:1). Darken to the sheet's
+   own status-glyph hues -- green #157a33 (4.30:1), yellow #444 (8.92:1) -- keeping the bright
+   per-class --callout in dark mode, where both already clear (green 5.87:1, yellow 6.27:1).
+   red/blue/gray clear 3:1 as --callout in both themes, so they are not overridden. Mirrors the
+   .padded-content-icon.iconset-true treatment. */
+.wiki-content table:not(.toc):not(.storage-table) :is(td, th).cell-green  > p:first-child::before { color: #157a33; }
+.wiki-content table:not(.toc):not(.storage-table) :is(td, th).cell-yellow > p:first-child::before { color: #444; }
+/* Dark mode restores the bright --callout glyph (clears on the dark tint). SCREEN only: @media
+   print (below) resets the color tokens to their light values, so on paper this reset would paint
+   the bright --c-green/--c-yellow on a light tint (2.76:1 / 1.07:1); scoping to screen lets print
+   keep the darker #157a33 / #444 light-mode hues. */
+@media screen {
+  :root[data-theme="dark"] .wiki-content table:not(.toc):not(.storage-table) :is(td, th):is(.cell-green, .cell-yellow) > p:first-child::before { color: var(--callout); }
+}
+@media screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .wiki-content table:not(.toc):not(.storage-table) :is(td, th):is(.cell-green, .cell-yellow) > p:first-child::before { color: var(--callout); }
 }
 /* Links inside a COLORED qualitative cell (.cell-*: good/bad/depends/N-A/caution): the bright --link
-   fails WCAG 4.5:1 on the 32% tint, so the (rare) link there uses the darker --link-on-shade -- still a
-   visible blue link, clears 4.5:1 on every tint in both themes. Unfilled <th> headers now use the
-   normal --link with no override. .cta-button stays excluded (solid-fill button). */
+   can fall under WCAG 4.5:1 on the tint, so the (rare) link there uses the darker --link-on-shade --
+   still a visible blue link, clears 4.5:1 on the lightened 15% tint in both themes. Unfilled <th>
+   headers now use the normal --link with no override. .cta-button stays excluded (solid-fill button). */
 .wiki-content table:not(.toc):not(.storage-table) :is(td, th):is(.cell-green, .cell-red, .cell-yellow, .cell-blue, .cell-gray) a:not(.cta-button) {
   color: var(--link-on-shade);
   text-decoration: underline;
@@ -1951,7 +2043,28 @@ code:empty { display: none; }
   border-radius: var(--radius);
   background: var(--surface);
   background: color-mix(in srgb, var(--callout, var(--accent)) 7%, var(--surface));
+  /* Box width tracks the prose measure so the box HUGS its text: without a cap a callout spans the
+     full ~960px content column while its prose wraps at 66ch (.wiki-content p), leaving a wide empty
+     right margin -- the non-idiomatic "capped prose in an uncapped box". 66ch + 2.75rem adds back
+     the widest box's horizontal padding (.info-box 21px/side, border-box) so the TEXT measure
+     matches the body; the has-icon box's 46px icon inset just wraps ~3ch earlier (still ideal, no
+     margin). Wide children (code <pre>, tables) keep their own overflow-x:auto -> they SCROLL inside
+     the narrower box, never clipped and never widening it. The cap only bites on wide viewports; a
+     phone box is already < 100vw. Tab-widget panels opt out just below. */
+  max-width: calc(66ch + 2.75rem);
 }
+/* Opt OUT of the box measure cap -- keep the full column:
+   - the tab WIDGET, both levels: a panel (.tcc-section) and its controller
+     (.tab-content-controller). {{tab|addToClass=info-box}} can put .info-box on EITHER
+     (the controller form -> .tab-content-controller.info-box), so both must opt out or the
+     whole tab bar+panels shrink to the prose measure. Interactive, width-using (GUI/CLI code
+     alternatives, download groups), not prose callouts.
+   - a box an author EXPLICITLY marked full-width (.width-100): honor that intent; the cap's
+     max-width otherwise overrides the requested full width.
+   (0,2,0)/(0,3,0) outrank the (0,1,0) box cap above. */
+.wiki-content .tcc-section,
+.wiki-content .tab-content-controller,
+.wiki-content :is(.mbox, .info-box, .community-support-info).width-100 { max-width: none; }
 /* Only an icon callout is a horizontal icon|content row. A plain/step info-box (a
    numbered section box, an OS-chooser wrapper) has block children that must STACK --
    flex-row here laid them side by side and overflowed the viewport horizontally.
@@ -2009,10 +2122,9 @@ code:empty { display: none; }
    chained :not() would make it (0,4,1) and out-specify the donor-card logo's `height:90%!important`
    (.donor-card .logo span.logo-image img, (0,3,2)), collapsing a donor logo in an info-box to 46px. */
 /* Exempt the mininav switcher pills (.mn-switcher icons -- the "stable" brick blew to 46px,
-   defeating the 1.2em pill cap) and the download button's OS-logo cell (.op-sys -- the ISO logo
-   blew to 46px, defeating its 16px cap). Both are icons with their OWN cap; the 46px blanket is
+   defeating the 1.2em pill cap). They are icons with their OWN cap; the 46px blanket is
    for donor/content logos, not these. */
-.info-box :not(.info-box-icon, .info-box-icon *, .thumbframe, .thumbframe *, .mn-switcher *, .op-sys) > img:not(.ia-archive-icon, .media-sized, .link-icon) { height: 46px !important; width: auto !important; max-width: 100%; }
+.info-box :not(.info-box-icon, .info-box-icon *, .thumbframe, .thumbframe *, .mn-switcher *) > img:not(.ia-archive-icon, .media-sized, .link-icon) { height: 46px !important; width: auto !important; max-width: 100%; }
 
 /* File: page main image is a link to its full-resolution media. Idiomatic "enlarges"
    affordance (MediaWiki MultimediaViewer uses zoom-in), reinforced by a light CSS-only
@@ -2055,10 +2167,15 @@ code:empty { display: none; }
 .padded-content-icon.iconset-h2,
 .padded-content-icon.iconset-h3,
 .padded-content-icon.iconset-h4 {
-  font-size: 0.875rem; /* 14px numeral: below body (16px) and the smallest heading (h4, 18px) */
+  font-size: 0.7em; /* em, not fixed px: the digit scales with its heading/paragraph text so the badge is proportional in every context */
   font-weight: 600;    /* heading weight, not the base-icon 700 -- the numeral is never heavier than its heading */
+  /* raise ~0.13em so the box centres on the CAP, not the x-height: vertical-align:middle aligns the
+     box midpoint to baseline+x-height/2, which sits ~0.13em BELOW the cap centre, so a plain
+     middle badge hangs low. position:relative/top is a VISUAL shift only -- it does not change the
+     line box, so this never re-inflates the heading line. em-based -> balanced in every context. */
+  position: relative; top: -0.17em;
 }
-/* h1's circle matched to the square badges' 24px box so all four read as one marker size
+/* h1's circle matched to the square badges' em box so all four read as one marker size
    regardless of shape -- the fixed chip tier (shared with the callout-box icon). The white
    numeral on the neon --c-green (#1a9e3f) is only ~3.5:1, so pin the fill to the AA green
    (#157a33, already the iconset-true text green) -- white clears 4.5:1, and the darker green
@@ -2066,7 +2183,7 @@ code:empty { display: none; }
    backgrounds). The thick white ring is thinned to 2px here (vs the shared 3px, which the
    large fa-2x banners keep) so it does not weigh down the now-subordinate circle. */
 .padded-content-icon.pci-style-circle.iconset-h1 {
-  width: 24px; height: 24px; background: #157a33; border-width: 2px;
+  width: 1.3em; height: 1.3em; background: #157a33; border-width: 2px;
 }
 /* IconSet h2/h3/h4 (step/section numbers, e.g. {{IconSet|h2|3}}) render as prod's filled
    rounded-square badge with a white numeral, coloured by the element's cs-* --callout --
@@ -2075,7 +2192,12 @@ code:empty { display: none; }
 .padded-content-icon.iconset-h3,
 .padded-content-icon.iconset-h4 {
   display: inline-flex; align-items: center; justify-content: center;
-  min-width: 24px; height: 24px; padding: 0 0.3em; border-radius: 5px;
+  /* em-sized (not fixed px): 1.3em of the badge's 0.7em digit ~= 0.9em of the HOST text, so the
+     box brackets the cap proportionally in EVERY context -- ~16px in an 18px step heading,
+     ~14.5px in 16px body sub-steps -- no per-context tuning (a fixed 16px box hung ~3.8px below
+     the baseline in body text). vertical-align:middle centres it; scaling-with-text + centred is
+     the step-badge idiom (MUI Stepper, Tailwind UI, Bootstrap size the badge relative to its text). */
+  min-width: 1.3em; height: 1.3em; padding: 0 0.3em; border-radius: 0.3em;
   background: var(--callout, var(--accent)); color: #fff;
   margin-right: 0.25rem; vertical-align: middle; line-height: 1;
 }
@@ -2254,10 +2376,11 @@ code:empty { display: none; }
    logo is not a giant block atop the active section. */
 .tcc-image img { height: 23px; width: auto; vertical-align: middle; }
 /* Collapse to the active panel at FIRST PAINT, keyed off the pre-paint client-js marker
-   (page.py THEME_INIT_JS sets it in <head> before body render), NOT the JS-runtime
-   .mininav-ready -- hiding only once app.js adds .mininav-ready happens AFTER first paint, so a
-   tab-heavy page rendered every stacked panel then collapsed ~all upward: a large content shift
-   on every (re)load. no-JS (no client-js) keeps all panels stacked + readable.
+   (the external pre-paint assets/theme-init.js sets it in <head> before body render). The switcher pills are
+   server-rendered (page.py _build_tab_switchers), so the pill bar + this collapse + the
+   title/image hide are ALL final at first paint and app.js only enhances (adds ARIA + handlers),
+   inserting nothing -> zero hydration shift. no-JS (no client-js) keeps all panels stacked +
+   readable, with the pills a plain in-page jump nav.
    Two mutually-exclusive :has cases pick the ONE pre-paint panel, matching app.js initTabs:
    - a controller WITH an explicit active=true panel -> show only it;
    - a controller WITHOUT one -> show only the FIRST .tcc-section (app.js def = index 0). The
@@ -2317,11 +2440,10 @@ html.client-js .tab-content-controller .tcc-content { border-top: none; padding-
   /* Match the Expand-all button's right inset to the 10px card padding at this width. */
   .expand-or-collapse-all-button { margin-right: 11px; }
 }
-/* The mininav MOVES each section's logo <img> into its nav pill, leaving the original
-   .tcc-image > a an EMPTY focusable anchor (href to the File: page, no content) -- an
-   a11y link-name failure. The logo now lives in the pill, so hide the redundant original
-   once the switcher is built; no-JS keeps the inline logo (img present -> link named). */
-.tab-content-controller.mininav-ready .tcc-image { display: none; }
+/* The server-rendered pill carries a COPY of the section's logo (page.py _tab_pill), so the
+   inline .tcc-image is redundant once the switcher shows. Hide it under client-js (pre-paint, so
+   no post-paint shift); no-JS keeps the inline logo beside the stacked section heading. */
+html.client-js .tab-content-controller .tcc-image { display: none; }
 
 /* ---- collapsibles: native <details>, collapses with no JS ---- */
 /* flow-root: own BFC so a right-floated .thumbframe.tright sibling sits beside the
@@ -2636,58 +2758,81 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
     background: #15233b; color: #a9cbf7; border-color: #2b6fd6;
   }
 }
-/* IntroLike: production lead callout (Utility.css) -- a soft italic gray box. Two markups
-   get it: a .intro-like div ({{IntroLike}}), AND the content {{Intro}} emits between empty
-   .pre-intro-p / .post-intro-p markers (so the ACTUAL page-lead text is the box, not just a
-   separate donate callout). Child paragraphs stack into one continuous rounded band. */
+/* {{IntroLike}} mid-page callout (production Utility.css) -- a soft italic gray box used
+   INSIDE content (e.g. Tor, Shell). Child paragraphs stack into one continuous tinted band.
+   The page LEAD ({{Intro}} marker form + the builder's synthetic .page-lead) is NOT this box:
+   it gets idiomatic lead typography (see below), matching GOV.UK/Scottish/USWDS. */
 .intro-like { margin: 1.5em 0; }
 .pre-intro-p + .hidden-thumbnail { display: none; }
 /* `.wiki-content` prefix raises specificity above `.wiki-content p{margin:0 0 1rem}`
    (0,1,1) -- without it that rule beat `.intro-like > *` (0,1,0) and re-added a 1rem gap
    between the paragraphs, breaking the box into disconnected slabs. */
-.wiki-content .intro-like > :not(:where(.info-box, .mbox, .community-support-info)),
-.wiki-content .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail, .info-box, .mbox, .community-support-info)) {
-  /* Specificity is tuned, not accidental: the `.wiki-content` prefix + `:not(:where())`
-     put this base slab rule at (0,2,0) -- high enough to keep `margin:0` winning over the
-     `.wiki-content p` margin:0 0 1rem rule (0,1,1) (else a 1rem gap re-breaks the band), yet
-     low enough that the first/last-slab overrides below win and keep the roomy box edges.
-     A plain `:not():not():not()` chain would be (0,4,0) and force the reduced interior
-     padding onto the box top and bottom too. */
+.wiki-content .intro-like > :not(:where(.info-box, .mbox, .community-support-info)) {
+  /* Specificity is tuned: the `.wiki-content` prefix + `:not(:where())` put this base slab
+     rule at (0,2,0) -- high enough to keep `margin:0` winning over `.wiki-content p` (0,1,1)
+     (else a 1rem gap re-breaks the band), yet low enough that the first/last-slab overrides
+     below win and keep the roomy box edges. */
   font-size: 1.06rem; line-height: 1.55; color: var(--muted); font-style: italic;
   background: var(--surface); display: flow-root;
-  /* Flat tint band: no shadow, no rounded corners. Text sits FLUSH on the body/heading left
-     axis; the tint bleeds 12px into each gutter so the lead reads as a tinted band, not an
-     indented card. Vertical margin stays 0 so stacked intro paragraphs join at ~0.8em (a normal
-     paragraph gap); roomy top/bottom come from the first/last-slab overrides. The band keeps
-     full measure -- the 66ch prose cap does not apply here. */
+  /* Flat tint band: no shadow, no rounded corners. The tint bleeds 12px into each gutter so it
+     reads as a tinted band, not an indented card. Vertical margin stays 0 so stacked paragraphs
+     join at ~0.8em; roomy top/bottom come from the first/last-slab overrides. */
   margin: 0 -12px; padding: 0.4em 12px; max-width: none;
 }
-.intro-like > :first-child:not(:where(.info-box, .mbox, .community-support-info)),
-.wiki-content .pre-intro-p + :not(:where(.info-box, .mbox, .community-support-info)),
-.wiki-content .pre-intro-p + .hidden-thumbnail + :not(:where(.info-box, .mbox, .community-support-info)) {
+.wiki-content .intro-like > :first-child:not(:where(.info-box, .mbox, .community-support-info)) {
   padding-top: 1em;
 }
-.intro-like > :last-child:not(:where(.info-box, .mbox, .community-support-info)),
-.wiki-content .pre-intro-p ~ :has(+ .post-intro-p):not(:where(.info-box, .mbox, .community-support-info)) {
+.wiki-content .intro-like > :last-child:not(:where(.info-box, .mbox, .community-support-info)) {
   padding-bottom: 1.1em;
 }
-/* The content-intro box (between .pre-intro-p / .post-intro-p) has no wrapper to carry the
-   1.5em below-gap the {{IntroLike}} div gets, so the first normal text sat flush against it;
-   give the element after the box that gap (prod ~21px). `.wiki-content` prefix outranks the
-   margin:0 the box-paragraph rule sets. */
-.wiki-content .post-intro-p + * { margin-top: 1.5em; }
 /* Flush-left content column (the has-rail-only grid and the plain non-grid page have NO left
-   `prev` gutter): the band's -12px left bleed has nowhere to sit, so it shoves the lead text
-   12px off the page-title's left axis. Cancel the LEFT bleed there -- text stays flush with the
-   heading (the right bleed into the rail gutter is unaffected). has-booknav pages keep the bleed. */
-.wiki-content:not(.has-booknav) .intro-like > :not(:where(blockquote, .info-box, .mbox, .community-support-info)),
-.wiki-content:not(.has-booknav) .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail, blockquote, .info-box, .mbox, .community-support-info)) {
-  /* blockquote + callout boxes excluded: each carries its own box model (border-left/indent, or a
-     full border + the .info-box.has-icon 46px left inset that clears the absolutely-positioned type
-     icon). Zeroing padding-left here (0,3,0) outranks .info-box.has-icon (0,2,0), so an {{mbox}}/
-     {{stub}} placed inside an {{intro}} lost that inset and its icon overlapped the first word. They
-     render as their own self-contained boxes; only plain lead paragraphs get the flush-left reset. */
+   `prev` gutter): the band's -12px left bleed has nowhere to sit, so it shoves the text 12px off
+   the page-title's left axis. Cancel the LEFT bleed there (the right bleed into the rail gutter is
+   unaffected); has-booknav pages keep the bleed. blockquote + callout boxes excluded: each carries
+   its own box model, and zeroing padding-left (0,3,0) would outrank .info-box.has-icon (0,2,0) and
+   drop a nested callout's 46px icon inset. */
+.wiki-content:not(.has-booknav) .intro-like > :not(:where(blockquote, .info-box, .mbox, .community-support-info)) {
   margin-left: 0; padding-left: 0;
+}
+
+/* Page LEAD -- idiomatic lead typography. GOV.UK govuk-body-l (24px), Scottish ds_leader
+   (24/19px) and USWDS .usa-intro all present the lead as larger body text in NORMAL ink: no
+   italic, no gray, no background band. Two markups are the lead: the {{Intro}} content between
+   empty .pre-intro-p / .post-intro-p sibling markers, and the builder's synthetic-page .page-lead
+   divs (search, recent-changes, settings, snapshot notice). 20px desktop (mobile 18px below),
+   line-height 1.5, same 66ch readable char-measure as body prose -- the lead is larger so 66ch is
+   physically wider but ~the same chars/line; it rejoins the measure the old band escaped (#268).
+   Target PROSE only -- bare <p> siblings AND the DIRECT <p> children of the GoogleOff SEO wrapper,
+   matched by [data-nosnippet] (carried by BOTH the default .robots-nocontent form and the nosnippet=1
+   form -- Template:GoogleOff). Download_Security wraps its first lead paragraphs there while a later
+   paragraph is a bare sibling, and both must read as one lead. The attribute + `> p` (direct child),
+   not a class + descendant, so a nested table/list/callout <p> is left alone and the nosnippet variant
+   is still caught. A lead figure/thumbnail/table/callout box is not a lead <p> and is never matched. */
+.wiki-content .pre-intro-p ~ p:not(:where(.post-intro-p ~ *)),
+.wiki-content .pre-intro-p ~ [data-nosnippet]:not(:where(.post-intro-p ~ *)) > p,
+.wiki-content .page-lead > p {
+  font-size: 1.25rem; line-height: 1.5; color: var(--fg); max-width: 66ch;
+  margin: 0 0 0.85em;
+}
+/* Rhythm: title->lead is the title's 25px bottom margin; lead->TOC/first element is 1.5em (on the
+   marker form's following element, and on the synthetic .page-lead block itself). */
+.wiki-content .post-intro-p + * { margin-top: 1.5em; }
+.wiki-content .page-lead { margin: 0 0 1.5em; }
+/* Callout prose rejoins the body measure (#268): an icon callout is a flex row (.info-box.has-icon)
+   whose `> * {max-width:100%}` uncaps its DIRECT paragraphs, so warning/note text ran edge-to-edge.
+   Re-cap only those direct prose paragraphs at 66ch; plain info-box/mbox/community prose is already
+   capped by the global `.wiki-content p`. The direct `> p` (0,3,1) beats .info-box.has-icon>* (0,2,0)
+   and leaves nested table/list/media <p> to the body's own max-width:none exceptions. */
+.wiki-content .info-box.has-icon > p {
+  max-width: 66ch;
+}
+@media (max-width: 600px) {
+  /* Lead steps down to 18px on small screens (GOV.UK/Scottish drop 24px->19px); body stays 16px. */
+  .wiki-content .pre-intro-p ~ p:not(:where(.post-intro-p ~ *)),
+  .wiki-content .pre-intro-p ~ [data-nosnippet]:not(:where(.post-intro-p ~ *)) > p,
+  .wiki-content .page-lead > p {
+    font-size: 1.125rem;
+  }
 }
 /* Homepage hero: match prod's centered slogan + sub-slogan (h2.slogan 34px centered #333;
    p.sub-slogan 19px centered non-italic #222). The shared boxed Title + italic IntroLike
@@ -2701,17 +2846,19 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 .page-home .wiki-content .intro-like > :not(:where(.info-box, .mbox, .community-support-info)),
 .page-home .intro-like > :first-child:not(:where(.info-box, .mbox, .community-support-info)),
 .page-home .intro-like > :last-child:not(:where(.info-box, .mbox, .community-support-info)),
-.page-home .wiki-content .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail, .info-box, .mbox, .community-support-info)) {
-  /* centered hero: no tint, no gutter bleed (margin-inline:0 cancels the band's -12px). Covers
-     BOTH the {{IntroLike}} div form AND the {{Intro}} pre/post-intro-p marker form -- the homepage
-     lead uses the marker form, so without that selector the hero sub-slogan fell back to the base
-     italic grey band instead of this centered non-italic slogan. Callout boxes excluded (same as
-     the general + non-booknav intro rules above): this block's (0,3,0) padding:0 / background:
+.page-home .wiki-content .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail, .info-box, .mbox, .community-support-info)),
+.page-home .wiki-content .pre-intro-p ~ [data-nosnippet]:not(:where(.post-intro-p ~ *)) > p {
+  /* centered hero: no tint, no gutter bleed (margin-inline:0), full-width (max-width:none cancels
+     the lead base's 66ch cap so the centered slogan spans the column). Covers BOTH the {{IntroLike}}
+     div form AND the {{Intro}} pre/post-intro-p marker form -- the homepage lead uses the marker
+     form, so without that selector the hero sub-slogan would fall back to the base idiomatic lead
+     (left-aligned, 66ch) instead of this centered slogan. Callout boxes excluded (same as the
+     general + non-booknav intro rules above): this block's (0,3,0) padding:0 / background:
      transparent outranks .info-box.has-icon (0,2,0), so an {{mbox}}/{{stub}} inside an {{intro}} on
      the HOMEPAGE would lose its 46px icon inset (icon overlaps the first word) and its background --
      the exclusion lets the callout keep its own self-contained box. :where() is 0-specificity, so
      the hero text cascade is unchanged. */
-  background: transparent; padding: 0; margin-inline: 0;
+  background: transparent; padding: 0; margin-inline: 0; max-width: none;
   font-style: normal; text-align: center; color: var(--fg); font-size: 1.19rem;
 }
 .page-home .intro-like { margin: 0 0 1.2em; }
@@ -2963,6 +3110,42 @@ sup.reference:target {
   transform: translateY(-0.035em);
 }
 .share-tooltip .headline-anchor:hover { color: var(--link); text-decoration: none; }
+/* #278 section permalink: an empty, focusable `<a class="h-anchor" href="#id">` beside each
+   heading (h1-h6; the page #firstHeading is excluded in page.py). A plain same-page fragment
+   link -> the browser updates the URL bar + history on click with NO script (strict-CSP clean;
+   works JS-off / Tor Safest). The '#' is a CSS glyph; the accessible name is the aria-label.
+   Hidden until the heading is HOVERED or the link is FOCUSED -- keyboard-reachable, unlike
+   GitHub's aria-hidden/tabindex=-1 anchor. Themed --muted/--link, so dark mode follows. */
+.wiki-content :is(h1, h2, h3, h4, h5, h6) { position: relative; }
+.wiki-content .h-anchor {
+  color: var(--muted); text-decoration: none; font-weight: 400; line-height: 1.3;
+  margin-left: 0.3em;                 /* narrow default: the glyph sits inline AFTER the text */
+  opacity: 0; transition: opacity 0.12s;
+}
+.wiki-content .h-anchor::before { content: "#"; }
+.wiki-content :is(h1, h2, h3, h4, h5, h6):hover > .h-anchor,
+.wiki-content :is(h1, h2, h3, h4, h5, h6):target > .h-anchor,
+.wiki-content .h-anchor:focus { opacity: 1; }
+.wiki-content .h-anchor:hover, .wiki-content .h-anchor:focus { color: var(--link); }
+.wiki-content .h-anchor:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+/* Wide viewports (>=1008px: the 60rem column centers with >=24px margin each side): HANG the
+   glyph to the LEFT of the heading (GitHub/Rustdoc/MDN-wide idiom) -- absolute + out of flow, so
+   it never shifts the heading text or reserves trailing space. Below 1008px the centered margin
+   is too small, so it stays inline AFTER the text (MkDocs/Sphinx idiom). */
+@media (min-width: 1008px) {
+  .wiki-content .h-anchor {
+    position: absolute; top: 0; right: 100%; margin-left: 0; margin-right: 0.15em;
+  }
+  /* The hang needs a left gutter (the centered column's auto margin, or the booknav left bleed).
+     The has-rail grid WITHOUT booknav is flush-left -- no gutter -- so a hung glyph falls ~11px
+     off the page edge at 1008-~1150px (measured). Keep it inline-after the text there. */
+  .wiki-content.has-rail:not(.has-booknav) .h-anchor {
+    position: static; margin-left: 0.3em; margin-right: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wiki-content .h-anchor { transition: none; }
+}
 /* Visible manually-placed anchors ({{Anchor|...|show=true}} -> span.mpa-visible) -- prod
    Utility.css parity: a block "#id" label (the invisible form, no mpa-visible, stays inert). */
 .manually-placed-anchor { position: relative; }
@@ -3550,8 +3733,8 @@ sup.reference:target {
   padding: 24px 0 31px;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
+  margin-left: calc(50% - 50cqw);
+  margin-right: calc(50% - 50cqw);
 }
 .dark-section > .inner-wrapper {
   max-width: 960px;
@@ -3610,8 +3793,14 @@ sup.reference:target {
 html.client-js .section-download .tab-content-controller .tcc-content { padding-top: 0; }
 /* The dark band is #273445, but .tcc-section's base `background: var(--bg)` (white) + border
    paint a white card behind the OS tiles. Clear both so the tiles sit directly on the dark band
-   (prod has no white card); covers the no-JS bordered state and the mininav-ready state. */
+   (prod has no white card); covers the no-JS bordered state and the client-js switcher state. */
 .section-download .tcc-section { background: transparent; border: none; }
+/* The pill switcher sits on the dark #273445 band; the general light-theme tab tokens
+   (--muted / --link / --border) go too dark there. Re-ground the underline tabs to white. */
+.section-download .mininav.mn-switcher > ul { border-bottom-color: rgba(255, 255, 255, 0.28); }
+.section-download .mininav.mn-switcher li > :not(span, img) { color: rgba(255, 255, 255, 0.72); }
+.section-download .mininav.mn-switcher li > *:hover { color: #fff; }
+.section-download .mininav.mn-switcher li > *.active { color: #fff; border-bottom-color: #fff; }
 .section-download .col-container > div a {
   background: #3c495a;
   display: flex; flex-direction: column; height: 100%;   /* equal-height tiles: a 2-line label
@@ -3656,11 +3845,26 @@ html.client-js .section-download .tab-content-controller .tcc-content { padding-
    .section-download) and a {{#darkband}} marker (.cv-darkband) authored after a == heading ==.
    The band is promoted to the whole .cv-section so the <h2> and the body share one band; the
    inner .section-download then only lays out the OS-card grid (bleed/bg neutralized). */
+/* Scrollbar-safe full-bleed: the dark bands break out of the centred content column to the
+   viewport edges. `50vw` includes the vertical scrollbar gutter while the `50%` half (of the
+   column) does not, so with a scrollbar present the band poked ~scrollbar/2 off the LEFT edge
+   -> a desktop horizontal scrollbar. `50cqw` instead measures the homepage body CONTENT box
+   (scrollbar excluded), so the band fills the content area exactly. The container is scoped to
+   the homepage body; off-homepage uses (no container) fall back to the small viewport (==vw),
+   i.e. unchanged. Behaviorally proven by tools/{check,canary}-fullbleed-overflow.py. */
+/* container-type:inline-size here = a query container + size containment ONLY, NOT contain:layout:
+   it does NOT establish a containing block for position:fixed descendants (contain:layout/paint,
+   transform, filter or will-change would). So the homepage fixed widgets (back-to-top, cookie
+   bottom-stack, share overlay) stay VIEWPORT-anchored, not trapped to body -- verified empirically
+   across chromium/firefox/webkit; do not re-flag. Do NOT move this to :root/html -- it breaks the
+   50cqw fullbleed bands, which need body as the content-box container. See the related
+   transform-containing-block guard on .heading-actions (~line 3040). */
+body.page-home { container-type: inline-size; }
 .page-home .cv-section:has(> .section-download),
 .page-home .cv-section:has(.cv-darkband) {
   background: #273445;
   color: #fff;
-  margin: 1.5rem calc(50% - 50vw);
+  margin: 1.5rem calc(50% - 50cqw);
   padding: 2rem 0;
 }
 .page-home .cv-section:has(> .section-download) > h2,
@@ -3741,7 +3945,10 @@ html.client-js .section-download .tab-content-controller .tcc-content { padding-
 .overview-image-and-video-player {
   width: 100%;
   max-width: 934px;
-  margin: 1.5rem auto 0;
+  /* Symmetric block margin: the hero video is evenly framed (same gap above and below), so the
+     following centered "Learn What Is Whonix?" link is not crammed against the video bottom.
+     Mirrors prod whonix.org's `.learn-more { margin: 25px 0 }` framing of that link. */
+  margin: 1.5rem auto;
   padding-top: 56.25%;
   position: relative;
 }
@@ -3838,6 +4045,14 @@ html.client-js .section-download .tab-content-controller .tcc-content { padding-
    nested <ul>, not per-depth padding. position:relative anchors the absolute toggle. */
 .toc li { margin: 0.15rem 0; position: relative; padding-left: 1.7rem; }
 .toc .toc-sec > ul { padding-left: 1.2rem; }
+/* Mobile: the per-item 1.7rem toggle gutter (.toc li above) ALREADY steps the indent per
+   level -- each nested <ul> sits inside its parent <li>, so that gutter compounds with depth.
+   The extra 1.2rem nested-ul step then compounds a SECOND time, and a deep (h1-h6) TOC
+   overflows a 320px viewport. Drop the redundant step on phones: hierarchy still reads from
+   the ~1.7rem/level gutter, and the toggle gutter (>=24px target) is untouched. */
+@media (max-width: 480px) {
+  .toc .toc-sec > ul { padding-left: 0; }
+}
 /* Per-section collapse: each parent section's subsections live in a native
    <details class="toc-sec"> (no-JS, CSP-safe). The section link is a SEPARATE SIBLING before
    the <details> (never inside <summary>, so no interactive-in-interactive -- axe
@@ -4124,28 +4339,45 @@ html.client-js .section-download .tab-content-controller .tcc-content { padding-
    left-anchored, so without this the centered text sits left-of-centre above the cloud. */
 .wiki-content .built-on-label p { max-width: none; margin: 0 auto; }
 
-/* --- tab mininav SWITCHER (JS builds a pill cloud; the production Mininav.css look:
-   a rounded blue bar of pills, inactive #9aabed, active white/#36b) --- */
-.tab-content-controller > .mininav { overflow: auto; margin: 0 0 0.5rem; text-align: center; }
+/* --- tab mininav SWITCHER: left-aligned underline tabs (modern idiom: GitHub Primer
+   UnderlineNav / Material / IBM Carbon). Active tab = --link text + a 2px --link underline over a
+   full-width hairline rule, plus bold weight; inactive = --muted, normal weight. app.js keeps
+   role=tablist/tab + roving tabindex; styling keys off the server/app.js `.active` class (no inline
+   JS/CSS -> strict-CSP safe). A wide tab set SCROLLS horizontally inside .mininav on narrow screens
+   (Material "scrollable tabs"), so the page body never overflows sideways. --- */
+/* overflow-x on the switcher ITSELF (not only the in-article one) so a WIDE set -- the in-article
+   OS-chooser AND the special-page .mn-special bar -- scrolls locally instead of widening the page. */
+.mininav.mn-switcher { overflow-x: auto; }
+.tab-content-controller > .mininav { margin: 0 0 0.9rem; }
 .mininav.mn-switcher > ul {
-  display: inline-block; list-style: none; margin: 0; padding: 5px 20px;
-  background-color: #89d; border-radius: 50px; box-shadow: 2px 2px 6px #00000028 inset;
-  text-align: center; font-size: 0;
+  display: flex; flex-wrap: nowrap; align-items: flex-end; gap: 0 2px;
+  list-style: none; margin: 0; padding: 0; min-width: 100%; width: max-content;
+  border-bottom: 1px solid var(--border);
 }
-/* max-width:none: a pill <li> inherits font-size:0 from the ul, so the prose reading-measure cap
-   `.wiki-content li { max-width: 66ch }` resolves `ch` against font-size 0 -> 0, collapsing every
-   pill to width 0 (they then overflow + stack). The switcher pills are chrome, not prose. */
-.mininav.mn-switcher > ul > li { display: inline-block; margin: 0; padding: 0; max-width: none; }
+/* flex:none keeps each tab at its label width (no shrink) so a wide set scrolls; max-width:none
+   because the prose reading-measure cap `.wiki-content li { max-width: 66ch }` is for body text. */
+.mininav.mn-switcher > ul > li { flex: none; display: block; margin: 0; padding: 0; max-width: none; }
+/* `li > :not(span, img)` = the tab anchor (its leading icon <span>/<img> excluded). */
 .mininav.mn-switcher li > :not(span, img) {
-  /* dark text on the light-blue pill: white failed WCAG contrast (2.22) on #9aabed;
-     dark navy keeps the production pill colour while passing a11y */
-  background-color: #9aabed; color: #1c2a5e; padding: 3px 11px 5px; text-decoration: none;
-  font-size: 17px; display: inline-block; border: none; border-radius: 50px; cursor: pointer;
-  margin: 5px 0; box-shadow: 1px 1px 3px #0002; transition: background-color .2s, color .2s;
+  display: inline-flex; align-items: center; white-space: nowrap; cursor: pointer;
+  color: var(--muted); font-size: 0.95rem; font-weight: 400; text-decoration: none;
+  padding: 0.5rem 0.85rem; margin-bottom: -1px;
+  background: none; border: 0; border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
 }
-.mininav.mn-switcher li:not(:last-child) > * { margin-right: 11px; }
-.mininav.mn-switcher li > *:hover,
-.mininav.mn-switcher li > *.active { background-color: white; color: #36b; }
+.mininav.mn-switcher li > *:hover { color: var(--fg); }
+.mininav.mn-switcher li > *.active { color: var(--link); border-bottom-color: var(--link); font-weight: 700; }
+/* Inside a colored callout (.info-box, incl. cs-*), the bright --link active text drops below 4.5:1
+   on the tint, so use the darker --link-on-shade (the house tinted-surface link colour). */
+.info-box .mininav.mn-switcher li > *.active { color: var(--link-on-shade); border-bottom-color: var(--link-on-shade); }
+.mininav.mn-switcher li > *:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+/* Reserve the BOLD label width in a hidden ::after copy so activating a tab (400 -> 700) never
+   widens it and shifts the row (GitHub Primer UnderlineNav technique). data-label = plain text. */
+.tcc-label { display: inline-block; }
+.tcc-label::after {
+  content: attr(data-label); display: block; height: 0; overflow: hidden;
+  visibility: hidden; font-weight: 700;
+}
 /* pills are buttons, not prose links: no underline (overrides .wiki-content li a + a:hover). */
 .mininav.mn-switcher a, .mininav.mn-switcher a:hover { text-decoration: none; }
 /* width:auto so a square icon keeps its ratio (a bare height + an HTML width attr squish it).
@@ -4168,14 +4400,15 @@ html.client-js .section-download .tab-content-controller .tcc-content { padding-
 .mn-special + .intro-like { margin-top: 0; }
 /* Hide the tab-title visually but KEEP it in the a11y tree (sr-only, not display:none):
    the pill nav shows the label, but the section's heading must stay so screen readers get
-   the authored h2->h3->h4 order (display:none drops the h3 -> heading-order a11y fail). */
-.tab-content-controller.mininav-ready .tcc-title {
+   the authored h2->h3->h4 order (display:none drops the h3 -> heading-order a11y fail).
+   Gated on client-js (pre-paint) so the switcher layout is final at first paint (no CLS);
+   no-JS keeps the heading visible above its stacked section. */
+html.client-js .tab-content-controller .tcc-title {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 @media (max-width: 420px) {
-  .mininav.mn-switcher li > :not(span, img) { font-size: 15px; padding: 4px 10px; }
-  .mininav.mn-switcher > ul { padding: 5px 12px; }
+  .mininav.mn-switcher li > :not(span, img) { font-size: 0.88rem; padding: 0.45rem 0.6rem; }
 }
 
 /* --- breadcrumbs + categories box --- */
@@ -4646,7 +4879,7 @@ body:has(.stage-banner) { padding-bottom: 4.5rem; }
    Sitenotice.css: shown by default (no-JS friendly), JS dismisses. Placement A: a neutral
    theme-aware surface bar -- heart icon + ask + a unified-system Donate button
    (.mw-ui-progressive), with a ghost close pinned to the right edge. */
-/* Flash-free dismiss: the <head> pre-paint (page.py THEME_INIT_JS) marks <html> when
+/* Flash-free dismiss: the <head> pre-paint (assets/theme-init.js, external) marks <html> when
    a previously-dismissed banner should stay hidden, so it never paints then vanishes. */
 html.sitenotice-hidden #siteNotice,
 html.legal-ack-hidden .consent-banner { display: none; }
@@ -4687,8 +4920,19 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
 }
 .sitenotice-close:hover { opacity: 1; background: color-mix(in srgb, currentColor 12%, transparent); }
 /* Placement by shape: center-right on the thin default bar (above); top-right CORNER on the
-   tall EOY card, where a vertically-centred close would float in the middle of the card. */
-.sitenotice:has(.sitenotice-end-of-year) .sitenotice-close { top: 14px; transform: none; }
+   tall EOY card, where a vertically-centred close would float in the middle of the card.
+   The EOY close sits over the promo PHOTO on mobile (stacked columns) but the flat surface on
+   desktop; a bare ghost washes out over the image, so give it the same always-on circular chip
+   as the fly-in toast -- one legible control on either background (Spectrum/PhotoSwipe idiom),
+   consistent site-wide. White glyph; the chip owns the contrast (WCAG 1.4.11 >=3:1). The thin
+   default sitenotice bar keeps the shared ghost (it never overlaps an image). */
+.sitenotice:has(.sitenotice-end-of-year) .sitenotice-close {
+  top: 14px; transform: none;
+  border-radius: 50%; background: rgba(0, 0, 0, 0.55); color: #fff; opacity: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+.sitenotice:has(.sitenotice-end-of-year) .sitenotice-close:hover { background: rgba(0, 0, 0, 0.7); }
+.sitenotice:has(.sitenotice-end-of-year) .sitenotice-close:active { background: rgba(0, 0, 0, 0.82); }
 /* Default thin bar: a vertically-centred X reads clean on one desktop line, but on a narrow phone
    the bar flex-wraps to several rows and the centred X floats mid-card. Pin it to the top-right
    corner once the bar can wrap (positive offsets only, per the #89/#91 guard). */
@@ -4731,16 +4975,22 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
   }
 }
 #fly-in-notification-panel .close-panel {
-  /* Real <button> (native Enter/Space + focus), on the shared dismiss-X size token: a 16px mark
+  /* Real <button> (native Enter/Space + focus), on the shared dismiss-X size token: an 18px mark
      centred in the --close-size-compact target (>=24px, WCAG 2.5.8). Pinned top-left -- the corner
-     away from the screen's right edge the toast docks against. */
-  color: #fff; font-size: 16px; cursor: pointer; position: absolute;
-  left: 3px; top: 3px; z-index: 10; padding: 0; border: 0; background: transparent;
+     away from the screen's right edge the toast docks against. The glyph rides its OWN
+     semi-transparent circular chip (self-contained backing surface) dark enough to carry white at
+     WCAG 1.4.11 >=3:1 over any image region -- plus a slight shadow so the thin mark stays crisp on
+     the chip's lighter edge -- rather than relying on a bare text-shadow alone. */
+  color: #fff; font-size: 18px; cursor: pointer; position: absolute;
+  left: 3px; top: 3px; z-index: 10; padding: 0; border: 0;
+  background: rgba(0, 0, 0, 0.6); border-radius: 50%;
   width: var(--close-size-compact); height: var(--close-size-compact);
   display: inline-flex; align-items: center; justify-content: center;
-  text-shadow: 0 0 1px #000, 0 0 2px #000, 0 0 3px #000;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
 }
-#fly-in-notification-panel .close-panel:hover { transform: scale(1.2); }
+/* Hover deepens the chip (idiomatic icon-button tint, not a dated scale-grow); active presses in. */
+#fly-in-notification-panel .close-panel:hover { background: rgba(0, 0, 0, 0.74); }
+#fly-in-notification-panel .close-panel:active { transform: scale(0.95); }
 #fly-in-notification-panel .content { padding: 10px 18px; }
 #fly-in-notification-panel .content .headline {
   font-size: 22px; margin: 10px 0; text-align: center; line-height: 1.5em;
@@ -4910,7 +5160,7 @@ body.mini-modal-active { overflow: hidden; }
 #fly-in-notification-panel .close-panel,
 .gallery-lightbox .glb-nav {
   cursor: pointer;
-  transition: filter 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
+  transition: background 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
 }
 .popover-close:hover,
 .gallery-lightbox .glb-nav:hover {

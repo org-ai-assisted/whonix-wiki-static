@@ -1,0 +1,1 @@
+{"prefetch":[{"where":{"and":[{"href_matches":"/*"},{"not":{"selector_matches":"[data-no-instant]"}}]},"eagerness":"moderate"}]}

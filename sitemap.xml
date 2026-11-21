@@ -35,6 +35,14 @@
   <url><loc>https://www.whonix.org/wiki/Browser_Plugins</loc><image:image><image:loc>https://www.whonix.org/media/orig/Plugins.png</image:loc></image:image></url>
   <url><loc>https://www.whonix.org/wiki/Browser_Tests</loc><image:image><image:loc>https://www.whonix.org/media/orig/Testschecklist.png</image:loc></image:image></url>
   <url><loc>https://www.whonix.org/wiki/Build_Configuration</loc><image:image><image:loc>https://www.whonix.org/media/orig/Buildconfiguration12354.png</image:loc></image:image></url>
+  <url><loc>https://www.whonix.org/wiki/Category:Deprecated</loc></url>
+  <url><loc>https://www.whonix.org/wiki/Category:Design</loc></url>
+  <url><loc>https://www.whonix.org/wiki/Category:Development</loc></url>
+  <url><loc>https://www.whonix.org/wiki/Category:Documentation</loc></url>
+  <url><loc>https://www.whonix.org/wiki/Category:MultiWiki</loc></url>
+  <url><loc>https://www.whonix.org/wiki/Category:MultiWikiFile</loc></url>
+  <url><loc>https://www.whonix.org/wiki/Category:TODO</loc></url>
+  <url><loc>https://www.whonix.org/wiki/Category:Templates</loc></url>
   <url><loc>https://www.whonix.org/wiki/Censorship_Circumvention_Tools</loc><image:image><image:loc>https://www.whonix.org/media/cards/wiki-Censorship_Circumvention_Tools-8b95d961.jpg</image:loc></image:image></url>
   <url><loc>https://www.whonix.org/wiki/Census</loc><image:image><image:loc>https://www.whonix.org/media/orig/Census3212.png</image:loc></image:image></url>
   <url><loc>https://www.whonix.org/wiki/Chaining_Anonymizing_Gateways</loc><image:image><image:loc>https://www.whonix.org/media/orig/Chaininganon23234.jpg</image:loc></image:image></url>
@@ -376,13 +384,6 @@
   <url><loc>https://www.whonix.org/wiki/Teacher</loc><image:image><image:loc>https://www.whonix.org/media/cards/wiki-Teacher-5eeee52e.jpg</image:loc></image:image></url>
   <url><loc>https://www.whonix.org/wiki/Telegram</loc><image:image><image:loc>https://www.whonix.org/media/orig/1024px-Telegram_2019_Logo.svg.png</image:loc></image:image></url>
   <url><loc>https://www.whonix.org/wiki/Terms_of_Service</loc><image:image><image:loc>https://www.whonix.org/media/cards/wiki-Terms_of_Service-4afa55bf.jpg</image:loc></image:image></url>
-  <url><loc>https://www.whonix.org/wiki/Testpage-mass-headline-test</loc><image:image><image:loc>https://www.whonix.org/media/cards/wiki-Testpage-mass-headline-test-9d75caf6.jpg</image:loc></image:image></url>
-  <url><loc>https://www.whonix.org/wiki/Testpage-no-header-no-footer</loc><image:image><image:loc>https://www.whonix.org/media/cards/wiki-Testpage-no-header-no-footer-c272ebee.jpg</image:loc></image:image></url>
-  <url><loc>https://www.whonix.org/wiki/Testpage-with-header-and-footer</loc><image:image><image:loc>https://www.whonix.org/media/cards/wiki-Testpage-with-header-and-footer-f68a2d9c.jpg</image:loc></image:image></url>
-  <url><loc>https://www.whonix.org/wiki/Testpage1</loc><image:image><image:loc>https://www.whonix.org/media/cards/wiki-Testpage1-9cbe98ac.jpg</image:loc></image:image></url>
-  <url><loc>https://www.whonix.org/wiki/Testpage2</loc><image:image><image:loc>https://www.whonix.org/media/cards/wiki-Testpage2-bd8b6133.jpg</image:loc></image:image></url>
-  <url><loc>https://www.whonix.org/wiki/Testpage4</loc><image:image><image:loc>https://www.whonix.org/media/cards/wiki-Testpage4-3ecba60f.jpg</image:loc></image:image></url>
-  <url><loc>https://www.whonix.org/wiki/Testpage5</loc><image:image><image:loc>https://www.whonix.org/media/cards/wiki-Testpage5-3e9f59a5.jpg</image:loc></image:image></url>
   <url><loc>https://www.whonix.org/wiki/TestpageForFlyInNotification</loc><image:image><image:loc>https://www.whonix.org/media/cards/wiki-TestpageForFlyInNotification-6385a700.jpg</image:loc></image:image></url>
   <url><loc>https://www.whonix.org/wiki/Testpage_Donors</loc><image:image><image:loc>https://www.whonix.org/media/cards/wiki-Testpage_Donors-be9d7162.jpg</image:loc></image:image></url>
   <url><loc>https://www.whonix.org/wiki/The_World_Wide_Web_And_Your_Privacy</loc><image:image><image:loc>https://www.whonix.org/media/orig/Rsz-google-chart.png</image:loc></image:image></url>

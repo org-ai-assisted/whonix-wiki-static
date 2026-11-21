@@ -27,32 +27,56 @@
   // Shared geometry batcher: every ResizeObserver-driven measure on the page runs through ONE
   // observer, whose callback executes EVERY widget's read before ANY widget's write. Each widget
   // reads-then-writes correctly on its own, but two independent observers interleave in a single
-  // dispatch -- the bottom-stack observer writes body.paddingBottom (dirtying global layout), then
-  // the wide-table observer reads scrollWidth and forces a synchronous relayout (the PageSpeed
-  // "forced reflow"). One observer, one callback, guarantees read-before-write with no
-  // cross-observer and no microtask-timing assumption. A widget keeps its own rAF path when
-  // ResizeObserver is absent. geomObserver(measure, write): register a widget's measure/write pair
-  // ONCE (measure() returns the value write() applies) and return an observe(el) bound to the shared
-  // observer -- a widget observes as many elements as it likes under its single pair.
+  // dispatch -- one observer writes body.paddingBottom (dirtying global layout), then another reads
+  // geometry and forces a synchronous relayout (the PageSpeed "forced reflow"). One observer, one
+  // callback, guarantees read-before-write with no cross-observer and no microtask-timing
+  // assumption. A widget keeps its own rAF path when ResizeObserver is absent.
+  // geomObserver(measure, write): register a widget's measure/write pair ONCE (measure() returns the
+  // value write() applies) and return an observe(el) bound to the shared observer -- a widget
+  // observes as many elements as it likes under its single pair. The callback also CACHES each
+  // changed element's BORDER-box AND CONTENT-box inline size from the ENTRY (read via
+  // geomBorderInlineSize / geomContentInlineSize) -- a free, post-layout read a widget uses instead
+  // of scrollWidth/clientWidth, which would force a layout. Both boxes are kept because they differ
+  // on a padded element (a wide-table caption has 10em side padding): the scroll EXTENT of a child
+  // is its border box (full laid-out width), while the VISIBLE width of the scroll container is its
+  // content box (== clientWidth). contentRect.width is the content box -- the CONTENT fallback. The
+  // BORDER has NO contentRect fallback (content-box would lose a caption's 10em padding on a
+  // box-size-less ResizeObserver, e.g. Safari 14-15.3): it stays undefined so measureTables reads
+  // offsetWidth (border box), matching the no-RO path.
   var _geomPairs = [];
   var _geomRO = null;
+  var _geomSizes = null;  // Map<Element, {border, content}>: last-delivered inline sizes per observed el
   function geomObserver(measure, write) {
     _geomPairs.push([measure, write]);
     if (!_geomRO) {
-      _geomRO = new ResizeObserver(function () {
+      _geomRO = new ResizeObserver(function (entries) {
+        // RO reports only the CHANGED elements per callback, so persist prior sizes for the rest.
+        var ents = entries, e;
+        if (!_geomSizes) { _geomSizes = new Map(); }
+        for (e = 0; e < ents.length; e++) {
+          var bb = ents[e].borderBoxSize, cb = ents[e].contentBoxSize, cr = ents[e].contentRect.width;
+          _geomSizes.set(ents[e].target, {
+            border: (bb && bb.length) ? bb[0].inlineSize : undefined,
+            content: (cb && cb.length) ? cb[0].inlineSize : cr
+          });
+        }
         var vals = [], k;
         for (k = 0; k < _geomPairs.length; k++) { vals.push(_geomPairs[k][0]()); }  // READ phase
         for (k = 0; k < _geomPairs.length; k++) { _geomPairs[k][1](vals[k]); }      // WRITE phase
       });
     }
-    return function (el) { _geomRO.observe(el); };
+    return function (el, box) { _geomRO.observe(el, box ? { box: box } : undefined); };
   }
+  // Inline size of an observed element from the latest RO delivery (undefined until its first entry
+  // arrives), by box. A cached ENTRY read, so a widget measures width with zero forced layout.
+  function geomBorderInlineSize(el) { var s = _geomSizes && _geomSizes.get(el); return s ? s.border : undefined; }
+  function geomContentInlineSize(el) { var s = _geomSizes && _geomSizes.get(el); return s ? s.content : undefined; }
 
   // Single source of truth for every localStorage key this site may set. The
   // Browser Storage page enumerates THIS (no separate hardcoded list), and the
   // feature code below references the constants -- so each key name lives once.
-  // (The hashed inline pre-paint script in <head> reads the theme key too; it must
-  // stay in sync with LS_THEME by contract, as it runs before this file loads.)
+  // (The external pre-paint script in <head> -- assets/theme-init.js -- reads the theme key
+  // too; it must stay in sync with LS_THEME by contract, as it runs before this file loads.)
   var LS_THEME = "theme";
   var LS_LEGAL_ACK = "legal-agreement-banner-dismissed";
   var LS_SITENOTICE = "sitenotice-dismissed";
@@ -66,11 +90,11 @@
     { key: LS_STAGE, label: "Staging-server notice dismissed" }
   ];
 
-  // Graceful degradation for a drifted CSP: the hashed inline pre-paint script in
-  // <head> gives flash-free theming, but if its sha256 ever mismatches the CSP the
-  // browser blocks it. Re-apply the stored theme here (app.js is 'self', always
-  // allowed) so dark mode still works -- only the flash-free-ness is lost, never
-  // the theme or the rest of the page. Idempotent when the inline script did run.
+  // Belt-and-suspenders: the external pre-paint script in <head> (/theme-init.min.js, loaded
+  // under script-src 'self') gives flash-free theming, but if it ever fails to load (network
+  // error) the browser skips it. Re-apply the stored theme here (app.js is also 'self', always
+  // allowed) so dark mode still works -- only the flash-free-ness is lost, never the theme or
+  // the rest of the page. Idempotent when the pre-paint did run.
   // Runs immediately (not deferred to DOMContentLoaded) to minimize any flash.
   function applyStoredTheme() {
     try {
@@ -298,42 +322,38 @@
     }
   }
 
-  // Tab controllers: build the mininav switcher (one pill per section, labelled by the
-  // section title), default to the active/first tab, switch on click. No-JS shows all
-  // sections. TT-safe: createElement/textContent/classList only.
+  // Tab controllers: ENHANCE the SERVER-RENDERED mininav switcher. page.py _build_tab_switchers
+  // already emitted the <ul> of <a class="tcc-tab" href="#id"> pills (icon + label, in their final
+  // position), so this inserts NOTHING into the layout = zero hydration CLS. We add only the ARIA
+  // tabs semantics (role=tablist/tab/tabpanel + aria-* + roving tabindex) and the click/keyboard
+  // behaviour -- a promise of keyboard interaction that exists only now that JS runs, so it is
+  // added HERE, never baked into the static HTML (static tab roles would lie to AT; WAI-ARIA APG +
+  // GOV.UK). No-JS keeps the pills as plain in-page anchor links to the stacked sections.
+  // TT-safe: setAttribute/classList/addEventListener only, no HTML sink.
   function initTabs() {
     var controllers = document.querySelectorAll(".tab-content-controller");
     var tabSeq = 0;  // unique ids for the tab <-> panel ARIA relationship
     for (var i = 0; i < controllers.length; i++) {
       (function (ctrl) {
         var sections = tabSections(ctrl);
-        var nav = ctrl.querySelector(":scope > .mininav");
-        if (!sections.length || !nav) return;
-        nav.classList.add("mn-switcher");
-        var ul = document.createElement("ul");
-        for (var j = 0; j < sections.length; j++) {
-          var sec = sections[j];
-          // Direct-child scope (not a descendant lookup): this section's OWN title/image, never
-          // one belonging to a nested .tab-content-controller in its body. Unscoped, a section
-          // whose own .tcc-image is an <i> icon (no <img>) would reach down and MOVE the first
-          // nested tab's image into this outer pill, leaving that nested pill imageless.
-          var title = sec.querySelector(":scope > .tcc-title");
-          var heading = title && title.querySelector("h1, h2, h3, h4, h5, h6");
-          var hid = heading && heading.id;
-          var li = document.createElement("li");
+        var ul = ctrl.querySelector(":scope > .mininav > ul");
+        if (!sections.length || !ul) return;
+        var pills = ul.querySelectorAll(":scope > li > .tcc-tab");
+        // One server pill per section is the invariant; any mismatch means malformed markup, so
+        // leave the pills as plain links rather than wire a broken tablist.
+        if (pills.length !== sections.length) return;
+        ul.setAttribute("role", "tablist");
+        ul.setAttribute("aria-label", "Section tabs");
+        for (var j = 0; j < pills.length; j++) {
+          var a = pills[j], sec = sections[j], li = a.parentNode;
           // The <li> wrapper must be transparent to AT: a role=tablist may only contain role=tab
           // children, and a role=tab needs a tablist parent (APG). Without this, axe flags
-          // aria-required-children / aria-required-parent, and the li (whose <ul> is now a
-          // tablist, not a list) trips the listitem rule.
-          li.setAttribute("role", "presentation");
-          var a = document.createElement("a");
-          a.className = "tcc-tab";
-          // ARIA tabs pattern (injected only now that JS runs -- no-JS stays plain stacked
-          // sections, never a false "tab" promise): the tab controls its panel (the section),
-          // the panel is labelled back by the tab. Assign ids where missing.
+          // aria-required-children / aria-required-parent, and the li trips the listitem rule.
+          if (li) li.setAttribute("role", "presentation");
+          // The tab controls its panel (the section); the panel is labelled back by the tab.
           a.setAttribute("role", "tab");
           var uid = "tcc-" + (tabSeq++);
-          a.id = uid + "-tab";
+          if (!a.id) a.id = uid + "-tab";
           if (!sec.id) sec.id = uid + "-panel";
           a.setAttribute("aria-controls", sec.id);
           sec.setAttribute("role", "tabpanel");
@@ -343,66 +363,22 @@
           if (!sec.querySelector("a[href], button, input, select, textarea, [tabindex]")) {
             sec.tabIndex = 0;
           }
-          // encodeURIComponent so a raw %/space in the id survives an Open-in-new-tab / copy-link
-          // (the href is the shared URL); syncTabsFromHash decodeURIComponent's it back on load.
-          a.href = hid ? ("#" + encodeURIComponent(hid)) : "#";
-          // Carry the section's declared icon into the pill: an <img> from [[File:...]] OR a
-          // FontAwesome <i> (|image=<i ...>). Scoped to the section's OWN direct-child .tcc-image
-          // so a nested controller's image is never hoisted into this outer pill. PREFER the <img>
-          // over an incidental <i>: app.js and the check-tab-pill-images gate must agree on which
-          // node the pill carries, and the authored image wins over a decorative glyph
-          // (querySelector("img, i") picks DOM order, not image-first).
-          var tccImage = sec.querySelector(":scope > .tcc-image");
-          var icon = tccImage ? (tccImage.querySelector("img") || tccImage.querySelector("i")) : null;
-          if (icon) {
-            // The pill IS an <a role=tab>. A nested <a> inside the carried icon (a wiki author can
-            // put [[link]] inside an |image=<i>...</i> param, which pandoc renders as an <a>) would
-            // be an anchor-in-anchor: invalid HTML the browser re-parents, plus a stray clickable
-            // link in the tablist. Drop any descendant anchor; carry only the glyph/image.
-            var nestedLinks = icon.querySelectorAll("a");
-            for (var nl = 0; nl < nestedLinks.length; nl++) {
-              nestedLinks[nl].parentNode.removeChild(nestedLinks[nl]);
-            }
-            a.appendChild(icon);
-          }
-          // Label from the title text ONLY -- a section title is also a real heading, so it
-          // carries BOTH injected affordances (.share-tooltip permalink menu + .mw-editsection
-          // edit-icon link); strip both by element so neither leaks into the tab label.
-          var label = "Tab " + (j + 1);
-          if (title) {
-            var tclone = title.cloneNode(true);
-            var strip = tclone.querySelectorAll(".share-tooltip, .mw-editsection");
-            for (var s = 0; s < strip.length; s++) strip[s].parentNode.removeChild(strip[s]);
-            var t = tclone.textContent.trim();
-            if (t) label = t;
-          }
-          a.appendChild(document.createTextNode(label));
-          (function (idx, secId) {
-            a.addEventListener("click", function (e) {
+          (function (idx, pill) {
+            pill.addEventListener("click", function (e) {
               e.preventDefault();
               activateTab(ctrl, idx);
-              // BY DESIGN: anchor the URL to the chosen tab's section id -- the tab's deep link IS
-              // the heading id, one fragment shared by tab clicks, TOC links, and pasted #heading
-              // URLs (all resolve to the same tab via syncTabsFromHash). Updating the #anchor on
-              // click is the intended shareable-tab feature, NOT the "don't rewrite the URL to a
-              // heading anchor" anti-pattern: replaceState (not location.hash=, not pushState)
-              // avoids the scroll jump + back-button history spam that guidance targets.
-              if (secId) {
-                // Percent-encode: a raw `%`/space in the id (e.g. "100%_Anonymous") must
-                // round-trip through syncTabsFromHash's decodeURIComponent on reload, else that
-                // throws URIError and the tab is not restored.
-                var frag = "#" + encodeURIComponent(secId);
+              // Anchor the URL to the chosen tab -- the pill's OWN href IS that (percent-encoded)
+              // heading fragment, one deep link shared by tab clicks, TOC links and pasted #heading
+              // URLs (all resolve via syncTabsFromHash). replaceState (not location.hash=, not
+              // pushState) updates it without the scroll jump or back-button history spam.
+              var frag = pill.getAttribute("href");
+              if (frag && frag.charAt(0) === "#" && frag.length > 1) {
                 try { history.replaceState(null, "", frag); }
                 catch (e2) { location.hash = frag; }
               }
             });
-          })(j, hid);
-          li.appendChild(a);
-          ul.appendChild(li);
+          })(j, a);
         }
-        nav.appendChild(ul);
-        ul.setAttribute("role", "tablist");
-        ul.setAttribute("aria-label", "Section tabs");
         // Roving-tabindex keyboard model (WAI-ARIA tabs): Arrow/Home/End move focus AND activate
         // (automatic activation -- the switch is an instant CSS toggle). Enter/Space fire the
         // native <a> click (which also updates the hash). Scoped to THIS controller's tablist so
@@ -426,7 +402,9 @@
           activateTab(ctrl, next);
           tabs[next].focus();
         });
-        ctrl.classList.add("mininav-ready");
+        // Default to the server-marked active section (else the first); activateTab syncs the
+        // aria-selected + roving tabindex the static pills do not carry. The active CLASS the
+        // server already set means this changes nothing visible -- no post-paint shift.
         var def = 0;
         for (var d = 0; d < sections.length; d++) {
           if (sections[d].classList.contains("active")) { def = d; break; }
@@ -824,13 +802,12 @@
     // then only the one or two small shards a query's terms HASH to -- never the whole index, so
     // cost stays flat as the wiki grows. Both fetches are same-origin (connect-src 'self'), inert
     // JSON, memoized single-flight, and degrade to null on absence so title search still works.
-    var manifest = null, manifestLoading = null;
+    // Single-flight: the in-flight/resolved promise IS the memo (resolves to the manifest data or
+    // null); fullText reads that resolved value, so no separate cached copy is kept.
+    var manifestLoading = null;
     function ensureManifest() {
       if (!manifestLoading) {
-        manifestLoading = loadJSON(carrierHref("mw-fulltext-manifest")).then(function (d) {
-          manifest = d;
-          return d;
-        });
+        manifestLoading = loadJSON(carrierHref("mw-fulltext-manifest"));
       }
       return manifestLoading;
     }
@@ -857,8 +834,68 @@
       a.setAttribute("href", href);
       a.textContent = e.t;
       li.appendChild(a);
-      sink.list.appendChild(li);
+      // Keep the "search for all" footer row (when present) LAST: title + async body rows insert
+      // before it, so it never moves off the end of the listbox. footerNode is only ever set on a
+      // render whose rows are being (re)built now (renderResults recreates it first, the async
+      // full-text batch runs only while its gen is still current), so it is always attached here.
+      if (sink.footerNode) {
+        // Inserting before the footer pushes it (and anything at/after the insert point) up one
+        // slot. activeIndex is a numeric index into the listbox, so when the active option sits
+        // there -- only the footer can, it is last -- bump it so a late async body row cannot
+        // silently steal the Enter target / keyboard highlight from the still-selected footer.
+        var at = Array.prototype.indexOf.call(sink.list.children, sink.footerNode);
+        sink.list.insertBefore(li, sink.footerNode);
+        if (activeIndex >= at) activeIndex += 1;
+      } else {
+        sink.list.appendChild(li);
+      }
       return true;                          // caller counts a row only when one was really added
+    }
+    // The always-present LAST dropdown option: "Search for pages containing '<query>'" -> the
+    // client-side Special:Search results page (#q=<raw query>). It is the one explicit route from
+    // the live dropdown to the full ranked list (Wikipedia Vector / MDN idiom), so a query is never
+    // a dead end when the wanted page is not a title hit. Dropdown only (the results page already IS
+    // the full list). TT-safe: textContent + setAttribute only, the query is TEXT never parsed as
+    // markup; same-origin internal href (navSafe) -- no <form>, no CSP/form-action change. The raw
+    // (un-lowercased) query rides #q= so the results-page field shows what the user typed.
+    // Relative #q= href to the client-side Special:Search page for a RAW (un-lowercased) query.
+    // Relative like every result row (root + "wiki/..." -- NO leading slash: root is "" / "../" /
+    // "../../", so a leading slash would double to "..//wiki/..", an empty segment a strict static
+    // router 404s). Returns null when: the query is empty; encodeURIComponent throws URIError on a
+    // lone surrogate (half a pasted emoji); or a tampered root prefix would plant a cross-origin
+    // sink (navSafe). Shared by the dropdown footer row and the trailing submit link so their #q=
+    // target, encoding, and safety filter are identical.
+    function specialSearchHref(raw) {
+      if (!raw) return null;
+      var href;
+      try {
+        href = root + "wiki/Special:Search#q=" + encodeURIComponent(raw);
+      } catch (e) {
+        return null;
+      }
+      return navSafe(href, false) ? href : null;
+    }
+    function appendAllResultsRow(sink) {
+      sink.footerNode = null;
+      // No searchable corpus (index absent / failed to load) -> no footer: Special:Search would be
+      // an equally-empty dead end, so do not offer the "search all" route when it cannot deliver.
+      if (!index.length) return;
+      // sink.rawQuery is the un-lowercased typed query, always set by the input handler before the
+      // sole caller (the dropdown render); the raw form rides #q= so the results page shows it.
+      var raw = sink.rawQuery;
+      var href = specialSearchHref(raw);
+      if (href === null) return;
+      var li = document.createElement("li");
+      li.className = "search-all";
+      li.setAttribute("role", "option");
+      li.setAttribute("aria-selected", "false");
+      li.id = "mw-sr-all";
+      var a = document.createElement("a");
+      a.setAttribute("href", href);
+      a.textContent = 'Search for pages containing "' + raw + '"';
+      li.appendChild(a);
+      sink.list.appendChild(li);
+      sink.footerNode = li;
     }
     // The open field is an ABSOLUTE overlay; anchor the panel just below its rendered box (CSSOM
     // .style is not gated by style-src -- CSP-safe, same as the bottom-stack spacer).
@@ -962,6 +999,9 @@
     // header dropdown and the Special:Search results page, so their ranking + de-dup are identical.
     function renderResults(q, gen, sink) {
       var shownIds = {}, shown = 0;
+      // Create the "search for all" footer row FIRST so the title + async body rows insert before
+      // it (appendResult) and it stays the last option. Dropdown only (sink.footer).
+      if (sink.footer) appendAllResultsRow(sink);
       var ids = rankedTitleIds(q);
       for (var i = 0; i < ids.length && shown < sink.cap; i++) {
         if (!appendResult(index[ids[i]], sink)) continue;   // a dropped (tampered) target adds no row
@@ -977,16 +1017,20 @@
     // The header dropdown's sink: the overlay listbox. onAppend drives its show/position/aria;
     // curGen returns the dropdown's OWN generation (queryGen) so a page-side search cannot cancel
     // an in-flight dropdown batch, and vice versa.
-    var dropdownSink = { list: results, cap: 20, option: true, curGen: function () { return queryGen; },
-      onAppend: function (shown) {
-        results.hidden = shown === 0;
-        setExpanded(shown > 0);
+    var dropdownSink = { list: results, cap: 20, option: true, footer: true, curGen: function () { return queryGen; },
+      onAppend: function () {
+        // Open whenever ANY row exists -- including the always-present "search for all" footer for a
+        // >=2-char query -- so the full-results route is never hidden behind an empty title pass.
+        var any = results.children.length > 0;
+        results.hidden = !any;
+        setExpanded(any);
         positionPanel();
       } };
     input.addEventListener("input", function () {
       // Render after the index resolves (a microtask once loaded); before then, no-op.
       ensureIndex().then(function () {
         var q = input.value.trim().toLowerCase();
+        dropdownSink.rawQuery = input.value.trim();   // RAW (un-lowercased) for the footer label + #q=
         var gen = ++queryGen;
         clearActive();   // reset highlight + aria-activedescendant before the rows are rebuilt
         while (results.firstChild) results.removeChild(results.firstChild);
@@ -994,6 +1038,37 @@
         renderResults(q, gen, dropdownSink);
       });
     });
+    // Trailing controls: a clear-x (shown only while the field holds text) and the "Search" submit
+    // link (-> the full Special:Search results page for the typed query). syncControls keeps both in
+    // step with the field on every keystroke, synchronously (no index wait): the clear-x toggles on
+    // non-empty text, and the submit href carries the live #q= (falling back to the bare results
+    // page when the query is empty/unsafe, so the link is never dead or cross-origin). Reuses
+    // specialSearchHref so submit and the dropdown footer row target the exact same #q=.
+    var clearBtn = document.getElementById("search-clear");
+    var submitLink = document.getElementById("search-submit");
+    function syncControls() {
+      var raw = input.value.trim();
+      if (clearBtn) {
+        if (raw) clearBtn.removeAttribute("hidden");
+        else clearBtn.setAttribute("hidden", "");
+      }
+      if (submitLink) {
+        // Non-empty + safe -> the #q= deep link; otherwise (empty query, or a tampered/cross-origin
+        // root prefix) fall back to the bare results page when it is same-origin. If even the bare
+        // page is off-origin, REMOVE href so the anchor is a true non-link (a click does nothing) --
+        // href="" is NOT inert: it resolves to the current document and navigates there, stripping
+        // the fragment/query. Same navSafe discipline as the footer row, which drops itself off-origin.
+        var href = specialSearchHref(raw);
+        if (href === null) {
+          var bare = root + "wiki/Special:Search";
+          href = navSafe(bare, false) ? bare : null;
+        }
+        if (href === null) submitLink.removeAttribute("href");
+        else submitLink.setAttribute("href", href);
+      }
+    }
+    input.addEventListener("input", syncControls);
+    syncControls();   // initialise for a pre-filled field (browser-restored value)
     // No <form> (CSP form-action 'none'), so Enter is inert by default: navigate to the
     // best-matching page ourselves. preventDefault keeps a stray implicit submit from firing.
     // location.assign (not a noreferrer anchor like the download path): search targets are
@@ -1014,21 +1089,33 @@
         return;
       }
       if (e.key === "Escape") {
-        // Stage 1 (dropdown open): dismiss it, KEEP the typed query (aria-activedescendant never
-        // overwrote input.value, so the query is intact). stopPropagation so the document-level
-        // Escape does not ALSO collapse the lens. Stage 2 (already dismissed): fall through, and
-        // the document handler collapses the lens.
-        if (!results.hidden) {
+        // Operator-specified clear-then-close (Carbon/Apple), and the search OWNS both stages so a
+        // consumed Escape never leaks to the document-level handlers that also close the nav, tools,
+        // toast and modal on Escape:
+        //  1. text or an open dropdown -> clearField: empty the input, hide the clear-x, reset the
+        //     submit href, close the dropdown (bumps queryGen so a late shard batch cannot reopen
+        //     it). The mobile overlay STAYS open so the user can retype at once.
+        //  2. an already-clear, closed field whose mobile overlay is genuinely open -> closeSearch here.
+        // Both preventDefault + stopPropagation, so a co-open layer is NOT dismissed by the search's
+        // Escape. A fully idle search (clear, dropdown closed, no overlay) consumes nothing and lets
+        // Escape propagate, so a modal/toast still sees it. Focus stays in the field (not blurred)
+        // throughout, so the user can retype immediately.
+        if (input.value !== "" || !results.hidden) {
           e.preventDefault();
           e.stopPropagation();
-          clearActive();
-          setExpanded(false);
-          // Invalidate any in-flight full-text shard batch so its late arrival cannot REOPEN
-          // the panel we are dismissing (its gen !== queryGen guard then drops it) -- same
-          // reason closeSearch bumps queryGen; stopPropagation keeps closeSearch from running.
-          queryGen++;
-          results.hidden = true;
-          while (results.firstChild) results.removeChild(results.firstChild);
+          clearField();
+          return;
+        }
+        // Stage 2 is for the COMPACT tier only. On the desktop tier the toggle is display:none and
+        // the field is persistent, so a toggle left :checked from a prior narrow width is STALE (the
+        // style.css reveal is compact-tier-scoped for exactly this reason) -- consuming Escape there
+        // would swallow it from a modal/toast. Gate on the desktop tier (keep 960px in sync with the
+        // min-width:960px desktop block in style.css); off that tier a stale-checked toggle propagates.
+        if (toggle && toggle.checked && !window.matchMedia("(min-width: 960px)").matches) {
+          e.preventDefault();
+          e.stopPropagation();
+          closeSearch();
+          return;
         }
         return;
       }
@@ -1061,21 +1148,53 @@
     // still fires. TT-safe: only checkbox.checked + removeChild, no HTML sinks.
     var toggle = document.getElementById("search-toggle");
     var box = input.closest(".site-search");
-    function closeSearch() {
-      // Bump queryGen so a still-in-flight full-text shard batch cannot REOPEN the panel we are
-      // closing (its gen !== queryGen guard then drops it).
+    function closeResults() {
+      // Dismiss the live dropdown but LEAVE the field as-is (desktop: always visible; mobile: the
+      // overlay stays open, toggle still checked). Bump queryGen so a still-in-flight full-text shard
+      // batch cannot REOPEN the panel we are closing (its gen !== queryGen guard then drops it).
       queryGen++;
-      if (toggle) toggle.checked = false;
       clearActive();       // drop any highlight + aria-activedescendant while the rows still exist
       setExpanded(false);
       results.hidden = true;
       while (results.firstChild) results.removeChild(results.firstChild);
+    }
+    function closeSearch() {
+      // Full close: dismiss the dropdown AND collapse the mobile overlay (uncheck the toggle). Used
+      // by an outside click and the toggle's own 'change'. On desktop the toggle is display:none but
+      // present, so unchecking it is a harmless no-op there.
+      closeResults();
+      if (toggle) toggle.checked = false;
+    }
+    // Clear the field: empty the input, resync the trailing controls (hide the clear-x, reset the
+    // submit href), and dismiss the dropdown -- but KEEP the field open and focused so the user can
+    // retype at once (closeResults, NOT closeSearch: a full close would collapse the mobile overlay
+    // out from under them). The explicit CLEAR path (the clear-x button and Escape).
+    function clearField() {
+      input.value = "";
+      syncControls();
+      closeResults();
     }
     // The magnifier is a pure-CSS :checked toggle; a USER unchecking it fires 'change' (a
     // programmatic closeSearch does not), so FULLY close here -- hide + clear the results, not
     // just bump queryGen, else the dropdown lingers visible after the search box collapses.
     if (toggle) {
       toggle.addEventListener("change", function () { if (!toggle.checked) closeSearch(); });
+    }
+    // Clear-x (visible only while the field holds text): clear the field, then keep focus so the
+    // field stays expanded and ready for a fresh query. The clear-x and submit surface only while
+    // the field has focus (desktop :focus-within); a mousedown on either would blur the input, drop
+    // :focus-within, and remove the control from layout before mouseup -- so the click never lands
+    // (a dead button, worst on an <a> submit that never navigates). preventDefault on mousedown
+    // keeps focus in the field, so the control stays put and the click fires.
+    if (clearBtn) {
+      clearBtn.addEventListener("mousedown", function (e) { e.preventDefault(); });
+      clearBtn.addEventListener("click", function () {
+        clearField();
+        input.focus();
+      });
+    }
+    if (submitLink) {
+      submitLink.addEventListener("mousedown", function (e) { e.preventDefault(); });
     }
     document.addEventListener("click", function (e) {
       if (toggle && !toggle.checked && results.hidden) return;
@@ -1823,6 +1942,22 @@
       if (e.key === "ArrowLeft") { e.preventDefault(); clearTimeout(hideTimer); showRef((curRef - 1 + refList.length) % refList.length); }
       else if (e.key === "ArrowRight") { e.preventDefault(); clearTimeout(hideTimer); showRef((curRef + 1) % refList.length); }
     });
+    // Click / tap outside an open card dismisses it (the Popover-API `auto` light-dismiss idiom):
+    // desktop cards already die on hover-out and keyboard cards on blur/Esc, so this only adds the
+    // pointer path -- a stray click, or a touch tap, off the card closes it. A click INSIDE the
+    // card (a link, the prev/next nav) is NOT a dismiss. Gated on an open card so it never contends
+    // with the document-level search / nav / tools click handlers while no card is shown.
+    // CAPTURE phase (the trailing `true`): the prev/next nav buttons REBUILD the card's children in
+    // their own bubble-phase handler (showRef -> fill), which detaches the clicked button. A bubble-
+    // phase listener here would then test card.contains(e.target) against that already-detached node,
+    // get false, and wrongly dismiss the just-rebuilt card. Capture runs BEFORE any target handler
+    // mutates the DOM, so e.target is still attached and the containment test is correct. Do NOT
+    // switch this back to bubble.
+    document.addEventListener("click", function (e) {
+      if (!card || card.hidden) return;
+      if (card.contains(e.target)) return;
+      card.hidden = true;
+    }, true);
   }
 
   // Browser-storage viewer (the Special:BrowserStorage page): list what this site
@@ -1910,111 +2045,141 @@
     render(null);
   }
 
-  // Wide tables: add a TOP horizontal scrollbar that mirrors the table's own (bottom) one,
-  // so a reader scrolls a wide table from either edge. Built only for tables that actually
-  // overflow. The always-visible classic bars themselves are pure CSS (see style.css); this
-  // only adds + syncs the top rail. No-JS still gets the bottom bar.
+  // Wide tables: add a TOP horizontal scrollbar that mirrors the table's own (bottom) one, so a
+  // reader scrolls a wide table from either edge. The always-visible classic bars are pure CSS
+  // (style.css); this adds + syncs the top rail. No-JS still gets the bottom bar. The table itself
+  // stays the scroll container (display:block; overflow-x:auto), so it remains the keyboard-
+  // focusable scroll region (codeartifacts.make_scroll_focusable) -- unchanged by this.
   function initWideTableScroll() {
     var tables = document.querySelectorAll(
       ".wiki-content table:not(.toc):not(.storage-table)");
-    // One controller per table, but a SINGLE batched sync across all of them: the per-table
-    // observer-and-sync shape read scrollWidth/clientWidth then wrote spacer/rail/margin in
-    // the same step, so the next table's read forced a synchronous relayout (read-write-read
-    // thrash -> the reported ~83ms forced reflow on a multi-table page).
     var items = [];
     tables.forEach(function (table) {
-      items.push({ table: table, rail: null, spacer: null, lock: false });
-    });
-    function build(item) {
-      var table = item.table;
-      item.rail = document.createElement("div");
-      item.rail.className = "table-scroll-top";
-      item.rail.setAttribute("aria-hidden", "true");
-      item.spacer = document.createElement("div");
-      item.rail.appendChild(item.spacer);
-      table.parentNode.insertBefore(item.rail, table);
-      item.rail.addEventListener("scroll", function () {
+      // The TABLE's own box is capped (max-width:100%) and scrolls; its laid-out CHILDREN -- the
+      // caption and each row group (thead / tbody(s) / tfoot) -- extend to the FULL content width and
+      // overflow it. So the scroll extent is the WIDEST child's BORDER-box inline size and the
+      // visible width is the TABLE's CONTENT-box, both read for FREE from the ResizeObserver entry,
+      // never scrollWidth/clientWidth (which force a layout). Border-box for a child because a
+      // caption carries 10em side padding (style.css): its content box excludes that padding and so
+      // understates its scroll extent; its border box IS the extent (== the table's scrollWidth).
+      // Observing EVERY child (not just tbody[0]) catches overflow driven by a wide caption or by a
+      // row group other than the first/visible one.
+      var groups = [], b;
+      if (table.caption) { groups.push(table.caption); }
+      if (table.tHead) { groups.push(table.tHead); }
+      for (b = 0; b < table.tBodies.length; b++) { groups.push(table.tBodies[b]); }
+      if (table.tFoot) { groups.push(table.tFoot); }
+      if (!groups.length) { return; }   // no caption or row group -> nothing that can overflow
+      // Build the top rail ONCE, up front, as a sibling BEFORE the table, hidden until the table is
+      // actually overwide. Building here -- not in the observer callback -- keeps the RO callback
+      // free of DOM-structure mutation. The rail mirrors the table's scroll.
+      var rail = document.createElement("div");
+      rail.className = "table-scroll-top";
+      rail.setAttribute("aria-hidden", "true");
+      rail.style.display = "none";
+      var spacer = document.createElement("div");
+      rail.appendChild(spacer);
+      table.parentNode.insertBefore(rail, table);
+      var item = { table: table, groups: groups, rail: rail, spacer: spacer, lock: false };
+      rail.addEventListener("scroll", function () {
         if (item.lock) { return; }
-        item.lock = true; table.scrollLeft = item.rail.scrollLeft; item.lock = false;
+        item.lock = true; table.scrollLeft = rail.scrollLeft; item.lock = false;
       });
       table.addEventListener("scroll", function () {
         if (item.lock) { return; }
-        item.lock = true; item.rail.scrollLeft = table.scrollLeft; item.lock = false;
+        item.lock = true; rail.scrollLeft = table.scrollLeft; item.lock = false;
       });
-    }
-    // Re-evaluate whenever a table's box changes: it may start hidden (a collapsed
-    // mw-collapsible or an inactive tab measures 0), become wide only after an image
-    // loads, or cross the overflow threshold on a window resize -- a one-shot check at
-    // load would skip all three (the reported bug). Build each rail lazily, the first
-    // time its table is actually overwide; hide it again if it later fits.
+      items.push(item);
+    });
+    if (!items.length) { return; }
+    // Batched: READ every table's geometry FIRST, THEN apply every write -- split so the shared
+    // geometry batcher runs these reads alongside every other widget's read, before any write. The
+    // content width is the WIDEST child's BORDER-box inline size and the visible width is the TABLE's
+    // CONTENT-box, both read for FREE from the ResizeObserver entry -- never scrollWidth/clientWidth,
+    // which force a synchronous layout. Child border-box (not content-box) so a padded caption's
+    // scroll extent is captured, and so the spacer (== content) spans the table's full scrollWidth,
+    // keeping the rail's scroll range in sync with the native bar. The fallbacks match the box the RO
+    // delivers: offsetWidth is border-box (child), clientWidth is content-box (table). An entry read
+    // self-heals on a later image/font reflow (a child's border box changes on decode -> a free
+    // re-measure), so no separate in-table image observe is needed. (The legacy no-RO path has no
+    // entries, so it reads offsetWidth/clientWidth directly -- a path modern browsers never take.)
     //
-    // Batched: READ every table's geometry FIRST, THEN apply every style write. Split so the shared
-    // geometry batcher runs these reads alongside every other widget's read, before any write -- a
-    // write between two reads (here OR in a sibling observer) forces a synchronous relayout.
-    // RESIDUAL forced reflow (accepted; baselined on Dev/wikitest): the FIRST scrollWidth read
-    // here can still force ONE synchronous layout on a table-heavy page -- the RO initial-observe
-    // is delivered while the page's initial layout is still dirty (lazy images decoding, font
-    // swap), so no post-layout moment is truly clean yet, and placement (ready vs idle) does not
-    // change that. ROOT FIX (deferred, coordinated site-wide change): move overflow off each
-    // <table> onto a wrapper <div> so the <table> itself lays out at full content width, then take
-    // that width from the ResizeObserver ENTRY (entry.borderBoxSize[0].inlineSize) instead of
-    // reading scrollWidth. An entry read never forces layout and self-heals on later image/font
-    // reflow (so the in-table image observe below also goes away). It needs CSS (overflow + the
-    // custom scrollbar move to the wrapper) and the generator's table markup, hence not done here.
+    // LIMITATION (accepted): overflow that does NOT widen any observed child is not detected -- i.e.
+    // content overflowing a FIXED-layout nested table's cell without growing the outer row group's
+    // box. Only a scrollWidth read (dropped here) or a wrapper restructure would catch it; it is
+    // corpus-unreachable (comparison-tables -- the only fixed-layout tables -- are top-level, never
+    // nested in a content cell), and the table's native bottom scrollbar still scrolls it regardless.
     function measureTables() {
-      var i, measures = [];
+      var i, j, m = [];
       for (i = 0; i < items.length; i++) {
-        var t = items[i].table;
-        var sw = t.scrollWidth, cw = t.clientWidth;
-        measures.push({ overwide: sw > cw + 1, scrollWidth: sw });
+        var it = items[i], content = 0, g;
+        for (j = 0; j < it.groups.length; j++) {
+          g = geomBorderInlineSize(it.groups[j]);         // child scroll extent == its border box
+          if (g == null) { g = it.groups[j].offsetWidth; }  // offsetWidth is border-box
+          if (g > content) { content = g; }               // widest child == the scroll extent
+        }
+        var visible = geomContentInlineSize(it.table);    // visible width == the table's content box
+        if (visible == null) { visible = it.table.clientWidth; }  // clientWidth is content-box
+        m.push({ content: content, visible: visible });
       }
-      return measures;
+      return m;
     }
+    // SCOPE BOUNDARY (deliberate): showing a rail toggles display none->block. For a FLAT table the
+    // rail is a sibling in the (unobserved) content column, so showing it never resizes an observed
+    // element -> no loop. For a table NESTED inside another observed table whose INNER table is
+    // genuinely overwide, showing the inner rail grows the observed OUTER table mid-callback and can
+    // fire one "ResizeObserver loop completed with undelivered notifications". That shape is corpus-
+    // UNREACHABLE (a nested inner table never becomes overwide under the content-table CSS -- the
+    // block-table outer grows to fit it and a table-cell % max-width is undefined; it needs an
+    // artificial hard px cap) AND check-console-errors.py is blind to that error (it surfaces only on
+    // window.onerror, not pageerror/console). So it is left unaddressed on purpose; the wrapper
+    // restructure that would remove it is not worth its blast radius for a non-issue.
     function writeTables(measures) {
       var i;
       for (i = 0; i < items.length; i++) {
-        var item = items[i], m = measures[i];
-        if (m.overwide && !item.rail) { build(item); }
-        if (item.rail) {
-          item.spacer.style.width = m.scrollWidth + "px";
-          item.rail.style.display = m.overwide ? "" : "none";
-          item.table.style.marginTop = m.overwide ? "0" : "";
-        }
+        var it = items[i], d = measures[i], overwide = d.content > d.visible + 1;
+        it.spacer.style.width = d.content + "px";
+        it.rail.style.display = overwide ? "" : "none";
+        // Collapse the table's top margin when the rail sits above it. A margin write never changes
+        // the observed table's border box, so it cannot loop the observer.
+        it.table.style.marginTop = overwide ? "0" : "";
       }
     }
     function sync() { writeTables(measureTables()); }
     // scheduleSync is the LEGACY (no-ResizeObserver) fallback ONLY: it coalesces resize + late
-    // image-load re-syncs into one rAF measurement per frame. A rAF runs BEFORE the frame's layout,
-    // so its scrollWidth read forces a synchronous layout -- accepted only because a browser lacking
-    // ResizeObserver is one this project does not otherwise support. The RO path below reads for free
-    // (post-layout) and never goes through here.
+    // image-load re-syncs into one rAF measurement per frame. The RO path below reads for free
+    // (post-layout entry) and never goes through here.
     var raf = 0;
     function scheduleSync() {
       if (raf) { return; }
       raf = requestAnimationFrame(function () { raf = 0; sync(); });
     }
     if (typeof ResizeObserver !== "undefined") {
-      // Measure every wide table through the SHARED geometry batcher: its single observer reads all
-      // tables (and the bottom-stack, and any other widget) before any of them writes, so a sibling
-      // observer's layout-dirtying write can never force this scrollWidth read (the cross-observer
-      // forced reflow a lone-observer design shipped on image-heavy, bottom-stack pages like
-      // Dev/wikitest). Observe each table, plus each not-yet-loaded in-table image -- an unsized
-      // image's own box changes 0 -> intrinsic on decode, firing a FREE post-layout re-measure
-      // (the old img.load -> requestAnimationFrame path read scrollWidth PRE-layout and forced it).
+      // Observe the table (visible width) AND every child (caption + row groups, border width)
+      // through the SHARED geometry batcher: every widget's entry read runs before any write, and an
+      // entry read never forces layout -- so no forced reflow and no cross-observer thrash. An
+      // unsized in-table image firing on decode changes its row group's content box -> a FREE
+      // post-layout re-measure (no img.load -> requestAnimationFrame path that forced layout).
       var observe = geomObserver(measureTables, writeTables);
-      items.forEach(function (item) {
-        observe(item.table);
-        item.table.querySelectorAll("img").forEach(function (img) {
-          if (!img.complete) { observe(img); }
-        });
+      items.forEach(function (it) {
+        observe(it.table);   // visible width <- table CONTENT box (clientWidth)
+        // border-box: a child's PADDING-only change (a caption's 10em gutters collapsing at the
+        // 560px media query) changes its border box but not its content box, so a content-box
+        // observation would miss it and leave the cached scroll extent stale.
+        // {box:border-box} is honored on Safari 15.4+/Chromium/Firefox; Safari <15.4 IGNORES it
+        // (added with the box-size fields) and observes content-box. Acceptable: there the extent
+        // is a live offsetWidth read (above) on ANY callback, and our only border-only change --
+        // the 560px caption-padding media query -- rides a viewport resize that fires the table's
+        // content-box callback (a caption wide enough to overflow would itself drive that width).
+        it.groups.forEach(function (g) { observe(g, "border-box"); });
       });
     } else {
       // No ResizeObserver (legacy only): first measure now, then rAF-coalesced resize + image-load
       // re-syncs (one forced layout per frame, on a path modern browsers never take).
       sync();   // immediate first measure (js-test asserts rails post-init)
       window.addEventListener("resize", scheduleSync);
-      items.forEach(function (item) {
-        item.table.querySelectorAll("img").forEach(function (img) {
+      items.forEach(function (it) {
+        it.table.querySelectorAll("img").forEach(function (img) {
           if (!img.complete) {
             img.addEventListener("load", scheduleSync);
             img.addEventListener("error", scheduleSync);  // a broken image also changes layout

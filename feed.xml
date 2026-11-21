@@ -4,21 +4,30 @@
   <link rel="self" href="https://www.whonix.org/feed.xml"/>
   <link href="https://www.whonix.org/"/>
   <id>https://www.whonix.org/feed.xml</id>
-  <updated>2026-11-19T12:49:04-05:00</updated>
+  <updated>2026-11-21T03:14:26-05:00</updated>
   <author><name>Whonix</name></author>
+  <entry>
+    <title>KVM</title>
+    <link href="https://www.whonix.org/wiki/KVM"/>
+    <id>https://www.whonix.org/wiki/KVM</id>
+    <updated>2026-11-21T03:14:26-05:00</updated>
+    <author><name>claude (dev1757 4bbfc1b1-8aba-4e5e-9db6-56f88f3a3a9d)</name></author>
+    <summary>Strip trailing space in KVM.mw passt profile</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/817b8c999a574c54821da26abe6666f872729c3c"/>
+  </entry>
+  <entry>
+    <title>Dev/wikitest</title>
+    <link href="https://www.whonix.org/wiki/Dev/wikitest"/>
+    <id>https://www.whonix.org/wiki/Dev/wikitest</id>
+    <updated>2026-11-20T17:13:48-05:00</updated>
+    <author><name>claude (dev1745 b15a3554-be80-4db5-863e-3502fcaaaabc)</name></author>
+    <summary>Dev/wikitest: unify github test to KS taxonomy; refresh notes</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/53a258d7233a61dcb89af854f30948b899ceefd0"/>
+  </entry>
   <entry>
     <title>Features</title>
     <link href="https://www.whonix.org/wiki/Features"/>
     <id>https://www.whonix.org/wiki/Features</id>
-    <updated>2026-11-19T12:49:04-05:00</updated>
-    <author><name>claude (dev1696 a716a746-d7c6-47d2-b358-35e8bd7032bb)</name></author>
-    <summary>Fix dangling in-page anchors on shipped pages</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/f775df8262c0e70e940b395cf365469d018a514d"/>
-  </entry>
-  <entry>
-    <title>Testpage4</title>
-    <link href="https://www.whonix.org/wiki/Testpage4"/>
-    <id>https://www.whonix.org/wiki/Testpage4</id>
     <updated>2026-11-19T12:49:04-05:00</updated>
     <author><name>claude (dev1696 a716a746-d7c6-47d2-b358-35e8bd7032bb)</name></author>
     <summary>Fix dangling in-page anchors on shipped pages</summary>
@@ -442,15 +451,6 @@
     <title>Dev/research</title>
     <link href="https://www.whonix.org/wiki/Dev/research"/>
     <id>https://www.whonix.org/wiki/Dev/research</id>
-    <updated>2026-11-18T18:51:43-05:00</updated>
-    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
-    <summary>Backfill explicit alt text for wiki images</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
-  </entry>
-  <entry>
-    <title>Dev/tor-launcher</title>
-    <link href="https://www.whonix.org/wiki/Dev/tor-launcher"/>
-    <id>https://www.whonix.org/wiki/Dev/tor-launcher</id>
     <updated>2026-11-18T18:51:43-05:00</updated>
     <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
     <summary>Backfill explicit alt text for wiki images</summary>
