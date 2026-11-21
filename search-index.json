@@ -2248,11 +2248,6 @@
   },
   {
     "n": 1,
-    "t": "File:Kicksecure-promo.jpg",
-    "u": "wiki/File:Kicksecure-promo.jpg"
-  },
-  {
-    "n": 1,
     "t": "File:Kicksecure-seal.png",
     "u": "wiki/File:Kicksecure-seal.png"
   },
@@ -5353,6 +5348,61 @@
     "u": "wiki/Source"
   },
   {
+    "n": 1,
+    "t": "Special:AllPages",
+    "u": "wiki/Special:AllPages"
+  },
+  {
+    "n": 1,
+    "t": "Special:DoubleRedirects",
+    "u": "wiki/Special:DoubleRedirects"
+  },
+  {
+    "n": 1,
+    "t": "Special:LongPages",
+    "u": "wiki/Special:LongPages"
+  },
+  {
+    "n": 1,
+    "t": "Special:OrphanedPages",
+    "u": "wiki/Special:OrphanedPages"
+  },
+  {
+    "n": 1,
+    "t": "Special:RecentChanges",
+    "u": "wiki/Special:RecentChanges"
+  },
+  {
+    "n": 1,
+    "t": "Special:Search",
+    "u": "wiki/Special:Search"
+  },
+  {
+    "n": 1,
+    "t": "Special:Settings",
+    "u": "wiki/Special:Settings"
+  },
+  {
+    "n": 1,
+    "t": "Special:SpecialPages",
+    "u": "wiki/Special:SpecialPages"
+  },
+  {
+    "n": 1,
+    "t": "Special:UnusedFiles",
+    "u": "wiki/Special:UnusedFiles"
+  },
+  {
+    "n": 1,
+    "t": "Special:Version",
+    "u": "wiki/Special:Version"
+  },
+  {
+    "n": 1,
+    "t": "Special:WantedPages",
+    "u": "wiki/Special:WantedPages"
+  },
+  {
     "t": "Speculative Tor Attacks",
     "u": "wiki/Speculative_Tor_Attacks"
   },
@@ -8171,34 +8221,6 @@
   {
     "t": "Testpage Donors",
     "u": "wiki/Testpage_Donors"
-  },
-  {
-    "t": "Testpage-mass-headline-test",
-    "u": "wiki/Testpage-mass-headline-test"
-  },
-  {
-    "t": "Testpage-no-header-no-footer",
-    "u": "wiki/Testpage-no-header-no-footer"
-  },
-  {
-    "t": "Testpage-with-header-and-footer",
-    "u": "wiki/Testpage-with-header-and-footer"
-  },
-  {
-    "t": "Testpage1",
-    "u": "wiki/Testpage1"
-  },
-  {
-    "t": "Testpage2",
-    "u": "wiki/Testpage2"
-  },
-  {
-    "t": "Testpage4",
-    "u": "wiki/Testpage4"
-  },
-  {
-    "t": "Testpage5",
-    "u": "wiki/Testpage5"
   },
   {
     "t": "TestpageForFlyInNotification",
