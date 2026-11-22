@@ -3205,10 +3205,19 @@ sup.reference:target {
 /* A pure anchor-only paragraph: pandoc wraps a lone {{Anchor|...}} jump target in its OWN <p>,
    whose default margins + line box inject a blank band. An invisible scroll target must take no
    vertical space, so collapse the wrapping paragraph (e.g. {{Anchor|starting}} atop the step-4
-   {{Box}} no longer pushes the heading down). Scoped to the only-child, non-visible anchor, so an
-   inline anchor that shares a paragraph with text, or a visible mpa label, is left untouched. */
-.wiki-content p:has(> .manually-placed-anchor:only-child:not(.mpa-visible)) {
+   {{Box}} no longer pushes the heading down). Keyed to the generator's `mpa-only` class (a <p>
+   holding ONLY non-visible anchors): CSS :only-child is text-node-blind and would also collapse
+   `{{Anchor|x}}visible text`, so the generator, which can see the text, tags the pure case. */
+.wiki-content p.mpa-only {
   margin: 0; line-height: 0;
+}
+/* A box resets its FIRST child's top margin (.info-box/.mbox/.tcc-content > :first-child margin-top:0)
+   so the heading sits flush. A leading collapsed anchor <p> still fills that :first-child slot, so the
+   reset lands on the (now 0-height) anchor and the real first element -- the heading -- keeps its top
+   margin, reopening the gap. Zero the margin of the element FOLLOWING a leading collapsed anchor so it
+   sits flush, exactly as a true first child would. */
+:is(.mbox, .info-box, .tcc-content) > p.mpa-only:first-child + * {
+  margin-top: 0;
 }
 .manually-placed-anchor.mpa-visible {
   display: block; margin: 15px 0; font-size: 18px; letter-spacing: 1px;
@@ -3857,8 +3866,9 @@ html.client-js .section-download .tab-content-controller .tcc-content { padding-
    (prod has no white card); covers the no-JS bordered state and the client-js switcher state. */
 .section-download .tcc-section { background: transparent; border: none; }
 /* The pill switcher sits on the dark #273445 band; the general light-theme tab tokens
-   (--muted / --link / --border) go too dark there. Re-ground the underline tabs to white. */
-.section-download .mininav.mn-switcher > ul { border-bottom-color: rgba(255, 255, 255, 0.28); }
+   (--muted / --link / --border-soft) go too dark there. Re-ground the underline tabs to white.
+   The baseline is per-tab now (not the ul), so re-ground it on the tab anchors. */
+.section-download .mininav.mn-switcher li > :not(span, img) { border-bottom-color: rgba(255, 255, 255, 0.28); }
 .section-download .mininav.mn-switcher li > :not(span, img) { color: rgba(255, 255, 255, 0.72); }
 .section-download .mininav.mn-switcher li > *:hover { color: #fff; }
 .section-download .mininav.mn-switcher li > *.active { color: #fff; border-bottom-color: #fff; }
@@ -4404,26 +4414,34 @@ body.page-home { container-type: inline-size; }
    UnderlineNav / Material / IBM Carbon). Active tab = --link text + a 2px --link underline over a
    full-width hairline rule, plus bold weight; inactive = --muted, normal weight. app.js keeps
    role=tablist/tab + roving tabindex; styling keys off the server/app.js `.active` class (no inline
-   JS/CSS -> strict-CSP safe). A wide tab set SCROLLS horizontally inside .mininav on narrow screens
-   (Material "scrollable tabs"), so the page body never overflows sideways. --- */
-/* overflow-x on the switcher ITSELF (not only the in-article one) so a WIDE set -- the in-article
-   OS-chooser AND the special-page .mn-special bar -- scrolls locally instead of widening the page. */
-.mininav.mn-switcher { overflow-x: auto; }
+   JS/CSS -> strict-CSP safe). A wide tab set WRAPS to rows -- every tab stays on-screen
+   (discoverability), nothing scrolls off. --- */
+/* A WIDE set -- the in-article OS-chooser AND the special-page .mn-special bar -- WRAPS to rows,
+   so every tab stays on-screen and the page body never overflows sideways. NO horizontal scroll
+   and NO max-content width (either would push the last tab -- the Linux tab -- off-screen). The
+   baseline lives on EACH tab (below), not one ul rule, so every wrapped row reads as a tab strip. */
 .tab-content-controller > .mininav { margin: 0 0 0.9rem; }
 .mininav.mn-switcher > ul {
-  display: flex; flex-wrap: nowrap; align-items: flex-end; gap: 0 2px;
-  list-style: none; margin: 0; padding: 0; min-width: 100%; width: max-content;
-  border-bottom: 1px solid var(--border);
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0 2px;
+  list-style: none; margin: 0; padding: 0;
 }
-/* flex:none keeps each tab at its label width (no shrink) so a wide set scrolls; max-width:none
-   because the prose reading-measure cap `.wiki-content li { max-width: 66ch }` is for body text. */
-.mininav.mn-switcher > ul > li { flex: none; display: block; margin: 0; padding: 0; max-width: none; }
+/* flex:0 1 auto keeps each tab at its label width in the common case (flex-wrap moves a tab that
+   does not fit to the next ROW, never shrinks it) but lets a LONE tab wider than the whole row
+   shrink to the row instead of overflowing the page -- no h-scroll contains it now. min-width:0
+   permits that shrink. max-width:none because the prose cap `.wiki-content li { max-width: 66ch }`
+   is for body text, not these tab pills. */
+.mininav.mn-switcher > ul > li { flex: 0 1 auto; min-width: 0; display: block; margin: 0; padding: 0; max-width: none; }
 /* `li > :not(span, img)` = the tab anchor (its leading icon <span>/<img> excluded). */
 .mininav.mn-switcher li > :not(span, img) {
-  display: inline-flex; align-items: center; white-space: nowrap; cursor: pointer;
+  display: inline-flex; align-items: center; cursor: pointer;
+  /* A LONG single-tab label ("Debian Bookworm (oldstable) or Bullseye (oldoldstable)", ~54 chars,
+     wider than a 320px phone) WRAPS inside the pill instead of overflowing the page sideways:
+     max-width caps it to the row, overflow-wrap breaks an unbreakable token. Short labels, having
+     room, stay on one line. */
+  max-width: 100%; white-space: normal; overflow-wrap: anywhere;
   color: var(--muted); font-size: 0.95rem; font-weight: 400; text-decoration: none;
-  padding: 0.5rem 0.85rem; margin-bottom: -1px;
-  background: none; border: 0; border-bottom: 2px solid transparent;
+  padding: 0.5rem 0.85rem;
+  background: none; border: 0; border-bottom: 2px solid var(--border-soft);
   transition: color .15s, border-color .15s;
 }
 .mininav.mn-switcher li > *:hover { color: var(--fg); }
