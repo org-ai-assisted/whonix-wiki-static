@@ -1132,7 +1132,14 @@
       // results are on screen. This site has no server results page, so this is the whole no-active
       // behaviour (DocSearch-sanctioned).
       var q = input.value.trim().toLowerCase();
-      if (q.length < 2) return;   // empty query matches everything via indexOf("")
+      if (q.length < 2) {
+        // Empty field + Enter: activate the Search submit -> the full Special:Search page (the
+        // Wikipedia/Vector idiom for Enter on an empty search box). Reuses the submit's already-
+        // synced, navSafe-filtered href, so a click on an href-less (off-origin) submit is itself
+        // inert. A 1-char query is below the 2-char match floor with no page to "go" to -> inert.
+        if (input.value.trim() === "" && submitLink) submitLink.click();
+        return;
+      }
       ensureIndex().then(function () {
         var href = bestMatch(q);
         if (href === null) {
@@ -1222,6 +1229,38 @@
       pinput.setAttribute("placeholder", "Search");
       pinput.setAttribute("autocomplete", "off");
       pinput.setAttribute("aria-controls", "search-page-results");
+      // Inside-right clear-x (shown only while the field holds text) + a trailing blue Search
+      // submit -- the Codex/Vector cdx-search-input idiom: a field wrapper holds the input plus the
+      // absolutely-positioned clear-x, and the submit is a sibling to its right. The box IS the
+      // role=search landmark (no <form>: CSP form-action is 'none'). The X glyph matches the
+      // header's #search-clear and the blue button matches the header's #search-submit (shared
+      // --btn-primary token), styled by the .search-page-* rules in style.css.
+      var pclear = document.createElement("button");
+      pclear.type = "button";
+      pclear.className = "search-page-clear";
+      pclear.setAttribute("aria-label", "Clear search");
+      pclear.hidden = true;
+      var pclearIcon = document.createElement("i");
+      pclearIcon.className = "fa-solid fa-xmark";
+      pclearIcon.setAttribute("aria-hidden", "true");
+      pclear.appendChild(pclearIcon);
+      var psubmit = document.createElement("button");
+      psubmit.type = "button";
+      psubmit.className = "search-page-submit";
+      psubmit.textContent = "Search";
+      var pfield = document.createElement("div");
+      pfield.className = "search-page-field";
+      pfield.appendChild(pinput);
+      pfield.appendChild(pclear);
+      var pbox = document.createElement("div");
+      pbox.className = "search-page-box";
+      pbox.setAttribute("role", "search");
+      // A distinct accessible name: the header already contributes a role=search landmark, and two
+      // same-role landmarks must be uniquely named (axe landmark-unique / WAI-ARIA) to be tellable
+      // apart by AT. The header's is unlabeled (the implicit site search); this is the page's own.
+      pbox.setAttribute("aria-label", "Search the wiki");
+      pbox.appendChild(pfield);
+      pbox.appendChild(psubmit);
       var pstatus = document.createElement("p");
       pstatus.className = "search-page-status";
       pstatus.setAttribute("role", "status");
@@ -1230,22 +1269,18 @@
       plist.id = "search-page-results";
       plist.className = "search-page-results";
       plist.setAttribute("aria-label", "Search results");
-      // Modest CSSOM styling (CSP-safe, same idiom as the dropdown highlight -- no style.css rule,
-      // so the page ships from app.js with no asset-fingerprint coupling).
-      pinput.style.width = "100%";
-      pinput.style.boxSizing = "border-box";
-      pinput.style.maxWidth = "32rem";
-      pinput.style.padding = "0.5em 0.7em";
-      pinput.style.fontSize = "1rem";
+      // Status + list layout stays CSSOM (CSP-safe, no asset-fingerprint coupling); the box and its
+      // controls above live in style.css because they need :hover/:focus states and the themed blue
+      // that CSSOM cannot express.
       pstatus.style.margin = "0.75rem 0 0";
       plist.style.listStyle = "none";
       plist.style.padding = "0";
       plist.style.margin = "0.5rem 0 0";
       plist.style.lineHeight = "1.9";
-      // Field/status/list go BEFORE the <noscript> fallback so it stays last in the box.
+      // Box/status/list go BEFORE the <noscript> fallback so it stays last in the container.
       wrap.insertBefore(plist, wrap.firstChild);
       wrap.insertBefore(pstatus, wrap.firstChild);
-      wrap.insertBefore(pinput, wrap.firstChild);
+      wrap.insertBefore(pbox, wrap.firstChild);
       // The page's OWN generation counter, independent of the dropdown's queryGen: a stale
       // full-text batch is dropped when a NEWER page query supersedes it, but a dropdown search
       // (which bumps queryGen) never cancels an in-flight page batch, and vice versa.
@@ -1279,10 +1314,44 @@
         if (hm) { try { return decodeURIComponent(hm[1]); } catch (e) { return hm[1]; } }
         return "";
       }
-      function syncFromUrl() { pinput.value = urlQuery(); runPage(); }
+      // Toggle the clear-x on presence of (trimmed) text -- the same rule as the header's clear-x.
+      function syncPageControls() { pclear.hidden = !pinput.value.trim(); }
+      // Submit (the blue button AND Enter): COMMIT the current query to #q= so the URL reflects the
+      // last submitted search -- shareable/bookmarkable, reproduced on reload. Written with
+      // replaceState, NOT location.hash: it updates the URL IN PLACE (no Back-history entry), so
+      // repeated submits never spam history and Back never lands on a stale intermediate URL whose
+      // field/results disagree with it. A non-empty query -> "#q=<enc>"; an empty submit (or a query
+      // that cannot be percent-encoded -- a lone surrogate from half a pasted emoji) DROPS the
+      // fragment, so the URL never shows a query that is not the current one. Typing never writes the
+      // URL (only an explicit submit does). replaceState fires no hashchange, so we render here.
+      function submitPage() {
+        var raw = pinput.value.trim(), frag;
+        if (raw) { try { frag = "#q=" + encodeURIComponent(raw); } catch (e) { frag = ""; } }
+        else { frag = ""; }
+        history.replaceState(history.state, "", frag || (location.pathname + location.search));
+        runPage();
+        pinput.focus({ preventScroll: true });
+      }
+      function syncFromUrl() { pinput.value = urlQuery(); syncPageControls(); runPage(); }
       var q0 = urlQuery();
-      if (q0) { pinput.value = q0; runPage(); }
-      pinput.addEventListener("input", runPage);
+      if (q0) { pinput.value = q0; syncPageControls(); runPage(); }
+      pinput.addEventListener("input", function () { syncPageControls(); runPage(); });
+      // No <form> (CSP form-action 'none'), so wire Enter ourselves: it commits exactly like the
+      // Search button. Ignored mid-IME-composition (CJK etc.) so a provisional candidate is not
+      // committed -- isComposing covers most engines, keyCode 229 is the Safari fallback.
+      pinput.addEventListener("keydown", function (e) {
+        if (e.isComposing || e.keyCode === 229) return;
+        if (e.key === "Enter") { e.preventDefault(); submitPage(); }
+      });
+      // Clear-x: empty the field, resync (hide the x), re-render to the empty state, keep focus. It
+      // does NOT touch the URL (the URL tracks the last SUBMIT, not transient field state).
+      pclear.addEventListener("click", function () {
+        pinput.value = "";
+        syncPageControls();
+        runPage();
+        pinput.focus({ preventScroll: true });
+      });
+      psubmit.addEventListener("click", submitPage);
       // An address-bar OpenSearch re-search (or an in-page dropdown pick) changes only the #q=
       // fragment, and a fragment-only navigation does NOT reload the document -- so re-read + re-run
       // on a #q= hashchange. React ONLY to a q= fragment: the page input is NEVER written to the URL

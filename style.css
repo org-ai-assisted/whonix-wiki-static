@@ -1183,6 +1183,50 @@ html:not(.client-js) .site-search .search-submit { display: none; }
 .search-results .search-all { border-top: 1px solid var(--border); margin-top: 0.15rem; padding-top: 0.15rem; }
 .search-results .search-all a { font-style: italic; }
 
+/* Special:Search results page field (built by app.js setupResultsPage): a role=search row with the
+   input, an inside-right clear-x shown while typing, and a trailing blue Search submit. The Codex/
+   Vector cdx-search-input idiom; blue + muted X reuse the SAME tokens as the header controls so the
+   two surfaces match. No <form> (CSP form-action 'none') -- app.js drives submit. */
+.search-page-box {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+  max-width: 34rem;
+  margin: 0.5rem 0 0;
+}
+.search-page-field { position: relative; flex: 1 1 auto; display: flex; }
+.search-page-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5em 2.3rem 0.5em 0.7em;   /* right pad reserves room for the inside clear-x */
+  font-size: 1rem;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.search-page-input:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; border-color: var(--accent); }
+/* Suppress the native type=search clear so it never doubles the custom clear-x (as the header does). */
+.search-page-input::-webkit-search-cancel-button,
+.search-page-input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; }
+.search-page-clear {
+  position: absolute; right: 0.4rem; top: 50%; transform: translateY(-50%);
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.7rem; height: 1.7rem; padding: 0; border: 0; border-radius: var(--radius-sm);
+  background: none; color: var(--muted); cursor: pointer; font-size: 0.95rem;
+}
+.search-page-clear:hover { color: var(--fg); background: var(--surface-2); }
+.search-page-clear[hidden] { display: none; }   /* explicit display beats the hidden attr's UA display:none */
+.search-page-submit {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0 0.9rem; border: 0; border-radius: var(--btn-radius);
+  /* Site primary-action color, the SAME token as the header's .search-submit (not green --accent). */
+  background: var(--btn-primary); color: var(--btn-primary-fg);
+  font-size: 0.9rem; font-weight: 600; white-space: nowrap; cursor: pointer;
+}
+.search-page-submit:hover { background: var(--btn-primary-hover); }
+
 /* Compact header: collapse the nav to a hamburger and shrink the logo to a 46x34 box; the wordmark
    + Donate text stay, the trademark mark drops. Prod (Vector legacy) does this at <=720px, but OUR
    inline header is wider (logo + wordmark + full nav + search + Donate), so we collapse at <=959.98
@@ -2184,6 +2228,12 @@ code:empty { display: none; }
    large fa-2x banners keep) so it does not weigh down the now-subordinate circle. */
 .padded-content-icon.pci-style-circle.iconset-h1 {
   width: 1.3em; height: 1.3em; background: #157a33; border-width: 2px;
+  /* Optical centering: line-height:1 flex-centres the LINE BOX, but a figure's ink sits above
+     the baseline, so a plain centre leaves the digit hanging HIGH (measured: ~7px top/bottom gap
+     imbalance at a 185px circle, i.e. the digit ~3.5px high). A small em-based top pad (box-sizing
+     is border-box, so the circle keeps its size) drops the digit onto the true optical centre --
+     scale-invariant across every heading context. 0.04em equalises the gaps (virtual-ruler tuned). */
+  padding-top: 0.04em;
 }
 /* IconSet h2/h3/h4 (step/section numbers, e.g. {{IconSet|h2|3}}) render as prod's filled
    rounded-square badge with a white numeral, coloured by the element's cs-* --callout --
@@ -2197,7 +2247,10 @@ code:empty { display: none; }
      ~14.5px in 16px body sub-steps -- no per-context tuning (a fixed 16px box hung ~3.8px below
      the baseline in body text). vertical-align:middle centres it; scaling-with-text + centred is
      the step-badge idiom (MUI Stepper, Tailwind UI, Bootstrap size the badge relative to its text). */
-  min-width: 1.3em; height: 1.3em; padding: 0 0.3em; border-radius: 0.3em;
+  /* padding-top 0.04em: same optical-centering nudge as the h1 circle (the digit is ink above the
+     baseline, so a line-height:1 flex centre hangs it high); drops the numeral onto the true centre
+     in every context. box-sizing:border-box keeps the 1.3em box size. */
+  min-width: 1.3em; height: 1.3em; padding: 0.04em 0.3em 0; border-radius: 0.3em;
   background: var(--callout, var(--accent)); color: #fff;
   margin-right: 0.25rem; vertical-align: middle; line-height: 1;
 }
@@ -3149,6 +3202,14 @@ sup.reference:target {
 /* Visible manually-placed anchors ({{Anchor|...|show=true}} -> span.mpa-visible) -- prod
    Utility.css parity: a block "#id" label (the invisible form, no mpa-visible, stays inert). */
 .manually-placed-anchor { position: relative; }
+/* A pure anchor-only paragraph: pandoc wraps a lone {{Anchor|...}} jump target in its OWN <p>,
+   whose default margins + line box inject a blank band. An invisible scroll target must take no
+   vertical space, so collapse the wrapping paragraph (e.g. {{Anchor|starting}} atop the step-4
+   {{Box}} no longer pushes the heading down). Scoped to the only-child, non-visible anchor, so an
+   inline anchor that shares a paragraph with text, or a visible mpa label, is left untouched. */
+.wiki-content p:has(> .manually-placed-anchor:only-child:not(.mpa-visible)) {
+  margin: 0; line-height: 0;
+}
 .manually-placed-anchor.mpa-visible {
   display: block; margin: 15px 0; font-size: 18px; letter-spacing: 1px;
 }
