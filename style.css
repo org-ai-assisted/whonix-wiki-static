@@ -89,6 +89,8 @@
   --c-green: #1a9e3f;
   --c-blue: #2f6fd0;
   --c-yellow: #fff23e;   /* prod's bright yellow (was a dark brown #c98a00) */
+  --c-purple: #8250df;
+  --c-amber: #9a6700;
   --c-orange: #d9730d;
   --c-gray: #565c64;
 
@@ -168,6 +170,8 @@
   --c-green: #57cc6a;
   --c-blue: #6ba4f5;
   --c-yellow: #e6b64c;
+  --c-purple: #ab7df8;
+  --c-amber: #d29922;
   --c-orange: #e79448;
   --c-gray: #9aa1a9;
 
@@ -226,6 +230,8 @@
     --c-green: #57cc6a;
     --c-blue: #6ba4f5;
     --c-yellow: #e6b64c;
+    --c-purple: #ab7df8;
+    --c-amber: #d29922;
     --c-orange: #e79448;
     --c-gray: #9aa1a9;
 
@@ -300,12 +306,17 @@ img, video { max-width: 100%; height: auto; }
    differ only by text-node siblings, which CSS cannot test -- so the GENERATOR, which sees the
    paragraph's content, marks only the standalone figure .media-figure (media.py
    mark_standalone_figures), and this rule targets that class. Inline icons keep their inline flow. */
-img.media-figure { display: block; min-height: 0; contain: size; overflow: hidden; }
+img.media-figure { display: block; min-height: 0; overflow: hidden; }
+img.media-figure[width][height] { contain: size; }   /* [width][height]: see .media-sized below */
 /* Reserve each frameless sized image's box from its width/height attrs, so a blocked/broken image
    renders the SAME box as a loaded one (zero broken-image CLS). contain:size sizes the box from the
    attr-derived presentational width/height (never the broken-glyph content); overflow:hidden clips
-   the glyph. Safe here because .media-sized carries width/height attrs and no width:auto override. */
-img.media-sized:not(.media-figure) { contain: size; overflow: hidden; display: inline-block; }
+   the glyph. contain:size is GATED to [width][height]: media.py emits .media-sized whenever a width
+   is present but omits the height attr when the source height is underivable (no-ratio SVG) -- such
+   an img has no attr aspect-ratio, so contain:size would collapse it to 0 height. Those keep
+   intrinsic sizing (visible); same guard + reason as the .thumbframe / logo-cloud img rules. */
+img.media-sized:not(.media-figure) { overflow: hidden; display: inline-block; }
+img.media-sized:not(.media-figure)[width][height] { contain: size; }
 /* Keep a token together across a line wrap (e.g. a project name + its trailing TM/R sup, so
    the mark never orphans onto its own line -- see render/pipeline._bind_trademarks). */
 .nowrap { white-space: nowrap; }
@@ -777,7 +788,9 @@ body.site-whonix .site-logo-img { width: auto; }
 @media print {
   .site-header, .site-footer, .bottom-stack, .consent-banner, .stage-banner,
   #fly-in-notification-panel, .sitenotice, #siteNotice, .back-to-top, .wiki-book-index,
-  .h-anchor {   /* same-page permalink glyph: pure noise on paper */
+  .heading-actions {   /* edit/share: interactive chrome, noise on paper
+                          (also beats the .heading-actions:has(.share-open) keep-alive, so
+                          an open share menu never prints over the article) */
     display: none !important;
   }
   .wiki-content { max-width: 100%; margin: 0; padding: 0; }
@@ -818,6 +831,8 @@ body.site-whonix .site-logo-img { width: auto; }
     --c-green: #1a9e3f;
     --c-blue: #2f6fd0;
     --c-yellow: #fff23e;
+    --c-purple: #8250df;
+    --c-amber: #9a6700;
     --c-orange: #d9730d;
     --c-gray: #565c64;
   }
@@ -1182,6 +1197,30 @@ html:not(.client-js) .site-search .search-submit { display: none; }
    link color + the shared :hover / keyboard-active highlight so it reads as actionable. */
 .search-results .search-all { border-top: 1px solid var(--border); margin-top: 0.15rem; padding-top: 0.15rem; }
 .search-results .search-all a { font-style: italic; }
+/* Wikipedia-style suggestion row (desktop dropdown AND mobile popover share this): a narrow
+   thumbnail, then the title (typed prefix highlighted) over a one-line summary. Scoped to the
+   result options so the "search for all" footer stays a plain block link. */
+.search-results li:not(.search-all) > a { display: flex; align-items: center; gap: 0.6rem; }
+.search-thumb {
+  flex: 0 0 auto; width: 64px; height: 64px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden;
+  background: var(--surface-2); display: inline-flex; align-items: center; justify-content: center;
+}
+/* The 128px (2x) downscale is cover-cropped square in the 64px box -- no server-side square crop. */
+.search-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* No #seo-image thumb -> a grey document glyph (Font Awesome, already loaded for the search controls). */
+.search-thumb--fallback { color: var(--muted); }
+.search-thumb--fallback i { font-size: 1.8rem; line-height: 1; }
+.search-row-text { min-width: 0; flex: 1; }   /* min-width:0 lets the text column ellipsize */
+.search-row-title {
+  display: block; font-weight: 700; line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.search-row-title .match { text-decoration: underline; text-underline-offset: 2px; }
+.search-row-desc {
+  display: block; margin-top: 0.1rem; color: var(--muted); font-size: 0.85rem; line-height: 1.25;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 
 /* Special:Search results page field (built by app.js setupResultsPage): a role=search row with the
    input, an inside-right clear-x shown while typing, and a trailing blue Search submit. The Codex/
@@ -1301,9 +1340,26 @@ html:not(.client-js) .site-search .search-submit { display: none; }
   /* Lens toggles the overlay open. Mobile-only (see the base note): kept out of the unscoped base
      so a stale :checked cannot leak into the desktop tier. */
   .search-toggle:checked ~ .search-field {
-    width: min(80vw, 16rem); padding: 0.55rem 0.8rem; border: 1px solid var(--border);
+    width: min(80vw, 16rem); height: 2.4rem; padding: 0 5rem 0 0.8rem; border: 1px solid var(--border);
     opacity: 1; pointer-events: auto; visibility: visible; z-index: 50;
     box-shadow: var(--shadow-md);
+  }
+  /* The mobile popover reuses the SAME blue Search submit + clear-x as desktop (their markup and
+     app.js wiring are tier-agnostic; only this reveal was desktop-only). They overlay the open
+     field, which hangs below the header at top: calc(100% + 0.3rem); the field is 2.4rem tall, so
+     its vertical centre is +1.5rem. clear-x shows only while the field holds text (app.js un-hides
+     it); the submit tracks the #q= query like desktop. */
+  .search-toggle:checked ~ .search-clear:not([hidden]) {
+    display: inline-flex; right: 4.3rem; top: calc(100% + 1.5rem); transform: translateY(-50%);
+  }
+  .search-toggle:checked ~ .search-submit {
+    display: inline-flex; right: 0.35rem; top: calc(100% + 1.5rem); transform: translateY(-50%);
+  }
+  /* A custom clear-x now ships on mobile too -> suppress the native type=search cancel glyph so the
+     field does not show a double-x (same reason as the desktop tier). */
+  .search-field::-webkit-search-cancel-button,
+  .search-field::-webkit-search-decoration {
+    -webkit-appearance: none; appearance: none; display: none;
   }
 }
 /* Narrow phones: drop the "Donate" word (heart glyph only) so the CTA stays on the logo
@@ -1417,8 +1473,11 @@ html:not(.client-js) .site-search .search-submit { display: none; }
 .widget-headline { margin: 0; }
 .wiki-content > .widget-headline:first-child h1 { margin-top: 0.25rem; }
 /* Page title (#firstHeading / .first-heading) -- borderless, top of the 16px-base ladder
-   at 32px (production Boilerplate.css shipped 28px). The generator synthesizes an
-   <h1 id="firstHeading" class="first-heading"> for a normal page (see page.py). */
+   at 40px so the title clearly outranks the 30px section heading (.hvis1): 40/30 = 1.333, the
+   perfect-fourth top step used by Primer/Infima (32/30 = 1.06 read as the same level). The lower
+   ladder (.hvis1 30 / .hvis2 24 / .hvis3 20) is already a clean 1.25/1.2 scale and is untouched;
+   mobile steps the title to 36px below. Production Boilerplate.css shipped 28px. The generator
+   synthesizes an <h1 id="firstHeading" class="first-heading"> for a normal page (see page.py). */
 #firstHeading, .first-heading {
   max-width: 100%;
   /* Unboxed title: no panel fill, flush-left on the content-column axis (shares the
@@ -1430,7 +1489,7 @@ html:not(.client-js) .site-search .search-submit { display: none; }
   color: var(--heading);
   border: none;
   position: relative;
-  font-size: 32px;
+  font-size: 40px;
   font-weight: 600;   /* semibold title (600): the idiomatic docs heading weight, matches section headings + hero */
   line-height: 1.25;   /* tighter display leading: 1.6 was too airy on wrapping titles */
   /* prod .first-heading is a BLOCK: the book-nav floats top-right and the title text wraps
@@ -1454,6 +1513,12 @@ html:not(.client-js) .site-search .search-submit { display: none; }
      already draws the panel, and a static transparent h1 lets the floated nav show through. */
   background: transparent;
   position: static;
+}
+/* Mobile: step the 40px title down to 36px so it does not dominate a narrow screen, while still
+   clearly outranking the 30px section heading (36/30 = 1.2). Separate @media block AFTER the base
+   #firstHeading rule so it wins at equal specificity on source order. */
+@media (max-width: 600px) {
+  #firstHeading, .first-heading { font-size: 36px; }
 }
 /* book-nav floats top-right of the BLOCK title (prod): the base .wiki-book-index{float:right}
    applies and the title text wraps around it at full width. */
@@ -2219,21 +2284,29 @@ code:empty { display: none; }
      line box, so this never re-inflates the heading line. em-based -> balanced in every context. */
   position: relative; top: -0.17em;
 }
-/* h1's circle matched to the square badges' em box so all four read as one marker size
-   regardless of shape -- the fixed chip tier (shared with the callout-box icon). The white
-   numeral on the neon --c-green (#1a9e3f) is only ~3.5:1, so pin the fill to the AA green
-   (#157a33, already the iconset-true text green) -- white clears 4.5:1, and the darker green
-   also mutes the loudest badge. Theme-independent (dark green + white reads on both
-   backgrounds). The thick white ring is thinned to 2px here (vs the shared 3px, which the
-   large fa-2x banners keep) so it does not weigh down the now-subordinate circle. */
+/* h1 step badge: a green pill. One digit = a perfect 1.3em circle; a 2-digit number (steps
+   10+) GROWS the box horizontally into a rounded stadium (min-width lets it grow, border-radius
+   999px rounds the ends, side padding gives the digits room) so both digits sit on the full
+   green fill. A FIXED-width 1.3em circle clipped the 2nd digit onto the white ring/page --
+   barely visible. Matches how the h2/h3/h4 square badges already grow. White numeral on the neon
+   --c-green (#1a9e3f) is only ~3.5:1, so pin the fill to the AA green (#157a33, already the
+   iconset-true text green) -- white clears 4.5:1, the darker green mutes the loudest badge,
+   theme-independent. Ring thinned to 2px here (vs the shared 3px the large fa-2x banners keep)
+   so it does not weigh down the subordinate badge. */
 .padded-content-icon.pci-style-circle.iconset-h1 {
-  width: 1.3em; height: 1.3em; background: #157a33; border-width: 2px;
+  /* width:auto cancels the base .pci-style-circle width:1.9em -- without it the base width
+     leaks through and every badge (even 1 digit) renders as a 1.9em-wide oval. */
+  width: auto; min-width: 1.3em; height: 1.3em; background: #157a33; border-width: 2px;
+  /* full radius: perfect circle at 1 digit, clean stadium ends at 2+ -- overrides the base
+     .pci-style-circle 50%, which on a grown (wider-than-tall) box would give an ellipse. */
+  border-radius: 999px;
   /* Optical centering: line-height:1 flex-centres the LINE BOX, but a figure's ink sits above
      the baseline, so a plain centre leaves the digit hanging HIGH (measured: ~7px top/bottom gap
-     imbalance at a 185px circle, i.e. the digit ~3.5px high). A small em-based top pad (box-sizing
-     is border-box, so the circle keeps its size) drops the digit onto the true optical centre --
-     scale-invariant across every heading context. 0.04em equalises the gaps (virtual-ruler tuned). */
-  padding-top: 0.04em;
+     imbalance at a 185px circle, i.e. the digit ~3.5px high). box-sizing is border-box, so the
+     box keeps min-width; the top pad drops the digit onto the true optical centre, scale-invariant.
+     0.04em equalises the gaps (virtual-ruler tuned). 0.15em sides give a 2-digit number breathing
+     room while a 1-digit badge stays within min-width (an exact circle). */
+  padding: 0.04em 0.15em 0;
 }
 /* IconSet h2/h3/h4 (step/section numbers, e.g. {{IconSet|h2|3}}) render as prod's filled
    rounded-square badge with a white numeral, coloured by the element's cs-* --callout --
@@ -2310,6 +2383,30 @@ code:empty { display: none; }
 .cs-green, .cs-green-light { --callout: var(--c-green); }
 .cs-blue, .cs-blue-light { --callout: var(--c-blue); }
 .cs-yellow, .cs-yellow-light { --callout: var(--c-yellow); }
+.cs-purple, .cs-purple-light { --callout: var(--c-purple); }
+.cs-amber, .cs-amber-light { --callout: var(--c-amber); }
+
+/* GitHub-style admonition (Template:Callout -> #callout). Self-contained component; hue comes
+   from the cs-* -> --callout cascade, mirroring the .mbox/.info-box border-left+tint above. */
+.admonition {
+  margin: 1.25rem 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--callout, var(--accent));
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--callout, var(--accent)) 7%, var(--surface));
+}
+.admonition-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+  color: var(--callout, var(--accent));
+}
+.admonition-title > i { font-size: 1rem; line-height: 1; width: 1.1em; text-align: center; }
+.admonition-body > :first-child { margin-top: 0; }
+.admonition-body > :last-child { margin-bottom: 0; }
 .cs-orange, .cs-orange-light { --callout: var(--c-orange); }
 .cs-gray, .cs-gray-light, .cs-black, .cs-white { --callout: var(--c-gray); }
 .cs-red-font { color: var(--c-red); }
@@ -2444,15 +2541,43 @@ code:empty { display: none; }
      (nesting-safe). */
 html.client-js .tab-content-controller:has(> .tcc-content > .tcc-section.active) > .tcc-content > .tcc-section:not(.active) { display: none; }
 html.client-js .tab-content-controller:not(:has(> .tcc-content > .tcc-section.active)) > .tcc-content > .tcc-section ~ .tcc-section { display: none; }
+/* Degraded-state reachability net. If app.js is BLOCKED (CSP-hash desync, network loss of the
+   larger app.js, a content-blocker) AFTER theme-init.js set client-js, the collapse above has
+   hidden panels 2+ and no handler exists to reveal them. Every server pill is a real
+   `<a href="#id">` (page.py _tab_pill: a heading id, else a synthesized section id), so a click
+   still does NATIVE fragment nav -> the section that IS or CONTAINS the :target is revealed here,
+   keeping every panel reachable with no JS. ADDITIVE (the hide rules above stay pristine) and
+   gated on `:not([role="tabpanel"])`: app.js sets role="tabpanel" on every section it enhances,
+   so the instant app.js runs these rules go inert and the collapse alone governs -- i.e. they fire
+   ONLY in the un-enhanced state (pre-paint, or app.js blocked). This is why the working-JS path is
+   byte-unchanged: a pill click there is preventDefaulted + history.replaceState (never sets
+   :target), AND the section now carries role=tabpanel, so a stale :target left by a deep-link load
+   can NOT leak a second panel visible. One reveal rule per collapse-rule type, each outscoping its
+   hide counterpart so `display:block` wins. */
+html.client-js .tab-content-controller:has(> .tcc-content > .tcc-section.active) > .tcc-content > .tcc-section:is(:target, :has(:target)):not([role="tabpanel"]) { display: block; }
+html.client-js .tab-content-controller:not(:has(> .tcc-content > .tcc-section.active)) > .tcc-content > .tcc-section:is(:target, :has(:target)):not([role="tabpanel"]) { display: block; }
 html.client-js .tab-content-controller .tcc-section { border: none; margin: 0; }
 /* With the pill switcher built + the title sr-only, the content's own top border becomes a
    redundant separator line DIRECTLY under the pill bar -- an extra bordered level prod does
    not show. Drop it so a tabbed section reads as one mininav bar + one expand box (prod). */
-html.client-js .tab-content-controller .tcc-content { border-top: none; padding-top: 0.3rem; padding-bottom: 0; }
+html.client-js .tab-content-controller .tcc-content { border-top: none; }
+/* Outer wrapper (the controller's OWN content box, around the sections): tight top hugs the
+   pill switcher; flush bottom so the pane sits against the controller (its margin does the gap). */
+html.client-js .tab-content-controller > .tcc-content { padding-top: 0.3rem; padding-bottom: 0; }
+/* Inner pane BODY (the visible white .tcc-section box): symmetric top==bottom for optical
+   balance -- idiomatic card/note padding (Bootstrap/Primer/MkDocs all pad top==bottom). L/R
+   unchanged; the ragged word-wrap right edge is accepted. */
+html.client-js .tab-content-controller .tcc-section > .tcc-content { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+/* But a pane whose LAST child is itself a padded box (the .mbox/.info-box/.community-support-info
+   notice family, a {{#callout:}} .admonition, a collapsible, or nested tabs) already carries its
+   own bottom spacing -- the pane adds none, so the two do not stack into a double gap (the reason
+   the bottom was blanket-0 before, now scoped here). The box list is the full self-contained-box
+   family, so every box-ending pane collapses uniformly. */
+html.client-js .tab-content-controller .tcc-section > .tcc-content:has(> :last-child:is(.info-box, .mbox, .community-support-info, .admonition, .toccolours, .mw-collapsible, details, .tcc-section, .tab-content-controller)) { padding-bottom: 0; }
 /* A short/collapsed box ending a (possibly nested) tab pane stacked each pane's bottom padding
    + the box's own bottom margin into a big empty gap under it inside a numbered-step box (vs a
    normally-filled step). The enclosing box's padding is the only bottom spacing wanted, so the
-   pane adds none (above) and its last flow child carries no bottom margin. */
+   pane's last flow child carries no bottom margin. */
 .tcc-content > :last-child { margin-bottom: 0; }
 /* Match production's tight switcher->pane spacing (was a ~46px gap under the GUI/CLI switcher,
    prod ~16px): drop pandoc's junk leading empty <p>, and do not stack the first content's own
@@ -2518,6 +2643,10 @@ details.mw-collapsible > summary {
   /* contain the right-floated .mwc-toggle pill so the collapsible body flows the full card width BELOW it, not squeezed into the strip beside it (which left an empty band under the pill) */
   display: flow-root;
 }
+/* Label column: its own block-formatting context (flow-root) beside the floated pill, so a LONG
+   label wraps WITHIN its track instead of raggedly beside/under the float (the reported bug). The
+   BFC box never overlaps the float, so the label column sizes to the space left of the pill. */
+.mwc-label { display: flow-root; }
 details.mw-collapsible > summary::-webkit-details-marker { display: none; }
 details.mw-collapsible > summary > p { margin: 0; }
 .mwc-toggle {
@@ -2528,6 +2657,26 @@ details.mw-collapsible > summary > p { margin: 0; }
   background: var(--btn-secondary-bg); color: var(--btn-secondary-fg); font-weight: 700;
   border: 1px solid var(--btn-secondary-border); border-radius: var(--btn-radius);
   padding: 4px 17px 5px 10px;
+}
+@media (max-width: 600px) {
+  /* Narrow screen: stack the label over a right-aligned pill so it spans the full card width (a
+     10rem float beside it leaves a cramped column on a phone). Flex only here; the wide-card float
+     + summary flow-root (canaried by canary-collapsible-body-width.py) is untouched.
+     Keyed on VIEWPORT, not a container query, on purpose: our collapsibles are full-width block
+     cards, so viewport width == card width here. A container query would need
+     container-type:inline-size on the card, whose size containment COLLAPSES an auto-width table
+     cell to a 1-char column -- a strictly worse latent failure than this mild cramp. A collapsible
+     in a narrow / auto-width cell is out of scope. */
+  details.mw-collapsible > summary { display: flex; flex-direction: column; }
+  .mwc-label { order: 1; }
+  .mwc-toggle { order: 2; float: none; align-self: flex-end; margin: 0.4rem 0 0; }
+  /* A badge/chip that leaks in as a DIRECT summary child (a title authored as a bare
+     {{IconSet|false|!}} chip sitting beside a block heading, so render/collapsibles cannot tuck
+     it inside .mwc-label) is a flex item here; the column's default align-items:stretch
+     blockifies its inline-flex and stretches it to full width -- the "!" renders as a full-width
+     coloured BAR instead of a compact square. Pin every non-pill, non-label direct child to its
+     own width so a stray chip stays a chip. The label/heading (.mwc-label) still spans the column. */
+  details.mw-collapsible > summary > :not(.mwc-label):not(.mwc-toggle) { align-self: flex-start; }
 }
 .mwc-toggle::before { content: "\25BC"; margin-right: 0.4rem; font-size: 0.8em; }
 .mwc-less { display: none; }
@@ -2974,6 +3123,18 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
      a transparent logo, e.g. Debian/Tux/OSI/GNU, printed a white box). */
   display: block; margin: 0 auto; max-width: 100%; height: auto;
 }
+/* Zero broken-image CLS for framed thumbnails. A content thumbframe <img> with BOTH width+height
+   attrs has a definite box (attr width + attr aspect-ratio) but height:auto, so a BLOCKED / broken
+   / mid-reencode image sizes its box from the ALT TEXT instead of the attrs and reflows the page (a
+   large diagram shrinks, a captioned seal grows -- check-img-blocked-shift /wiki/Warning).
+   contain:size sizes the box purely from the attr width (capped by max-width:100%) + the attr
+   aspect-ratio, independent of load state; overflow:hidden clips the broken glyph + alt.
+   REQUIRES [width][height]: an img with no height attr (unparseable dims -- media.py _scaled_height
+   emits none) has NO attr aspect-ratio, so contain:size would size it from nothing and collapse it
+   to 0 height; those keep intrinsic sizing. Excludes lead-wide / lead-hero, which size from content
+   (width:auto; height:auto; max-height) and carry no definite box. Same pattern as img.media-sized;
+   verified loaded-box == blocked-box by tools/check-img-blocked-shift.py. */
+.wiki-content .thumbframe:not(.lead-wide):not(.lead-hero) img[width][height] { contain: size; overflow: hidden; }
 .wiki-content .thumbcaption {
   /* Set the caption apart by TYPE, not a box: centered under the image, smaller, muted. */
   text-align: center; line-height: 1.4; padding-top: 0.35rem;
@@ -3163,41 +3324,71 @@ sup.reference:target {
   transform: translateY(-0.035em);
 }
 .share-tooltip .headline-anchor:hover { color: var(--link); text-decoration: none; }
-/* #278 section permalink: an empty, focusable `<a class="h-anchor" href="#id">` beside each
-   heading (h1-h6; the page #firstHeading is excluded in page.py). A plain same-page fragment
-   link -> the browser updates the URL bar + history on click with NO script (strict-CSP clean;
-   works JS-off / Tor Safest). The '#' is a CSS glyph; the accessible name is the aria-label.
-   Hidden until the heading is HOVERED or the link is FOCUSED -- keyboard-reachable, unlike
-   GitHub's aria-hidden/tabindex=-1 anchor. Themed --muted/--link, so dark mode follows. */
+/* Section-heading affordances: the edit (pencil) + share icons in ONE .heading-actions flex
+   cluster at the heading's RIGHT edge. NO visible '#' permalink glyph (operator decision: the
+   revealed edit/share suffice, and app.js makes the heading ITSELF the permalink -- a click
+   navigates to its anchor). The cluster is OUT OF FLOW (absolute), so a HIDDEN one reserves NO
+   space and nothing wraps to a second line (issues 1+2); a revealed one adds no height either. The
+   right zone (padding-right, >= the ~55px cluster) is reserved ONLY on a heading that ACTUALLY has
+   the cluster (:has) so a revealed cluster never overlaps a LEFT-aligned heading's text. Only h1-h3
+   content headings get a cluster; h4-h6 and role="heading" widgets / tab labels never do, so they
+   neither reserve (no wasted gutter) nor shift. Themed --muted/--link, so dark mode follows. The
+   reservation is one-sided, so it is DROPPED for the homepage's centered headings below. */
 .wiki-content :is(h1, h2, h3, h4, h5, h6) { position: relative; }
-.wiki-content .h-anchor {
-  color: var(--muted); text-decoration: none; font-weight: 400; line-height: 1.3;
-  margin-left: 0.3em;                 /* narrow default: the glyph sits inline AFTER the text */
-  opacity: 0; transition: opacity 0.12s;
+.wiki-content :is(h1, h2, h3, h4, h5, h6):has(> .heading-actions) { padding-right: 3.5rem; }
+/* A CENTERED cluster-bearing heading must DROP the one-sided reservation, else its centered text
+   sits ~28px off the column axis. Two centered contexts drop it: the homepage's forced-center h2
+   sections, and a heading whose IMMEDIATE wrapper centers it -- `.align-center > heading`, which is
+   what {{Align|middle}} and {{#headline|addToClass=align-center}} emit. The level set is all six:
+   _enrich_headings adds the cluster BEFORE level normalization, so a centered content `=== h3 ===`
+   is emitted as an h4 and must still match. `:not(.align-left):not(.align-right)` keeps the gutter
+   for a heading that RE-aligns itself off-center inside a center wrapper, else its revealed cluster
+   overlaps its own right-aligned text. The direct-child `>` is the stated boundary: a heading nested
+   under an INTERMEDIATE wrapper is a grandchild and does NOT match -- correct for a right/left-resolved
+   grandchild (`.align-center > .align-right > h4`, keeps the gutter), and a KNOWN 0-occurrence gap for
+   a centered grandchild (`{{Align|middle|{{#headline}}}}` -> `.align-center > div.mw-heading > h2`),
+   which keeps the gutter and shifts ~28px. Not chased: CSS cannot read resolved text-align, a
+   descendant combinator would re-break the right/left grandchild, and there are 0 real occurrences
+   across both wikis. test_assets pins the `>` so this gap cannot silently widen. Each override carries
+   an extra class, beating the (0,2,1) reserve. */
+.page-home .wiki-content h2:has(> .heading-actions),
+.wiki-content .align-center > :is(h1, h2, h3, h4, h5, h6):not(.align-left):not(.align-right):has(> .heading-actions) { padding-right: 0; }
+.wiki-content :is(h1, h2, h3, h4, h5, h6) > .heading-actions {
+  position: absolute; right: 0; top: 0; margin: 0;   /* top:0 -> first line; out of flow -> no wrap, no reserved height */
 }
-.wiki-content .h-anchor::before { content: "#"; }
-.wiki-content :is(h1, h2, h3, h4, h5, h6):hover > .h-anchor,
-.wiki-content :is(h1, h2, h3, h4, h5, h6):target > .h-anchor,
-.wiki-content .h-anchor:focus { opacity: 1; }
-.wiki-content .h-anchor:hover, .wiki-content .h-anchor:focus { color: var(--link); }
-.wiki-content .h-anchor:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-/* Wide viewports (>=1008px: the 60rem column centers with >=24px margin each side): HANG the
-   glyph to the LEFT of the heading (GitHub/Rustdoc/MDN-wide idiom) -- absolute + out of flow, so
-   it never shifts the heading text or reserves trailing space. Below 1008px the centered margin
-   is too small, so it stays inline AFTER the text (MkDocs/Sphinx idiom). */
-@media (min-width: 1008px) {
-  .wiki-content .h-anchor {
-    position: absolute; top: 0; right: 100%; margin-left: 0; margin-right: 0.15em;
-  }
-  /* The hang needs a left gutter (the centered column's auto margin, or the booknav left bleed).
-     The has-rail grid WITHOUT booknav is flush-left -- no gutter -- so a hung glyph falls ~11px
-     off the page edge at 1008-~1150px (measured). Keep it inline-after the text there. */
-  .wiki-content.has-rail:not(.has-booknav) .h-anchor {
-    position: static; margin-left: 0.3em; margin-right: 0;
-  }
+/* Hidden by default, revealed when the reader signals intent (GitHub/MkDocs/Rustdoc idiom).
+   pointer-events:none while hidden so a tap over the (invisible) icon zone falls through to the
+   heading -- the click reveal (app.js navigates to the anchor) -- not onto an unseen glyph. opacity
+   (not display) keeps the fade + the a11y box in the tab order; absolute (above), so a hidden
+   cluster costs no layout space. */
+.wiki-content .heading-actions { opacity: 0; pointer-events: none; transition: opacity 0.12s; }
+/* Keyboard + deep-link reveal, every platform: the cluster appears when the section is the URL
+   :target -- a deep link, OR app.js navigating to the heading on click. :target is SINGLE, so it is
+   the authoritative single-active reveal (targeting one heading drops the previously-targeted one).
+   Also reveals when focus enters the cluster (:focus-within): keyboard-reachable (no tabindex=-1 /
+   visibility:hidden that would drop it from the tab order + a11y tree) -- the a11y contract. */
+.wiki-content :is(h1, h2, h3, h4, h5, h6):target > .heading-actions,
+.wiki-content .heading-actions:focus-within { opacity: 1; pointer-events: auto; }
+/* An OPEN share menu keeps its cluster revealed regardless of hover/focus/tap. initShareLazy's
+   persistent .share-open menu is a DESCENDANT of .heading-actions, so a collapsing cluster
+   (opacity:0) would composite the open menu invisible + inert. macOS Safari/Firefox do NOT focus a
+   <button> on click, so :focus-within cannot hold the cluster once :hover is lost -- without this
+   the persistent menu would vanish under its own cluster there. Keyed to the open state so it
+   never does (works on every pointer, so it sits outside the hover media block). */
+.wiki-content .heading-actions:has(.share-tooltip.share-open) { opacity: 1; pointer-events: auto; }
+/* Desktop (a true hover + fine pointer): reveal on heading hover -- the classic docs/code-host
+   affordance. Gated to hover+fine so a coarse / no-hover device never gets a sticky phantom :hover
+   (the click/:target path owns persistent reveal there). */
+@media (hover: hover) and (pointer: fine) {
+  .wiki-content :is(h1, h2, h3, h4, h5, h6):hover > .heading-actions { opacity: 1; pointer-events: auto; }
+}
+/* Touch with JS OFF: nothing to hover and no click handler, so fall back to ALWAYS-VISIBLE rather
+   than leave a no-JS / Tor-Safest touch reader unable to reach edit or share. */
+@media (hover: none), (pointer: coarse) {
+  html:not(.client-js) .wiki-content .heading-actions { opacity: 1; pointer-events: auto; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .wiki-content .h-anchor { transition: none; }
+  .wiki-content .heading-actions { transition: none; }
 }
 /* Visible manually-placed anchors ({{Anchor|...|show=true}} -> span.mpa-visible) -- prod
    Utility.css parity: a block "#id" label (the invisible form, no mpa-visible, stays inert). */
@@ -3229,6 +3420,14 @@ sup.reference:target {
    is INSIDE the hovered wrapper -- no dead zone where the pointer leaves :hover moving button->menu. */
 .share-tooltip .menu-wrapper { display: none; position: absolute; left: 50%;
   top: 100%; transform: translateX(-50%); padding-top: 0.3rem; z-index: 40; }
+/* A HEADING's share tooltip sits at the heading's absolute right edge (.heading-actions is
+   position:absolute; right:0), so the default centered menu (left:50%, translateX(-50%)) runs off
+   the right of the viewport at ~800-1000px widths -- a horizontal scrollbar. Right-align it there,
+   as the <=800px rule below already does for all tooltips. Scoped from 441px up so the <=440px
+   fixed-centered phone menu still wins. */
+@media (min-width: 441px) {
+  .wiki-content .heading-actions .share-tooltip .menu-wrapper { left: auto; right: 0; transform: none; }
+}
 /* `:focus-within` reveals for keyboard; `:hover` ONLY where a real pointer exists. On TOUCH a tap
    leaves a STICKY :hover on the tapped element and its ancestors, so after tapping the close (x)
    the sticky `.share-tooltip:hover` kept the whole menu revealed -- "the x darkens but the pop-up
@@ -3413,7 +3612,7 @@ sup.reference:target {
 .si-youtube { --brand: #ff0000; }
 .si-github { --brand: #181717; }
 .si-bluesky { --brand: #1185fe; }
-.si-play { --brand: #d32f2f; }   /* Invidious (YouTube front-end), keyed by its fa-play glyph */
+.si-circle-play { --brand: #d32f2f; }   /* Invidious (YouTube front-end), keyed by its fa-circle-play glyph */
 .si-rss { --brand: #ee802f; }    /* RSS feed orange */
 /* Section label splitting the menu into prod's two groups (copy-to-clipboard / open-social). */
 .menu-section {
@@ -3860,7 +4059,9 @@ sup.reference:target {
 /* The client-js tab-pane rule above re-applies a light-prose padding-top:0.3rem that
    out-specifies the padding:0 here -- the active download card then sits ~4.8px top-heavy. Zero
    it so the card whitespace is symmetric top/bottom (pairs with the col-container margin-block). */
-html.client-js .section-download .tab-content-controller .tcc-content { padding-top: 0; }
+/* padding-bottom:0 keeps the download band's panes flush -- the general symmetric inner-pane
+   rule above (same specificity) must not leak vertical padding into the dark download tiles. */
+html.client-js .section-download .tab-content-controller .tcc-content { padding-top: 0; padding-bottom: 0; }
 /* The dark band is #273445, but .tcc-section's base `background: var(--bg)` (white) + border
    paint a white card behind the OS tiles. Clear both so the tiles sit directly on the dark band
    (prod has no white card); covers the no-JS bordered state and the client-js switcher state. */
@@ -4174,7 +4375,17 @@ body.page-home { container-type: inline-size; }
   min-width: 24px; min-height: 24px;
 }
 .video-link .icons img { height: 1.1em; width: 1.1em; flex: none; }
-.video-link .indicator img { height: 1.1em; width: auto; contain: size; overflow: hidden; display: inline-block; }
+/* The indicator anchor is a flex ITEM of the inline-flex .video-link. Left shrinkable (the
+   default), a cramped row shrinks it to its img's min-content -- and the LOADED SVG scales down
+   under max-width:100% to a ~5px sliver while the BLOCKED/broken img cannot, so the box (hence the
+   row) differs between the two (check-img-blocked-shift /wiki/Donors). flex:none keeps the icon at
+   its natural width in both states (the proven `.video-link .icons img` keeps the share icons
+   stable the same way); the text anchor beside it absorbs any row pressure. */
+.video-link .indicator { flex: none; }
+/* DEFINITE width+height (aspect of the 20x19 Video-general-icon.svg): width:auto would size from
+   the LOADED SVG's own aspect (narrow) but the BLOCKED img's attr aspect (20/19), differing between
+   the two. overflow:hidden clips the broken-alt glyph. */
+.video-link .indicator img { height: 1.1em; width: 1.16em; overflow: hidden; display: inline-block; }
 
 /* --- gallery (native image grid) --- */
 /* Galleries: production card grid (Utility.css). render_galleries emits
@@ -4277,12 +4488,13 @@ body.page-home { container-type: inline-size; }
 }
 /* gallery-steps: a numbered SCREENSHOT WALKTHROUGH (e.g. the VirtualBox import flow). The bare
    icon-row crushes a landscape UI screenshot into the 8.5rem square cell; here each screenshot is
-   shown ONE PER ROW at full content width and its NATIVE aspect ratio, with a step-number badge --
-   the idiomatic docs pattern (GitHub/GitLab/Material docs). The lightbox stays the optional enlarge.
+   shown ONE PER ROW at full content width and its NATIVE aspect ratio -- the idiomatic docs pattern
+   (GitHub/GitLab/Material docs). The step number is the {{IconSet}} badge in each caption; the
+   lightbox stays the optional enlarge.
    Higher specificity (.gallery.gallery-steps ...) overrides the icon-row width/aspect rules above. */
-.gallery.gallery-steps { display: block; counter-reset: step; }
+.gallery.gallery-steps { display: block; }
 .gallery.gallery-steps .gallerybox {
-  counter-increment: step; position: relative;
+  position: relative;
   width: 100%; max-width: 46rem; margin: 1.5rem auto 0; font-size: 0.95rem;
 }
 .gallery.gallery-steps .gallerybox:first-child { margin-top: 0; }
@@ -4292,13 +4504,6 @@ body.page-home { container-type: inline-size; }
 }
 .gallery.gallery-steps .thumb img {
   display: block; width: 100%; height: auto; max-height: none; object-fit: contain; border-radius: inherit;
-}
-/* step badge on the image corner (decorative: the step number is also in the caption text for AT). */
-.gallery.gallery-steps .gallerybox::before {
-  content: counter(step); position: absolute; top: 10px; left: 10px; z-index: 2; pointer-events: none;
-  width: 1.7rem; height: 1.7rem; border-radius: 50%;
-  background: var(--surface-2); color: var(--fg); border: 1px solid var(--border);
-  font: 600 0.9rem/1.7rem ui-monospace, monospace; text-align: center;
 }
 .gallery.gallery-steps .gallerytext {
   display: block; margin-top: 0.5rem; text-align: center; min-height: 0; color: var(--fg); font-weight: 600;
@@ -4393,10 +4598,19 @@ body.page-home { container-type: inline-size; }
   /* Size each logo to its OWN aspect at the fixed slot HEIGHT (width:auto, not 100%): a tall logo
      must not fill the whole wide cell or the srcset serves a variant for the full box while only a
      letterboxed sliver shows (check-img-responsiveness: wasted bytes). The flex-centred parent
-     places it; contain:size keeps a broken/blocked logo at height x aspect (from its width/height
-     attrs) instead of its alt-text box, and the parent's overflow:hidden clips the alt -> the img's
-     own rect and its neighbours are stable in every load state (zero CLS, see .explainer-check). */
-  width: auto; height: 100%; max-width: 100%; object-fit: contain; contain: size;
+     places it. Layout props apply to EVERY logo so a height-less one still slot-fits + stays
+     visible; only contain:size is gated below. */
+  width: auto; height: 100%; max-width: 100%; object-fit: contain;
+}
+.wiki-content .thumb-gallery.mode-logos .thumbframe img[width][height] {
+  /* contain:size keeps a broken/blocked logo at height x aspect (from its width/height attrs)
+     instead of its alt-text box, and the parent's overflow:hidden clips the alt -> the img's own
+     rect and its neighbours are stable in every load state (zero CLS, see .explainer-check).
+     REQUIRES [width][height]: a logo with no height attr (unparseable/no-viewBox SVG -- media.py
+     emits no height) has NO attr aspect-ratio, so contain:size + width:auto collapses it to 0
+     width. Those keep intrinsic sizing (visible, not slot-stabilised) -- same guard + reason as
+     the .thumbframe img[width][height] rule above. */
+  contain: size;
 }
 .wiki-content .thumb-gallery.mode-logos .thumbcaption {
   text-align: center; color: var(--fg-soft); font-size: 0.82rem; padding-top: 0.3rem;
@@ -4490,18 +4704,18 @@ html.client-js .tab-content-controller .tcc-title {
   .mininav.mn-switcher li > :not(span, img) { font-size: 0.88rem; padding: 0.45rem 0.6rem; }
 }
 
-/* --- breadcrumbs + categories box --- */
-.catlinks {
-  margin: 2rem 0 0; padding: 0.6rem 0.9rem; font-size: 0.9rem;
-  border-top: 1px solid var(--border); color: var(--muted);
+/* --- end-of-article page metadata (categories + last-updated) --- */
+/* ONE flush-left meta unit under the article: Categories + the "Last updated" line share the
+   content-column left edge (no indented box). The .page-meta border-top is the sole divider. */
+.page-meta {
+  margin: 2rem 0 0; padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
 }
+.catlinks { font-size: 0.9rem; color: var(--muted); }
 .catlinks-label { font-weight: 600; }
 /* Category links must LOOK like links (not grey bar text): link colour + underline. */
 .catlinks a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; margin-right: 0.5rem; }
-
-/* Per-page "Last updated" freshness line (echoes the JSON-LD dateModified). Muted + small,
-   sits below the category box at the end of the article. */
-.page-lastmod { margin: 1rem 0 0; font-size: 0.85rem; color: var(--fg-soft); }
+.page-lastmod { margin: 0.5rem 0 0; font-size: 0.85rem; color: var(--fg-soft); }
 
 /* --- book prev/index/next nav --- */
 /* Book prev/next nav. The "Contents" (index) control was dropped. DESKTOP: the firstheading

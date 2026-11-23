@@ -1,137 +1,192 @@
 [
   {
+    "d": "https://download.whonix.org/windows/0brand.asc 0brand's public key.",
     "t": "0brand",
     "u": "wiki/0brand"
   },
   {
+    "d": "AI agents are restricted on the Whonix website.",
     "t": "AI Agents Blocking",
     "u": "wiki/AI_Agents_Blocking"
   },
   {
+    "d": "Detecting Whonix version number using API.",
+    "img": "media/thumb/API123123.jpg-128.webp?h=6e8acc3c",
     "t": "API",
     "u": "wiki/API"
   },
   {
+    "d": "Yes, Whonix can be installed on a ARM64. Here's how.",
+    "img": "media/thumb/Download-arm64.jpg-128.avif?h=01aab2e9",
     "t": "ARM64",
     "u": "wiki/ARM64"
   },
   {
+    "d": "Privacy protection. Anonymity online. Anonymous Operating System. Whonix routes all Internet traffic through the Tor anonymity network. Security by Isolation. Based on Debian. Whonix Architecture.",
+    "img": "media/thumb/Whonix-homepage-main.png-128.webp?h=94b95531",
     "t": "About",
     "u": "wiki/About"
   },
   {
+    "d": "Access Whonix-Gateway Port From Host (Esoteric Documentation)",
+    "img": "media/thumb/Accessgateway.jpg-128.webp?h=21e61715",
     "t": "Access Gateway Port From Host",
     "u": "wiki/Access_Gateway_Port_From_Host"
   },
   {
+    "d": "Advanced guide on establishing connections from a VM to a server service on the host, LAN, or clearnet internet.",
+    "img": "media/thumb/Access12323.jpg-128.avif?h=df441128",
     "t": "Access Local Network or Host or Clearnet Internet from VM",
     "u": "wiki/Access_Local_Network_or_Host_or_Clearnet_Internet_from_VM"
   },
   {
+    "d": "Access Whonix-Workstation Port From Host (Esoteric Documentation)",
     "t": "Access Workstation Port From Host",
     "u": "wiki/Access_Workstation_Port_From_Host"
   },
   {
+    "d": "Overview of Advanced Deanonymization Attacks and their development status in Whonix.",
+    "img": "media/thumb/Advanced_deanonymization1231.jpg-128.webp?h=6ea65929",
     "t": "Advanced Deanonymization Attacks",
     "u": "wiki/Advanced_Deanonymization_Attacks"
   },
   {
+    "d": "Covering a wide spectrum of topics including file transfers, security configurations, platform support, and more. Ideal for advanced users aiming to leverage the full potential of Whonix.",
+    "img": "media/thumb/Advanceddocumentation213123.jpg-128.avif?h=14deef05",
     "t": "Advanced Documentation",
     "u": "wiki/Advanced_Documentation"
   },
   {
+    "d": "THIS WIKI PAGE IS DEPRECATED AND OUTDATED. PLEASE REFER TO THE ADVANCED SECURITY GUIDE SECTION - https://www.whonix.org/wiki/Documentation",
     "t": "Advanced Security Guide",
     "u": "wiki/Advanced_Security_Guide"
   },
   {
+    "d": "Improving Whonix and Linux Security for Advanced Users, Whonix Hardening",
     "t": "Advanced Security Guide Introduction",
     "u": "wiki/Advanced_Security_Guide_Introduction"
   },
   {
+    "d": "What is an advanced user?",
     "t": "Advanced Users",
     "u": "wiki/Advanced_Users"
   },
   {
+    "d": "Authenticated/Encrypted DNS over Tor, DNSSEC over Tor, DNSCrypt by OpenDNS, httpsdnsd by JonDos",
     "t": "Alternative DNS Resolver",
     "u": "wiki/Alternative_DNS_Resolver"
   },
   {
+    "d": "Anbox allows Android applications and mobile games to run inside Whonix.",
+    "img": "media/thumb/Anbox_apps_short.png-128.webp?h=81701a16",
     "t": "Anbox",
     "u": "wiki/Anbox"
   },
   {
+    "d": "Tor Connection Wizard - Graphical User Interface for Censorship Circumvention",
+    "img": "media/thumb/Main_page.png-128.webp?h=99397480",
     "t": "Anon Connection Wizard",
     "u": "wiki/Anon_Connection_Wizard"
   },
   {
+    "d": "Why do you need anonymity?",
     "t": "Anonymity",
     "u": "wiki/Anonymity"
   },
   {
+    "d": "Yes, Whonix can be installed on different architectures. Here's how.",
+    "img": "media/Architectures-combi-logo.svg?h=d6807c75",
     "t": "Architecture Support",
     "u": "wiki/Architecture_Support"
   },
   {
+    "d": "Intel, AMD, AMD64, \"amd64\" means Intel and AMD, arm64 / aarch64",
     "t": "Architectures",
     "u": "wiki/Architectures"
   },
   {
+    "d": "Illustrations, Banner, Logo History, Artwork, Logo Contest Submissions",
+    "img": "media/thumb/Whonix-logo-standard-old-refinement-2021.png-128.avif?h=e55841a0",
     "t": "Art Gallery",
     "u": "wiki/Art_Gallery"
   },
   {
+    "d": "This issue or request is valid, but cannot be worked on right now due to limited developer time and a large backlog. This does not mean \"ignored\" or \"declined\". Options: Apply Self Support First Policy / Become a Contributor / Purchase Support.",
     "t": "Backlogged",
     "u": "wiki/Backlogged"
   },
   {
+    "d": "Overview of Ways to Backup your Whonix Virtual Machines",
     "t": "Backup VMs",
     "u": "wiki/Backup_VMs"
   },
   {
+    "d": "Create a Backup of Website and Source Code of the Whonix",
+    "img": "media/thumb/Whonixbackup.jpg-128.webp?h=2666c26e",
     "t": "BackupScript",
     "u": "wiki/BackupScript"
   },
   {
+    "d": "You should not have ended up on this page. If you were redirected here anyhow, please describe how that happened and report a bug.",
     "t": "Badtitle",
     "u": "wiki/Badtitle"
   },
   {
+    "d": "Whonix is based Kicksecure which itself is based on Debian.",
+    "img": "media/thumb/Debian.png-128.avif?h=ed5e8a25",
     "t": "Based on Debian",
     "u": "wiki/Based_on_Debian"
   },
   {
+    "d": "Whonix is based on Kicksecure.",
+    "img": "media/thumb/Kicksecure-seal.png-128.avif?h=e2b1bf0a",
     "t": "Based on Kicksecure",
     "u": "wiki/Based_on_Kicksecure"
   },
   {
+    "d": "How to use Bisq - The P2P Exchange Network - in Whonix",
+    "img": "media/thumb/Bisq123123.jpg-128.webp?h=7a04820f",
     "t": "Bisq",
     "u": "wiki/Bisq"
   },
   {
+    "d": "BitMessage email alternative. Asynchronous, decentralized, encrypted communication.",
+    "img": "media/thumb/Bitmessage.png-128.webp?h=1911bd97",
     "t": "BitMessage",
     "u": "wiki/BitMessage"
   },
   {
+    "d": "Bitcoin: experimental, decentralized digital currency. Anonymous payments. Anonymous BTC.",
+    "img": "media/thumb/Bitcoin234234234.jpg-128.webp?h=611375a3",
     "t": "Bitcoin",
     "u": "wiki/Bitcoin"
   },
   {
+    "d": "Using Bitcoin Core in Whonix. Fully verifying a Bitcoin wallet. Based on the original reference code by Satoshi Nakamoto.",
+    "img": "media/thumb/Bitcoin234234234.jpg-128.webp?h=611375a3",
     "t": "Bitcoin Core",
     "u": "wiki/Bitcoin_Core"
   },
   {
+    "d": "Censorship Circumvention. Get around network bans. Using Whonix with (private) (obfuscated) bridges. Useful in case your Internet Service Provider (ISP) bans or throttles connections to the Tor public network.",
     "t": "Bridges",
     "u": "wiki/Bridges"
   },
   {
+    "d": "No IP leaks! Anonymous Flash plugin. Anonymously using Adobe Flash or other browser plugins with Tor in the Whonix Anonymous Operating System.",
+    "img": "media/thumb/Plugins.png-128.avif?h=66f38e88",
     "t": "Browser Plugins",
     "u": "wiki/Browser_Plugins"
   },
   {
+    "d": "check.torproject.org says \"Sorry. You are not using Tor.\"? On false positives. And browser fingerprinting. How unique are you? On Browser Tests and Browser Security. Notes on sites such as ip-check.info and whoer.net.",
+    "img": "media/thumb/Testschecklist.png-128.webp?h=9139601b",
     "t": "Browser Tests",
     "u": "wiki/Browser_Tests"
   },
   {
+    "d": "Non-Qubes-Whonix\u2122 Build Configuration. APT Repository, Onion Sources, APT Cache, VM Settings, Skip Steps, Source Code Changes",
+    "img": "media/thumb/Buildconfiguration12354.png-128.webp?h=df4e7988",
     "t": "Build Configuration",
     "u": "wiki/Build_Configuration"
   },
@@ -176,678 +231,903 @@
     "u": "wiki/Category:Templates"
   },
   {
+    "d": "List of Censorship Circumvention Tools that may be helpful to get around network bans. Draft.",
     "t": "Censorship Circumvention Tools",
     "u": "wiki/Censorship_Circumvention_Tools"
   },
   {
+    "d": "Whonix User Count, Project Metrics, Design, Rationale, Disabling",
+    "img": "media/thumb/Census3212.png-128.avif?h=40547467",
     "t": "Census",
     "u": "wiki/Census"
   },
   {
+    "d": "By default, all Whonix-Workstation\u2122 traffic is forced through Whonix-Gateway\u2122. Alternatively, a chain of anonymizing gateways can be built, with sample tunnel configurations outlined below.",
+    "img": "media/thumb/Chaininganon23234.jpg-128.avif?h=9e0afe53",
     "t": "Chaining Anonymizing Gateways",
     "u": "wiki/Chaining_Anonymizing_Gateways"
   },
   {
+    "d": "Whonix Release Notes, Changelog",
+    "img": "media/thumb/Oldstablewhonix.jpg-128.avif?h=f6bcc8a1",
     "t": "Changelog",
     "u": "wiki/Changelog"
   },
   {
+    "d": "Anonymous Chat, IRC, XMPP in Whonix.",
     "t": "Chat",
     "u": "wiki/Chat"
   },
   {
+    "d": "Using Chrome in Whonix.",
+    "img": "media/thumb/GoogleChromeicon.png-128.webp?h=cba3a0dd",
     "t": "Chrome",
     "u": "wiki/Chrome"
   },
   {
+    "d": "Using Chromium in Whonix.",
+    "img": "media/thumb/Chromiumicon.png-128.avif?h=343aef5e",
     "t": "Chromium",
     "u": "wiki/Chromium"
   },
   {
+    "d": "Common Whonix CLI Commands",
+    "img": "media/thumb/Cli1242345.png-128.avif?h=3d89a548",
     "t": "Common CLI Commands",
     "u": "wiki/Common_CLI_Commands"
   },
   {
+    "d": "Community Support Only means Whonix developers are unlikely provide free support for wiki chapters or pages with this tag that link here.",
+    "img": "media/thumb/Communitysupport13123.jpg-128.avif?h=044fdf05",
     "t": "Community Support",
     "u": "wiki/Community_Support"
   },
   {
+    "d": "Engage in the Whonix Community Survey to shape the roadmap of Whonix's future development.",
     "t": "Community survey",
     "u": "wiki/Community_survey"
   },
   {
+    "d": "Comparison of Package Managers",
     "t": "Comparison Of Package Managers",
     "u": "wiki/Comparison_Of_Package_Managers"
   },
   {
+    "d": "The differences of Whonix-Gateway and Whonix-Workstation.",
     "t": "Comparison of Whonix-Gateway and Whonix-Workstation",
     "u": "wiki/Comparison_of_Whonix-Gateway_and_Whonix-Workstation"
   },
   {
+    "d": "Comparison of Whonix in a VM vs Whonix with Physical Isolation with and without virtualized Gateway.",
     "t": "Comparison of different variants",
     "u": "wiki/Comparison_of_different_variants"
   },
   {
+    "d": "Comparison of Whonix and Whonix.",
     "t": "Comparison with Kicksecure",
     "u": "wiki/Comparison_with_Kicksecure"
   },
   {
+    "d": "Comparison of Whonix, Tails, Tor Browser Bundle, QubesOS TorVM and corridor. About anonymity, privacy, security, circumvention, attacks, fingerprinting, usability, features, etc.",
     "t": "Comparison with Others",
     "u": "wiki/Comparison_with_Others"
   },
   {
+    "d": "No longer relevant since at time of writing SubgraphOS is inactive.",
     "t": "Comparison with Others/SubgraphOS",
     "u": "wiki/Comparison_with_Others/SubgraphOS"
   },
   {
+    "d": "THIS WIKI PAGE IS DEPRECATED AND OUTDATED. PLEASE REFER TO THE COMPUTER SECURITY EDUCATION SECTION - https://www.whonix.org/wiki/Documentation",
     "t": "Computer Security Education",
     "u": "wiki/Computer_Security_Education"
   },
   {
+    "d": "Authenticated / Encrypted Connections between Whonix-Gateway\u2122 and Whonix-Workstation\u2122, ARP spoofing defense, SSH, OpenVPN, Using additional (isolated) network interfaces. Remote Whonix-Gateway\u2122.",
     "t": "Connections between Gateway and Workstation",
     "u": "wiki/Connections_between_Gateway_and_Workstation"
   },
   {
+    "d": "Contact Whonix developers and the whonix.org webmaster, security vulnerabilities reporting, press contact.",
     "t": "Contact",
     "u": "wiki/Contact"
   },
   {
+    "d": "Spread, Follow, Develop, Testing, Donate. Contribute to Freedom Software / Open Source.",
+    "img": "media/thumb/Computer_n_screen.png-128.avif?h=623c3e6d",
     "t": "Contribute",
     "u": "wiki/Contribute"
   },
   {
+    "d": "Whonix Authorship. Code Contributors, Artistic Contributors, Other Contributors",
+    "img": "media/Whonix-logo-text.svg?h=9dd73e71",
     "t": "Contributors",
     "u": "wiki/Contributors"
   },
   {
+    "d": "Our Cookie Policy explains what cookies are and how we use cookies.",
     "t": "Cookie Policy",
     "u": "wiki/Cookie_Policy"
   },
   {
+    "d": "Project License, Compilation License vs Individual Software Package License, Conditions for Contributions to Whonix",
+    "img": "media/C.png.webp?h=d08981f9",
     "t": "Copyright",
     "u": "wiki/Copyright"
   },
   {
+    "d": "Using corridor, a Tor traffic whitelisting gateway with Whonix",
+    "img": "media/thumb/Corridor.jpg-128.webp?h=b7846a6e",
     "t": "Corridor",
     "u": "wiki/Corridor"
   },
   {
+    "d": "Credits, Inspiration, Alternatives, Sources.",
     "t": "Credits",
     "u": "wiki/Credits"
   },
   {
+    "d": "Anonymous Cwtch in Whonix.",
     "t": "Cwtch",
     "u": "wiki/Cwtch"
   },
   {
+    "d": "How third party tracking and data mining is accomplished. Overview of Data Collection Techniques.",
+    "img": "media/thumb/Cookies.png-128.avif?h=177e21d8",
     "t": "Data Collection Techniques",
     "u": "wiki/Data_Collection_Techniques"
   },
   {
+    "d": "Tails versus Whonix] Live Mode Comparison",
     "t": "Data Persistence vs Live Mode",
     "u": "wiki/Data_Persistence_vs_Live_Mode"
   },
   {
+    "d": "Whonix for Debian",
+    "img": "media/thumb/Debian.png-128.avif?h=ed5e8a25",
     "t": "Debian",
     "u": "wiki/Debian"
   },
   {
+    "d": "Which Whonix Debian packages are safe to remove? What is a meta package? What other packages do Whonix meta packages install? Which packages should never be removed? How to safely run autoremove?",
     "t": "Debian Packages",
     "u": "wiki/Debian_Packages"
   },
   {
+    "d": "Declined feature requests. Out-of-scope feature suggestions that are not on the Whonix development roadmap.",
+    "img": "media/thumb/Declined1231242.png-128.webp?h=9fb2abbe",
     "t": "Declined",
     "u": "wiki/Declined"
   },
   {
+    "d": "Information about Whonix default user and passwords.",
     "t": "Default Passwords",
     "u": "wiki/Default_Passwords"
   },
   {
+    "d": "Delta Chat in Whonix.",
+    "img": "media/thumb/DeltaChat_Logo_Small.png-128.avif?h=52c119ab",
     "t": "DeltaChat",
     "u": "wiki/DeltaChat"
   },
   {
+    "d": "Most users can safely ignore this page.",
+    "img": "media/thumb/Deprec.jpg-128.webp?h=4c525b97",
     "t": "Deprecated",
     "u": "wiki/Deprecated"
   },
   {
+    "d": "Deprecated",
     "t": "Deprecated/Ricochet IM",
     "u": "wiki/Deprecated/Ricochet_IM"
   },
   {
+    "d": "Using Vidalia with Whonix",
     "t": "Deprecated/Vidalia",
     "u": "wiki/Deprecated/Vidalia"
   },
   {
+    "d": "grsecurity installation instructions",
     "t": "Deprecated/grsecurity",
     "u": "wiki/Deprecated/grsecurity"
   },
   {
+    "d": "Technical Design and Conception of the Whonix Anonymous Operating System.",
     "t": "Design",
     "u": "wiki/Design"
   },
   {
+    "d": "Whonix Platform-specific Desktop Tips and Tricks, RAM Adjusted Desktop Starter, Virtual Console, Full-Screen",
     "t": "Desktop",
     "u": "wiki/Desktop"
   },
   {
+    "d": "Whonix 64bit builds. From Whonix 14 onward, only 64-bit builds are available for download.",
     "t": "Dev/64bit",
     "u": "wiki/Dev/64bit"
   },
   {
+    "d": "Notes on Advanced Deanonymization Attacks.",
     "t": "Dev/Advanced Deanonymization Attacks",
     "u": "wiki/Dev/Advanced_Deanonymization_Attacks"
   },
   {
+    "d": "Comparison of anonymizers considered for the implementation of the Anonymous Operating System Whonix.",
     "t": "Dev/Anonymity Network",
     "u": "wiki/Dev/Anonymity_Network"
   },
   {
+    "d": "Outdated, Archived Whonix Development Discussions",
     "t": "Dev/Archived Discussions",
     "u": "wiki/Dev/Archived_Discussions"
   },
   {
+    "d": "Automated tests of images and package upgrades.",
     "t": "Dev/Automated Tests",
     "u": "wiki/Dev/Automated_Tests"
   },
   {
+    "d": "Staying anonymous while building Whonix from source code.",
     "t": "Dev/Build Anonymity",
     "u": "wiki/Dev/Build_Anonymity"
   },
   {
+    "d": "Instructions on How to Build Whonix Virtual Machine Images or Whonix Packages from Source Code.",
     "t": "Dev/Build Documentation",
     "u": "wiki/Dev/Build_Documentation"
   },
   {
+    "d": "Security by Isolation. Using Whonix with Physical Isolation on Bare Metal for Better Security.",
     "t": "Dev/Build Documentation/Physical Isolation",
     "u": "wiki/Dev/Build_Documentation/Physical_Isolation"
   },
   {
+    "d": "HowTo: Upgrade Whonix Deb Packages from Source Code",
     "t": "Dev/Build Documentation/Upgrading Derivative Deb Packages from Source Code",
     "u": "wiki/Dev/Build_Documentation/Upgrading_Derivative_Deb_Packages_from_Source_Code"
   },
   {
+    "d": "The build process of building any of the packages by Whonix developers is always very similar. This very wiki page explain how to build package generic-package",
     "t": "Dev/Build Documentation/generic-package",
     "u": "wiki/Dev/Build_Documentation/generic-package"
   },
   {
+    "d": "The build process of building any of the packages by Whonix developers is always very similar. This very wiki page explain how to build package generic-package",
     "t": "Dev/Build Documentation/generic-package/easy",
     "u": "wiki/Dev/Build_Documentation/generic-package/easy"
   },
   {
+    "d": "Instructions to build Whonix Virtual Machine Images from Source Code.",
     "t": "Dev/Build Documentation/images",
     "u": "wiki/Dev/Build_Documentation/images"
   },
   {
+    "d": "The build process of building any of the packages by Whonix developers is always very similar. This very wiki page explain how to build package monero-gui . By",
     "t": "Dev/Build Documentation/monero-gui/easy",
     "u": "wiki/Dev/Build_Documentation/monero-gui/easy"
   },
   {
+    "d": "The build process of building any of the packages by Whonix developers is always very similar. This very wiki page explain how to build package security-misc",
     "t": "Dev/Build Documentation/security-misc",
     "u": "wiki/Dev/Build_Documentation/security-misc"
   },
   {
+    "d": "The build process of building any of the packages by Whonix developers is always very similar. This very wiki page explain how to build package security-misc",
     "t": "Dev/Build Documentation/security-misc/easy",
     "u": "wiki/Dev/Build_Documentation/security-misc/easy"
   },
   {
+    "d": "Development Notes of Whonix and Continuous Integration (CI)",
     "t": "Dev/Continuous Integration",
     "u": "wiki/Dev/Continuous_Integration"
   },
   {
+    "d": "Control Port Filter Proxy - filtering dangerous Tor Control Port commands - Design Documentation",
     "t": "Dev/Control Port Filter Proxy/tor-controlport-filter/config",
     "u": "wiki/Dev/Control_Port_Filter_Proxy/tor-controlport-filter/config"
   },
   {
+    "d": "Design Documentation Whonix DHCP Server",
     "t": "Dev/DHCP",
     "u": "wiki/Dev/DHCP"
   },
   {
+    "d": "Debugging Dante. Used in context of Template:Tor_Browser_Remove_Proxy_Settings .",
     "t": "Dev/Dante",
     "u": "wiki/Dev/Dante"
   },
   {
+    "d": "Design Documentation - How to decide which apps come with Whonix?",
     "t": "Dev/Default Application Policy",
     "u": "wiki/Dev/Default_Application_Policy"
   },
   {
+    "d": "Disclaimer in setup-dist - Background of it",
     "t": "Dev/Disclaimer",
     "u": "wiki/Dev/Disclaimer"
   },
   {
+    "d": "Development Notes about Whonix Download Statistics",
     "t": "Dev/Download Statistics",
     "u": "wiki/Dev/Download_Statistics"
   },
   {
+    "d": "If we consider multiple download pages, users are accustomed to share direct download links. One who decided to use VirtualBox is likely to share the",
     "t": "Dev/Download Wizard",
     "u": "wiki/Dev/Download_Wizard"
   },
   {
+    "d": "Development Notes about Fedora",
     "t": "Dev/Fedora",
     "u": "wiki/Dev/Fedora"
   },
   {
+    "d": "Firefox Add-On Development",
     "t": "Dev/Firefox Add-On",
     "u": "wiki/Dev/Firefox_Add-On"
   },
   {
+    "d": "How to unload / remove each and every iptables, ip6tables, nftables rule.",
     "t": "Dev/Firewall Unload",
     "u": "wiki/Dev/Firewall_Unload"
   },
   {
+    "d": "Whonix Development Notes about GNOME",
     "t": "Dev/GNOME",
     "u": "wiki/Dev/GNOME"
   },
   {
+    "d": "Gajim - TODO for installing Gajim by default in Whonix",
     "t": "Dev/Gajim",
     "u": "wiki/Dev/Gajim"
   },
   {
+    "d": "Whonix-Gateway\u2122 Detailed Design Documentation",
     "t": "Dev/Gateway",
     "u": "wiki/Dev/Gateway"
   },
   {
+    "d": "Development of Whonix Homepage",
     "t": "Dev/Homepage",
     "u": "wiki/Dev/Homepage"
   },
   {
+    "d": "Technical Design Documentation about Host Security",
     "t": "Dev/Host",
     "u": "wiki/Dev/Host"
   },
   {
+    "d": "Inspiration for developing new Whonix Features.",
     "t": "Dev/Inspiration",
     "u": "wiki/Dev/Inspiration"
   },
   {
+    "d": "Also known as proverbial 'sudo apt install whonix' or 'distro-morphing'.",
     "t": "Dev/Installation from Repository",
     "u": "wiki/Dev/Installation_from_Repository"
   },
   {
+    "d": "Whonix Bug Tracker",
     "t": "Dev/Issue Tracker",
     "u": "wiki/Dev/Issue_Tracker"
   },
   {
+    "d": "Technical Design Documentation about JonDo",
     "t": "Dev/JonDo",
     "u": "wiki/Dev/JonDo"
   },
   {
+    "d": "Development Notes for adding KVM support to Whonix.",
     "t": "Dev/KVM",
     "u": "wiki/Dev/KVM"
   },
   {
+    "d": "Major leak tests for IP/DNS Leaks. How to check if this application is leaking? How likely is that application to be leaking? Unsuitable Tests: Location Detection, Operating System Detection.",
+    "img": "media/thumb/Leaktest.jpg-128.webp?h=47726faf",
     "t": "Dev/Leak Tests",
     "u": "wiki/Dev/Leak_Tests"
   },
   {
+    "d": "Testing for IP/DNS Leaks OLD - automated script now available!",
     "t": "Dev/Leak Tests Old",
     "u": "wiki/Dev/Leak_Tests_Old"
   },
   {
+    "d": "Whonix Project logos, profile images and banners. Graphics can be found on this page.",
     "t": "Dev/Logo",
     "u": "wiki/Dev/Logo"
   },
   {
+    "d": "New Whonix Logo Contest",
+    "img": "media/thumb/Whonix_Facebook_Social_Share.png-128.avif?h=f5c81513",
     "t": "Dev/Logo Contest",
     "u": "wiki/Dev/Logo_Contest"
   },
   {
+    "d": "Development notes for adding MAC address anonymization to Whonix.",
     "t": "Dev/MAC",
     "u": "wiki/Dev/MAC"
   },
   {
+    "d": "Development notes.",
     "t": "Dev/Multiple Workstations",
     "u": "wiki/Dev/Multiple_Workstations"
   },
   {
+    "d": "Development Notes about Network Manager",
     "t": "Dev/Network Manager",
     "u": "wiki/Dev/Network_Manager"
   },
   {
+    "d": "Development Notes about Whonix News and the Whonix News File Format",
     "t": "Dev/News",
     "u": "wiki/Dev/News"
   },
   {
+    "d": "OnionShare in Whonix - Development Notes",
+    "img": "media/thumb/OnionShare_logo.png-128.avif?h=bac32af1",
     "t": "Dev/OnionShare",
     "u": "wiki/Dev/OnionShare"
   },
   {
+    "d": "Comparison and Consideration of various Operating Systems as base for the Whonix Anonymous Operating System. Design Documentation.",
     "t": "Dev/Operating System",
     "u": "wiki/Dev/Operating_System"
   },
   {
+    "d": "Architecture specific packages in Whonix. \"Special packages\". Software maintained by third parties. Compiled software. Kernel modules. Shared objects. Tips on porting Whonix to other platforms. \"amd64\" means Intel and AMD. Porting Simplicity.",
     "t": "Dev/Porting",
     "u": "wiki/Dev/Porting"
   },
   {
+    "d": "Documentation for this is incomplete. Contributions are happily considered! See this for potential alternatives.",
     "t": "Dev/Project Host",
     "u": "wiki/Dev/Project_Host"
   },
   {
+    "d": "This page documents the differences between Debian and Whonix related to networking.",
+    "img": "media/thumb/Network23423.jpg-128.webp?h=78be8bd7",
     "t": "Dev/Project Networking",
     "u": "wiki/Dev/Project_Networking"
   },
   {
+    "d": "Best practices on writing applications compatible with Whonix.",
     "t": "Dev/Project friendly applications best practices",
     "u": "wiki/Dev/Project_friendly_applications_best_practices"
   },
   {
+    "d": "Qubes-Whonix\u2122 development notes.",
     "t": "Dev/Qubes",
     "u": "wiki/Dev/Qubes"
   },
   {
+    "d": "Development notes: QubesOS to be remotely manageable from on-demand, ephemeral, hidden onion service to dom0/AdminVM.",
     "t": "Dev/Qubes Remote Support",
     "u": "wiki/Dev/Qubes_Remote_Support"
   },
   {
+    "d": "Design and Developer Documentation about Redistribution of Whonix.",
     "t": "Dev/Redistribution",
     "u": "wiki/Dev/Redistribution"
   },
   {
+    "d": "DISA STIG (Security Technical Implementation Guides) Audit with Comments",
     "t": "Dev/STIG",
     "u": "wiki/Dev/STIG"
   },
   {
+    "d": "STIG Raw Output",
     "t": "Dev/STIG/raw",
     "u": "wiki/Dev/STIG/raw"
   },
   {
+    "d": "Introduction into Whonix source code.",
     "t": "Dev/Source Code Intro",
     "u": "wiki/Dev/Source_Code_Intro"
   },
   {
+    "d": "TPO Trademark",
+    "img": "media/thumb/2880px-Tor-logo-2011-flat.svg.png-128.avif?h=2b2e7c3c",
     "t": "Dev/TPO Trademark",
     "u": "wiki/Dev/TPO_Trademark"
   },
   {
+    "d": "List of documentation articles, which were forked from Tails.",
     "t": "Dev/Tails Doc Fork",
     "u": "wiki/Dev/Tails_Doc_Fork"
   },
   {
+    "d": "Introduction into Whonix Technical Design.",
+    "img": "media/thumb/Whonix-technical-introduction.png-128.avif?h=2c7b9182",
     "t": "Dev/Technical Introduction",
     "u": "wiki/Dev/Technical_Introduction"
   },
   {
+    "d": "Using clearnet networking for Whonix-Gateway and/or Whonix-Workstation / Curl Clearnet Connectivity Test from Whonix-Gateway.",
     "t": "Dev/Test",
     "u": "wiki/Dev/Test"
   },
   {
+    "d": "Technical Design Documentation about Whonix Threat Model. This document covers aspects such as attacker capabilities, goals, and attack surface.",
     "t": "Dev/Threat Model",
     "u": "wiki/Dev/Threat_Model"
   },
   {
+    "d": "Design Documentation of Whonix Time Synchronization Mechanism",
     "t": "Dev/TimeSync",
     "u": "wiki/Dev/TimeSync"
   },
   {
+    "d": "Tor Version, Package source (Debian, backports, Tor Project package repository), Config Files, Miscellaneous",
     "t": "Dev/Tor",
     "u": "wiki/Dev/Tor"
   },
   {
+    "d": "Development considerations on using Whonix to provide a Torified Wi-Fi Hotspot or Torified VPN server.",
     "t": "Dev/Torified Wi-Fi Hotspot",
     "u": "wiki/Dev/Torified_Wi-Fi_Hotspot"
   },
   {
+    "d": "Whonix for Apple UTM Development Notes",
     "t": "Dev/UTM",
     "u": "wiki/Dev/UTM"
   },
   {
+    "d": "VirtualBox Licensing Issues, unavailable in Debian main and Debian backports, missing features. Is VirtualBox an Insecure Choice? Arguments for keeping VirtualBox Support.",
+    "img": "media/thumb/Virtualbox_logo.png-128.avif?h=d0fddcae",
     "t": "Dev/VirtualBox",
     "u": "wiki/Dev/VirtualBox"
   },
   {
+    "d": "Development Notes about existing Virtualizers Support by Whonix as well as ports to new Virtualizers. VirtualBox, QEMU, KVM, VMware, etc.",
     "t": "Dev/Virtualization Platform",
     "u": "wiki/Dev/Virtualization_Platform"
   },
   {
+    "d": "Whonix Project Very Long Term Vision",
     "t": "Dev/Vision",
     "u": "wiki/Dev/Vision"
   },
   {
+    "d": "The Whonix Windows Installer was designed as a simple and fast way to set-up Whonix on a system running Microsoft Windows.",
     "t": "Dev/Windows Installer",
     "u": "wiki/Dev/Windows_Installer"
   },
   {
+    "d": "The Whonix-Windows-Installer for Windows is a simple and fast way to set-up Whonix on a system running Microsoft Windows. Screenshots. Rationale. Build documentation. Source code. whonix-installer.exe",
+    "img": "media/thumb/Whonix_installer_wizard.png-128.avif?h=302ccdf0",
     "t": "Dev/Windows Installer/OLD",
     "u": "wiki/Dev/Windows_Installer/OLD"
   },
   {
+    "d": "The Whonix Starter for Microsoft Windows. Screenshots. Rationale. Build documentation. Source code. Whonix.exe",
+    "img": "media/thumb/Whonix_User_Interface_start.png-128.avif?h=ad2b3050",
     "t": "Dev/Windows Starter",
     "u": "wiki/Dev/Windows_Starter"
   },
   {
+    "d": "desktop background files in the git repository:",
     "t": "Dev/Xfce",
     "u": "wiki/Dev/Xfce"
   },
   {
+    "d": "ARM board running Tor + YaCy + ZeroNet",
     "t": "Dev/Zerobox",
     "u": "wiki/Dev/Zerobox"
   },
   {
+    "d": "Preventing Tor over Tor for Tor Browser, TorChat and others.",
     "t": "Dev/anon-ws-disable-stacked-tor",
     "u": "wiki/Dev/anon-ws-disable-stacked-tor"
   },
   {
+    "d": "apt-revoker",
     "t": "Dev/apt-revoker",
     "u": "wiki/Dev/apt-revoker"
   },
   {
+    "d": "certification and audits, STIG, OpenSCAP, lynis, harbian-audit",
     "t": "Dev/certification",
     "u": "wiki/Dev/certification"
   },
   {
+    "d": "outdated packages.debian.org, binaries-freedom package, etc.",
     "t": "Dev/electrum",
     "u": "wiki/Dev/electrum"
   },
   {
+    "d": "Development notes for adding IPv6 support to Whonix.",
     "t": "Dev/ipv6",
     "u": "wiki/Dev/ipv6"
   },
   {
+    "d": "This page is Obsolete since not needed. See Advanced_Deanonymization_Attacks for explanation.",
     "t": "Dev/latency-obfuscator",
     "u": "wiki/Dev/latency-obfuscator"
   },
   {
+    "d": "onion-grater - filtering dangerous Tor Control Port commands - Design Documentation",
     "t": "Dev/onion-grater",
     "u": "wiki/Dev/onion-grater"
   },
   {
+    "d": "Whonix Cooperation with Researchers",
+    "img": "media/thumb/Research123123.jpg-128.avif?h=04679fa8",
     "t": "Dev/research",
     "u": "wiki/Dev/research"
   },
   {
+    "d": "Development Notes about setup-dist",
     "t": "Dev/setup-dist",
     "u": "wiki/Dev/setup-dist"
   },
   {
+    "d": "Surveys done by Whonix",
     "t": "Dev/surveys",
     "u": "wiki/Dev/surveys"
   },
   {
+    "d": "Development Notes about setup-dist and tor-launcher addon",
     "t": "Dev/tor-launcher",
     "u": "wiki/Dev/tor-launcher"
   },
   {
+    "d": "Previous Dev/MAC Next Dev/remount-secure Previous page: Dev/MAC Next page: Dev/remount-secure",
     "t": "Dev/vanguards",
     "u": "wiki/Dev/vanguards"
   },
   {
+    "d": "Video Drafts for Whonix",
     "t": "Dev/videos",
     "u": "wiki/Dev/videos"
   },
   {
+    "d": "Previous Dev/bash Next Dev/certification Previous page: Dev/bash Next page: Dev/certification",
     "t": "Dev/wallpaper",
     "u": "wiki/Dev/wallpaper"
   },
   {
+    "d": "Syntax Highlighting vs Link Suggestions, Links with Web Archive, Onions, CodeSelect, Wiki Editor Save Buttons, Floppy Disc Restore Button, Super Menu, Table of Contents Level Switcher, Back to the Top Button, Full Screen Button, Expand Button, Mini Navigation, External Redirects Documentation, MultiWiki, mass search and replace - ReplaceText, and more.",
     "t": "Dev/wiki",
     "u": "wiki/Dev/wiki"
   },
   {
+    "d": "test",
     "t": "Dev/wikitest",
     "u": "wiki/Dev/wikitest"
   },
   {
+    "d": "Explains why certain technical topics are not open for discussion with non-developers, ensuring development focus, security, and maintainability.",
     "t": "Development Discussion Policy",
     "u": "wiki/Development_Discussion_Policy"
   },
   {
+    "d": "This page outlines the digital signature policy of Whonix, describing how signed git commits, tags, and images are required; how unsigned code is strictly prohibited in builds and deployments; and how documentation must encourage digital signature verification.",
     "t": "Digital Signature Policy",
     "u": "wiki/Digital_Signature_Policy"
   },
   {
+    "d": "Disaster Recovery after Compromise",
+    "img": "media/thumb/Recovery43324.jpg-128.avif?h=fd00c1bd",
     "t": "Disaster Recovery",
     "u": "wiki/Disaster_Recovery"
   },
   {
+    "d": "Using docker containers inside Whonix-Workstation",
     "t": "Docker",
     "u": "wiki/Docker"
   },
   {
+    "d": "A Crash Course in Anonymity and Security on the Internet.",
+    "img": "media/thumb/Documentation.jpg-128.avif?h=bb53876f",
     "t": "Documentation",
     "u": "wiki/Documentation"
   },
   {
+    "d": "PayPal, Bitcoin (BTC), Monero (XMR), Ethereum (ETH) or Token, Credit Card, Bank Wire, Others",
+    "img": "media/thumb/Payment.jpg-128.webp?h=8e9cd7bc",
     "t": "Donate",
     "u": "wiki/Donate"
   },
   {
+    "d": "BSB code, Account number, Australian Dollar \"$\" (AUD)",
+    "img": "media/AUD_128.png.avif?h=f75dd5f5",
     "t": "Donate/AUD",
     "u": "wiki/Donate/AUD"
   },
   {
+    "d": "Visit one of our following partners to help Whonix without any costs.",
+    "img": "media/thumb/Affiliate-marketing-g09f09de92_1280.png-128.avif?h=b78286a8",
     "t": "Donate/Affiliate Link",
     "u": "wiki/Donate/Affiliate_Link"
   },
   {
+    "d": "EUR, USD, AUD, GBP, Other, SEPA, IBAN, SWIFT, Wire Transfer, CHAPS, BACS, Faster Payments",
+    "img": "media/thumb/Bank-Wire-Transfer-150x150.jpg-128.webp?h=9a4fe81c",
     "t": "Donate/Bank Wire",
     "u": "wiki/Donate/Bank_Wire"
   },
   {
+    "d": "Bitcoin Address, QR Code, Payment Link",
+    "img": "media/thumb/Payment.jpg-128.webp?h=8e9cd7bc",
     "t": "Donate/Bitcoin",
     "u": "wiki/Donate/Bitcoin"
   },
   {
+    "d": "Visa, MasterCard, American Express, UnionPay, Discover. Most currencies.",
+    "img": "media/thumb/Credit-card-generic.png-128.avif?h=de833450",
     "t": "Donate/Credit Card",
     "u": "wiki/Donate/Credit_Card"
   },
   {
+    "d": "Bitcoin (BTC), Monero (XMR), Ethereum (ETH) or Token (USDC, USDT, DAI)",
+    "img": "media/thumb/Donate_Cryptocurrency.jpg-128.avif?h=da845457",
     "t": "Donate/Crypto",
     "u": "wiki/Donate/Crypto"
   },
   {
+    "d": "Euro \"\u20ac\" (EUR), SEPA, IBAN, SWIFT",
+    "img": "media/Euro_128.png.avif?h=cbeec70a",
     "t": "Donate/EUR",
     "u": "wiki/Donate/EUR"
   },
   {
+    "d": "Ethereum Address, QR Code, Payment Link",
+    "img": "media/thumb/Payment.jpg-128.webp?h=8e9cd7bc",
     "t": "Donate/Ethereum",
     "u": "wiki/Donate/Ethereum"
   },
   {
+    "d": "Pound Sterling \"\u00a3\" (GBP), UK sort code, Account number, IBAN, SWIFT, CHAPS, BACS, Faster Payments",
+    "img": "media/GBP_128.png.webp?h=a57011f2",
     "t": "Donate/GBP",
     "u": "wiki/Donate/GBP"
   },
   {
+    "d": "Monero Address, QR Code",
+    "img": "media/thumb/Payment.jpg-128.webp?h=8e9cd7bc",
     "t": "Donate/Monero",
     "u": "wiki/Donate/Monero"
   },
   {
+    "d": "Most currencies. Many payment options. No account required for many payment options...",
+    "img": "media/thumb/Paypal-credit-card-logos-twitter.jpg-128.avif?h=a4c45dcc",
     "t": "Donate/PayPal",
     "u": "wiki/Donate/PayPal"
   },
   {
+    "d": "Is my donation Tax-Deductible?",
     "t": "Donate/Tax-Deductible",
     "u": "wiki/Donate/Tax-Deductible"
   },
   {
+    "d": "Tronix Address, QR Code, Payment Link",
+    "img": "media/thumb/Payment.jpg-128.webp?h=8e9cd7bc",
     "t": "Donate/Tronix",
     "u": "wiki/Donate/Tronix"
   },
   {
+    "d": "Routing number, Bank code (SWIFT/BIC), Account number, United States Dollar \"$\" (USD)",
+    "img": "media/Dollar_128.png.avif?h=45da7735",
     "t": "Donate/USD",
     "u": "wiki/Donate/USD"
   },
   {
+    "d": "List of Whonix Donors.",
+    "img": "media/thumb/Thank-you-donors-thumb-opt.jpg-128.webp?h=790e8844",
     "t": "Donors",
     "u": "wiki/Donors"
   },
   {
+    "d": "FREE Download Whonix. Privacy Protection. Anonymity Online. For Windows, macOS, Linux.",
     "t": "Download",
     "u": "wiki/Download"
   },
   {
+    "d": "Troubleshooting issues when attempting to download Whonix.",
+    "img": "media/thumb/Download-issues.png-128.webp?h=2c27a560",
     "t": "Download Issues",
     "u": "wiki/Download_Issues"
   },
   {
+    "d": "Anonymous Email. Thunderbird. Encryption.",
+    "img": "media/thumb/Enigmailsecuresettings.png-128.avif?h=23a93925",
     "t": "E-Mail",
     "u": "wiki/E-Mail"
   },
   {
+    "d": "This E-Sign Consent applies to any and all communications and/or disclosures that we are legally required to provide to you in writing in connection with your",
     "t": "E-Sign Consent",
     "u": "wiki/E-Sign_Consent"
   },
   {
+    "d": "What does Whistleblower and security expert Edward Snowden think about Whonix?",
+    "img": "media/thumb/Edward_Snowden.jpg-128.avif?h=f5edc098",
     "t": "Edward Snowden on Whonix",
     "u": "wiki/Edward_Snowden_on_Whonix"
   },
   {
+    "d": "How-to: Use Electrum Bitcoin Wallet in Whonix",
+    "img": "media/thumb/Electrum.png-128.avif?h=10931334",
     "t": "Electrum",
     "u": "wiki/Electrum"
   },
   {
+    "d": "Electrum-LTC in Whonix",
     "t": "Electrum-LTC",
     "u": "wiki/Electrum-LTC"
   },
   {
+    "d": "Manual installation from upstream (electrum.org) of Electrum AppImage.",
+    "img": "media/thumb/Electrum.png-128.avif?h=10931334",
     "t": "Electrum/Manual Installation",
     "u": "wiki/Electrum/Manual_Installation"
   },
   {
+    "d": "Higher Security and Privacy through using a Self-Hosted, Fully Validating Bitcoin Node (ElectrumX + Bitcoin Core)",
+    "img": "media/thumb/Electrumx123123.jpg-128.avif?h=4a203f15",
     "t": "ElectrumX",
     "u": "wiki/ElectrumX"
   },
   {
+    "d": "Higher Security and Privacy through using a Self-Hosted, Fully Validating Litecoin Node (ElectrumX + Litecoin Core)",
     "t": "ElectrumX-LTC",
     "u": "wiki/ElectrumX-LTC"
   },
   {
+    "d": "Encrypted Anonymous Email with Thunderbird",
+    "img": "media/thumb/Encryptedemail.jpg-128.avif?h=5e618ab7",
     "t": "Encrypted Email with Thunderbird",
     "u": "wiki/Encrypted_Email_with_Thunderbird"
   },
   {
+    "d": "Host Security Guide, Hardware Considerations and Risks. This page is targeted at advanced users who wish to improve the general security of their host operating system to become even more secure.",
+    "img": "media/thumb/Hostsecurity23342.jpg-128.webp?h=204a0cb7",
     "t": "Essential Host Security",
     "u": "wiki/Essential_Host_Security"
   },
   {
+    "d": "Help to test Whonix. Whonix-Gateway, Whonix-Workstation\u2122, browser and application tests.",
+    "img": "media/thumb/Essential1231234.jpg-128.webp?h=fdacd00d",
     "t": "Essential Tests",
     "u": "wiki/Essential_Tests"
   },
   {
+    "d": "Ethereum Wallet Security Considerations and How to use ETH over Tor in Whonix.",
+    "img": "media/thumb/Ethereumlogo.png-128.avif?h=63668a59",
     "t": "Ethereum",
     "u": "wiki/Ethereum"
   },
   {
+    "d": "ExoneraTor is a website hosted by The Tor Project that tells you whether a given IP address was a Tor relay.",
+    "img": "media/thumb/ExoneraTor.png-128.avif?h=29d4161a",
     "t": "ExoneraTor",
     "u": "wiki/ExoneraTor"
   },
   {
+    "d": "What is Whonix? How does Whonix work? What is Tor? How is Whonix different from?",
+    "img": "media/thumb/Faq.jpg-128.avif?h=5cba7181",
     "t": "FAQ",
     "u": "wiki/FAQ"
   },
   {
+    "d": "FTP over Tor in Whonix.",
+    "img": "media/thumb/FTP123213.jpg-128.avif?h=f3a53493",
     "t": "FTP",
     "u": "wiki/FTP"
   },
   {
+    "d": "Whonix Feature List",
     "t": "Features",
     "u": "wiki/Features"
   },
   {
+    "d": "Anonymous File Sharing using Whonix. BitTorrent. Torrenting.",
     "t": "File Sharing",
     "u": "wiki/File_Sharing"
   },
   {
+    "d": "Copying files into and out of Whonix Virtual Machines.",
     "t": "File Transfer",
     "u": "wiki/File_Transfer"
   },
@@ -4772,618 +5052,866 @@
     "u": "wiki/File:Zeronetlogo.png"
   },
   {
+    "d": "About Whonix Network, Bridge/Guard, Internet Service Provider (ISP) Fingerprint and Website Traffic Fingerprinting.",
     "t": "Fingerprint",
     "u": "wiki/Fingerprint"
   },
   {
+    "d": "Using Firefox in Whonix.",
+    "img": "media/Firefox_logo.png.webp?h=b2c4a71a",
     "t": "Firefox",
     "u": "wiki/Firefox"
   },
   {
+    "d": "General information about the Whonix firewall.",
     "t": "Firewall",
     "u": "wiki/Firewall"
   },
   {
+    "d": "Guidelines and expectations for first-time documentation contributors to ensure a smooth and respectful collaboration experience.",
     "t": "First Time Documentation Contributor Policy",
     "u": "wiki/First_Time_Documentation_Contributor_Policy"
   },
   {
+    "d": "Guidelines and expectations for first-time contributors to ensure a smooth and respectful development experience.",
     "t": "First Time Source Code Contributor Policy",
     "u": "wiki/First_Time_Source_Code_Contributor_Policy"
   },
   {
+    "d": "Advice for new users of Whonix.",
     "t": "First Time User",
     "u": "wiki/First_Time_User"
   },
   {
+    "d": "Whonix Onion Website - How to consistently access the Whonix website through its Tor Onion Service",
     "t": "Forcing .onion on Project",
     "u": "wiki/Forcing_.onion_on_Project"
   },
   {
+    "d": "Freenet over Tor. Tunneling Freenet through Tor. Connection Schema: User \u2192 Tor \u2192 Freenet \u2192 Destination",
+    "img": "media/thumb/Freenet-bunny-with-name-flying.png-128.webp?h=b2772bf3",
     "t": "Freenet",
     "u": "wiki/Freenet"
   },
   {
+    "d": "Full Disk Encryption and Encrypted Images, Additional Security Measures",
     "t": "Full Disk Encryption and Encrypted Images",
     "u": "wiki/Full_Disk_Encryption_and_Encrypted_Images"
   },
   {
+    "d": "GNUnet is a software framework for decentralized, peer-to-peer networking and an official GNU package.",
+    "img": "media/thumb/Gnunet.png-128.avif?h=17b4c540",
     "t": "GNUnet",
     "u": "wiki/GNUnet"
   },
   {
+    "d": "A website is unreachable? Shows access denied or a captcha?",
+    "img": "media/thumb/Impossible-captcha-recaptcha.png-128.avif?h=5b973f06",
     "t": "Geo-blocking",
     "u": "wiki/Geo-blocking"
   },
   {
+    "d": "Anonymous IRC Chat. HexChat (previously called XChat) over the Tor Anonymity Network.",
+    "img": "media/thumb/Hexchaticon.png-128.avif?h=0f69f75f",
     "t": "HexChat",
     "u": "wiki/HexChat"
   },
   {
+    "d": "Prevent the Internet Service Provider from discovering you are a Tor user.",
     "t": "Hide Tor from your Internet Service Provider",
     "u": "wiki/Hide_Tor_from_your_Internet_Service_Provider"
   },
   {
+    "d": "The journey of Whonix from TorBOX to aos to Whonix.",
     "t": "History",
     "u": "wiki/History"
   },
   {
+    "d": "Whonix can anonymize everything you do online! It runs like an App, is a Free, Open Source and Kicksecure\u2122 hardened Linux distribution.",
+    "img": "media/thumb/Whonix-homepage-main-preview.jpg-128.webp?h=acef13b7",
     "t": "Homepage",
     "u": ""
   },
   {
+    "d": "Recommendations for Host Browsers",
     "t": "Host Browser",
     "u": "wiki/Host_Browser"
   },
   {
+    "d": "Host Firewall Settings and Testing",
+    "img": "media/thumb/Hostfirewall213213.jpg-128.webp?h=3f78ef21",
     "t": "Host Firewall",
     "u": "wiki/Host_Firewall"
   },
   {
+    "d": "Host Operating System Selection, OS Threats to Privacy and Security",
     "t": "Host Operating System Selection",
     "u": "wiki/Host_Operating_System_Selection"
   },
   {
+    "d": "Hosting a bridge, private bridge, or obfuscated bridge in Whonix. Hosting a middle or exit Tor relay in Whonix.",
     "t": "Host a Bridge or Tor Relay",
     "u": "wiki/Host_a_Bridge_or_Tor_Relay"
   },
   {
+    "d": "Anonymous Hosting, Comparison Table of Tor Onion Services, VPN with Remote Port Forwarding, PageKite and Anonymous Third-Party Web Hosting Providers",
     "t": "Hosting Location Hidden Services",
     "u": "wiki/Hosting_Location_Hidden_Services"
   },
   {
+    "d": "Instructions on how to set up a Whonix Download Mirror",
     "t": "Hosting a Mirror",
     "u": "wiki/Hosting_a_Mirror"
   },
   {
+    "d": "Privacy Risks Posed by Hostnames",
+    "img": "media/thumb/Hostnames.jpg-128.avif?h=245c3201",
     "t": "Hostnames",
     "u": "wiki/Hostnames"
   },
   {
+    "d": "I2P over Tor. Tunneling the I2P Anonymizing Network over the Tor Anonymizing Network. Connection Schema: Tor \u2192 I2P \u2192 Destination.",
+    "img": "media/thumb/I2Pmainlogo.svg.png-128.avif?h=81cfa635",
     "t": "I2P",
     "u": "wiki/I2P"
   },
   {
+    "d": "The concept of merely hiding IP addresses is outdated, belonging to the threat model of the 1990s. Modern privacy threats extend beyond IP address exposure.",
+    "img": "media/thumb/IP_Hiding_outdated123.jpg-128.webp?h=fb87c205",
     "t": "IP hiding is outdated",
     "u": "wiki/IP_hiding_is_outdated"
   },
   {
+    "d": "Enabling and using IPv6 in Whonix.",
     "t": "IPv6",
     "u": "wiki/IPv6"
   },
   {
+    "d": "Whonix Imprint",
     "t": "Imprint",
     "u": "wiki/Imprint"
   },
   {
+    "d": "Installing additional software on Whonix. Security considerations.",
     "t": "Install Software",
     "u": "wiki/Install_Software"
   },
   {
+    "d": "Installing Tor Browser outside of Whonix. Fallback if Whonix breaks. Test Tor connectivity outside of Whonix.",
+    "img": "media/thumb/Tbboutside.jpg-128.avif?h=3f7745e3",
     "t": "Install Tor Browser Outside of Whonix",
     "u": "wiki/Install_Tor_Browser_Outside_of_Whonix"
   },
   {
+    "d": "Yes, Whonix can be installed on Intel / AMD64. Here's how.",
+    "img": "media/Intel-amd-combi-logo.svg?h=d7fc667f",
     "t": "Intel AMD64",
     "u": "wiki/Intel_AMD64"
   },
   {
+    "d": "Introduction, User Expectations, Footnotes and References",
     "t": "Introduction",
     "u": "wiki/Introduction"
   },
   {
+    "d": "Investing in Whonix, Whonix metrics",
+    "img": "media/thumb/Hunters-race-MYbhN8KaaEc-unsplash.jpg-128.webp?h=7ba0da5b",
     "t": "Investors",
     "u": "wiki/Investors"
   },
   {
+    "d": "Combining Whonix with JonDonym. JonDonym over Tor. Connecting to Tor before JonDonym (User \u2192 Tor \u2192 JonDonym \u2192 Internet ) OR Connecting to JonDonym before Tor (User \u2192 JonDonym \u2192 Tor \u2192 Internet ).",
+    "img": "media/thumb/Logo.png-128.avif?h=ec70f327",
     "t": "JonDonym",
     "u": "wiki/JonDonym"
   },
   {
+    "d": "Using Whonix with KVM (Kernel-based Virtual Machine)",
+    "img": "media/thumb/Kvm-new-logo.png-128.avif?h=4dbf7d37",
     "t": "KVM",
     "u": "wiki/KVM"
   },
   {
+    "d": "This page is for minimalized guide written by community members.",
     "t": "KVM/Minimalized Installation",
     "u": "wiki/KVM/Minimalized_Installation"
   },
   {
+    "d": "Whonix KVM maintainer availability is mostly limited to the User Help Forum . However, even there, user support activity is very low to non-existent. [ 1 ]",
     "t": "KVM/Support",
     "u": "wiki/KVM/Support"
   },
   {
+    "d": "Explains how your typing and mouse movement patterns can be used to track or identify you online, even when using privacy tools like Tor - and how to protect yourself.",
+    "img": "media/thumb/Typing-fingerprint.jpg-128.avif?h=c7dc2dd4",
     "t": "Keystroke and Mouse Deanonymization",
     "u": "wiki/Keystroke_and_Mouse_Deanonymization"
   },
   {
+    "d": "Known Issues in Whonix",
     "t": "Known Issues",
     "u": "wiki/Known_Issues"
   },
   {
+    "d": "Installing and verifying LND (Lightning Network Daemon) in Whonix.",
     "t": "LND",
     "u": "wiki/LND"
   },
   {
+    "d": "How to change the User Interface Language for your Operating System and Tor Browser.",
+    "img": "media/thumb/Language.png-128.webp?h=120bfe96",
     "t": "Language",
     "u": "wiki/Language"
   },
   {
+    "d": "Alternative Censorship Circumvention. Lantern over Tor. Combining Whonix with Lantern. Connecting to Lantern before Tor (User \u2192 Lantern \u2192 Tor \u2192 Internet). ''Possible'' alternative to Tor bridges.",
     "t": "Lantern",
     "u": "wiki/Lantern"
   },
   {
+    "d": "This is unlikely. Here is why.",
+    "img": "media/thumb/Strange-leak12312.jpg-128.avif?h=f6525e89",
     "t": "Leaks",
     "u": "wiki/Leaks"
   },
   {
+    "d": "Whonix for Linux - Stable Version",
+    "img": "media/thumb/Gui-preview.jpg-128.webp?h=0b226270",
     "t": "Linux",
     "u": "wiki/Linux"
   },
   {
+    "d": "Using Litecoin Core in Whonix. Fully verifying a Litecoin wallet.",
     "t": "Litecoin Core",
     "u": "wiki/Litecoin_Core"
   },
   {
+    "d": "Live mode for Whonix. All writes are saved in non-persistent memory (RAM). No data is written to the hard drive.",
+    "img": "media/thumb/Whonix-live-mode.jpg-128.webp?h=654a2422",
     "t": "Live Mode",
     "u": "wiki/Live_Mode"
   },
   {
+    "d": "Connect to Localhost from inside Whonix-Workstation\u2122. This might be useful for the use case of Hosting Location Hidden Services and Onion Services.",
+    "img": "media/thumb/Local_connections123123.jpg-128.webp?h=0cc45172",
     "t": "Local Connections",
     "u": "wiki/Local_Connections"
   },
   {
+    "d": "Captive Portals Login. Whonix in WiFi Hotspots. Unsafe browser.",
     "t": "Logging in to captive portals",
     "u": "wiki/Logging_in_to_captive_portals"
   },
   {
+    "d": "Instructions and information about the Kicksecure login screen.",
     "t": "Login",
     "u": "wiki/Login"
   },
   {
+    "d": "MAC Address Spoofing and Tracking Threats",
+    "img": "media/thumb/MACaddress2131.jpg-128.webp?h=ef18b85d",
     "t": "MAC Address",
     "u": "wiki/MAC_Address"
   },
   {
+    "d": "Whonix for Apple macOS on Intel-based MacBook and Apple Silicon.",
+    "img": "media/thumb/Logo-apple-500x500.png-128.avif?h=e6bf4153",
     "t": "MacOS",
     "u": "wiki/MacOS"
   },
   {
+    "d": "Whonix Public Mailing Lists (mailman), Development Mailing List, Users Mailing List",
     "t": "Mailing Lists",
     "u": "wiki/Mailing_Lists"
   },
   {
+    "d": "Get Whonix OpenPGP signing key. Verify Whonix Downloads, APT Repository and/or Source Code.",
+    "img": "media/thumb/Keysigning.jpg-128.avif?h=211456bd",
     "t": "Main/Project Signing Key",
     "u": "wiki/Main/Project_Signing_Key"
   },
   {
+    "d": "Only got a backup of .vdi virtual machine hard disk files? Want to restore them? That's what this page is for.",
     "t": "Manually Create Whonix VM Settings",
     "u": "wiki/Manually_Create_Whonix_VM_Settings"
   },
   {
+    "d": "Manually creating Whonix without using Whonix build script or downloads.",
     "t": "Manually Creating Whonix",
     "u": "wiki/Manually_Creating_Whonix"
   },
   {
+    "d": "Whonix in the Media and notable mentions of Whonix.",
+    "img": "media/thumb/Mediamentions132e123.jpg-128.webp?h=42a23408",
     "t": "Media Mentions",
     "u": "wiki/Media_Mentions"
   },
   {
+    "d": "Anonymize Files - Clear Metadata - Remove Location Tracking - Use the Metadata Anonymisation Toolkit v2 (MAT2)",
+    "img": "media/thumb/Mat2icon.png-128.webp?h=21ae982f",
     "t": "Metadata",
     "u": "wiki/Metadata"
   },
   {
+    "d": "Send anonymous E-Mails. Mixmaster over Tor. Tunnelling mixmaster through Tor. Connection Schema: user \u2192 Tor \u2192 mixmaster \u2192 recipient",
+    "img": "media/thumb/Mixmaster.jpg-128.webp?h=d0538cba",
     "t": "Mixmaster",
     "u": "wiki/Mixmaster"
   },
   {
+    "d": "How to use Monero in Whonix",
+    "img": "media/thumb/Moneroheader.png-128.avif?h=ca337385",
     "t": "Monero",
     "u": "wiki/Monero"
   },
   {
+    "d": "Monero with multiple signatures for better security.",
+    "img": "media/thumb/Moneroheader.png-128.avif?h=ca337385",
     "t": "Monero Multisig",
     "u": "wiki/Monero_Multisig"
   },
   {
+    "d": "Keep Monero private keys offline and isolate the network part (monerod) from the wallet part (Monero Wallet) for better security.",
+    "img": "media/thumb/Moneroheader.png-128.avif?h=ca337385",
     "t": "Monero Offline Wallet",
     "u": "wiki/Monero_Offline_Wallet"
   },
   {
+    "d": "Isolate the network part (monerod) from the wallet part (Monero Wallet) for better security.",
+    "img": "media/thumb/Moneroheader.png-128.avif?h=ca337385",
     "t": "Monero Wallet Isolation",
     "u": "wiki/Monero_Wallet_Isolation"
   },
   {
+    "d": "How to manually install Monero in Whonix",
+    "img": "media/thumb/Moneroheader.png-128.avif?h=ca337385",
     "t": "Monero/Manual Instructions",
     "u": "wiki/Monero/Manual_Instructions"
   },
   {
+    "d": "How to anonymously buy things and receive money. Anonymous BTC. How to anonymize Bitcoin.",
     "t": "Money",
     "u": "wiki/Money"
   },
   {
+    "d": "How to install Mullvad Browser in Whonix.",
     "t": "Mullvad Browser",
     "u": "wiki/Mullvad_Browser"
   },
   {
+    "d": "Compartmentalization. Managing multiple Qubes-Whonix\u2122 Templates.",
+    "img": "media/thumb/Multiplequbeshwonix.jpg-128.avif?h=25c0b608",
     "t": "Multiple Qubes-Whonix Templates",
     "u": "wiki/Multiple_Qubes-Whonix_Templates"
   },
   {
+    "d": "Compartmentalization. Managing multiple Whonix-Gateway.",
+    "img": "media/thumb/Multiplegateways131231.jpg-128.webp?h=6813c25d",
     "t": "Multiple Whonix-Gateway",
     "u": "wiki/Multiple_Whonix-Gateway"
   },
   {
+    "d": "Compartmentalization. Better separation of different tasks and/or pseudonyms by using multiple Whonix-Workstation.",
     "t": "Multiple Whonix-Workstation",
     "u": "wiki/Multiple_Whonix-Workstation"
   },
   {
+    "d": "Potential solutions for and the organizational background on network obstacles",
+    "img": "media/thumb/Networkobstacle123123455.png-128.avif?h=7c392292",
     "t": "Network Obstacle",
     "u": "wiki/Network_Obstacle"
   },
   {
+    "d": "A reasonably accurate host clock is required for many general security properties. An inaccurate clock can lead to broken internet connectivity and time related security issues.",
+    "img": "media/thumb/TineSynchronization2134234.jpg-128.webp?h=99c31f72",
     "t": "Network Time Synchronization",
     "u": "wiki/Network_Time_Synchronization"
   },
   {
+    "d": "Supported Whonix platforms except Qubes-Whonix",
     "t": "Non-Qubes-Whonix",
     "u": "wiki/Non-Qubes-Whonix"
   },
   {
+    "d": "How to use Nym Servers",
+    "img": "media/thumb/Nymservers-6010640.jpg-128.webp?h=68d6e266",
     "t": "Nymservers",
     "u": "wiki/Nymservers"
   },
   {
+    "d": "Twitter, Facebook, YouTube and other Official Social Network Profiles by Whonix.",
     "t": "Official Online Profiles",
     "u": "wiki/Official_Online_Profiles"
   },
   {
+    "d": "Reading documentation without an internet connection.",
+    "img": "media/thumb/Offline-2342342354.png-128.avif?h=8d6a383c",
     "t": "Offline Documentation",
     "u": "wiki/Offline_Documentation"
   },
   {
+    "d": "The scripts used to build a certain downloaded version of a TorBOX-Gateway or TorBOX-Workstation image can be also found in the VM at /usr/share/doc/torbox (in",
     "t": "Old Project Versions and News",
     "u": "wiki/Old_Project_Versions_and_News"
   },
   {
+    "d": "Old Whonix Sources.",
     "t": "Old Sources",
     "u": "wiki/Old_Sources"
   },
   {
+    "d": "Whonix Release Notes, Whonix 15 and earlier versions.",
     "t": "Old Stable and Earlier Releases",
     "u": "wiki/Old_Stable_and_Earlier_Releases"
   },
   {
+    "d": "Multi-player Onion Gaming",
+    "img": "media/thumb/Oniongamings3422.jpg-128.avif?h=2b509816",
     "t": "Onion Gaming",
     "u": "wiki/Onion_Gaming"
   },
   {
+    "d": "Anonymously host any server with Whonix and Tor onion services",
     "t": "Onion Services",
     "u": "wiki/Onion_Services"
   },
   {
+    "d": "Collection of various Onion Services Guides",
+    "img": "media/thumb/Onionservice.jpg-128.webp?h=ac62afb2",
     "t": "Onion Services Guides",
     "u": "wiki/Onion_Services_Guides"
   },
   {
+    "d": "Information about onion-grater.",
+    "img": "media/thumb/Oniongrater123123.jpg-128.avif?h=f9190856",
     "t": "Onion-grater",
     "u": "wiki/Onion-grater"
   },
   {
+    "d": "Using OnionShare in Whonix.",
+    "img": "media/thumb/OnionShare_logo.png-128.avif?h=bac32af1",
     "t": "OnionShare",
     "u": "wiki/OnionShare"
   },
   {
+    "d": "The guide explains how to configure Tor onion services for APT repositories to enhance security and privacy, but it may cause system updates to fail due to unreliability. The configuration provides protection against targeted and man-in-the-middle attacks, and prevents tracking of installed programs.",
+    "img": "media/thumb/Onionrepository23234.jpg-128.webp?h=c74aa64c",
     "t": "Onionizing Repositories",
     "u": "wiki/Onionizing_Repositories"
   },
   {
+    "d": "Tunneling I2P, RetroShare, Freenet, VPN, Proxy over Tor",
     "t": "Other Anonymizing Networks",
     "u": "wiki/Other_Anonymizing_Networks"
   },
   {
+    "d": "Using Browsers other than Tor Browser in Whonix.",
+    "img": "media/thumb/Other-browsers21312.png-128.avif?h=ad1bb611",
     "t": "Other Browsers",
     "u": "wiki/Other_Browsers"
   },
   {
+    "d": "How to use Other Desktop Environments other than LXQt with Whonix. Current situation. Risks. Future. (Gnome, KDE, Xfce, MATE, ...)",
+    "img": "media/thumb/Organize-27344_640.png-128.avif?h=4be9e7de",
     "t": "Other Desktop Environments",
     "u": "wiki/Other_Desktop_Environments"
   },
   {
+    "d": "Using Whonix-Workstation\u2122 with a Gateway Other Than Whonix-Gateway\u2122.",
     "t": "Other Gateways",
     "u": "wiki/Other_Gateways"
   },
   {
+    "d": "Anonymize any Operating System. Your operating system tunneled through the Tor Anonymity Network. Create your Whonix-Custom-Workstation\u2122.",
     "t": "Other Operating Systems",
     "u": "wiki/Other_Operating_Systems"
   },
   {
+    "d": "Yes, Whonix can be installed on a ppc64. Here's how.",
+    "img": "media/thumb/Download-ppc64.jpg-128.avif?h=6bdf6e7e",
     "t": "PPC64",
     "u": "wiki/PPC64"
   },
   {
+    "d": "PPTP (Point-to-Point Tunneling Protocol) and Whonix",
     "t": "PPTP",
     "u": "wiki/PPTP"
   },
   {
+    "d": "How to install packages developed by Whonix in other Linux distributions such as your host operating system.",
     "t": "Packages for Debian Hosts",
     "u": "wiki/Packages_for_Debian_Hosts"
   },
   {
+    "d": "The following command using gpg with --recv-keys is not recommended for security reasons and is often non-functional. [ 1 ] This is not a Whonix-specific",
     "t": "Patrick Schleizer",
     "u": "wiki/Patrick_Schleizer"
   },
   {
+    "d": "Persistent mode for Whonix.",
     "t": "Persistent Mode",
     "u": "wiki/Persistent_Mode"
   },
   {
+    "d": "Phone Number Validation",
+    "img": "media/thumb/Validation12312421.png-128.avif?h=99456d5c",
     "t": "Phone Number Validation",
     "u": "wiki/Phone_Number_Validation"
   },
   {
+    "d": "Avoid basic questions. Effective use of forum search, search engines and AI (Artificial Intelligence). Utilizing extensive Whonix documentation.",
+    "img": "media/thumb/Usesearchengine.jpg-128.webp?h=449445be",
     "t": "Please Use Search Engines And See Documentation First",
     "u": "wiki/Please_Use_Search_Engines_And_See_Documentation_First"
   },
   {
+    "d": "Prioritization of technical support.",
+    "img": "media/thumb/Priority32423.jpg-128.avif?h=bc61344b",
     "t": "Plus Support",
     "u": "wiki/Plus_Support"
   },
   {
+    "d": "Do not post AI-generated content without clearly marking it as AI-generated.",
+    "img": "media/thumb/Ai-policy.png-128.webp?h=9363ad04",
     "t": "Policy On Artificial Intelligence",
     "u": "wiki/Policy_On_Artificial_Intelligence"
   },
   {
+    "d": "Permitted / Prohibited Discussions, Project Philosophy on Non-Freedom Software, GNU Free System Distribution Guidelines (GNU FSDG)",
+    "img": "media/thumb/Shield123123213.png-128.avif?h=569d71f0",
     "t": "Policy On Nonfreedom Software",
     "u": "wiki/Policy_On_Nonfreedom_Software"
   },
   {
+    "d": "Whonix Platform Goals, Whonix Website and Chat Goals, Whonix Website and Chat Non-Purposes, Usage Rules, Unwanted Topics, Banned Subjects",
+    "img": "media/thumb/Paragraph-684509_1920.jpg-128.avif?h=ad3700f2",
     "t": "Policy of Website and Chat",
     "u": "wiki/Policy_of_Website_and_Chat"
   },
   {
+    "d": "How to open a port in Whonix / port forwarding / opening ports",
     "t": "Ports",
     "u": "wiki/Ports"
   },
   {
+    "d": "This page provides security advice, steps that can be applied after installation of Whonix for better security such as changing passwords.",
     "t": "Post Install Advice",
     "u": "wiki/Post_Install_Advice"
   },
   {
+    "d": "Premium support and consultation for anonymity, privacy, security, data security, Whonix and system administration services.",
+    "img": "media/thumb/Professional12313.jpg-128.avif?h=7802f212",
     "t": "Premium Support",
     "u": "wiki/Premium_Support"
   },
   {
+    "d": "Effective measures to mitigate the inherent risks associated with using printers and scanners.",
+    "img": "media/thumb/Printingandscaning.jpg-128.avif?h=a6806d00",
     "t": "Printing and Scanning",
     "u": "wiki/Printing_and_Scanning"
   },
   {
+    "d": "One of our main priorities is the privacy of our visitors.",
     "t": "Privacy Policy",
     "u": "wiki/Privacy_Policy"
   },
   {
+    "d": "NOT-SELFCONTAINED: This wiki page is not self-contained by design. This It only includes details specific to Whonix. For full understanding, please follow the",
     "t": "Progress Reports",
     "u": "wiki/Progress_Reports"
   },
   {
+    "d": "Currently inactive. - Read-Only - Reasons - use https://forums.whonix.org instead",
+    "img": "media/thumb/1024px-Telegram_2019_Logo.svg.png-128.avif?h=4b1a02ab",
     "t": "Project Chat",
     "u": "wiki/Project_Chat"
   },
   {
+    "d": "Overview of confirmed, proposed and rejected policies guiding Whonix's development, philosophy, and legal framework.",
+    "img": "media/thumb/Project_policies.png-128.avif?h=f453314e",
     "t": "Project Policies",
     "u": "wiki/Project_Policies"
   },
   {
+    "d": "Whonix stable / testers / developers APT Repository. How to change from one suite to another? How to disable Whonix APT Repository?",
+    "img": "media/thumb/Whonix_Repository_Wizard_install_updates.png-128.avif?h=5a989c94",
     "t": "Project-APT-Repository",
     "u": "wiki/Project-APT-Repository"
   },
   {
+    "d": "Protection from IP Leaks, DNS Leaks, Protocol Leaks and Fingerprinting. Analysis of host hardware identifiers visible or hidden inside virtual machines.",
+    "img": "media/thumb/Leakprotection-840835.jpg-128.webp?h=510dcf13",
     "t": "Protocol-Leak-Protection and Fingerprinting-Protection",
     "u": "wiki/Protocol-Leak-Protection_and_Fingerprinting-Protection"
   },
   {
+    "d": "sys-proxy",
+    "img": "media/thumb/Proxybox123.jpg-128.webp?h=4aaa30a7",
     "t": "ProxyBOX",
     "u": "wiki/ProxyBOX"
   },
   {
+    "d": "PyLRU python library",
+    "img": "media/thumb/Py123123.png-128.avif?h=203ee215",
     "t": "PyLRU",
     "u": "wiki/PyLRU"
   },
   {
+    "d": "Using Whonix with QEMU instead of VirtualBox",
+    "img": "media/thumb/Qemulogo.svg.png-128.avif?h=4a7836f4",
     "t": "QEMU",
     "u": "wiki/QEMU"
   },
   {
+    "d": "Qubes-Whonix -- Advanced Security and Anonymity",
+    "img": "media/thumb/Qubes-logo-icon.png-128.avif?h=c44b2eef",
     "t": "Qubes",
     "u": "wiki/Qubes"
   },
   {
+    "d": "How to use Disposables in Qubes-Whonix\u2122.",
+    "img": "media/thumb/Qubesdisposable123123123.png-128.avif?h=ca4aabb7",
     "t": "Qubes/Disposables",
     "u": "wiki/Qubes/Disposables"
   },
   {
+    "d": "Qubes VM Manager (QVMM) Firewall Tab Settings in Qubes-Whonix",
+    "img": "media/thumb/Qubes-firewall2312.png-128.webp?h=9a42d5eb",
     "t": "Qubes/Firewall",
     "u": "wiki/Qubes/Firewall"
   },
   {
+    "d": "Installation Instructions, Release Notices, Disposable Template Setup, Updates over Tor",
+    "img": "media/thumb/Qubesinstall12312123.png-128.webp?h=401f9381",
     "t": "Qubes/Install",
     "u": "wiki/Qubes/Install"
   },
   {
+    "d": "Guide to networking inside Qubes Templates, including how to use commands like curl, gpt and git.",
     "t": "Qubes/Networking",
     "u": "wiki/Qubes/Networking"
   },
   {
+    "d": "How to Reinstall Qubes-Whonix Templates",
+    "img": "media/thumb/Qubesreinstall123123.png-128.avif?h=b0c9c834",
     "t": "Qubes/Reinstall",
     "u": "wiki/Qubes/Reinstall"
   },
   {
+    "d": "Using Tor Browser in Qubes-Whonix.",
+    "img": "media/thumb/Torqubes234234.jpg-128.avif?h=27cb5dd5",
     "t": "Qubes/Tor Browser",
     "u": "wiki/Qubes/Tor_Browser"
   },
   {
+    "d": "Troubleshooting Tor, Network and sdwdate Issues with Whonix",
+    "img": "media/thumb/Torconnectivitytroubleshoot.png-128.avif?h=8ea8d24d",
     "t": "Qubes/Troubleshooting",
     "u": "wiki/Qubes/Troubleshooting"
   },
   {
+    "d": "How to uninstall Qubes-Whonix.",
+    "img": "media/thumb/Qubesunintall123123.png-128.webp?h=34b68a68",
     "t": "Qubes/Uninstall",
     "u": "wiki/Qubes/Uninstall"
   },
   {
+    "d": "Qubes dom0 Qubes-Whonix UpdatesProxy and UpdateVM Settings.",
+    "img": "media/thumb/Qubesupdateproxy31231235.png-128.webp?h=252ec7cd",
     "t": "Qubes/UpdatesProxy",
     "u": "wiki/Qubes/UpdatesProxy"
   },
   {
+    "d": "Qubes Advantages Over VirtualBox and KVM",
     "t": "Qubes/Why use Qubes over other Virtualizers",
     "u": "wiki/Qubes/Why_use_Qubes_over_other_Virtualizers"
   },
   {
+    "d": "How much RAM does Whonix need? 8 GB of RAM would be ideal for best usability and performance, but Whonix can also be used with a lot less RAM. 4 GB of RAM or even less is enough.",
+    "img": "media/thumb/Lowram13241324.png-128.webp?h=9806836b",
     "t": "RAM",
     "u": "wiki/RAM"
   },
   {
+    "d": "Yes, Whonix can be installed on a RISCV64. Here's how.",
+    "img": "media/thumb/Download-riscv64.jpg-128.webp?h=9218fcc0",
     "t": "RISCV64",
     "u": "wiki/RISCV64"
   },
   {
+    "d": "Whonix on a Raspberry Pi.",
+    "img": "media/thumb/Download-raspberrypi.jpg-128.webp?h=b3f3e53f",
     "t": "Raspberry Pi",
     "u": "wiki/Raspberry_Pi"
   },
   {
+    "d": "Why Open Source / Freedom Software are essential for user security, privacy and freedom.",
     "t": "Reasons for Freedom Software",
     "u": "wiki/Reasons_for_Freedom_Software"
   },
   {
+    "d": "Redirect ports or unix domain socket files from Whonix-Gateway\u2122 localhost to Whonix-Workstation\u2122.",
+    "img": "media/thumb/Redirect12123.png-128.avif?h=f7a3c16d",
     "t": "Redirect Whonix-Workstation Ports or Unix Domain Socket Files to Whonix-Gateway",
     "u": "wiki/Redirect_Whonix-Workstation_Ports_or_Unix_Domain_Socket_Files_to_Whonix-Gateway"
   },
   {
+    "d": "What is a Release Upgrade?",
+    "img": "media/thumb/Releaseupgradewrew234.jpg-128.avif?h=08e87fa4",
     "t": "Release Upgrade",
     "u": "wiki/Release_Upgrade"
   },
   {
+    "d": "How to Release Upgrade from Whonix 16 to Whonix 17",
+    "img": "media/thumb/Upgrade.jpg-128.webp?h=2e6add83",
     "t": "Release Upgrade 16 to 17",
     "u": "wiki/Release_Upgrade_16_to_17"
   },
   {
+    "d": "How to Release Upgrade from Whonix 17 to Whonix 18",
+    "img": "media/thumb/Upgrade.jpg-128.webp?h=2e6add83",
     "t": "Release Upgrade 17 to 18",
     "u": "wiki/Release_Upgrade_17_to_18"
   },
   {
+    "d": "How to Release Upgrade from Whonix 15 to Whonix 16",
+    "img": "media/thumb/Upgrade.jpg-128.webp?h=2e6add83",
     "t": "Release Upgrade Whonix 15 to Whonix 16",
     "u": "wiki/Release_Upgrade_Whonix_15_to_Whonix_16"
   },
   {
+    "d": "Whonix is The Everything Tor OS",
+    "img": "media/thumb/Whonix-concept-detailed.jpg-128.avif?h=c3c5d49c",
     "t": "Reliable IP Hiding",
     "u": "wiki/Reliable_IP_Hiding"
   },
   {
+    "d": "Anonymous Mail/Messages. Remailer over Tor. Tunnelling remailer through Tor. Connection Schema: user \u2192 Tor \u2192 remailer \u2192 recipient",
+    "img": "media/thumb/Remailer.png-128.avif?h=cc10582d",
     "t": "Remailer",
     "u": "wiki/Remailer"
   },
   {
+    "d": "Anonymous sysadmin of remote systems.",
+    "img": "media/thumb/Remoteadmin.png-128.avif?h=4a2e7a8e",
     "t": "Remote Administration",
     "u": "wiki/Remote_Administration"
   },
   {
+    "d": "How to Report (Security) Bugs in the Whonix Operating System. Software development cycle, patches, and responsiveness to feedback and feature requests.",
     "t": "Reporting Bugs",
     "u": "wiki/Reporting_Bugs"
   },
   {
+    "d": "Dynamic screen resolution helper for virtual machines. Disabled by default in Whonix-Workstation for improved privacy. How to enable dynamic screen resolution inside Whonix-Workstation.",
     "t": "Resize",
     "u": "wiki/Resize"
   },
   {
+    "d": "How to set up RetoSwap (previously Haveno-reto) - a P2P decentralized exchange (DEX) based on Monero - in Whonix",
     "t": "RetoSwap",
     "u": "wiki/RetoSwap"
   },
   {
+    "d": "Decentralized social sharing network with strong cryptography. Supports chat, mail, file sharing and experimental video/voice features.",
+    "img": "media/thumb/Retroshare34235423423.png-128.avif?h=adb01fdb",
     "t": "RetroShare",
     "u": "wiki/RetroShare"
   },
   {
+    "d": "Whonix RSS Reader Documentation.",
     "t": "Rss",
     "u": "wiki/Rss"
   },
   {
+    "d": "SSH over Tor using Whonix",
+    "img": "media/thumb/SSH.jpg-128.avif?h=d0b9bf33",
     "t": "SSH",
     "u": "wiki/SSH"
   },
   {
+    "d": "Screen Resolution, DPI (dots per inch), Full Screen, Tor Browser window size (maximization?)",
     "t": "Screen",
     "u": "wiki/Screen"
   },
   {
+    "d": "Collection of screenshots demonstrating the user interface and features of Whonix.",
+    "img": "media/thumb/Gui-preview.jpg-128.webp?h=0b226270",
     "t": "Screenshots",
     "u": "wiki/Screenshots"
   },
   {
+    "d": "sdwdate - Secure Distributed Web Date - in Whonix",
     "t": "Sdwdate",
     "u": "wiki/Sdwdate"
   },
   {
+    "d": "sdwdate - Secure Distributed Web Date - systray - graphical user interface (GUI) - Homepage",
+    "img": "media/thumb/Sdwdate1.png-128.avif?h=1b2e7527",
     "t": "Sdwdate-gui",
     "u": "wiki/Sdwdate-gui"
   },
   {
+    "d": "Search engines are a complex topic that needs to be looked at from different angles. At Whonix we can only provide our criteria and suggestions.",
+    "img": "media/thumb/Search-engine-clipart.jpg-128.webp?h=0165bb18",
     "t": "Search Engines",
     "u": "wiki/Search_Engines"
   },
   {
+    "d": "It is recommended to stop using SecBrowser\u2122.",
+    "img": "media/thumb/Secbrowser31123.png-128.avif?h=3caa1564",
     "t": "SecBrowser",
     "u": "wiki/SecBrowser"
   },
   {
+    "d": "THIS WIKI PAGE IS DEPRECATED AND OUTDATED. PLEASE REFER TO THE ESSENTIAL SECURITY GUIDE SECTION - https://www.whonix.org/wiki/Documentation",
     "t": "Security Guide",
     "u": "wiki/Security_Guide"
   },
   {
+    "d": "List of notable reviews and feedback about the security of Whonix.",
+    "img": "media/thumb/Reviews.png-128.avif?h=bfb20b9b",
     "t": "Security Reviews and Feedback",
     "u": "wiki/Security_Reviews_and_Feedback"
   },
   {
+    "d": "Future Whonix Security Enhancements",
+    "img": "media/thumb/Roadmap.jpg-128.avif?h=db9eda35",
     "t": "Security Roadmap",
     "u": "wiki/Security_Roadmap"
   },
   {
+    "d": "Definition of the Self Support First Policy for Whonix",
+    "img": "media/thumb/Self-support.jpg-128.webp?h=f6ce92dc",
     "t": "Self Support First Policy",
     "u": "wiki/Self_Support_First_Policy"
   },
   {
+    "d": "How to set up shared folders between the host and a virtual machine (VM).",
+    "img": "media/thumb/Shared_Folder.png-128.webp?h=5bf63866",
     "t": "Shared Folder",
     "u": "wiki/Shared_Folder"
   },
   {
+    "d": "Use Signal Private Messenger over the Tor network with Whonix.",
+    "img": "media/thumb/Signalmessenger.png-128.avif?h=d9e90153",
     "t": "Signal",
     "u": "wiki/Signal"
   },
   {
+    "d": "Get Whonix OpenPGP signing key. Verify Whonix Downloads and/or Source Code.",
+    "img": "media/thumb/Signing_Key.png-128.webp?h=d61c6546",
     "t": "Signing Key",
     "u": "wiki/Signing_Key"
   },
   {
+    "d": "SimpleX in Whonix.",
+    "img": "media/thumb/SimpleX_Logo_Small.png-128.avif?h=4f39e04f",
     "t": "SimpleX",
     "u": "wiki/SimpleX"
   },
   {
+    "d": "Alternative download of the Whonix source code as a compressed archive. Useful in case of git and/or network issues.",
     "t": "Source",
     "u": "wiki/Source"
   },
@@ -5443,74 +5971,102 @@
     "u": "wiki/Special:WantedPages"
   },
   {
+    "d": "Speculative Attacks against Tor",
+    "img": "media/thumb/Speculativetor.jpg-128.webp?h=f2831a5d",
     "t": "Speculative Tor Attacks",
     "u": "wiki/Speculative_Tor_Attacks"
   },
   {
+    "d": "Mount Whonix-Workstation\u2122 files on your Host using sshfs.",
+    "img": "media/thumb/Sshfs.jpg-128.avif?h=878a7755",
     "t": "Sshfs into Whonix-Workstation",
     "u": "wiki/Sshfs_into_Whonix-Workstation"
   },
   {
+    "d": "How to Start Whonix and Troubleshooting Whonix Startup Issues",
     "t": "Starting Project",
     "u": "wiki/Starting_Project"
   },
   {
+    "d": "Users should follow official Whonix news, especially the important-news category. Important News is used for critical announcements such as security advisories, possible upgrade issues, and important stable releases.",
     "t": "Stay Tuned",
     "u": "wiki/Stay_Tuned"
   },
   {
+    "d": "Prevent Identity Correlation through Circuit Sharing by using Tor Stream Isolation.",
     "t": "Stream Isolation",
     "u": "wiki/Stream_Isolation"
   },
   {
+    "d": "How to disable stream isolation. Easiest and most common methods only.",
+    "img": "media/thumb/Streamisolation213123.png-128.webp?h=6c9f81cd",
     "t": "Stream Isolation/Disable Easy",
     "u": "wiki/Stream_Isolation/Disable_Easy"
   },
   {
+    "d": "Whonix Tor Stream Isolation Short Introduction",
+    "img": "media/thumb/Streamisolationme.jpg-128.avif?h=727c8b0f",
     "t": "Stream Isolation/Easy",
     "u": "wiki/Stream_Isolation/Easy"
   },
   {
+    "d": "Deanonymization based on a user's linguistic style.",
+    "img": "media/thumb/Stylometry.jpg-128.avif?h=fbe01ba7",
     "t": "Stylometry",
     "u": "wiki/Stylometry"
   },
   {
+    "d": "Various Ways to get Help with Whonix. Free, Plus and Premium Support available.",
+    "img": "media/thumb/Faq-help.jpg-128.avif?h=77d91ecb",
     "t": "Support",
     "u": "wiki/Support"
   },
   {
+    "d": "Surf, Blog and Post anonymously on the Internet. Essential knowledge about Anonymous File Sharing, Keystroke / Mouse Fingerprinting and Stylometry risks. Tips for avoiding detection.",
     "t": "Surfing Posting Blogging",
     "u": "wiki/Surfing_Posting_Blogging"
   },
   {
+    "d": "Surveillance Capabilities, Technological Capabilities of Adversaries for Surveillance.",
     "t": "Surveillance Capabilities",
     "u": "wiki/Surveillance_Capabilities"
   },
   {
+    "d": "Whonix specific sysmaint account documentation. Default Installation Status Differences - GUI (LXQt) versus CLI - Older versions versus new images. \"permission denied: sudo\"",
+    "img": "media/thumb/Whonix-workstation-grub-sysmaint-boot-option.png-128.avif?h=ac65a25e",
     "t": "Sysmaint",
     "u": "wiki/Sysmaint"
   },
   {
+    "d": "Verifying the system is configured as intended",
+    "img": "media/thumb/Systemcheck1234640.png-128.webp?h=9139601b",
     "t": "System Audit",
     "u": "wiki/System_Audit"
   },
   {
+    "d": "Security hardening instructions for Whonix and Qubes-Whonix\u2122. Improving Linux, Windows and macOS host computer security and networking configurations. Safe Tor, Tor Browser and other online activities.",
+    "img": "media/thumb/Hardening-13423213.jpg-128.avif?h=7cce40a4",
     "t": "System Hardening Checklist",
     "u": "wiki/System_Hardening_Checklist"
   },
   {
+    "d": "System Requirements for Whonix",
     "t": "System Requirements",
     "u": "wiki/System_Requirements"
   },
   {
+    "d": "systemd in Whonix.",
     "t": "Systemd",
     "u": "wiki/Systemd"
   },
   {
+    "d": "Finding a volunteer teacher online is generally unlikely, though not impossible. Other avenues for support and learning are available.",
     "t": "Teacher",
     "u": "wiki/Teacher"
   },
   {
+    "d": "Use Telegram over the Tor network with Whonix.",
+    "img": "media/thumb/1024px-Telegram_2019_Logo.svg.png-128.avif?h=4b1a02ab",
     "t": "Telegram",
     "u": "wiki/Telegram"
   },
@@ -5803,6 +6359,11 @@
     "n": 1,
     "t": "Template:Build mininav",
     "u": "wiki/Template:Build_mininav"
+  },
+  {
+    "n": 1,
+    "t": "Template:Callout",
+    "u": "wiki/Template:Callout"
   },
   {
     "n": 1,
@@ -8250,390 +8811,542 @@
     "u": "wiki/Template:Yes_text"
   },
   {
+    "d": "By using our website, you acknowledge that you have read, understood and agreed to our Privacy Policy , Cookie Policy , Terms of Service , and E-Sign Consent .",
     "t": "Terms of Service",
     "u": "wiki/Terms_of_Service"
   },
   {
+    "d": "This is a test page to demonstrate how donor recognition cards look.",
     "t": "Testpage Donors",
     "u": "wiki/Testpage_Donors"
   },
   {
+    "d": "The fly in banner shows up after 3 seconds.",
     "t": "TestpageForFlyInNotification",
     "u": "wiki/TestpageForFlyInNotification"
   },
   {
+    "d": "Anonymity Online. Privacy Online. Threats posed by Internet giants Amazon, Facebook, Google, Twitter and others.",
+    "img": "media/thumb/Rsz-google-chart.png-128.webp?h=d84896f9",
     "t": "The World Wide Web And Your Privacy",
     "u": "wiki/The_World_Wide_Web_And_Your_Privacy"
   },
   {
+    "d": "An in-exhaustive list of images and icons used by the Whonix project is referenced here.",
     "t": "Third Party Images",
     "u": "wiki/Third_Party_Images"
   },
   {
+    "d": "Time Related Security Issues and Solutions",
     "t": "Time Attacks",
     "u": "wiki/Time_Attacks"
   },
   {
+    "d": "Information about system timezone setting. How to change the System Timezone.",
+    "img": "media/thumb/Timezone123123451.png-128.webp?h=63b4692d",
     "t": "Timezone",
     "u": "wiki/Timezone"
   },
   {
+    "d": "Non-technical steps for staying anonymous",
     "t": "Tips on Remaining Anonymous",
     "u": "wiki/Tips_on_Remaining_Anonymous"
   },
   {
+    "d": "This request is too difficult and unlikely to get resolved through free forum discussions on the internet, including but not limited to Whonix forums.",
+    "img": "media/thumb/Too_difficult.png-128.avif?h=75344c46",
     "t": "Too Difficult",
     "u": "wiki/Too_Difficult"
   },
   {
+    "d": "Notes about Tor (The Onion Router) on Log Analysis, Non-Persistent Entry Guards, Blacklist Certain Onion Services from Connecting, Additional SocksPorts, UDP and more.",
+    "img": "media/Iconfinder_tor_386502.svg?h=60b66c56",
     "t": "Tor",
     "u": "wiki/Tor"
   },
   {
+    "d": "Using Tor Browser in Whonix. Anonymity vs Pseudonymity, HTTPS Everywhere, Torbutton, Protection against dangerous JavaScript, NoScript, Tips, Update Tor Browser, Browser Plugins, Change Language",
+    "img": "media/thumb/Torbrowser.png-128.avif?h=b7f64888",
     "t": "Tor Browser",
     "u": "wiki/Tor_Browser"
   },
   {
+    "d": "Tor Browser Adversary Model and Torbutton Design. Custom homepage, configurations and proxy settings. Tor Browser update technical details. Platform-specific issues.",
+    "img": "media/thumb/Toradvanced.jpg-128.avif?h=417aabbc",
     "t": "Tor Browser/Advanced Users",
     "u": "wiki/Tor_Browser/Advanced_Users"
   },
   {
+    "d": "Tor Browser is installed by default in Whonix. It is usually updated using its own internal updater. Manually downloading Tor Browser is also possible, which is documented on this wiki page. This might be useful in case Tor Browser Downloader by Whonix developers is ever broken.",
     "t": "Tor Browser/Manual Download",
     "u": "wiki/Tor_Browser/Manual_Download"
   },
   {
+    "d": "Using a Tor Controller with Whonix. Onion Circuits. Nyx. View or change your Tor circuits. Monitor Tor and inspect logs.",
+    "img": "media/thumb/Onioncircuits.png-128.avif?h=cbe8ea7a",
     "t": "Tor Controller",
     "u": "wiki/Tor_Controller"
   },
   {
+    "d": "Tor Entry Guards, Alternate Configurations, Fingerprinting Risks",
+    "img": "media/thumb/Entry_guard111.jpg-128.avif?h=180e59dc",
     "t": "Tor Entry Guards",
     "u": "wiki/Tor_Entry_Guards"
   },
   {
+    "d": "Dispelling Common Tor Myths and Misconceptions.",
+    "img": "media/thumb/Tormyths325234523.jpg-128.avif?h=049949c9",
     "t": "Tor Myths and Misconceptions",
     "u": "wiki/Tor_Myths_and_Misconceptions"
   },
   {
+    "d": "Summary, timeline, communications",
     "t": "Tor Project",
     "u": "wiki/Tor_Project"
   },
   {
+    "d": "Tor start, stop, control, logs, utilities",
+    "img": "media/thumb/Tor-control-panel-control.png-128.avif?h=6f6e9caf",
     "t": "Tor-control-panel",
     "u": "wiki/Tor-control-panel"
   },
   {
+    "d": "Ever wanted to know which information is sent by an application? tor-ctrl-observer shows connection information of applications using Tor.",
+    "img": "media/thumb/TorControl12312.png-128.webp?h=1193fec0",
     "t": "Tor-ctrl-observer",
     "u": "wiki/Tor-ctrl-observer"
   },
   {
+    "d": "How to torify all traffic from the Host Operating System",
+    "img": "media/thumb/Torifyhost213123.jpg-128.webp?h=e7480daf",
     "t": "Torify Host Operating System",
     "u": "wiki/Torify_Host_Operating_System"
   },
   {
+    "d": "Work in progress.",
     "t": "Torrent",
     "u": "wiki/Torrent"
   },
   {
+    "d": "Whonix is a trademark. How to use Whonix trademarks.",
     "t": "Trademark Policy",
     "u": "wiki/Trademark_Policy"
   },
   {
+    "d": "Transparency - Advertisements on the Whonix Website, Sponsorships. Past and Present Sponsorships, Sponsorship Policies.",
     "t": "Transparency",
     "u": "wiki/Transparency"
   },
   {
+    "d": "Troubleshooting Installation and Network Issues with Whonix.",
+    "img": "media/thumb/Troubleshooting-thumbnail.jpg-128.webp?h=d6be5bcf",
     "t": "Troubleshooting",
     "u": "wiki/Troubleshooting"
   },
   {
+    "d": "Is Whonix trustworthy? Is there a backdoor in Whonix? How does Whonix protect itself from backdoors?",
     "t": "Trust",
     "u": "wiki/Trust"
   },
   {
+    "d": "Workaround for Tunneling UDP over Tor. Connection Scheme: User \u2192 Tor \u2192 Destination",
+    "img": "media/thumb/Book-2869640.jpg-128.avif?h=58a97c4a",
     "t": "Tunnel UDP over Tor",
     "u": "wiki/Tunnel_UDP_over_Tor"
   },
   {
+    "d": "Instructions on how to connect to SSH before Tor. (User \u2192 SSH \u2192 Tor \u2192 Internet)",
     "t": "Tunnels/Connecting to SSH before Tor",
     "u": "wiki/Tunnels/Connecting_to_SSH_before_Tor"
   },
   {
+    "d": "Instructions on how to connect to Tor before SSH. (User \u2192 Tor \u2192 SSH \u2192 Internet)",
     "t": "Tunnels/Connecting to Tor before SSH",
     "u": "wiki/Tunnels/Connecting_to_Tor_before_SSH"
   },
   {
+    "d": "Instructions on how to connect to Tor before a VPN. (User \u2192 Tor \u2192 VPN \u2192 Internet)",
     "t": "Tunnels/Connecting to Tor before a VPN",
     "u": "wiki/Tunnels/Connecting_to_Tor_before_a_VPN"
   },
   {
+    "d": "Instructions on how to connect to Tor before a proxy. (User \u2192 Tor \u2192 Proxy \u2192 Internet)",
     "t": "Tunnels/Connecting to Tor before a proxy",
     "u": "wiki/Tunnels/Connecting_to_Tor_before_a_proxy"
   },
   {
+    "d": "Instructions on how to connect to Tor before a proxy (User \u2192 Tor \u2192 Proxy \u2192 Internet) using Proxy Settings Method",
     "t": "Tunnels/Connecting to Tor before a proxy/Proxy Settings Method",
     "u": "wiki/Tunnels/Connecting_to_Tor_before_a_proxy/Proxy_Settings_Method"
   },
   {
+    "d": "Instructions on how to connect to Tor before a proxy (User \u2192 Tor \u2192 Proxy \u2192 Internet) using Proxyfier Method",
     "t": "Tunnels/Connecting to Tor before a proxy/Proxyfier Method",
     "u": "wiki/Tunnels/Connecting_to_Tor_before_a_proxy/Proxyfier_Method"
   },
   {
+    "d": "Instructions on how to connect to Tor before a proxy (User \u2192 Tor \u2192 Proxy \u2192 Internet) using Transparent Proxying Method",
     "t": "Tunnels/Connecting to Tor before a proxy/Transparent Proxying Method",
     "u": "wiki/Tunnels/Connecting_to_Tor_before_a_proxy/Transparent_Proxying_Method"
   },
   {
+    "d": "Instructions on how to connect to a VPN before Tor. (User \u2192 VPN \u2192 Tor \u2192 Internet)",
     "t": "Tunnels/Connecting to a VPN before Tor",
     "u": "wiki/Tunnels/Connecting_to_a_VPN_before_Tor"
   },
   {
+    "d": "Instructions on how to connect to a proxy before Tor. (User \u2192 proxy \u2192 Tor \u2192 Internet)",
     "t": "Tunnels/Connecting to a proxy before Tor",
     "u": "wiki/Tunnels/Connecting_to_a_proxy_before_Tor"
   },
   {
+    "d": "Instructions on how to combine VPN tunnels with Tor in Whonix",
     "t": "Tunnels/Examples",
     "u": "wiki/Tunnels/Examples"
   },
   {
+    "d": "Information on and how-to combine Tor with tunnels such as VPN, SSH, or proxies. Covers whether this makes Tor more or less secure. (User \u2192 Tor \u2192 proxy/VPN/SSH \u2192 Internet) (User \u2192 proxy/VPN/SSH \u2192 Tor \u2192 Internet)",
     "t": "Tunnels/Introduction",
     "u": "wiki/Tunnels/Introduction"
   },
   {
+    "d": "Prevent Bypassing the Tunnel-Link",
     "t": "Tunnels/Prevent Bypassing the Tunnel-Link",
     "u": "wiki/Tunnels/Prevent_Bypassing_the_Tunnel-Link"
   },
   {
+    "d": "Yes, Whonix can be installed on a USB. Here's how.",
+    "img": "media/thumb/Whonix-download-usb.jpg-128.webp?h=aa14c27e",
     "t": "USB Installation",
     "u": "wiki/USB_Installation"
   },
   {
+    "d": "Whonix for Ubuntu",
+    "img": "media/thumb/Logo-ubuntusvg.png-128.avif?h=bfb4b339",
     "t": "Ubuntu",
     "u": "wiki/Ubuntu"
   },
   {
+    "d": "Anonymous Ubuntu. Tunnel Ubuntu through the Tor Anonymity Network using Whonix.",
+    "img": "media/thumb/Logo-ubuntusvg.png-128.avif?h=bfb4b339",
     "t": "Ubuntu Tips",
     "u": "wiki/Ubuntu_Tips"
   },
   {
+    "d": "Only one machine. Either a real or virtual machine (VM). All traffic is routed through Tor. An Anonymizing Transparent Proxy.",
     "t": "UniStation",
     "u": "wiki/UniStation"
   },
   {
+    "d": "Guide on how to uninstall Whonix",
+    "img": "media/thumb/Qubesunintall123123.png-128.webp?h=34b68a68",
     "t": "Uninstall",
     "u": "wiki/Uninstall"
   },
   {
+    "d": "Explore resources outside of Whonix to address unspecific questions or issues.",
+    "img": "media/thumb/Booster132.png-128.webp?h=6c313aa8",
     "t": "Unspecific",
     "u": "wiki/Unspecific"
   },
   {
+    "d": "A decentralized exchange (DEX), utilizing atomic swaps, where users can exchange Bitcoin (BTC) for Monero (XMR).",
     "t": "UnstoppableSwap",
     "u": "wiki/UnstoppableSwap"
   },
   {
+    "d": "This feature is either undocumented, untested, or unsupported. Options: Become a Contributor / Apply Self Support First Policy / Purchase Support.",
+    "img": "media/thumb/Unsupported.jpg-128.webp?h=ad5330e5",
     "t": "Unsupported",
     "u": "wiki/Unsupported"
   },
   {
+    "d": "Usenet NNTP, News Reader, alt.anonymous.messages, Retrieval",
+    "img": "media/thumb/Usenet-23423525234.png-128.webp?h=ddac9120",
     "t": "Usenet",
     "u": "wiki/Usenet"
   },
   {
+    "d": "Developers and contributors cannot be expected to deeply investigate every difficult or unexplained issue because of ecosystem-wide limitations.",
+    "img": "media/thumb/Dependency.png-128.avif?h=2a9ca62b",
     "t": "User Support Expectations",
     "u": "wiki/User_Support_Expectations"
   },
   {
+    "d": "Groups of users using Whonix.",
+    "img": "media/thumb/Preview-user-groups.jpg-128.webp?h=d7755050",
     "t": "Users of Whonix",
     "u": "wiki/Users_of_Whonix"
   },
   {
+    "d": "VFAQ. Virtual Frequently Asked Questions.",
+    "img": "media/thumb/Virtualll.jpg-128.avif?h=d4d28186",
     "t": "VFAQ",
     "u": "wiki/VFAQ"
   },
   {
+    "d": "Linking two or more locally compromised Virtual Machines (VMs) to the same pseudonym.",
+    "img": "media/thumb/Vmfingerprint123123.jpg-128.avif?h=9b0c4095",
     "t": "VM Fingerprinting",
     "u": "wiki/VM_Fingerprinting"
   },
   {
+    "d": "Using Whonix with VMware?",
+    "img": "media/thumb/Vmware.jpeg-128.avif?h=64aaa32a",
     "t": "VMware",
     "u": "wiki/VMware"
   },
   {
+    "d": "Instructions on how to use VPN-Firewall. A Fail Closed Mechanism for VPNs. Prevent leaks when using VPNs. Force all connections through VPNs. Prevents shared VPN/Tor server leak bug.",
+    "img": "media/thumb/Vpnfirewall1234322134.jpg-128.webp?h=5a500b7c",
     "t": "VPN-Firewall",
     "u": "wiki/VPN-Firewall"
   },
   {
+    "d": "Protects against Tor guard discovery and related traffic analysis attacks.",
+    "img": "media/thumb/Vanguard.png-128.avif?h=1964b6db",
     "t": "Vanguards",
     "u": "wiki/Vanguards"
   },
   {
+    "d": "Checking Whonix for backdoors.",
+    "img": "media/thumb/Backdoor-23423523523.jpg-128.webp?h=b9f1df3e",
     "t": "Verifiable Builds",
     "u": "wiki/Verifiable_Builds"
   },
   {
+    "d": "This page documents how to the Tor Browser digital software signatures for users of Microsoft Windows.",
+    "img": "media/thumb/Verifywindows.jpg-128.avif?h=ab0529e7",
     "t": "Verify Tor Browser in Windows",
     "u": "wiki/Verify_Tor_Browser_in_Windows"
   },
   {
+    "d": "Download image verification instructions for Non-Qubes-Whonix with OpenPGP and Signify.",
+    "img": "media/thumb/Verifywhoniximages.png-128.avif?h=cd7f11ab",
     "t": "Verify the images",
     "u": "wiki/Verify_the_images"
   },
   {
+    "d": "Instructions for OpenPGP and Signify Verification of Whonix ISO, VirtualBox and KVM on the Command Line",
+    "img": "media/thumb/Verify_images_on_linux.png-128.webp?h=7258a5f7",
     "t": "Verify the images using Linux",
     "u": "wiki/Verify_the_images_using_Linux"
   },
   {
+    "d": "Instructions for OpenPGP Verification of Whonix Images using Windows",
     "t": "Verify the images using Windows",
     "u": "wiki/Verify_the_images_using_Windows"
   },
   {
+    "d": "Instructions for OpenPGP Verification of Whonix Images in macOS",
+    "img": "media/thumb/Verify_images_on_mac.png-128.webp?h=c7271af9",
     "t": "Verify the images using macOS",
     "u": "wiki/Verify_the_images_using_macOS"
   },
   {
+    "d": "Whonix Tutorial Videos",
     "t": "Videos",
     "u": "wiki/Videos"
   },
   {
+    "d": "Getting started with Whonix in 4 simple steps.",
+    "img": "media/thumb/Virtualbox_logo.png-128.avif?h=d0fddcae",
     "t": "VirtualBox",
     "u": "wiki/VirtualBox"
   },
   {
+    "d": "Whonix does not use this signing mechanism, nobody else does either. Use provided OpenPGP or signify signatures instead.",
+    "img": "media/thumb/Virtualbox_appliance_is_not_signed.jpg-128.webp?h=d5b0c7d9",
     "t": "VirtualBox/Appliance is not signed",
     "u": "wiki/VirtualBox/Appliance_is_not_signed"
   },
   {
+    "d": "Fix VirtualBox green turtle icon issue on Windows hosts caused by Hyper-V and VBS. Learn how to improve VM performance and stability with step-by-step instructions.",
+    "img": "media/thumb/Green-turtle-icon-on-VirtualBox-Windows-11.jpg-128.webp?h=f2cd629c",
     "t": "VirtualBox/Green Turtle Issue",
     "u": "wiki/VirtualBox/Green_Turtle_Issue"
   },
   {
+    "d": "VMs can also alternatively, optionally be imported using the command line.",
+    "img": "media/thumb/Virtualbox_logo.png-128.avif?h=d0fddcae",
     "t": "VirtualBox/Manual VM Import",
     "u": "wiki/VirtualBox/Manual_VM_Import"
   },
   {
+    "d": "This wiki page provides information on the recommended version of VirtualBox for use with Whonix, along with installation instructions.",
+    "img": "media/thumb/Recommendedvboxversion1231231234.png-128.avif?h=93566df2",
     "t": "VirtualBox/Recommended Version",
     "u": "wiki/VirtualBox/Recommended_Version"
   },
   {
+    "d": "Anonymous Voice over IP (VoIP). Encrypted, anonymous phone calls using the Tor Anonymity Network.",
     "t": "VoIP",
     "u": "wiki/VoIP"
   },
   {
+    "d": "How to report security bugs in Whonix, and how we handle such reports.",
     "t": "Vulnerability Reporting and Handling Process",
     "u": "wiki/Vulnerability_Reporting_and_Handling_Process"
   },
   {
+    "d": "Things you should know about Whonix and Anonymity in General to stay safe.",
+    "img": "media/thumb/Mitm.png-128.webp?h=869e84ff",
     "t": "Warning",
     "u": "wiki/Warning"
   },
   {
+    "d": "Things the Whonix project is working on; Innovate; Cooperate; Mentor; Educate; Maintenance; Research",
     "t": "What we do",
     "u": "wiki/What_we_do"
   },
   {
+    "d": "A list of many past anonymity attacks where Whonix kept its users safe.",
+    "img": "media/thumb/Realworldexplosion.jpg-128.avif?h=95532364",
     "t": "Whonix against Real Attacks",
     "u": "wiki/Whonix_against_Real_Attacks"
   },
   {
+    "d": "Comparison of Whonix versus Proxies",
     "t": "Whonix versus Proxies",
     "u": "wiki/Whonix_versus_Proxies"
   },
   {
+    "d": "Comparison of Whonix with VPN Services. Are VPNs anonymous? No. Here's why.",
     "t": "Whonix versus VPNs",
     "u": "wiki/Whonix_versus_VPNs"
   },
   {
+    "d": "The Whonix-Gateway is a software component that runs Tor, which moves data across multiple servers called Tor relays to keep users anonymous on the Internet, and it connects any virtual machine properly to the Internet using Tor only, while user applications should be run inside the Whonix-Workstation\u2122.",
+    "img": "media/thumb/Gui-preview.jpg-128.webp?h=0b226270",
     "t": "Whonix-Gateway",
     "u": "wiki/Whonix-Gateway"
   },
   {
+    "d": "General information about Whonix-Gateway\u2122 firewall. How-To: Changing firewall settings and Open a Port in Whonix-Gateway\u2122 Firewall.",
     "t": "Whonix-Gateway Firewall",
     "u": "wiki/Whonix-Gateway_Firewall"
   },
   {
+    "d": "Getting Transparent Proxying working for traffic originating from Whonix-Gateway itself.",
     "t": "Whonix-Gateway Own Traffic Transparent Proxy",
     "u": "wiki/Whonix-Gateway_Own_Traffic_Transparent_Proxy"
   },
   {
+    "d": "This page is targeted at users who wish to improve the security of their Whonix-Gateway to become even more secure.",
+    "img": "media/thumb/Whonixgatewaysecur23234234.jpg-128.avif?h=639a9c20",
     "t": "Whonix-Gateway Security",
     "u": "wiki/Whonix-Gateway_Security"
   },
   {
+    "d": "Optional Whonix-Gateway\u2122 Security Hardening for advanced users.",
+    "img": "media/thumb/Gatewayhardening.jpg-128.webp?h=fb589138",
     "t": "Whonix-Gateway Security Hardening",
     "u": "wiki/Whonix-Gateway_Security_Hardening"
   },
   {
+    "d": "Information about Whonix-Gateway\u2122 System DNS, /etc/resolv.conf, and nslookup. Getting System DNS working on Whonix-Gateway\u2122.",
     "t": "Whonix-Gateway System DNS",
     "u": "wiki/Whonix-Gateway_System_DNS"
   },
   {
+    "d": "Upcoming Host Operating System - In Development - Help wanted! - Please contribute!",
+    "img": "media/thumb/Cd-rom-icon.png-128.webp?h=33c84b9e",
     "t": "Whonix-Host",
     "u": "wiki/Whonix-Host"
   },
   {
+    "d": "What is Whonix-Workstation?",
+    "img": "media/thumb/Gui-preview-Whonix-Workstation.jpg-128.webp?h=6738905a",
     "t": "Whonix-Workstation",
     "u": "wiki/Whonix-Workstation"
   },
   {
+    "d": "How-To: Open a Port in Whonix-Workstation\u2122 Firewall, Restrict Outgoing IPs, Additional User Custom Firewall Rules and other settings for advanced users.",
     "t": "Whonix-Workstation Firewall",
     "u": "wiki/Whonix-Workstation_Firewall"
   },
   {
+    "d": "This page is targeted at users who wish to improve the security of their Whonix-Workstation\u2122 to become even more secure.",
+    "img": "media/thumb/Whonixworkstation3423423.png-128.avif?h=aa477816",
     "t": "Whonix-Workstation Security",
     "u": "wiki/Whonix-Workstation_Security"
   },
   {
+    "d": "Whonix-Workstation\u2122 Security Hardening. This page is targeted at users who wish to improve the security of their Whonix-Workstation\u2122 to become even more secure.",
+    "img": "media/thumb/Doors-1767563_640.jpg-128.avif?h=c5d7adab",
     "t": "Whonix-Workstation Security Hardening",
     "u": "wiki/Whonix-Workstation_Security_Hardening"
   },
   {
+    "d": "How-to: Connect from Whonix-Workstation (client) to another Whonix-Workstation (server). (Esoteric Documentation)",
+    "img": "media/thumb/Wsandgwmeeting213.jpg-128.webp?h=20b8ee4d",
     "t": "Whonix-Workstation to Whonix-Workstation Connections",
     "u": "wiki/Whonix-Workstation_to_Whonix-Workstation_Connections"
   },
   {
+    "d": "Explore why Whonix incorporates Tor for superior online anonymity. Uncover the multi-layered encryption, shared IP addresses, and the vast relay network that underpins Tor's ability to provide a robust anonymity shield, making Whonix a secure choice for privacy-conscious users.",
     "t": "Why does Whonix use Tor",
     "u": "wiki/Why_does_Whonix_use_Tor"
   },
   {
+    "d": "Factors Affecting Tor Throughput",
+    "img": "media/thumb/Whyslowww.jpg-128.avif?h=82d855b2",
     "t": "Why is Tor slow",
     "u": "wiki/Why_is_Tor_slow"
   },
   {
+    "d": "Using Wickr Me in Whonix over the Tor anonymity network.",
+    "img": "media/thumb/Wickr12312312.png-128.avif?h=2c47dcd8",
     "t": "Wickr",
     "u": "wiki/Wickr"
   },
   {
+    "d": "Whonix Wiki Comments Policy",
+    "img": "media/thumb/Commentspolicy23234.jpg-128.avif?h=fe83fbbd",
     "t": "Wiki Comments Policy",
     "u": "wiki/Wiki_Comments_Policy"
   },
   {
+    "d": "Whonix Wiki Editing Policy",
     "t": "Wiki Editing Policy",
     "u": "wiki/Wiki_Editing_Policy"
   },
   {
+    "d": "Some wiki actions such as viewing the wiki history are only possible with a free account. This is to stop scraping robots from needlessly and endlessly comparing every wiki page revision with every other wiki page revision on every wiki page.",
     "t": "Wiki History",
     "u": "wiki/Wiki_History"
   },
   {
+    "d": "Whonix Windows Installer for VirtualBox - Testers Only Version",
+    "img": "media/thumb/Virtualbox_logo.png-128.avif?h=d0fddcae",
     "t": "Windows Quick Start Testers Only Version",
     "u": "wiki/Windows_Quick_Start_Testers_Only_Version"
   },
   {
+    "d": "Documentation for this is incomplete. Contributions are happily considered! See this for potential alternatives.",
     "t": "XCP-ng",
     "u": "wiki/XCP-ng"
   },
   {
+    "d": "Yacy p2p Censorship Resistant Search Engine",
     "t": "YaCy",
     "u": "wiki/YaCy"
   },
   {
+    "d": "Using Tor Browser, streaming, MPV or VLC Media Player, other alternatives such as Invidious or downloading. Troubleshooting performance and other issues.",
+    "img": "media/thumb/Youtubelogo.png-128.avif?h=3389b04a",
     "t": "YouTube",
     "u": "wiki/YouTube"
   },
   {
+    "d": "Using the yt-dlp command line downloader.",
+    "img": "media/thumb/Youtubedownload.png-128.avif?h=8d2622f2",
     "t": "Yt-dlp",
     "u": "wiki/Yt-dlp"
   },
   {
+    "d": "Combining Whonix with ZeroNet. ZeroNet over Tor. Connecting to Tor before ZeroNet (User \u2192 Tor \u2192 ZeroNet \u2192 Internet).",
+    "img": "media/thumb/Zeronetlogo.png-128.webp?h=758349aa",
     "t": "ZeroNet",
     "u": "wiki/ZeroNet"
   }

@@ -4,16 +4,61 @@
   <link rel="self" href="https://www.whonix.org/feed.xml"/>
   <link href="https://www.whonix.org/"/>
   <id>https://www.whonix.org/feed.xml</id>
-  <updated>2026-11-21T03:14:26-05:00</updated>
+  <updated>2026-11-22T16:44:18-05:00</updated>
   <author><name>Whonix</name></author>
   <entry>
     <title>KVM</title>
     <link href="https://www.whonix.org/wiki/KVM"/>
     <id>https://www.whonix.org/wiki/KVM</id>
-    <updated>2026-11-21T03:14:26-05:00</updated>
-    <author><name>claude (dev1757 4bbfc1b1-8aba-4e5e-9db6-56f88f3a3a9d)</name></author>
-    <summary>Strip trailing space in KVM.mw passt profile</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/817b8c999a574c54821da26abe6666f872729c3c"/>
+    <updated>2026-11-22T16:44:18-05:00</updated>
+    <author><name>claude (dev1792 709f4378-4ec3-4880-978f-437f3ede932e)</name></author>
+    <summary>Revert no-JS notice from widget-heavy pages</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/f0175767fdbf28628291ea97cdba725723c3eb48"/>
+  </entry>
+  <entry>
+    <title>Multiple Whonix-Workstation</title>
+    <link href="https://www.whonix.org/wiki/Multiple_Whonix-Workstation"/>
+    <id>https://www.whonix.org/wiki/Multiple_Whonix-Workstation</id>
+    <updated>2026-11-22T16:44:18-05:00</updated>
+    <author><name>claude (dev1792 709f4378-4ec3-4880-978f-437f3ede932e)</name></author>
+    <summary>Revert no-JS notice from widget-heavy pages</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/f0175767fdbf28628291ea97cdba725723c3eb48"/>
+  </entry>
+  <entry>
+    <title>Network Time Synchronization</title>
+    <link href="https://www.whonix.org/wiki/Network_Time_Synchronization"/>
+    <id>https://www.whonix.org/wiki/Network_Time_Synchronization</id>
+    <updated>2026-11-22T16:44:18-05:00</updated>
+    <author><name>claude (dev1792 709f4378-4ec3-4880-978f-437f3ede932e)</name></author>
+    <summary>Revert no-JS notice from widget-heavy pages</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/f0175767fdbf28628291ea97cdba725723c3eb48"/>
+  </entry>
+  <entry>
+    <title>Other Operating Systems</title>
+    <link href="https://www.whonix.org/wiki/Other_Operating_Systems"/>
+    <id>https://www.whonix.org/wiki/Other_Operating_Systems</id>
+    <updated>2026-11-22T16:44:18-05:00</updated>
+    <author><name>claude (dev1792 709f4378-4ec3-4880-978f-437f3ede932e)</name></author>
+    <summary>Revert no-JS notice from widget-heavy pages</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/f0175767fdbf28628291ea97cdba725723c3eb48"/>
+  </entry>
+  <entry>
+    <title>Uninstall</title>
+    <link href="https://www.whonix.org/wiki/Uninstall"/>
+    <id>https://www.whonix.org/wiki/Uninstall</id>
+    <updated>2026-11-22T16:44:18-05:00</updated>
+    <author><name>claude (dev1792 709f4378-4ec3-4880-978f-437f3ede932e)</name></author>
+    <summary>Revert no-JS notice from widget-heavy pages</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/f0175767fdbf28628291ea97cdba725723c3eb48"/>
+  </entry>
+  <entry>
+    <title>Dev/Windows Installer</title>
+    <link href="https://www.whonix.org/wiki/Dev/Windows_Installer"/>
+    <id>https://www.whonix.org/wiki/Dev/Windows_Installer</id>
+    <updated>2026-11-22T16:06:35-05:00</updated>
+    <author><name>claude (dev1786 c08fe055-3ada-45bb-ad03-1fa16f72de6c)</name></author>
+    <summary>VirtualBox: bigger figures, single step numbers</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/2eb1bf58b014543e5f3aa892753c7e83e35173eb"/>
   </entry>
   <entry>
     <title>Dev/wikitest</title>
@@ -406,51 +451,6 @@
     <title>Dev/Technical Introduction</title>
     <link href="https://www.whonix.org/wiki/Dev/Technical_Introduction"/>
     <id>https://www.whonix.org/wiki/Dev/Technical_Introduction</id>
-    <updated>2026-11-18T18:51:43-05:00</updated>
-    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
-    <summary>Backfill explicit alt text for wiki images</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
-  </entry>
-  <entry>
-    <title>Dev/VirtualBox</title>
-    <link href="https://www.whonix.org/wiki/Dev/VirtualBox"/>
-    <id>https://www.whonix.org/wiki/Dev/VirtualBox</id>
-    <updated>2026-11-18T18:51:43-05:00</updated>
-    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
-    <summary>Backfill explicit alt text for wiki images</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
-  </entry>
-  <entry>
-    <title>Dev/Windows Installer/OLD</title>
-    <link href="https://www.whonix.org/wiki/Dev/Windows_Installer/OLD"/>
-    <id>https://www.whonix.org/wiki/Dev/Windows_Installer/OLD</id>
-    <updated>2026-11-18T18:51:43-05:00</updated>
-    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
-    <summary>Backfill explicit alt text for wiki images</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
-  </entry>
-  <entry>
-    <title>Dev/Windows Installer</title>
-    <link href="https://www.whonix.org/wiki/Dev/Windows_Installer"/>
-    <id>https://www.whonix.org/wiki/Dev/Windows_Installer</id>
-    <updated>2026-11-18T18:51:43-05:00</updated>
-    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
-    <summary>Backfill explicit alt text for wiki images</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
-  </entry>
-  <entry>
-    <title>Dev/Windows Starter</title>
-    <link href="https://www.whonix.org/wiki/Dev/Windows_Starter"/>
-    <id>https://www.whonix.org/wiki/Dev/Windows_Starter</id>
-    <updated>2026-11-18T18:51:43-05:00</updated>
-    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
-    <summary>Backfill explicit alt text for wiki images</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
-  </entry>
-  <entry>
-    <title>Dev/research</title>
-    <link href="https://www.whonix.org/wiki/Dev/research"/>
-    <id>https://www.whonix.org/wiki/Dev/research</id>
     <updated>2026-11-18T18:51:43-05:00</updated>
     <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
     <summary>Backfill explicit alt text for wiki images</summary>

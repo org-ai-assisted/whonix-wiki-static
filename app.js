@@ -588,7 +588,9 @@
     // its scheme, so "ja\tvascript:" and " javascript:" still execute -- strip that set for the
     // scheme CHECK (mirrors parserfunctions.safe_url), then test the cleaned value.
     var p = h.replace(/[\u0000- \u007f]/g, "");
-    if (p.slice(0, 2) === "//") return false;               // protocol-relative -> cross-origin
+    if (/^[/\\]{2}/.test(p)) return false;                   // // /\ \/ \\ -> browsers normalize
+                                                             // a backslash to '/', so all four are
+                                                             // protocol-relative -> cross-origin
     var m = /^([a-z][a-z0-9+.-]*):/i.exec(p);                // a leading URL scheme?
     if (!m) return true;                                     // relative (incl. "") -> same-origin
     var s = m[1].toLowerCase();                              // an absolute target: only http(s),
@@ -821,6 +823,67 @@
       }
       return shardCache[name];
     }
+    // Wikipedia-style dropdown row: a narrow thumbnail, then the title (typed prefix highlighted)
+    // over a one-line summary. TT-safe: createElement + textContent + setAttribute only, never an
+    // HTML-string sink -- same discipline as the plain row. Fields come from the prebuilt index:
+    // e.img (root-relative #seo-image thumb) and e.d (the page's published one-line description).
+    function buildSuggestionRow(a, e, q) {
+      var thumb = document.createElement("span");
+      thumb.className = "search-thumb";
+      // A same-origin <img> (governed by img-src 'self') -- NOT an inline background-image, so
+      // style-src 'self' without unsafe-inline is untouched. navSafe drops a tampered cross-origin
+      // url to the glyph, same defense the row href gets.
+      var imgHref = e.img ? root + e.img : null;
+      if (imgHref && navSafe(imgHref, false)) {
+        var img = document.createElement("img");
+        img.setAttribute("src", imgHref);
+        img.setAttribute("alt", "");                 // decorative: the title names the result
+        img.setAttribute("loading", "lazy");
+        img.setAttribute("width", "64");
+        img.setAttribute("height", "64");            // reserve the box so rows do not shift as thumbs load
+        thumb.appendChild(img);
+      } else {
+        // No usable thumb -> the grey document glyph (the same Font Awesome set the header search
+        // controls use), drawn by CSS -- no shipped asset, no img-src dependency.
+        thumb.className = "search-thumb search-thumb--fallback";
+        var glyph = document.createElement("i");
+        glyph.className = "fa-solid fa-file-lines";
+        glyph.setAttribute("aria-hidden", "true");
+        thumb.appendChild(glyph);
+      }
+      a.appendChild(thumb);
+      var text = document.createElement("span");
+      text.className = "search-row-text";
+      var title = document.createElement("span");
+      title.className = "search-row-title";
+      // Set the typed run off inside the title (Codex idiom). q is the current (>=2 char) query,
+      // always set by renderResults before a row builds. A full-text BODY hit whose title does not
+      // contain the query (indexOf -1) renders unhighlighted, which is correct.
+      // A few characters lower-case to a DIFFERENT length (e.g. U+0130), so an offset found in
+      // the lower-cased title would mis-slice the original-case title; only highlight when the two
+      // line up 1:1, else show the plain title (the match highlight is purely cosmetic).
+      var lower = e.t.toLowerCase();
+      var off = lower.length === e.t.length ? lower.indexOf(q) : -1;
+      if (off < 0) {
+        title.textContent = e.t;
+      } else {
+        if (off > 0) title.appendChild(document.createTextNode(e.t.slice(0, off)));
+        var m = document.createElement("span");
+        m.className = "match";
+        m.textContent = e.t.slice(off, off + q.length);
+        title.appendChild(m);
+        var tail = e.t.slice(off + q.length);
+        if (tail) title.appendChild(document.createTextNode(tail));
+      }
+      text.appendChild(title);
+      if (e.d) {
+        var desc = document.createElement("span");
+        desc.className = "search-row-desc";
+        desc.textContent = e.d;                      // plain text, one line (CSS ellipsis)
+        text.appendChild(desc);
+      }
+      a.appendChild(text);
+    }
     function appendResult(e, sink) {        // TT-safe: textContent + setAttribute only, no HTML-string sink
       var href = root + e.u;
       if (!navSafe(href, false)) return false;   // drop a row whose (tampered) target is not same-origin
@@ -832,7 +895,11 @@
       }
       var a = document.createElement("a");
       a.setAttribute("href", href);
-      a.textContent = e.t;
+      if (sink.option) {                    // dropdown: the rich thumbnail + title + summary row
+        buildSuggestionRow(a, e, sink.query);
+      } else {                              // Special:Search results page: a plain title link
+        a.textContent = e.t;
+      }
       li.appendChild(a);
       // Keep the "search for all" footer row (when present) LAST: title + async body rows insert
       // before it, so it never moves off the end of the listbox. footerNode is only ever set on a
@@ -998,6 +1065,7 @@
     // fires after the title pass AND after each full-text batch that adds rows. Used by BOTH the
     // header dropdown and the Special:Search results page, so their ranking + de-dup are identical.
     function renderResults(q, gen, sink) {
+      sink.query = q;   // the (lowercased) query, so a dropdown row can highlight the typed run
       var shownIds = {}, shown = 0;
       // Create the "search for all" footer row FIRST so the title + async body rows insert before
       // it (appendResult) and it stays the last option. Dropdown only (sink.footer).
@@ -2437,15 +2505,17 @@
 
   // Keyboard page-turn for the authored WikiBookIndex "book" chain: Left/Right move to the
   // previous/next book page. PROGRESSIVE enhancement over the visible .wiki-book-index Prev/Next
-  // buttons (they work with no JS) -- the target is read from <link rel=prev/next> in <head> (as
-  // Material for MkDocs and Sphinx do), emitted only on indexed pages, so an un-indexed page has
-  // no links and this silently no-ops. Only the HORIZONTAL pair is bound; Up/Down/PageUp/PageDown/
+  // buttons (they work with no JS) -- the target is read from the inert <link rel=mw-book-prev/
+  // mw-book-next> carriers in <head> (a custom rel, NOT rel=next, so Firefox network.prefetch-next
+  // never speculatively loads it into the strict default-src 'none' CSP -- see page.py), emitted
+  // only on indexed pages, so an un-indexed page has no links and this silently no-ops. Only the
+  // HORIZONTAL pair is bound; Up/Down/PageUp/PageDown/
   // Space stay free so vertical scrolling is never swallowed (mdBook's rule). The guard set bails
   // whenever the key belongs to the browser, an editable field, or an in-page widget that owns
   // arrows, so native scroll / IME / tablist / menubar / modal / lightbox / hovercard all keep it.
   function initBookNav() {
-    var nextLink = document.querySelector('link[rel="next"]');
-    var prevLink = document.querySelector('link[rel="prev"]');
+    var nextLink = document.querySelector('link[rel="mw-book-next"]');
+    var prevLink = document.querySelector('link[rel="mw-book-prev"]');
     if (!nextLink && !prevLink) return;              // un-indexed page: nothing to navigate to
     // getAttribute, not the IDL .href: .href resolves href="" to the document URL, so a book
     // entry with a title but no URL would self-navigate (reload); the raw attribute stays ""
@@ -2747,6 +2817,47 @@
     });
   }
 
+  // Click/tap-to-reveal the per-heading edit/share affordances, EVERY pointer. There is no visible
+  // '#' permalink glyph (operator decision: the revealed edit/share suffice) -- the heading ITSELF
+  // is the permalink. A click/tap on a content heading NAVIGATES to its anchor (location.hash =
+  // its id): that sets the URL :target, which CSS reveals the edit/share cluster, and because
+  // :target is SINGLE it is the authoritative single-active reveal -- targeting one heading drops
+  // the previously-targeted one, with no class bookkeeping. Scroll-to-anchor + a history entry on
+  // click are intended (operator-approved: a click is "take me to / give me the link for this
+  // section"). Desktop hover + keyboard :focus-within reveals stay pure CSS. A click on an actual
+  // affordance (edit/share) or any link/button inside a heading must ACT, not navigate -- the
+  // hidden cluster is pointer-events:none, so a tap over its invisible zone hit-tests to the
+  // heading and falls through here. Escape clears the reveal (drops :target). NO-JS keeps hover
+  // (desktop) + the always-visible touch fallback. TT-safe: only navigation, no HTML sink.
+  function initHeadingReveal() {
+    document.addEventListener("click", function (e) {
+      var t = e.target;
+      if (!t || !t.closest) return;                           // a document / non-element target has no heading
+      if (t.closest(".heading-actions, a, button")) return;   // edit/share + any link/button act, not navigate
+      var h = t.closest("h1, h2, h3, h4, h5, h6");
+      // Only a content heading that actually HAS affordances to reveal (h1-h3; a widget / h4-h6 has
+      // none). An id is required to navigate. A click elsewhere is left alone -- no forced collapse;
+      // :target single-active re-hides any previously revealed heading when another is targeted. No
+      // Escape-to-clear: clearing :target needs a real hash change (replaceState does not clear it),
+      // which scrolls to the top and would clobber an unrelated #fragment -- a bad trade for a
+      // reveal that already auto-hides on the next heading click / navigation.
+      if (!h || !h.closest(".wiki-content") || !h.id || !h.querySelector(".heading-actions")) return;
+      // Navigate to the heading's anchor -> :target reveal. The skip-if-already-there test compares
+      // the DECODED current fragment to the raw id, which is what the browser's own :target match
+      // does -- so it holds no matter how the fragment was encoded. encodeURIComponent and the
+      // generator's urllib.quote hrefs disagree on which chars to percent-encode (quote encodes
+      // ( ) ' , etc.; encodeURIComponent leaves ( ) ' * ! raw), and Firefox keeps the percent form
+      // in location.hash, so an id like `Anchor_(Template)` arrived via its `#Anchor_%28Template%29`
+      // TOC href fails any single-form string compare and re-navigates forever (duplicate history).
+      // A malformed existing %-sequence makes decodeURIComponent throw -> fall back to a raw compare
+      // (at worst one extra nav; the written hash is well-formed, so no loop).
+      var cur = location.hash.slice(1);
+      var atHeading;
+      try { atHeading = decodeURIComponent(cur) === h.id; } catch (e) { atHeading = cur === h.id; }
+      if (!atHeading) location.hash = encodeURIComponent(h.id);
+    });
+  }
+
   // Warm below-the-fold lazy images ~3 viewports before they enter view, so the fetch AND the
   // decode finish before the user scrolls to them (no visible pop-in). No-JS falls back to native
   // loading=lazy (unchanged). Bounded on bandwidth: only images the user is scrolling toward are
@@ -2816,6 +2927,7 @@
       initHovercards();
       initStorageViewer();
       initShareLazy();
+      initHeadingReveal();
       initPopoverTether();
       initHeroVideo();
       initEndorsementMore();
