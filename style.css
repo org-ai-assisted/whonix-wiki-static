@@ -2143,7 +2143,7 @@ code:empty { display: none; }
 /* flow-root gives each box its own block-formatting-context so a preceding
    .thumbframe.tright (float:right) sibling sits BESIDE it instead of the full-width
    box sliding under the float. Matches how the intro box wraps beside a thumb. */
-.mbox, .info-box, .community-support-info {
+.mbox, .info-box, .community-support-info, .admonition {
   display: flow-root;
   margin: 1.25rem 0;
   padding: 0.75rem 1rem;
@@ -2173,7 +2173,7 @@ code:empty { display: none; }
    (0,2,0)/(0,3,0) outrank the (0,1,0) box cap above. */
 .wiki-content .tcc-section,
 .wiki-content .tab-content-controller,
-.wiki-content :is(.mbox, .info-box, .community-support-info).width-100 { max-width: none; }
+.wiki-content :is(.mbox, .info-box, .community-support-info, .admonition).width-100 { max-width: none; }
 /* Only an icon callout is a horizontal icon|content row. A plain/step info-box (a
    numbered section box, an OS-chooser wrapper) has block children that must STACK --
    flex-row here laid them side by side and overflowed the viewport horizontally.
@@ -2226,6 +2226,10 @@ code:empty { display: none; }
        frameless image with an explicit author px width) and any .thumbframe descendant (a
        thumb/frame figure, sized via `.thumbframe img`). Without this a full-size figure sitting
        inside an {{mbox}}/.info-box wrapper was force-collapsed (a 600px screenshot -> ~65px).
+     - a .gallery-steps descendant: the step-by-step screenshot walkthrough (the {{Box}}-wrapped
+       VirtualBox import flow) shows each landscape screenshot full-width at native aspect; the cap
+       crushed every step to 46px tall (an illegible thumbnail). Exempt by ANCESTOR (.gallery-steps
+       *), like .thumbframe *, so .gallery.gallery-steps .thumb img (width:100%) takes effect.
    SPECIFICITY: keep the image exclusions in ONE :not() list, NOT chained :not():not(). A :not()
    list counts as its single most-specific arg, so the rule stays (0,3,1) -- the original. A second
    chained :not() would make it (0,4,1) and out-specify the donor-card logo's `height:90%!important`
@@ -2233,7 +2237,7 @@ code:empty { display: none; }
 /* Exempt the mininav switcher pills (.mn-switcher icons -- the "stable" brick blew to 46px,
    defeating the 1.2em pill cap). They are icons with their OWN cap; the 46px blanket is
    for donor/content logos, not these. */
-.info-box :not(.info-box-icon, .info-box-icon *, .thumbframe, .thumbframe *, .mn-switcher *) > img:not(.ia-archive-icon, .media-sized, .link-icon) { height: 46px !important; width: auto !important; max-width: 100%; }
+.info-box :not(.info-box-icon, .info-box-icon *, .thumbframe, .thumbframe *, .mn-switcher *, .gallery-steps *) > img:not(.ia-archive-icon, .media-sized, .link-icon) { height: 46px !important; width: auto !important; max-width: 100%; }
 
 /* File: page main image is a link to its full-resolution media. Idiomatic "enlarges"
    affordance (MediaWiki MultimediaViewer uses zoom-in), reinforced by a light CSS-only
@@ -2386,16 +2390,9 @@ code:empty { display: none; }
 .cs-purple, .cs-purple-light { --callout: var(--c-purple); }
 .cs-amber, .cs-amber-light { --callout: var(--c-amber); }
 
-/* GitHub-style admonition (Template:Callout -> #callout). Self-contained component; hue comes
-   from the cs-* -> --callout cascade, mirroring the .mbox/.info-box border-left+tint above. */
-.admonition {
-  margin: 1.25rem 0;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--callout, var(--accent));
-  border-radius: var(--radius);
-  background: color-mix(in srgb, var(--callout, var(--accent)) 7%, var(--surface));
-}
+/* GitHub-style admonition (Template:Callout -> #callout, Template:Mbox -> #mbox). The box frame
+   (border-left + tint + prose-measure cap) is the shared .mbox/.info-box rule above; only the
+   titled icon+label header is specific here. hue comes from the cs-* -> --callout cascade. */
 .admonition-title {
   display: flex;
   align-items: center;
@@ -2995,6 +2992,17 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
    drop a nested callout's 46px icon inset. */
 .wiki-content:not(.has-booknav) .intro-like > :not(:where(blockquote, .info-box, .mbox, .community-support-info)) {
   margin-left: 0; padding-left: 0;
+}
+/* Mobile (<=900px, where .has-rail/.has-booknav collapse to one block column -- the grid block
+   below): no side gutters remain, so the band's -12px horizontal bleed has nowhere to sit and
+   spills ~12px past the content edge (the left-cancel above fixes only the LEFT, and only for
+   :not(.has-booknav), so has-booknav pages like Shell/Software overflow on the right). Drop the
+   bleed on BOTH sides for every page so the band aligns to the content column; blockquote +
+   callout boxes keep their own box model, as in the left-cancel. */
+@media (max-width: 900px) {
+  .wiki-content .intro-like > :not(:where(blockquote, .info-box, .mbox, .community-support-info)) {
+    margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0;
+  }
 }
 
 /* Page LEAD -- idiomatic lead typography. GOV.UK govuk-body-l (24px), Scottish ds_leader

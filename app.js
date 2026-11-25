@@ -2827,7 +2827,8 @@
   // section"). Desktop hover + keyboard :focus-within reveals stay pure CSS. A click on an actual
   // affordance (edit/share) or any link/button inside a heading must ACT, not navigate -- the
   // hidden cluster is pointer-events:none, so a tap over its invisible zone hit-tests to the
-  // heading and falls through here. Escape clears the reveal (drops :target). NO-JS keeps hover
+  // heading and falls through here. The reveal is :target single-active -- targeting another
+  // heading drops the prior one; there is no Escape-to-clear (see below). NO-JS keeps hover
   // (desktop) + the always-visible touch fallback. TT-safe: only navigation, no HTML sink.
   function initHeadingReveal() {
     document.addEventListener("click", function (e) {
