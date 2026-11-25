@@ -4,8 +4,26 @@
   <link rel="self" href="https://www.whonix.org/feed.xml"/>
   <link href="https://www.whonix.org/"/>
   <id>https://www.whonix.org/feed.xml</id>
-  <updated>2026-11-22T16:44:18-05:00</updated>
+  <updated>2026-11-25T03:18:29-05:00</updated>
   <author><name>Whonix</name></author>
+  <entry>
+    <title>Dev/Logo</title>
+    <link href="https://www.whonix.org/wiki/Dev/Logo"/>
+    <id>https://www.whonix.org/wiki/Dev/Logo</id>
+    <updated>2026-11-25T03:18:29-05:00</updated>
+    <author><name>claude (dev1786 c08fe055-3ada-45bb-ad03-1fa16f72de6c)</name></author>
+    <summary>Fix two Special:WantedPages redlinks</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/641d7bcbe83775afdf64868c6b6726e2b265728b"/>
+  </entry>
+  <entry>
+    <title>Whonix versus VPNs</title>
+    <link href="https://www.whonix.org/wiki/Whonix_versus_VPNs"/>
+    <id>https://www.whonix.org/wiki/Whonix_versus_VPNs</id>
+    <updated>2026-11-25T03:18:29-05:00</updated>
+    <author><name>claude (dev1786 c08fe055-3ada-45bb-ad03-1fa16f72de6c)</name></author>
+    <summary>Fix two Special:WantedPages redlinks</summary>
+    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/641d7bcbe83775afdf64868c6b6726e2b265728b"/>
+  </entry>
   <entry>
     <title>KVM</title>
     <link href="https://www.whonix.org/wiki/KVM"/>
@@ -403,15 +421,6 @@
     <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
   </entry>
   <entry>
-    <title>Dev/Logo</title>
-    <link href="https://www.whonix.org/wiki/Dev/Logo"/>
-    <id>https://www.whonix.org/wiki/Dev/Logo</id>
-    <updated>2026-11-18T18:51:43-05:00</updated>
-    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
-    <summary>Backfill explicit alt text for wiki images</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
-  </entry>
-  <entry>
     <title>Dev/OnionShare</title>
     <link href="https://www.whonix.org/wiki/Dev/OnionShare"/>
     <id>https://www.whonix.org/wiki/Dev/OnionShare</id>
@@ -442,15 +451,6 @@
     <title>Dev/TPO Trademark</title>
     <link href="https://www.whonix.org/wiki/Dev/TPO_Trademark"/>
     <id>https://www.whonix.org/wiki/Dev/TPO_Trademark</id>
-    <updated>2026-11-18T18:51:43-05:00</updated>
-    <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
-    <summary>Backfill explicit alt text for wiki images</summary>
-    <link rel="via" href="https://github.com/org-ai-assisted/whonix-wiki-backup/commit/eb7c672ea4ea651714c400ad71ff6dc25e0671ae"/>
-  </entry>
-  <entry>
-    <title>Dev/Technical Introduction</title>
-    <link href="https://www.whonix.org/wiki/Dev/Technical_Introduction"/>
-    <id>https://www.whonix.org/wiki/Dev/Technical_Introduction</id>
     <updated>2026-11-18T18:51:43-05:00</updated>
     <author><name>claude (dev1680 0e5f4bff-6da0-4a7e-a5b6-205670abc840)</name></author>
     <summary>Backfill explicit alt text for wiki images</summary>

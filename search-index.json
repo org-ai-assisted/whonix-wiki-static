@@ -680,7 +680,7 @@
     "u": "wiki/Dev/Porting"
   },
   {
-    "d": "Documentation for this is incomplete. Contributions are happily considered! See this for potential alternatives.",
+    "d": "Previous Dev/Host Next Dev/Entropy Previous page: Dev/Host Next page: Dev/Entropy",
     "t": "Dev/Project Host",
     "u": "wiki/Dev/Project_Host"
   },
@@ -4558,11 +4558,6 @@
   },
   {
     "n": 1,
-    "t": "File:Whonix old logo.png",
-    "u": "wiki/File:Whonix_old_logo.png"
-  },
-  {
-    "n": 1,
     "t": "File:Whonix overview by glennsorrentino.jpeg",
     "u": "wiki/File:Whonix_overview_by_glennsorrentino.jpeg"
   },
@@ -5543,7 +5538,7 @@
     "u": "wiki/Packages_for_Debian_Hosts"
   },
   {
-    "d": "The following command using gpg with --recv-keys is not recommended for security reasons and is often non-functional. [ 1 ] This is not a Whonix-specific",
+    "d": "Trying to predict but not influence the future. And proofing it. These are sha512 hashes which are published before a predicted event is going to happen. Once",
     "t": "Patrick Schleizer",
     "u": "wiki/Patrick_Schleizer"
   },
@@ -5616,7 +5611,7 @@
     "u": "wiki/Privacy_Policy"
   },
   {
-    "d": "NOT-SELFCONTAINED: This wiki page is not self-contained by design. This It only includes details specific to Whonix. For full understanding, please follow the",
+    "d": "Apply the instructions inside Whonix, not inside Kicksecure.",
     "t": "Progress Reports",
     "u": "wiki/Progress_Reports"
   },
@@ -9323,7 +9318,6 @@
     "u": "wiki/Windows_Quick_Start_Testers_Only_Version"
   },
   {
-    "d": "Documentation for this is incomplete. Contributions are happily considered! See this for potential alternatives.",
     "t": "XCP-ng",
     "u": "wiki/XCP-ng"
   },

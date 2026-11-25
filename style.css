@@ -333,10 +333,14 @@ img.media-sized:not(.media-figure)[width][height] { contain: size; }
    margin (list items have 0.3rem) but would make two inline prose links on ADJACENT WRAPPED LINES
    overlap, so a click could hit the wrong one. These containers hold standalone links (one per
    block, not a running sentence), so no such overlap arises; prose sentence links are left alone
-   (they are WCAG-exempt anyway). Buttons keep their own larger sizing (excluded below), and the
-   inline citation/edit markers (a <sup> footnote / archived-version mark, a references-list
-   backlink) stay tiny superscripts (padding reverted) so this does not fight the footnote fix. */
-.wiki-content :is(li, dd, dt, td, th, figcaption, .info-box) a:not(.cta-button):not(.button):not(.pill):not(.download-button-v2):not(.hero-download-button):not(.headline-anchor) {
+   (they are WCAG-exempt anyway). Buttons keep their own larger sizing (excluded below). Inline
+   citation/edit markers (a <sup> footnote / archived-version mark, a references-list backlink) are
+   excluded via `:not(sup a)` so they fall through to the sup-reset below (padding-block:0) and keep
+   their own marker sizing -- taptarget.py exempts sup markers, so this is a no-tap-regression. The
+   exclusion is REQUIRED, not redundant with the reset: this rule's heavy :not chain out-specifies
+   the reset's (0,1,2), so without it a marker in a list item/cell wins the cascade and is re-padded
+   to ~30px (the citation over-pad). Same `:not(sup a)` alignment as the references + resource rules. */
+.wiki-content :is(li, dd, dt, td, th, figcaption, .info-box) a:not(sup a):not(.cta-button):not(.button):not(.pill):not(.download-button-v2):not(.hero-download-button):not(.headline-anchor) {
   padding-block: 3px;
 }
 .wiki-content sup a,
@@ -346,8 +350,10 @@ img.media-sized:not(.media-figure)[width][height] { contain: size; }
 /* Gallery caption file-links (`<gallery>` thumbnail labels) render in a SMALLER font than body
    text, so the base padding above does not reach 24px; and a caption is crowded by its own
    thumbnail link above (on mobile, by the next thumbnail below too). Pad to clear 24px for the
-   smaller caption font -- a standalone caption, so there is no sentence flow to disturb. */
-.wiki-content .gallery .gallerytext a {
+   smaller caption font -- a standalone caption, so there is no sentence flow to disturb. Excludes
+   `:not(sup a)` like the other tap-box rules: a [N]/footnote marker in a caption keeps its own
+   marker sizing (taptarget.py-exempt) rather than inheriting this caption padding. */
+.wiki-content .gallery .gallerytext a:not(sup a) {
   padding-block: 4px;
 }
 /* Download/app lists render each entry as a logo link (to the image File page) PLUS a short text
@@ -358,6 +364,33 @@ img.media-sized:not(.media-figure)[width][height] { contain: size; }
    centre it); only these paired labels are affected, never an inline prose link. */
 .wiki-content li > a:has(> img) + a {
   padding-inline: 3px;
+}
+/* References/footnotes render at 0.9rem, so the base li-link tap-box (padding-block:3px above)
+   reaches only ~23px -- under WCAG 2.5.8's 24px minimum. Box the reference-TEXT content link
+   (DESCENDANT `a`, so a link wrapped in formatting like ''italic'' -> .reference-text em a is still
+   caught), EXCLUDING any sup-nested <a> via `:not(sup a)` -- taptarget.py exempts sup markers
+   (archive icon, [N] citation, footnote), each with its own sizing, so they must not be re-padded.
+   Out-specifies the base rule's heavy :not chain so it wins the cascade. padding-block grows the
+   inline link's measured box but NOT the line box, so stacked content links (some refs carry >=2)
+   would overlap on wrap -- the line-height below opens the lines so the ~25px box clears, no mis-tap. */
+.wiki-content :is(.references, .footnotes) .reference-text a:not(sup a):not(.cta-button):not(.button):not(.pill):not(.download-button-v2):not(.hero-download-button):not(.headline-anchor) {
+  padding-block: 4px;
+}
+.wiki-content :is(.references, .footnotes) {
+  line-height: 1.8;
+}
+/* External-resource link lines ("<Project> homepage [archive] <logo> Debian package [archive]") are
+   standalone WCAG 2.5.8 tap targets, not inline-sentence links -- the base tap-box deliberately
+   skips bare <p>. Box the resource link to clear 24px. Section-INDEPENDENT (_wrap_sections emits NO
+   .cv-section on a 0/1-section page, so a .cv-section scope would miss those). `:has(.ext-link-to-
+   archive)` is DESCENDANT, not `> `: a formatting-wrapped line nests the marker under <em>
+   (<p><em><a>..</a><sup class=ext-link-to-archive>..</sup></em></p>), so a direct-child test would
+   miss it. DESCENDANT `a` catches the wrapped content link; `:not(sup a)` excludes ALL sup markers
+   (archive icon AND an inline [N] citation sharing the paragraph -- both keep their own sizing); the
+   .link-icon is an <img>, not matched. At body line-height the ~25px box does not overlap, so a
+   prose <p> carrying an external link is padded harmlessly; buttons keep their own sizing. */
+.wiki-content p:has(.ext-link-to-archive) a:not(sup a):not(.cta-button):not(.button):not(.pill):not(.download-button-v2):not(.hero-download-button) {
+  padding-block: 3px;
 }
 /* Production wiki image-sizing classes ({{img-height-N}}): a logo sized by HEIGHT, width auto.
    Prod targets a descendant img (.img-height-N img); the generator stamps the class on the <img>
@@ -859,6 +892,7 @@ body.site-whonix .site-logo-img { width: auto; }
   .wiki-content .mbox,
   .wiki-content .info-box,
   .wiki-content .community-support-info,
+  .wiki-content .admonition,
   .wiki-content tr,
   .wiki-content img {
     break-inside: avoid;
@@ -2174,6 +2208,17 @@ code:empty { display: none; }
 .wiki-content .tcc-section,
 .wiki-content .tab-content-controller,
 .wiki-content :is(.mbox, .info-box, .community-support-info, .admonition).width-100 { max-width: none; }
+/* A plain callout box that WRAPS an interactive widget (an OS-chooser / GUI-CLI
+   .tab-content-controller, or a manually-placed .mn-switcher pill nav) must escape the cap too.
+   The widget opts out on ITSELF above, but a capped ANCESTOR box still constrains it: on desktop
+   the widget is squeezed to the ~66ch measure (~640px) inside the far wider column, wasting the
+   right margin and wrapping the switcher into extra rows (the common numbered-step "Select your
+   platform" box: {{Box}}/{{mbox}} -> .info-box wrapping {{Tab|type=controller}}). Lift the cap on
+   the CONTAINER so the widget uses the full column. Prose children keep their own
+   `.wiki-content p{max-width:66ch}` measure, so a normal callout's text is never widened -- only a
+   widget-bearing box matches. :is(box)(0,1,0) + :has() most-specific-arg(0,1,0) +
+   .wiki-content(0,1,0) = (0,3,0), out-specifies the (0,1,0) cap. */
+.wiki-content :is(.mbox, .info-box, .community-support-info, .admonition):has(.tab-content-controller, .mn-switcher) { max-width: none; }
 /* Only an icon callout is a horizontal icon|content row. A plain/step info-box (a
    numbered section box, an OS-chooser wrapper) has block children that must STACK --
    flex-row here laid them side by side and overflowed the viewport horizontally.
@@ -2401,9 +2446,39 @@ code:empty { display: none; }
   font-weight: 600;
   color: var(--callout, var(--accent));
 }
-.admonition-title > i { font-size: 1rem; line-height: 1; width: 1.1em; text-align: center; }
+/* The icon takes its OWN --callout, so a hand-authored {{mbox|icon=fa-... cs-red}} glyph (cs-* on
+   the <i>) keeps its hue independent of the box hue (addToClass) -- no equal-specificity clash
+   that paints a red icon yellow-on-yellow. With no cs-* on the <i> it inherits the box --callout,
+   so a typed admonition's icon stays the box hue. */
+.admonition-title > i { font-size: 1rem; line-height: 1; width: 1.1em; text-align: center; color: var(--callout); }
 .admonition-body > :first-child { margin-top: 0; }
 .admonition-body > :last-child { margin-bottom: 0; }
+/* #34: the title's brand-hue LABEL text dips just under WCAG AA 4.5:1 on the component's own 7%
+   LIGHT tint (blue 4.17, green 3.02, purple 4.30, amber 4.16, red 4.13). Darken the LABEL to the
+   house status-hue set (same treatment as the qualitative .cell-* glyphs), keeping the bright
+   --callout ICON (passes 3:1 non-text) and the bright label in DARK mode (clears >=5.6:1). Screen-
+   scoped restore so @media print keeps these darker light-mode hues. */
+.admonition.cs-blue   .admonition-label { color: #2c68c4; }  /* 4.62:1 */
+.admonition.cs-green  .admonition-label { color: #147b31; }  /* 4.65:1 */
+.admonition.cs-purple .admonition-label { color: #7d4dd6; }  /* 4.58:1 */
+.admonition.cs-amber  .admonition-label { color: #916100; }  /* 4.59:1 */
+.admonition.cs-red    .admonition-label { color: #c63124; }  /* 4.58:1 */
+@media screen {
+  :root[data-theme="dark"] .admonition .admonition-label { color: var(--callout); }
+}
+@media screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .admonition .admonition-label { color: var(--callout); }
+}
+/* Body links sit on the same tint where the bright --link dips to 4.42:1, so use the darker
+   --link-on-shade (7.6:1 light / 9:1 dark), mirroring .cell-* / .explainer. :where() keeps zero
+   added specificity; color beats the base `a` rule, decoration mirrors prose. EXCLUDE buttons
+   (incl .mw-ui-button) AND links inside a nested WHITE-surface overlay (.share-note, the share
+   .share-tooltip menu, the #infotooltip .info-popover): those do NOT sit on the admonition tint,
+   so --link-on-shade (dark #aecfff) on their white bg would be ~1.6:1 -- they keep their own. */
+.admonition a:where(:not(.cta-button, .button, .pill, .download-button-v2, .hero-download-button, .mw-ui-button, .share-note a, .share-tooltip a, .info-popover a)) {
+  color: var(--link-on-shade);
+  text-decoration: underline;
+}
 .cs-orange, .cs-orange-light { --callout: var(--c-orange); }
 .cs-gray, .cs-gray-light, .cs-black, .cs-white { --callout: var(--c-gray); }
 .cs-red-font { color: var(--c-red); }
@@ -2411,8 +2486,10 @@ code:empty { display: none; }
    (production fills these solid -- .cs-yellow-light #fff9a5, .cs-red #ff6e6e, etc.; a pale
    --callout tint is the dark-mode-safe equivalent and is why the warning box was colourless
    before). One rule covers warning / note / collapsible boxes of every colour; the per-class
-   --callout above picks the hue. Scoped to box elements so an inline cs-red span stays text. */
-:is(.toccolours, .mw-collapsible, .info-box, .mbox):is(.cs-red, .cs-red-light,
+   --callout above picks the hue. Scoped to box elements so an inline cs-red span stays text.
+   EXCLUDE .admonition: it keeps its own 7% tint (the shared box rule) on which its darkened
+   labels are AA; the 16% tint here would drop them to ~4.3:1 (a collapsible/mbox admonition). */
+:is(.toccolours, .mw-collapsible, .info-box, .mbox):not(.admonition):is(.cs-red, .cs-red-light,
     .cs-green, .cs-green-light, .cs-blue, .cs-blue-light, .cs-yellow, .cs-yellow-light,
     .cs-orange, .cs-orange-light, .cs-gray, .cs-gray-light) {
   background: color-mix(in srgb, var(--callout) 16%, var(--bg));
@@ -2966,7 +3043,7 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 /* `.wiki-content` prefix raises specificity above `.wiki-content p{margin:0 0 1rem}`
    (0,1,1) -- without it that rule beat `.intro-like > *` (0,1,0) and re-added a 1rem gap
    between the paragraphs, breaking the box into disconnected slabs. */
-.wiki-content .intro-like > :not(:where(.info-box, .mbox, .community-support-info)) {
+.wiki-content .intro-like > :not(:where(.info-box, .mbox, .community-support-info, .admonition)) {
   /* Specificity is tuned: the `.wiki-content` prefix + `:not(:where())` put this base slab
      rule at (0,2,0) -- high enough to keep `margin:0` winning over `.wiki-content p` (0,1,1)
      (else a 1rem gap re-breaks the band), yet low enough that the first/last-slab overrides
@@ -2978,10 +3055,10 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
      join at ~0.8em; roomy top/bottom come from the first/last-slab overrides. */
   margin: 0 -12px; padding: 0.4em 12px; max-width: none;
 }
-.wiki-content .intro-like > :first-child:not(:where(.info-box, .mbox, .community-support-info)) {
+.wiki-content .intro-like > :first-child:not(:where(.info-box, .mbox, .community-support-info, .admonition)) {
   padding-top: 1em;
 }
-.wiki-content .intro-like > :last-child:not(:where(.info-box, .mbox, .community-support-info)) {
+.wiki-content .intro-like > :last-child:not(:where(.info-box, .mbox, .community-support-info, .admonition)) {
   padding-bottom: 1.1em;
 }
 /* Flush-left content column (the has-rail-only grid and the plain non-grid page have NO left
@@ -2990,7 +3067,7 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
    unaffected); has-booknav pages keep the bleed. blockquote + callout boxes excluded: each carries
    its own box model, and zeroing padding-left (0,3,0) would outrank .info-box.has-icon (0,2,0) and
    drop a nested callout's 46px icon inset. */
-.wiki-content:not(.has-booknav) .intro-like > :not(:where(blockquote, .info-box, .mbox, .community-support-info)) {
+.wiki-content:not(.has-booknav) .intro-like > :not(:where(blockquote, .info-box, .mbox, .community-support-info, .admonition)) {
   margin-left: 0; padding-left: 0;
 }
 /* Mobile (<=900px, where .has-rail/.has-booknav collapse to one block column -- the grid block
@@ -3000,7 +3077,7 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
    bleed on BOTH sides for every page so the band aligns to the content column; blockquote +
    callout boxes keep their own box model, as in the left-cancel. */
 @media (max-width: 900px) {
-  .wiki-content .intro-like > :not(:where(blockquote, .info-box, .mbox, .community-support-info)) {
+  .wiki-content .intro-like > :not(:where(blockquote, .info-box, .mbox, .community-support-info, .admonition)) {
     margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0;
   }
 }
@@ -3053,10 +3130,10 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   padding: 0; margin: 10px 0 12px; text-align: center;
   font-size: 34px; line-height: 1.2;
 }
-.page-home .wiki-content .intro-like > :not(:where(.info-box, .mbox, .community-support-info)),
-.page-home .intro-like > :first-child:not(:where(.info-box, .mbox, .community-support-info)),
-.page-home .intro-like > :last-child:not(:where(.info-box, .mbox, .community-support-info)),
-.page-home .wiki-content .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail, .info-box, .mbox, .community-support-info)),
+.page-home .wiki-content .intro-like > :not(:where(.info-box, .mbox, .community-support-info, .admonition)),
+.page-home .intro-like > :first-child:not(:where(.info-box, .mbox, .community-support-info, .admonition)),
+.page-home .intro-like > :last-child:not(:where(.info-box, .mbox, .community-support-info, .admonition)),
+.page-home .wiki-content .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail, .info-box, .mbox, .community-support-info, .admonition)),
 .page-home .wiki-content .pre-intro-p ~ [data-nosnippet]:not(:where(.post-intro-p ~ *)) > p {
   /* centered hero: no tint, no gutter bleed (margin-inline:0), full-width (max-width:none cancels
      the lead base's 66ch cap so the centered slogan spans the column). Covers BOTH the {{IntroLike}}
@@ -3735,6 +3812,16 @@ sup.reference:target {
   white-space: normal;
 }
 .info-popover:popover-open { display: block; }
+/* The popover bg is hard-coded white (#fff) in BOTH themes, so in dark mode a link inside it
+   must NOT inherit the light-blue dark --link (~2.2:1 on white, below AA). Pin it to the
+   on-white link color (#0f4c81, ~8.5:1 on white). EXCLUDE button-style anchors (same family the
+   .admonition recolor excludes) -- they carry their own bg + white text, which this must not
+   override. The .admonition recolor already excludes .info-popover a (white surface, not the
+   tint); this is the paired AA fix for the popover's own bg. */
+:root[data-theme="dark"] .info-popover a:not(.cta-button, .button, .pill, .download-button-v2, .hero-download-button, .mw-ui-button) { color: #0f4c81; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .info-popover a:not(.cta-button, .button, .pill, .download-button-v2, .hero-download-button, .mw-ui-button) { color: #0f4c81; }
+}
 /* Close (x), top-right: native popovertargetaction=hide (no JS). */
 /* info/antispam popover close: a circular .popover-close floated to the top-right; the note text
    wraps to its left (the popover is small, so a reserved header row would waste its width). */
@@ -4566,7 +4653,22 @@ body.page-home { container-type: inline-size; }
   height: 6rem; padding: 0.45rem; box-sizing: border-box;   /* equal square image zone + inset */
 }
 .wiki-content .thumb-gallery .thumbframe img {
-  width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain;
+  /* height:100% (NOT auto): the generic `.thumbframe img[width][height]` rule applies contain:size
+     to a gallery thumb too, and contain:size needs a DEFINITE axis -- dual-auto collapses the box
+     to 0x0 (measured in chromium/Firefox). The fixed-height slot (`> a` height:6rem) gives height a
+     definite base; object-fit:contain + max-width:100% then letterbox the thumb. mode-logos pins
+     its axis the same way (height:100%). */
+  width: auto; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain;
+}
+.wiki-content .thumb-gallery .thumbframe > img,
+.wiki-content .thumb-gallery .thumbframe > p > img {
+  /* Anchorless gallery thumb (|link= suppresses the <a>, so the img is a direct child of the
+     figure, or of a pandoc <p> wrapper -- cf. the `> a` / `> p > a` slots above): no fixed-height
+     slot, so height:100% has no definite base and contain:size collapses it to 0x0 (same failure
+     as the anchored case). Give it its own definite height (6rem, the plain slot). Source order
+     wins the `> img` specificity tie with the descendant rule above; never matches an anchored img
+     (`> a > img`). mode-logos pins its own 4.5rem slot below. */
+  height: 6rem;
 }
 /* {{ThumbGallery|mode=logos}}: a frameless "logo cloud" (About #Optimized_defaults). Transparent
    brand logos sit directly on the page background -- no card border/fill/shadow -- at uniform
@@ -4619,6 +4721,12 @@ body.page-home { container-type: inline-size; }
      width. Those keep intrinsic sizing (visible, not slot-stabilised) -- same guard + reason as
      the .thumbframe img[width][height] rule above. */
   contain: size;
+}
+.wiki-content .thumb-gallery.mode-logos .thumbframe > img,
+.wiki-content .thumb-gallery.mode-logos .thumbframe > p > img {
+  /* Anchorless logo (|link=): same 0x0 collapse as the plain gallery, but the logo slot is 4.5rem.
+     Specificity (0,4,1) ties the mode-logos descendant img rule above; placed after it to win. */
+  height: 4.5rem;
 }
 .wiki-content .thumb-gallery.mode-logos .thumbcaption {
   text-align: center; color: var(--fg-soft); font-size: 0.82rem; padding-top: 0.3rem;

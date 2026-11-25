@@ -23,10 +23,10 @@
 <link rel="mw-book-next" href="Censorship_Circumvention_Tools">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Access Whonix-Gateway Ports from the Host","description":"Access Whonix-Gateway Port From Host (Esoteric Documentation)","url":"https://www.whonix.org/wiki/Access_Gateway_Port_From_Host","mainEntityOfPage":"https://www.whonix.org/wiki/Access_Gateway_Port_From_Host","inLanguage":"en","image":"https://www.whonix.org/media/orig/Accessgateway.jpg","isAccessibleForFree":true,"author":{"@type":"Organization","name":"Whonix","url":"https://www.whonix.org"},"publisher":{"@type":"Organization","name":"Whonix","url":"https://www.whonix.org","logo":{"@type":"ImageObject","url":"https://www.whonix.org/Whonix-logo-standard.svg"}},"copyrightHolder":{"@type":"Organization","name":"ENCRYPTED SUPPORT LTD"},"copyrightYear":2012,"datePublished":"2022-12-25","dateModified":"2026-11-18"}</script>
 <script src="../theme-init.min.js?h=e78c0503"></script>
-<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-solid-900.woff2?h=dd04ffb1" crossorigin fetchpriority="low">
+<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-solid-900.woff2?h=75abe0af" crossorigin fetchpriority="low">
 <link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-brands-400.woff2?h=dea737e0" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-regular-400.woff2?h=55a4e0c2" crossorigin>
-<link rel="stylesheet" href="../style.min.css?h=49f638c4">
+<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-regular-400.woff2?h=6c42e70e" crossorigin>
+<link rel="stylesheet" href="../style.min.css?h=26f2a505">
 <link rel="search" type="application/opensearchdescription+xml" href="../opensearch.xml" title="Whonix">
 <link rel="alternate" type="application/atom+xml" href="../feed.xml" title="Whonix -- recent changes">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg" sizes="any">
@@ -40,9 +40,9 @@
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#16181b" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-title" content="Whonix">
-<link rel="mw-search-index" href="../search-index.min.json?h=8f8ee8ce">
+<link rel="mw-search-index" href="../search-index.min.json?h=7dd602ed">
 <link rel="mw-page-previews" href="../page-previews.min.json?h=05742a07">
-<link rel="mw-fulltext-manifest" href="../search/fulltext-manifest.min.json?h=2d3e954c">
+<link rel="mw-fulltext-manifest" href="../search/fulltext-manifest.min.json?h=396b8512">
 <link rel="preload" as="image" fetchpriority="high" href="../media/Accessgateway.jpg.avif?h=21e61715" imagesrcset="../media/thumb/Accessgateway.jpg-160.webp?h=21e61715 160w, ../media/thumb/Accessgateway.jpg-220.avif?h=21e61715 220w, ../media/thumb/Accessgateway.jpg-240.webp?h=21e61715 240w, ../media/thumb/Accessgateway.jpg-360.webp?h=21e61715 360w, ../media/thumb/Accessgateway.jpg-440.webp?h=21e61715 440w, ../media/thumb/Accessgateway.jpg-480.avif?h=21e61715 480w, ../media/thumb/Accessgateway.jpg-600.webp?h=21e61715 600w, ../media/Accessgateway.jpg.avif?h=21e61715 640w" imagesizes="(max-width: 252px) calc(100vw - 32px), 220px">
 </head>
 <body class="site-whonix">
@@ -70,11 +70,8 @@ Circumvention Tools</span></span></span><div class="content-col">
 <p>Access Whonix-Gateway Port From Host (Esoteric Documentation)</p>
 <div class="post-intro-p">
 </div>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-This is very esoteric and you probably do not need it! Advanced users
-only!</p>
-</div>
+<div class="admonition admonition-note cs-blue"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body">This is very esoteric and you probably do not need it! Advanced users
+only!</div></div>
 <nav class="toc" aria-label="Contents"><input type="checkbox" id="toc-toggle" class="toc-toggle" checked><label for="toc-toggle" class="toc-title">Contents</label><ul><li class="toc-l1 toc-parent"><a href="#Access_Whonix-Gateway_Port_From_Host"><span class="tocnumber">1</span> <span class="toctext">Access Whonix-Gateway Port From Host</span></a> <span class="toc-count">(4)</span><details class="toc-sec"><summary class="toc-expander" aria-label="Toggle Access Whonix-Gateway Port From Host subsections"></summary><ul><li class="toc-l2 toc-parent"><a href="#Example:_Make_port_9050_accessible_from_the_host."><span class="tocnumber">1.1</span> <span class="toctext">Example: Make port 9050 accessible from the host.</span></a> <span class="toc-count">(2)</span><details class="toc-sec"><summary class="toc-expander" aria-label="Toggle Example: Make port 9050 accessible from the host. subsections"></summary><ul><li class="toc-l3"><a href="#Host_Setup"><span class="tocnumber">1.1.1</span> <span class="toctext">Host Setup</span></a></li><li class="toc-l3"><a href="#Whonix-Gateway_Setup"><span class="tocnumber">1.1.2</span> <span class="toctext">Whonix-Gateway Setup</span></a></li></ul></details></li><li class="toc-l2"><a href="#Debugging"><span class="tocnumber">1.2</span> <span class="toctext">Debugging</span></a></li><li class="toc-l2"><a href="#Testing"><span class="tocnumber">1.3</span> <span class="toctext">Testing</span></a></li><li class="toc-l2"><a href="#Forwarding_that_port_to_LAN"><span class="tocnumber">1.4</span> <span class="toctext">Forwarding that port to LAN</span></a></li></ul></details></li><li class="toc-l1"><a href="#See_Also"><span class="tocnumber">2</span> <span class="toctext">See Also</span></a></li><li class="toc-l1"><a href="#Footnotes"><span class="tocnumber">3</span> <span class="toctext">Footnotes</span></a></li></ul></nav><section class="cv-section"><h2 class="hvis1" id="Access_Whonix-Gateway_Port_From_Host">Access Whonix-Gateway Port
 From Host<span class="heading-actions"><span class="mw-editsection"><a href="https://github.com/org-ai-assisted/whonix-wiki-backup/blob/master/Access_Gateway_Port_From_Host.mw#L20" target="_blank" rel="noopener noreferrer nofollow" aria-label="Edit the Access Whonix-Gateway Port From Host section on the wiki source" title="Edit the Access Whonix-Gateway Port From Host section"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a></span><span class="share-tooltip" data-anchor="Access_Whonix-Gateway_Port_From_Host" data-sh-direct="https://www.whonix.org/wiki/Access_Gateway_Port_From_Host#Access_Whonix-Gateway_Port_From_Host" data-sh-u="https%3A%2F%2Fwww.whonix.org%2Fwiki%2FAccess_Gateway_Port_From_Host%23Access_Whonix-Gateway_Port_From_Host" data-sh-t="Access%20Whonix-Gateway%20Port%0AFrom%20Host" data-sh-aria="Access Whonix-Gateway Port From Host" data-sh-wiki="[[Access Gateway Port From Host#Access_Whonix-Gateway_Port_From_Host|Access Whonix-Gateway Port
 From Host]]" data-sh-md="[Access Whonix-Gateway Port
@@ -329,8 +326,8 @@ Circumvention Tools</span></span></span></p>
 </div>
 </div>
 </section>
-<footer class="page-meta"><div class="catlinks"><span class="catlinks-label">Categories:</span> <a aria-label="Documentation: Category:Documentation" href="./Category:Documentation">Documentation</a></div><div class="page-lastmod">Last updated: <time datetime="2026-11-18">2026-11-18</time></div>
-</footer>
+<div class="page-meta"><div class="catlinks"><span class="catlinks-label">Categories:</span> <a aria-label="Documentation: Category:Documentation" href="./Category:Documentation">Documentation</a></div><div class="page-lastmod">Last updated: <time datetime="2026-11-18">2026-11-18</time></div>
+</div>
 </div><aside class="related-rail" aria-label="Related pages"><nav class="related-card" aria-label="Advanced Networking"><p class="related-card-title">Advanced Networking <span class="related-card-count">4 pages</span></p><ul><li><a href="Connections_between_Gateway_and_Workstation">Connections between Whonix-Gateway and
 Whonix-Workstation</a></li><li><a href="Ports">Opening Ports in Whonix</a></li><li><a class="mw-selflink selflink" aria-current="page">Access
 Whonix-Gateway Ports from the Host</a></li><li><a href="Access_Workstation_Port_From_Host">Access

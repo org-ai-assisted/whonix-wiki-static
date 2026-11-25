@@ -21,10 +21,10 @@
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"How-to: Use Monero Offline (Cold Storage) (Air Gap) + Daemon Isolation in Qubes-Whonix over Tor","description":"Keep Monero private keys offline and isolate the network part (monerod) from the wallet part (Monero Wallet) for better security.","url":"https://www.whonix.org/wiki/Monero_Offline_Wallet","mainEntityOfPage":"https://www.whonix.org/wiki/Monero_Offline_Wallet","inLanguage":"en","image":"https://www.whonix.org/media/orig/Moneroheader.png","isAccessibleForFree":true,"author":{"@type":"Organization","name":"Whonix","url":"https://www.whonix.org"},"publisher":{"@type":"Organization","name":"Whonix","url":"https://www.whonix.org","logo":{"@type":"ImageObject","url":"https://www.whonix.org/Whonix-logo-standard.svg"}},"copyrightHolder":{"@type":"Organization","name":"ENCRYPTED SUPPORT LTD"},"copyrightYear":2012,"datePublished":"2022-12-25","dateModified":"2026-06-27"}</script>
 <script src="../theme-init.min.js?h=e78c0503"></script>
-<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-solid-900.woff2?h=dd04ffb1" crossorigin fetchpriority="low">
+<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-solid-900.woff2?h=75abe0af" crossorigin fetchpriority="low">
 <link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-brands-400.woff2?h=dea737e0" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-regular-400.woff2?h=55a4e0c2" crossorigin>
-<link rel="stylesheet" href="../style.min.css?h=49f638c4">
+<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-regular-400.woff2?h=6c42e70e" crossorigin>
+<link rel="stylesheet" href="../style.min.css?h=26f2a505">
 <link rel="search" type="application/opensearchdescription+xml" href="../opensearch.xml" title="Whonix">
 <link rel="alternate" type="application/atom+xml" href="../feed.xml" title="Whonix -- recent changes">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg" sizes="any">
@@ -38,9 +38,9 @@
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#16181b" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-title" content="Whonix">
-<link rel="mw-search-index" href="../search-index.min.json?h=8f8ee8ce">
+<link rel="mw-search-index" href="../search-index.min.json?h=7dd602ed">
 <link rel="mw-page-previews" href="../page-previews.min.json?h=05742a07">
-<link rel="mw-fulltext-manifest" href="../search/fulltext-manifest.min.json?h=2d3e954c">
+<link rel="mw-fulltext-manifest" href="../search/fulltext-manifest.min.json?h=396b8512">
 <link rel="preload" as="image" fetchpriority="high" href="../media/thumb/Flyin-donate-promo.jpg-600.avif?h=aa8079fb" imagesrcset="../media/thumb/Flyin-donate-promo.jpg-300.avif?h=aa8079fb 300w, ../media/thumb/Flyin-donate-promo.jpg-600.avif?h=aa8079fb 600w, ../media/thumb/Flyin-donate-promo.jpg-900.avif?h=aa8079fb 900w" imagesizes="300px">
 </head>
 <body class="site-whonix">
@@ -61,15 +61,12 @@
 (monerod) from the wallet part (Monero Wallet) for better security.</p>
 <div class="post-intro-p">
 </div>
-<p class="mpa-only"><span class="manually-placed-anchor " id="Community_Support"></span></p>
-<div class="info-box community-support-info csi-page has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-<strong>COMMUNITY SUPPORT ONLY</strong> : <strong>THIS WHOLE WIKI
+<p class="mpa-only"><span class="manually-placed-anchor " id="Community_Support"></span>
+</p><div class="admonition admonition-note cs-blue community-support-info csi-page"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body"><strong>COMMUNITY SUPPORT ONLY</strong> : <strong>THIS WHOLE WIKI
 <u>PAGE</u></strong> is only supported by the community. Whonix
 developers are <strong>very unlikely</strong> to provide free support
 for this content. See <a href="Community_Support">Community Support</a> for further information,
-including implications and possible alternatives.</p>
-</div>
+including implications and possible alternatives.</div></div>
 <nav class="toc" aria-label="Contents"><input type="checkbox" id="toc-toggle" class="toc-toggle" checked><label for="toc-toggle" class="toc-title">Contents</label><ul><li class="toc-l1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li><li class="toc-l1"><a href="#Prerequisite_Knowledge"><span class="tocnumber">2</span> <span class="toctext">Prerequisite Knowledge</span></a></li><li class="toc-l1 toc-parent"><a href="#Setup"><span class="tocnumber">3</span> <span class="toctext">Setup</span></a> <span class="toc-count">(4)</span><details class="toc-sec"><summary class="toc-expander" aria-label="Toggle Setup subsections"></summary><ul><li class="toc-l2 toc-parent"><a href="#Qubes_dom0_Configuration"><span class="tocnumber">3.1</span> <span class="toctext">Qubes dom0 Configuration</span></a> <span class="toc-count">(2)</span><details class="toc-sec"><summary class="toc-expander" aria-label="Toggle Qubes dom0 Configuration subsections"></summary><ul><li class="toc-l3"><a href="#Create_App_Qubes"><span class="tocnumber">3.1.1</span> <span class="toctext">Create App Qubes</span></a></li><li class="toc-l3"><a href="#Qubes_qrexec_Policy_Configuration"><span class="tocnumber">3.1.2</span> <span class="toctext">Qubes qrexec Policy Configuration</span></a></li></ul></details></li><li class="toc-l2"><a href="#monerod-ws_VM_Configuration"><span class="tocnumber">3.2</span> <span class="toctext">monerod-ws VM Configuration</span></a></li><li class="toc-l2"><a href="#monero-wallet-vault_VM_Setup"><span class="tocnumber">3.3</span> <span class="toctext">monero-wallet-vault VM Setup</span></a></li><li class="toc-l2 toc-parent"><a href="#monero-wallet-ws_VM_Setup"><span class="tocnumber">3.4</span> <span class="toctext">monero-wallet-ws VM Setup</span></a> <span class="toc-count">(2)</span><details class="toc-sec"><summary class="toc-expander" aria-label="Toggle monero-wallet-ws VM Setup subsections"></summary><ul><li class="toc-l3"><a href="#socat_setup"><span class="tocnumber">3.4.1</span> <span class="toctext">socat setup</span></a></li><li class="toc-l3"><a href="#View-Only_Wallet_Setup"><span class="tocnumber">3.4.2</span> <span class="toctext">View-Only Wallet Setup</span></a></li></ul></details></li></ul></details></li><li class="toc-l1 toc-parent"><a href="#Usage"><span class="tocnumber">4</span> <span class="toctext">Usage</span></a> <span class="toc-count">(4)</span><details class="toc-sec"><summary class="toc-expander" aria-label="Toggle Usage subsections"></summary><ul><li class="toc-l2"><a href="#Introduction_2"><span class="tocnumber">4.1</span> <span class="toctext">Introduction</span></a></li><li class="toc-l2"><a href="#Receiving"><span class="tocnumber">4.2</span> <span class="toctext">Receiving</span></a></li><li class="toc-l2"><a href="#Watching"><span class="tocnumber">4.3</span> <span class="toctext">Watching</span></a></li><li class="toc-l2"><a href="#Spending"><span class="tocnumber">4.4</span> <span class="toctext">Spending</span></a></li></ul></details></li><li class="toc-l1"><a href="#Monitoring_monerod"><span class="tocnumber">5</span> <span class="toctext">Monitoring monerod</span></a></li><li class="toc-l1"><a href="#See_Also"><span class="tocnumber">6</span> <span class="toctext">See Also</span></a></li><li class="toc-l1"><a href="#Donations"><span class="tocnumber">7</span> <span class="toctext">Donations</span></a></li><li class="toc-l1"><a href="#Footnotes"><span class="tocnumber">8</span> <span class="toctext">Footnotes</span></a></li></ul></nav><section class="cv-section"><h2 class="hvis1" id="Introduction">Introduction<span class="heading-actions"><span class="mw-editsection"><a href="https://github.com/org-ai-assisted/whonix-wiki-backup/blob/master/Monero_Offline_Wallet.mw" target="_blank" rel="noopener noreferrer nofollow" aria-label="Edit the Introduction section on the wiki source" title="Edit the Introduction section"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a></span><span class="share-tooltip" data-anchor="Introduction" data-sh-direct="https://www.whonix.org/wiki/Monero_Offline_Wallet#Introduction" data-sh-u="https%3A%2F%2Fwww.whonix.org%2Fwiki%2FMonero_Offline_Wallet%23Introduction" data-sh-t="Introduction" data-sh-aria="Introduction" data-sh-wiki="[[Monero Offline Wallet#Introduction|Introduction]]" data-sh-md="[Introduction](https://www.whonix.org/wiki/Monero_Offline_Wallet#Introduction)" data-sh-phpbb="[url=https://www.whonix.org/wiki/Monero_Offline_Wallet#Introduction]Introduction[/url]"><button type="button" class="headline-anchor" aria-haspopup="dialog" aria-expanded="false" aria-label="Copy or share a link to the Introduction section"><i class="fa-solid fa-share-nodes"></i></button><span class="menu-wrapper"><button type="button" class="menu-close popover-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Monero_Offline_Wallet#Introduction">https://www.whonix.org/wiki/Monero_Offline_Wallet#Introduction</span></span></span></span></span></h2>
 <p><strong>UNFINISHED!</strong></p>
 <p>These instructions document how to keep Monero private keys offline
@@ -103,16 +100,10 @@ Instructions on this wiki page have been carefully crafted with when to
 use and when not to use <code>sudo</code> in mind. The user should not
 use <code>sudo</code> unless instructed in documentation.
 <sup id="cite_ref-1" class="reference"><a href="#cite_note-1"><span class="cite-bracket">[</span>1<span class="cite-bracket">]</span></a></sup></p>
-<div class="info-box ib-for-thumb has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-triangle-exclamation cs-red" aria-hidden="true"></i></span>
-Documentation for this is incomplete. Contributions are happily
+<div class="admonition admonition-warning cs-amber ib-for-thumb"><p class="admonition-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span class="admonition-label">Warning</span></p><div class="admonition-body">Documentation for this is incomplete. Contributions are happily
 considered! See <a href="Unsupported">this</a> for
-potential alternatives.</p>
-</div>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-triangle-exclamation cs-red" aria-hidden="true"></i></span>
-Warning: This is for <u><strong>testers-only</strong></u>!</p>
-</div>
+potential alternatives.</div></div>
+<div class="admonition admonition-warning cs-amber"><p class="admonition-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span class="admonition-label">Warning</span></p><div class="admonition-body">Warning: This is for <u><strong>testers-only</strong></u>!</div></div>
 <p>Credits: These instructions are based on <a href="https://www.getmonero.org/resources/user-guides/cli_wallet_daemon_isolation_qubes_whonix.html">How
 to use Monero CLI/daemon with Qubes + Whonix</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of www.getmonero.org/resources/user-guides/cli_wallet_daemon_isolation_qubes_whonix.html on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.getmonero.org/resources/user-guides/cli_wallet_daemon_isolation_qubes_whonix.html" aria-label="Archived version of www.getmonero.org/resources/user-guides/cli_wallet_daemon_isolation_qubes_whonix.html on web.archive.org"><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" aria-hidden="true" /></a></sup> by <a href="https://www.getmonero.org">getmonero.org</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of www.getmonero.org on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.getmonero.org" aria-label="Archived version of www.getmonero.org on web.archive.org"><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" aria-hidden="true" /></a></sup> and from <a href="https://web.archive.org/web/20230329234145/https://monerodocs.org/cold-storage/offline-transaction-signing/">Offline
 Transaction Signing</a> on <a href="https://web.archive.org/web/20240222090354/http://monerodocs.org/">monerodocs.org</a>
@@ -765,8 +756,8 @@ based. Not process based.</span></li>
 </div>
 </div>
 </section>
-<footer class="page-meta"><div class="catlinks"><span class="catlinks-label">Categories:</span> <a aria-label="Documentation: Category:Documentation" href="./Category:Documentation">Documentation</a></div><div class="page-lastmod">Last updated: <time datetime="2026-06-27">2026-06-27</time></div>
-</footer>
+<div class="page-meta"><div class="catlinks"><span class="catlinks-label">Categories:</span> <a aria-label="Documentation: Category:Documentation" href="./Category:Documentation">Documentation</a></div><div class="page-lastmod">Last updated: <time datetime="2026-06-27">2026-06-27</time></div>
+</div>
 </div><aside class="related-rail" aria-label="Related pages"><nav class="related-card" aria-label="Monero"><p class="related-card-title">Monero <span class="related-card-count">6 pages</span></p><ul><li><a href="Monero">Monero</a></li><li><a href="Monero/Manual_Instructions">Monero Manual
 Instructions</a></li><li><a href="Monero_Multisig">Monero Multisig</a></li><li><a class="mw-selflink selflink" aria-current="page">Monero Offline
 Wallet</a></li><li><a href="RetoSwap">RetoSwap</a></li><li><a href="UnstoppableSwap">UnstoppableSwap</a></li></ul></nav></aside></main>

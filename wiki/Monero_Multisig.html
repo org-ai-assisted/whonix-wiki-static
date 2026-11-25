@@ -21,10 +21,10 @@
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"How-to: Use Monero with Multisig","description":"Monero with multiple signatures for better security.","url":"https://www.whonix.org/wiki/Monero_Multisig","mainEntityOfPage":"https://www.whonix.org/wiki/Monero_Multisig","inLanguage":"en","image":"https://www.whonix.org/media/orig/Moneroheader.png","isAccessibleForFree":true,"author":{"@type":"Organization","name":"Whonix","url":"https://www.whonix.org"},"publisher":{"@type":"Organization","name":"Whonix","url":"https://www.whonix.org","logo":{"@type":"ImageObject","url":"https://www.whonix.org/Whonix-logo-standard.svg"}},"copyrightHolder":{"@type":"Organization","name":"ENCRYPTED SUPPORT LTD"},"copyrightYear":2012,"datePublished":"2022-12-25","dateModified":"2026-06-27"}</script>
 <script src="../theme-init.min.js?h=e78c0503"></script>
-<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-solid-900.woff2?h=dd04ffb1" crossorigin fetchpriority="low">
+<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-solid-900.woff2?h=75abe0af" crossorigin fetchpriority="low">
 <link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-brands-400.woff2?h=dea737e0" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-regular-400.woff2?h=55a4e0c2" crossorigin>
-<link rel="stylesheet" href="../style.min.css?h=49f638c4">
+<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-regular-400.woff2?h=6c42e70e" crossorigin>
+<link rel="stylesheet" href="../style.min.css?h=26f2a505">
 <link rel="search" type="application/opensearchdescription+xml" href="../opensearch.xml" title="Whonix">
 <link rel="alternate" type="application/atom+xml" href="../feed.xml" title="Whonix -- recent changes">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg" sizes="any">
@@ -38,9 +38,9 @@
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#16181b" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-title" content="Whonix">
-<link rel="mw-search-index" href="../search-index.min.json?h=8f8ee8ce">
+<link rel="mw-search-index" href="../search-index.min.json?h=7dd602ed">
 <link rel="mw-page-previews" href="../page-previews.min.json?h=05742a07">
-<link rel="mw-fulltext-manifest" href="../search/fulltext-manifest.min.json?h=2d3e954c">
+<link rel="mw-fulltext-manifest" href="../search/fulltext-manifest.min.json?h=396b8512">
 <link rel="preload" as="image" fetchpriority="high" href="../media/thumb/Flyin-donate-promo.jpg-600.avif?h=aa8079fb" imagesrcset="../media/thumb/Flyin-donate-promo.jpg-300.avif?h=aa8079fb 300w, ../media/thumb/Flyin-donate-promo.jpg-600.avif?h=aa8079fb 600w, ../media/thumb/Flyin-donate-promo.jpg-900.avif?h=aa8079fb 900w" imagesizes="300px">
 </head>
 <body class="site-whonix">
@@ -60,15 +60,12 @@
 <p>Monero with multiple signatures for better security.</p>
 <div class="post-intro-p">
 </div>
-<p class="mpa-only"><span class="manually-placed-anchor " id="Community_Support"></span></p>
-<div class="info-box community-support-info csi-page has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-<strong>COMMUNITY SUPPORT ONLY</strong> : <strong>THIS WHOLE WIKI
+<p class="mpa-only"><span class="manually-placed-anchor " id="Community_Support"></span>
+</p><div class="admonition admonition-note cs-blue community-support-info csi-page"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body"><strong>COMMUNITY SUPPORT ONLY</strong> : <strong>THIS WHOLE WIKI
 <u>PAGE</u></strong> is only supported by the community. Whonix
 developers are <strong>very unlikely</strong> to provide free support
 for this content. See <a href="Community_Support">Community Support</a> for further information,
-including implications and possible alternatives.</p>
-</div>
+including implications and possible alternatives.</div></div>
 <nav class="toc" aria-label="Contents"><input type="checkbox" id="toc-toggle" class="toc-toggle" checked><label for="toc-toggle" class="toc-title">Contents</label><ul><li class="toc-l1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li><li class="toc-l1"><a href="#Warning"><span class="tocnumber">2</span> <span class="toctext">Warning</span></a></li><li class="toc-l1"><a href="#Setup"><span class="tocnumber">3</span> <span class="toctext">Setup</span></a></li><li class="toc-l1"><a href="#Offline_Signing_Considerations"><span class="tocnumber">4</span> <span class="toctext">Offline Signing Considerations</span></a></li><li class="toc-l1"><a href="#Hardware_Wallet_Considerations"><span class="tocnumber">5</span> <span class="toctext">Hardware Wallet Considerations</span></a></li><li class="toc-l1"><a href="#TODO"><span class="tocnumber">6</span> <span class="toctext">TODO</span></a></li><li class="toc-l1"><a href="#See_Also"><span class="tocnumber">7</span> <span class="toctext">See Also</span></a></li><li class="toc-l1"><a href="#Donations"><span class="tocnumber">8</span> <span class="toctext">Donations</span></a></li><li class="toc-l1"><a href="#Footnotes"><span class="tocnumber">9</span> <span class="toctext">Footnotes</span></a></li></ul></nav><section class="cv-section"><h2 class="hvis1" id="Introduction">Introduction<span class="heading-actions"><span class="mw-editsection"><a href="https://github.com/org-ai-assisted/whonix-wiki-backup/blob/master/Monero_Multisig.mw#L15" target="_blank" rel="noopener noreferrer nofollow" aria-label="Edit the Introduction section on the wiki source" title="Edit the Introduction section"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a></span><span class="share-tooltip" data-anchor="Introduction" data-sh-direct="https://www.whonix.org/wiki/Monero_Multisig#Introduction" data-sh-u="https%3A%2F%2Fwww.whonix.org%2Fwiki%2FMonero_Multisig%23Introduction" data-sh-t="Introduction" data-sh-aria="Introduction" data-sh-wiki="[[Monero Multisig#Introduction|Introduction]]" data-sh-md="[Introduction](https://www.whonix.org/wiki/Monero_Multisig#Introduction)" data-sh-phpbb="[url=https://www.whonix.org/wiki/Monero_Multisig#Introduction]Introduction[/url]"><button type="button" class="headline-anchor" aria-haspopup="dialog" aria-expanded="false" aria-label="Copy or share a link to the Introduction section"><i class="fa-solid fa-share-nodes"></i></button><span class="menu-wrapper"><button type="button" class="menu-close popover-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Monero_Multisig#Introduction">https://www.whonix.org/wiki/Monero_Multisig#Introduction</span></span></span></span></span></h2>
 <blockquote><p>Multisig feature is only available via a command line wallet. You
 should be familiar with the CLI wallet before playing with multisig.</p></blockquote>
@@ -79,12 +76,9 @@ to Use Monero Multisignature Wallets (2/2 &amp; 2/3)</a><sup class="ext-link-to-
 user <a href="https://monero.stackexchange.com/users/57/jollymort">jollymort</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of monero.stackexchange.com/users/57/jollymort on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://monero.stackexchange.com/users/57/jollymort" aria-label="Archived version of monero.stackexchange.com/users/57/jollymort on web.archive.org"><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" aria-hidden="true" /></a></sup>.</p>
 <p>The following addresses and seed phrases on this wiki page are
 functional. Do NOT use them. Do NOT send funds there.</p>
-<div class="info-box ib-for-thumb has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-triangle-exclamation cs-red" aria-hidden="true"></i></span>
-Documentation for this is incomplete. Contributions are happily
+<div class="admonition admonition-warning cs-amber ib-for-thumb"><p class="admonition-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span class="admonition-label">Warning</span></p><div class="admonition-body">Documentation for this is incomplete. Contributions are happily
 considered! See <a href="Unsupported">this</a> for
-potential alternatives.</p>
-</div>
+potential alternatives.</div></div>
 </section><section class="cv-section"><h2 class="hvis1" id="Warning">Warning<span class="heading-actions"><span class="mw-editsection"><a href="https://github.com/org-ai-assisted/whonix-wiki-backup/blob/master/Monero_Multisig.mw#L24" target="_blank" rel="noopener noreferrer nofollow" aria-label="Edit the Warning section on the wiki source" title="Edit the Warning section"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a></span><span class="share-tooltip" data-anchor="Warning" data-sh-direct="https://www.whonix.org/wiki/Monero_Multisig#Warning" data-sh-u="https%3A%2F%2Fwww.whonix.org%2Fwiki%2FMonero_Multisig%23Warning" data-sh-t="Warning" data-sh-aria="Warning" data-sh-wiki="[[Monero Multisig#Warning|Warning]]" data-sh-md="[Warning](https://www.whonix.org/wiki/Monero_Multisig#Warning)" data-sh-phpbb="[url=https://www.whonix.org/wiki/Monero_Multisig#Warning]Warning[/url]"><button type="button" class="headline-anchor" aria-haspopup="dialog" aria-expanded="false" aria-label="Copy or share a link to the Warning section"><i class="fa-solid fa-share-nodes"></i></button><span class="menu-wrapper"><button type="button" class="menu-close popover-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Monero_Multisig#Warning">https://www.whonix.org/wiki/Monero_Multisig#Warning</span></span></span></span></span></h2>
 <p><i class="fa-brands fa-reddit" aria-hidden="true"></i> <a href="https://www.reddit.com/r/Monero/comments/qlsf5u/can_monero_multisig_be_combined_with_hardware/">Quote</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of www.reddit.com/r/Monero/comments/qlsf5u/can_monero_multisig_be_combined_with_hardware/ on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.reddit.com/r/Monero/comments/qlsf5u/can_monero_multisig_be_combined_with_hardware/" aria-label="Archived version of www.reddit.com/r/Monero/comments/qlsf5u/can_monero_multisig_be_combined_with_hardware/ on web.archive.org"><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" aria-hidden="true" /></a></sup>
 <i class="fa-brands fa-reddit" aria-hidden="true"></i> <a href="https://www.reddit.com/user/XMR2020/">XMR2020</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of www.reddit.com/user/XMR2020/ on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.reddit.com/user/XMR2020/" aria-label="Archived version of www.reddit.com/user/XMR2020/ on web.archive.org"><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" aria-hidden="true" /></a></sup>,
@@ -335,8 +329,8 @@ version available.</p></div></li>
 </div>
 </div>
 </section>
-<footer class="page-meta"><div class="catlinks"><span class="catlinks-label">Categories:</span> <a aria-label="Documentation: Category:Documentation" href="./Category:Documentation">Documentation</a></div><div class="page-lastmod">Last updated: <time datetime="2026-06-27">2026-06-27</time></div>
-</footer>
+<div class="page-meta"><div class="catlinks"><span class="catlinks-label">Categories:</span> <a aria-label="Documentation: Category:Documentation" href="./Category:Documentation">Documentation</a></div><div class="page-lastmod">Last updated: <time datetime="2026-06-27">2026-06-27</time></div>
+</div>
 </div><aside class="related-rail" aria-label="Related pages"><nav class="related-card" aria-label="Monero"><p class="related-card-title">Monero <span class="related-card-count">6 pages</span></p><ul><li><a href="Monero">Monero</a></li><li><a href="Monero/Manual_Instructions">Monero Manual
 Instructions</a></li><li><a class="mw-selflink selflink" aria-current="page">Monero Multisig</a></li><li><a href="Monero_Offline_Wallet">Monero Offline
 Wallet</a></li><li><a href="RetoSwap">RetoSwap</a></li><li><a href="UnstoppableSwap">UnstoppableSwap</a></li></ul></nav></aside></main>

@@ -20,10 +20,10 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <script src="../theme-init.min.js?h=e78c0503"></script>
-<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-solid-900.woff2?h=dd04ffb1" crossorigin fetchpriority="low">
+<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-solid-900.woff2?h=75abe0af" crossorigin fetchpriority="low">
 <link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-brands-400.woff2?h=dea737e0" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-regular-400.woff2?h=55a4e0c2" crossorigin>
-<link rel="stylesheet" href="../style.min.css?h=49f638c4">
+<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-regular-400.woff2?h=6c42e70e" crossorigin>
+<link rel="stylesheet" href="../style.min.css?h=26f2a505">
 <link rel="search" type="application/opensearchdescription+xml" href="../opensearch.xml" title="Whonix">
 <link rel="alternate" type="application/atom+xml" href="../feed.xml" title="Whonix -- recent changes">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg" sizes="any">
@@ -37,9 +37,9 @@
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#16181b" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-title" content="Whonix">
-<link rel="mw-search-index" href="../search-index.min.json?h=8f8ee8ce">
+<link rel="mw-search-index" href="../search-index.min.json?h=7dd602ed">
 <link rel="mw-page-previews" href="../page-previews.min.json?h=05742a07">
-<link rel="mw-fulltext-manifest" href="../search/fulltext-manifest.min.json?h=2d3e954c">
+<link rel="mw-fulltext-manifest" href="../search/fulltext-manifest.min.json?h=396b8512">
 <link rel="preload" as="image" fetchpriority="high" href="../media/thumb/Flyin-donate-promo.jpg-600.avif?h=aa8079fb" imagesrcset="../media/thumb/Flyin-donate-promo.jpg-300.avif?h=aa8079fb 300w, ../media/thumb/Flyin-donate-promo.jpg-600.avif?h=aa8079fb 600w, ../media/thumb/Flyin-donate-promo.jpg-900.avif?h=aa8079fb 900w" imagesizes="300px">
 </head>
 <body class="site-whonix">
@@ -48,13 +48,10 @@
 <div id="siteNotice" role="region" aria-label="Announcement"><div class="sitenotice"><button type="button" class="sitenotice-close" data-sitenotice-dismiss title="Hide this notice for me" aria-label="Hide this notice"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><div class="sitenotice-banner" data-banner-id="39"><span class="sitenotice-text">Help keep Whonix strong, independent, and actively maintained.</span><a href="Donate" class="mw-ui-button mw-ui-progressive sitenotice-cta">Donate</a></div></div></div>
 <main id="main-content" class="wiki-content">
 <h1 id="firstHeading" class="first-heading">Template:Qubes Tor Browser Update</h1><nav class="toc" aria-label="Contents"><input type="checkbox" id="toc-toggle" class="toc-toggle" checked><label for="toc-toggle" class="toc-title">Contents</label><ul><li class="toc-l1"><a href="#Quick_Rules"><span class="tocnumber">1</span> <span class="toctext">Quick Rules</span></a></li><li class="toc-l1"><a href="#Overview"><span class="tocnumber">2</span> <span class="toctext">Overview</span></a></li><li class="toc-l1"><a href="#Summary"><span class="tocnumber">3</span> <span class="toctext">Summary</span></a></li><li class="toc-l1"><a href="#Footnotes"><span class="tocnumber">4</span> <span class="toctext">Footnotes</span></a></li></ul></nav><section class="cv-section"><h2 class="hvis4" id="Quick_Rules">Quick Rules</h2>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-Updating <strong>Tor Browser</strong> can be more complex than regular
-system updates due to technical limitations outside of Whonix's control.
-<sup id="cite_ref-1" class="reference"><a href="#cite_note-1"><span class="cite-bracket">[</span>1<span class="cite-bracket">]</span></a></sup> Use the table below and follow the instructions for
-your situation.</p>
-</div>
+<div class="admonition admonition-note cs-blue"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body">Updating <strong>Tor Browser</strong> can be more complex than
+regular system updates due to technical limitations outside of Whonix's
+control. <sup id="cite_ref-1" class="reference"><a href="#cite_note-1"><span class="cite-bracket">[</span>1<span class="cite-bracket">]</span></a></sup> Use the table below and follow the
+instructions for your situation.</div></div>
 <table tabindex="0">
 <caption><em>Where to run what: yes (recommended) versus no (not
 recommended)</em></caption>
@@ -91,15 +88,10 @@ recommended)</em></caption>
 </tr>
 </tbody>
 </table>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-triangle-exclamation cs-red" aria-hidden="true"></i></span>
-Do <u>not</u> run <strong>Tor Browser</strong> in a <u>Template</u>
+<div class="admonition admonition-warning cs-amber"><p class="admonition-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span class="admonition-label">Warning</span></p><div class="admonition-body">Do <u>not</u> run <strong>Tor Browser</strong> in a <u>Template</u>
 (<code>whonix-workstation-18</code>) or <u>Disposable Template</u>
-(<code>whonix-workstation-18-dvm</code>)!</p>
-</div>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-<strong>Quick rules:</strong></p>
+(<code>whonix-workstation-18-dvm</code>)!</div></div>
+<div class="admonition admonition-note cs-blue"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body"><p><strong>Quick rules:</strong></p>
 <ul>
 <li>Run <strong>Tor Browser</strong> only in <u>App Qubes</u> or
 <u>Disposable VMs</u> (Disposables).</li>
@@ -110,7 +102,7 @@ an <u>App Qube</u>.</li>
 <strong>downloader</strong> inside the <strong>Disposable
 Template</strong> (<code>whonix-workstation-18-dvm</code>).</li>
 </ul>
-</div>
+</div></div>
 </section><section class="cv-section"><h2 class="hvis4" id="Overview">Overview</h2>
 <p><em>Tip:</em> If you are unsure, start with the <strong>Existing App
 Qubes</strong> row.</p>
@@ -149,17 +141,14 @@ Template (<code>whonix-workstation-18-dvm</code>).</p></td>
 <tr class="even">
 <th scope="row"><p><span class="manually-placed-anchor " id="Disposable_Template"></span>
 Disposable Template</p></th>
-<td><div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-triangle-exclamation cs-red" aria-hidden="true"></i></span>
-Do <u>not</u> run <strong>Tor Browser Downloader by Whonix</strong>
+<td><div class="admonition admonition-warning cs-amber"><p class="admonition-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span class="admonition-label">Warning</span></p><div class="admonition-body">Do <u>not</u> run <strong>Tor Browser Downloader by Whonix</strong>
 inside the <u>Disposable Template</u>
 (<code>whonix-workstation-18-dvm</code>)! It should only be run in the
 <u>Template</u> (<code>whonix-workstation-18</code>) and/or in a
 <code>whonix-workstation-18</code>-based App Qube
-(<code>anon-whonix</code>). <sup id="cite_ref-4" class="reference"><a href="#cite_note-4"><span class="cite-bracket">[</span>4<span class="cite-bracket">]</span></a></sup> <sup id="cite_ref-5" class="reference"><a href="#cite_note-5"><span class="cite-bracket">[</span>5<span class="cite-bracket">]</span></a></sup></p>
-</div>
-<p>For further information on installing, updating and using Tor Browser
-in Qubes Disposables, see: <a href="Qubes/Disposables">How to use Disposables in Qubes-Whonix</a>.</p></td>
+(<code>anon-whonix</code>). <sup id="cite_ref-4" class="reference"><a href="#cite_note-4"><span class="cite-bracket">[</span>4<span class="cite-bracket">]</span></a></sup> <sup id="cite_ref-5" class="reference"><a href="#cite_note-5"><span class="cite-bracket">[</span>5<span class="cite-bracket">]</span></a></sup></div></div><p> For further information on installing,
+updating and using Tor Browser in Qubes Disposables, see: <a href="Qubes/Disposables">How to use Disposables in
+Qubes-Whonix</a>.</p></td>
 <td><p>"Disposable Template" (<code>whonix-workstation-18-dvm</code>) is
 the base VM used to <u>create</u> Disposables. By Qubes convention, a
 Disposable Template VM name often ends with <code>-dvm</code>.</p>

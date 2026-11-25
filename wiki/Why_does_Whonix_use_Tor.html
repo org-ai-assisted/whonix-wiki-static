@@ -23,10 +23,10 @@
 <link rel="mw-book-next" href="Comparison_with_Others">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Why does Whonix use Tor?","description":"Explore why Whonix incorporates Tor for superior online anonymity. Uncover the multi-layered encryption, shared IP addresses, and the vast relay network that underpins Tor's ability to provide a robust anonymity shield, making Whonix a secure choice for privacy-conscious users.","url":"https://www.whonix.org/wiki/Why_does_Whonix_use_Tor","mainEntityOfPage":"https://www.whonix.org/wiki/Why_does_Whonix_use_Tor","inLanguage":"en","image":"https://www.whonix.org/media/cards/wiki-Why_does_Whonix_use_Tor-0d383ad6.jpg","isAccessibleForFree":true,"author":{"@type":"Organization","name":"Whonix","url":"https://www.whonix.org"},"publisher":{"@type":"Organization","name":"Whonix","url":"https://www.whonix.org","logo":{"@type":"ImageObject","url":"https://www.whonix.org/Whonix-logo-standard.svg"}},"copyrightHolder":{"@type":"Organization","name":"ENCRYPTED SUPPORT LTD"},"copyrightYear":2012,"datePublished":"2022-12-25","dateModified":"2026-11-18"}</script>
 <script src="../theme-init.min.js?h=e78c0503"></script>
-<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-solid-900.woff2?h=dd04ffb1" crossorigin fetchpriority="low">
+<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-solid-900.woff2?h=75abe0af" crossorigin fetchpriority="low">
 <link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-brands-400.woff2?h=dea737e0" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-regular-400.woff2?h=55a4e0c2" crossorigin>
-<link rel="stylesheet" href="../style.min.css?h=49f638c4">
+<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-regular-400.woff2?h=6c42e70e" crossorigin>
+<link rel="stylesheet" href="../style.min.css?h=26f2a505">
 <link rel="search" type="application/opensearchdescription+xml" href="../opensearch.xml" title="Whonix">
 <link rel="alternate" type="application/atom+xml" href="../feed.xml" title="Whonix -- recent changes">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg" sizes="any">
@@ -40,9 +40,9 @@
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#16181b" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-title" content="Whonix">
-<link rel="mw-search-index" href="../search-index.min.json?h=8f8ee8ce">
+<link rel="mw-search-index" href="../search-index.min.json?h=7dd602ed">
 <link rel="mw-page-previews" href="../page-previews.min.json?h=05742a07">
-<link rel="mw-fulltext-manifest" href="../search/fulltext-manifest.min.json?h=2d3e954c">
+<link rel="mw-fulltext-manifest" href="../search/fulltext-manifest.min.json?h=396b8512">
 <link rel="preload" as="image" fetchpriority="high" href="../media/Onion_diagram.svg.png.avif?h=bc806218" imagesrcset="../media/thumb/Onion_diagram.svg.png-160.avif?h=bc806218 160w, ../media/thumb/Onion_diagram.svg.png-220.avif?h=bc806218 220w, ../media/thumb/Onion_diagram.svg.png-240.avif?h=bc806218 240w, ../media/thumb/Onion_diagram.svg.png-360.avif?h=bc806218 360w, ../media/thumb/Onion_diagram.svg.png-440.avif?h=bc806218 440w, ../media/thumb/Onion_diagram.svg.png-480.avif?h=bc806218 480w, ../media/thumb/Onion_diagram.svg.png-600.avif?h=bc806218 600w, ../media/thumb/Onion_diagram.svg.png-720.avif?h=bc806218 720w, ../media/Onion_diagram.svg.png.avif?h=bc806218 2560w" imagesizes="(max-width: 252px) calc(100vw - 32px), 220px">
 </head>
 <body class="site-whonix">
@@ -241,16 +241,13 @@ course has no idea who you are.</p>
 <p>The overview below <a href="#Which_Tor_relay_knows_what?">Which Tor relay knows what?</a> and <a href="#Tor_Relay_Information_Awareness">Tor Relay
 Information Awareness</a> are expressing the same principles in
 different words and formats with more details.</p>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span></p>
-<ul>
+<div class="admonition admonition-note cs-blue"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body"><ul>
 <li><u>Tor Entry guards versus Bridges:</u> For better readability, the
 overview below mentions only Entry Guard, not Entry Guard / Bridges.
 <u>Only</u> for the purpose of the following overview, using a Tor Entry
 Guard is the same as using a Tor Bridge. For more information on
 Bridges, whether to use them or not, see <a href="Bridges">Bridges</a>.</li>
-</ul>
-</div>
+</ul></div></div>
 <h3 id="Which_Tor_relay_knows_what?"><span id="Which_Tor_relay_knows_what.3F"></span>Which Tor relay knows what?<span class="heading-actions"><span class="mw-editsection"><a href="https://github.com/org-ai-assisted/whonix-wiki-backup/blob/master/Why_does_Whonix_use_Tor.mw#L181" target="_blank" rel="noopener noreferrer nofollow" aria-label="Edit the Which Tor relay knows what? section on the wiki source" title="Edit the Which Tor relay knows what? section"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a></span><span class="share-tooltip" data-anchor="Which_Tor_relay_knows_what?" data-sh-direct="https://www.whonix.org/wiki/Why_does_Whonix_use_Tor#Which_Tor_relay_knows_what?" data-sh-u="https%3A%2F%2Fwww.whonix.org%2Fwiki%2FWhy_does_Whonix_use_Tor%23Which_Tor_relay_knows_what%3F" data-sh-t="Which%20Tor%20relay%20knows%20what%3F" data-sh-aria="Which Tor relay knows what?" data-sh-wiki="[[Why does Whonix use Tor#Which_Tor_relay_knows_what?|Which Tor relay knows what?]]" data-sh-md="[Which Tor relay knows what?](https://www.whonix.org/wiki/Why_does_Whonix_use_Tor#Which_Tor_relay_knows_what?)" data-sh-phpbb="[url=https://www.whonix.org/wiki/Why_does_Whonix_use_Tor#Which_Tor_relay_knows_what?]Which Tor relay knows what?[/url]"><button type="button" class="headline-anchor" aria-haspopup="dialog" aria-expanded="false" aria-label="Copy or share a link to the Which Tor relay knows what? section"><i class="fa-solid fa-share-nodes"></i></button><span class="menu-wrapper"><button type="button" class="menu-close popover-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Why_does_Whonix_use_Tor#Which_Tor_relay_knows_what?">https://www.whonix.org/wiki/Why_does_Whonix_use_Tor#Which_Tor_relay_knows_what?</span></span></span></span></span></h3>
 <ul>
 <li>Entry Guard
@@ -555,8 +552,8 @@ Comparison with Others</span></span></span></p>
 </div>
 </div>
 </section>
-<footer class="page-meta"><div class="catlinks"><span class="catlinks-label">Categories:</span> <a aria-label="Documentation: Category:Documentation" href="./Category:Documentation">Documentation</a></div><div class="page-lastmod">Last updated: <time datetime="2026-11-18">2026-11-18</time></div>
-</footer>
+<div class="page-meta"><div class="catlinks"><span class="catlinks-label">Categories:</span> <a aria-label="Documentation: Category:Documentation" href="./Category:Documentation">Documentation</a></div><div class="page-lastmod">Last updated: <time datetime="2026-11-18">2026-11-18</time></div>
+</div>
 </div><aside class="related-rail" aria-label="Related pages"><nav class="related-card" aria-label="Tor"><p class="related-card-title">Tor <span class="related-card-count">13 pages</span></p><ul><li><a href="Tor">Tor</a></li><li><a target="_blank" href="https://www.kicksecure.com/wiki/Tor_Versioning" class="external template-extlink" rel="noreferrer noopener">Tor Versioning</a></li><li><a href="Anon_Connection_Wizard">Anon Connection
 Wizard</a></li><li><a href="Tor-control-panel">tor-control-panel</a></li><li><a class="mw-selflink selflink" aria-current="page">Why does Whonix
 use Tor?</a></li><li><a href="Tor_Entry_Guards">Tor Entry

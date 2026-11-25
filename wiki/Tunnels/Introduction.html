@@ -23,10 +23,10 @@
 <link rel="mw-book-next" href="Examples">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Combining Tunnels with Tor","description":"Information on and how-to combine Tor with tunnels such as VPN, SSH, or proxies. Covers whether this makes Tor more or less secure. (User \u2192 Tor \u2192 proxy/VPN/SSH \u2192 Internet) (User \u2192 proxy/VPN/SSH \u2192 Tor \u2192 Internet)","url":"https://www.whonix.org/wiki/Tunnels/Introduction","mainEntityOfPage":"https://www.whonix.org/wiki/Tunnels/Introduction","inLanguage":"en","image":"https://www.whonix.org/media/cards/wiki-Tunnels-Introduction-e21db344.jpg","isAccessibleForFree":true,"author":{"@type":"Organization","name":"Whonix","url":"https://www.whonix.org"},"publisher":{"@type":"Organization","name":"Whonix","url":"https://www.whonix.org","logo":{"@type":"ImageObject","url":"https://www.whonix.org/Whonix-logo-standard.svg"}},"copyrightHolder":{"@type":"Organization","name":"ENCRYPTED SUPPORT LTD"},"copyrightYear":2012,"datePublished":"2022-12-25","dateModified":"2026-11-14"}</script>
 <script src="../../theme-init.min.js?h=e78c0503"></script>
-<link rel="preload" as="font" type="font/woff2" href="../../fontawesome/webfonts/fa-solid-900.woff2?h=dd04ffb1" crossorigin fetchpriority="low">
+<link rel="preload" as="font" type="font/woff2" href="../../fontawesome/webfonts/fa-solid-900.woff2?h=75abe0af" crossorigin fetchpriority="low">
 <link rel="preload" as="font" type="font/woff2" href="../../fontawesome/webfonts/fa-brands-400.woff2?h=dea737e0" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="../../fontawesome/webfonts/fa-regular-400.woff2?h=55a4e0c2" crossorigin>
-<link rel="stylesheet" href="../../style.min.css?h=49f638c4">
+<link rel="preload" as="font" type="font/woff2" href="../../fontawesome/webfonts/fa-regular-400.woff2?h=6c42e70e" crossorigin>
+<link rel="stylesheet" href="../../style.min.css?h=26f2a505">
 <link rel="search" type="application/opensearchdescription+xml" href="../../opensearch.xml" title="Whonix">
 <link rel="alternate" type="application/atom+xml" href="../../feed.xml" title="Whonix -- recent changes">
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg" sizes="any">
@@ -40,9 +40,9 @@
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#16181b" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-title" content="Whonix">
-<link rel="mw-search-index" href="../../search-index.min.json?h=8f8ee8ce">
+<link rel="mw-search-index" href="../../search-index.min.json?h=7dd602ed">
 <link rel="mw-page-previews" href="../../page-previews.min.json?h=05742a07">
-<link rel="mw-fulltext-manifest" href="../../search/fulltext-manifest.min.json?h=2d3e954c">
+<link rel="mw-fulltext-manifest" href="../../search/fulltext-manifest.min.json?h=396b8512">
 <link rel="preload" as="image" fetchpriority="high" href="../../media/thumb/Flyin-donate-promo.jpg-600.avif?h=aa8079fb" imagesrcset="../../media/thumb/Flyin-donate-promo.jpg-300.avif?h=aa8079fb 300w, ../../media/thumb/Flyin-donate-promo.jpg-600.avif?h=aa8079fb 600w, ../../media/thumb/Flyin-donate-promo.jpg-900.avif?h=aa8079fb 900w" imagesizes="300px">
 </head>
 <body class="site-whonix">
@@ -93,14 +93,11 @@ vulnerability is serious as it stems from the shared nature of ports in
 VPN servers and in the most serious cases would allow snooping of
 unencrypted data, port scans or connection hijacking.</li>
 </ul>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-Tor blocks by destination servers can usually be bypassed using simple
-<a href="../Tor_Browser#Bypass_Tor_Censorship">proxies</a>, rather than adding an additional tunnel to
+<div class="admonition admonition-note cs-blue"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body">Tor blocks by destination servers can usually be bypassed using
+simple <a href="../Tor_Browser#Bypass_Tor_Censorship">proxies</a>, rather than adding an additional tunnel to
 Tor. In order to circumvent state-level censorship of the Tor network,
 <a href="../Bridges">Bridges</a> or other <a href="../Lantern">alternative</a> <a href="../Anon_Connection_Wizard">circumvention</a> <a href="../Censorship_Circumvention_Tools">tools</a> will
-probably be required. <sup id="cite_ref-1" class="reference"><a href="#cite_note-1"><span class="cite-bracket">[</span>1<span class="cite-bracket">]</span></a></sup></p>
-</div>
+probably be required. <sup id="cite_ref-1" class="reference"><a href="#cite_note-1"><span class="cite-bracket">[</span>1<span class="cite-bracket">]</span></a></sup></div></div>
 <p>The potential <img class="link-icon" src="../../brand-tor.webp" width="100" height="100" alt="" aria-hidden="true" loading="lazy" decoding="async" /> <a href="https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorPlusVPN">positive
 or negative effects on anonymity</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of gitlab.torproject.org/legacy/trac/-/wikis/doc/TorPlusVPN on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorPlusVPN" aria-label="Archived version of gitlab.torproject.org/legacy/trac/-/wikis/doc/TorPlusVPN on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" aria-hidden="true" /></a></sup> are being <a href="https://web.archive.org/web/20220609222239/https://matt.traudt.xyz/posts/2016-11-12-vpn-tor-not-net-gain/">controversially</a>
 <i class="fa-brands fa-github" aria-hidden="true"></i> <a href="https://gist.github.com/joepie91/5a9909939e6ce7d09e29">debated</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of gist.github.com/joepie91/5a9909939e6ce7d09e29 on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://gist.github.com/joepie91/5a9909939e6ce7d09e29" aria-label="Archived version of gist.github.com/joepie91/5a9909939e6ce7d09e29 on web.archive.org"><img src="../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" aria-hidden="true" /></a></sup>.</p>
@@ -186,12 +183,9 @@ the user's ISP-assigned IP address.</p></td>
 <p>As noted in the <a href="#Introduction">introduction</a>, whether or not VPNs materially
 improve security and/or anonymity is a hotly debated topic, and a
 configuration that is frequently raised in the Whonix forums.</p>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-Before reviewing the following table VPN risks in combination with Tor,
-it is recommended to have look at general VPN risks on the <a href="../Whonix_versus_VPNs">Whonix versus VPNs</a> wiki
-page first.</p>
-</div>
+<div class="admonition admonition-note cs-blue"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body">Before reviewing the following table VPN risks in combination with
+Tor, it is recommended to have look at general VPN risks on the <a href="../Whonix_versus_VPNs">Whonix versus VPNs</a> wiki
+page first.</div></div>
 <table tabindex="0">
 <caption><em>VPN Risks in Combination with Tor</em> <sup id="cite_ref-5" class="reference"><a href="#cite_note-5"><span class="cite-bracket">[</span>5<span class="cite-bracket">]</span></a></sup>
 <sup id="cite_ref-6" class="reference"><a href="#cite_note-6"><span class="cite-bracket">[</span>6<span class="cite-bracket">]</span></a></sup></caption>
@@ -420,15 +414,12 @@ necessarily more secure than entry guards.</p></blockquote></li>
 </tbody>
 </table>
 <h3 class="hvis2" id="Support_Status">Support Status<span class="heading-actions"><span class="mw-editsection"><a href="https://github.com/org-ai-assisted/whonix-wiki-backup/blob/master/Tunnels%252FIntroduction.mw#L201" target="_blank" rel="noopener noreferrer nofollow" aria-label="Edit the Support Status section on the wiki source" title="Edit the Support Status section"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a></span><span class="share-tooltip" data-anchor="Support_Status" data-sh-direct="https://www.whonix.org/wiki/Tunnels/Introduction#Support_Status" data-sh-u="https%3A%2F%2Fwww.whonix.org%2Fwiki%2FTunnels%2FIntroduction%23Support_Status" data-sh-t="Support%20Status" data-sh-aria="Support Status" data-sh-wiki="[[Tunnels/Introduction#Support_Status|Support Status]]" data-sh-md="[Support Status](https://www.whonix.org/wiki/Tunnels/Introduction#Support_Status)" data-sh-phpbb="[url=https://www.whonix.org/wiki/Tunnels/Introduction#Support_Status]Support Status[/url]"><button type="button" class="headline-anchor" aria-haspopup="dialog" aria-expanded="false" aria-label="Copy or share a link to the Support Status section"><i class="fa-solid fa-share-nodes"></i></button><span class="menu-wrapper"><button type="button" class="menu-close popover-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Tunnels/Introduction#Support_Status">https://www.whonix.org/wiki/Tunnels/Introduction#Support_Status</span></span></span></span></span></h3>
-<p class="mpa-only"><span class="manually-placed-anchor " id="Community_Support"></span></p>
-<div class="info-box community-support-info csi-page has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-<strong>COMMUNITY SUPPORT ONLY</strong> : <strong>THIS WHOLE WIKI
+<p class="mpa-only"><span class="manually-placed-anchor " id="Community_Support"></span>
+</p><div class="admonition admonition-note cs-blue community-support-info csi-page"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body"><strong>COMMUNITY SUPPORT ONLY</strong> : <strong>THIS WHOLE WIKI
 <u>PAGE</u></strong> is only supported by the community. Whonix
 developers are <strong>very unlikely</strong> to provide free support
 for this content. See <a href="../Community_Support">Community Support</a> for further information,
-including implications and possible alternatives.</p>
-</div>
+including implications and possible alternatives.</div></div>
 </section><section class="cv-section"><h2 class="hvis1" id="Comparison_Table">Comparison Table<span class="heading-actions"><span class="mw-editsection"><a href="https://github.com/org-ai-assisted/whonix-wiki-backup/blob/master/Tunnels%252FIntroduction.mw#L204" target="_blank" rel="noopener noreferrer nofollow" aria-label="Edit the Comparison Table section on the wiki source" title="Edit the Comparison Table section"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a></span><span class="share-tooltip" data-anchor="Comparison_Table" data-sh-direct="https://www.whonix.org/wiki/Tunnels/Introduction#Comparison_Table" data-sh-u="https%3A%2F%2Fwww.whonix.org%2Fwiki%2FTunnels%2FIntroduction%23Comparison_Table" data-sh-t="Comparison%20Table" data-sh-aria="Comparison Table" data-sh-wiki="[[Tunnels/Introduction#Comparison_Table|Comparison Table]]" data-sh-md="[Comparison Table](https://www.whonix.org/wiki/Tunnels/Introduction#Comparison_Table)" data-sh-phpbb="[url=https://www.whonix.org/wiki/Tunnels/Introduction#Comparison_Table]Comparison Table[/url]"><button type="button" class="headline-anchor" aria-haspopup="dialog" aria-expanded="false" aria-label="Copy or share a link to the Comparison Table section"><i class="fa-solid fa-share-nodes"></i></button><span class="menu-wrapper"><button type="button" class="menu-close popover-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Tunnels/Introduction#Comparison_Table">https://www.whonix.org/wiki/Tunnels/Introduction#Comparison_Table</span></span></span></span></span></h2>
 <table tabindex="0">
 <caption>Comparison of Tunnel Combinations</caption>
@@ -851,8 +842,8 @@ Tunnels/Examples</span></span></span></p>
 </div>
 </div>
 </section>
-<footer class="page-meta"><div class="catlinks"><span class="catlinks-label">Categories:</span> <a aria-label="Documentation: Category:Documentation" href="../Category:Documentation">Documentation</a></div><div class="page-lastmod">Last updated: <time datetime="2026-11-14">2026-11-14</time></div>
-</footer>
+<div class="page-meta"><div class="catlinks"><span class="catlinks-label">Categories:</span> <a aria-label="Documentation: Category:Documentation" href="../Category:Documentation">Documentation</a></div><div class="page-lastmod">Last updated: <time datetime="2026-11-14">2026-11-14</time></div>
+</div>
 </div><aside class="related-rail" aria-label="Related pages"><nav class="related-card" aria-label="Other Anonymity Networks"><p class="related-card-title">Other Anonymity Networks <span class="related-card-count">3 pages</span></p><ul><li><a href="../Whonix_versus_VPNs">Whonix versus
 VPNs</a></li><li><a href="../Whonix_versus_Proxies">Whonix versus
 Proxies</a></li><li><a href="../Why_does_Whonix_use_Tor">Why does Whonix

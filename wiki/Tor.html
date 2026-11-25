@@ -23,10 +23,10 @@
 <link rel="mw-book-next" href="Tor_Entry_Guards">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Tor Documentation for Whonix Users","description":"Notes about Tor (The Onion Router) on Log Analysis, Non-Persistent Entry Guards, Blacklist Certain Onion Services from Connecting, Additional SocksPorts, UDP and more.","url":"https://www.whonix.org/wiki/Tor","mainEntityOfPage":"https://www.whonix.org/wiki/Tor","inLanguage":"en","image":"https://www.whonix.org/media/orig/Iconfinder_tor_386502.svg","isAccessibleForFree":true,"author":{"@type":"Organization","name":"Whonix","url":"https://www.whonix.org"},"publisher":{"@type":"Organization","name":"Whonix","url":"https://www.whonix.org","logo":{"@type":"ImageObject","url":"https://www.whonix.org/Whonix-logo-standard.svg"}},"copyrightHolder":{"@type":"Organization","name":"ENCRYPTED SUPPORT LTD"},"copyrightYear":2012,"datePublished":"2022-12-25","dateModified":"2026-11-18"}</script>
 <script src="../theme-init.min.js?h=e78c0503"></script>
-<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-solid-900.woff2?h=dd04ffb1" crossorigin fetchpriority="low">
+<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-solid-900.woff2?h=75abe0af" crossorigin fetchpriority="low">
 <link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-brands-400.woff2?h=dea737e0" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-regular-400.woff2?h=55a4e0c2" crossorigin>
-<link rel="stylesheet" href="../style.min.css?h=49f638c4">
+<link rel="preload" as="font" type="font/woff2" href="../fontawesome/webfonts/fa-regular-400.woff2?h=6c42e70e" crossorigin>
+<link rel="stylesheet" href="../style.min.css?h=26f2a505">
 <link rel="search" type="application/opensearchdescription+xml" href="../opensearch.xml" title="Whonix">
 <link rel="alternate" type="application/atom+xml" href="../feed.xml" title="Whonix -- recent changes">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg" sizes="any">
@@ -40,9 +40,9 @@
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#16181b" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-title" content="Whonix">
-<link rel="mw-search-index" href="../search-index.min.json?h=8f8ee8ce">
+<link rel="mw-search-index" href="../search-index.min.json?h=7dd602ed">
 <link rel="mw-page-previews" href="../page-previews.min.json?h=05742a07">
-<link rel="mw-fulltext-manifest" href="../search/fulltext-manifest.min.json?h=2d3e954c">
+<link rel="mw-fulltext-manifest" href="../search/fulltext-manifest.min.json?h=396b8512">
 <link rel="preload" as="image" fetchpriority="high" href="../media/thumb/Flyin-donate-promo.jpg-600.avif?h=aa8079fb" imagesrcset="../media/thumb/Flyin-donate-promo.jpg-300.avif?h=aa8079fb 300w, ../media/thumb/Flyin-donate-promo.jpg-600.avif?h=aa8079fb 600w, ../media/thumb/Flyin-donate-promo.jpg-900.avif?h=aa8079fb 900w" imagesizes="300px">
 </head>
 <body class="site-whonix">
@@ -76,16 +76,13 @@ Wizard</a>. <sup id="cite_ref-1" class="reference"><a href="#cite_note-1"><span 
 <p><u>Advanced Tor Configuration</u>:</p>
 <p>Tor configuration can also be modified by editing the Tor
 configuration file(s).</p>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-It is recommended for simplicity for most users that <u>all</u> unique
-user Tor configurations should be stored in Tor configuration file
-<code>/usr/local/etc/torrc.d/50_user.conf</code> and nowhere else.
+<div class="admonition admonition-note cs-blue"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body">It is recommended for simplicity for most users that <u>all</u>
+unique user Tor configurations should be stored in Tor configuration
+file <code>/usr/local/etc/torrc.d/50_user.conf</code> and nowhere else.
 <sup id="cite_ref-2" class="reference"><a href="#cite_note-2"><span class="cite-bracket">[</span>2<span class="cite-bracket">]</span></a></sup> Note that Whonix will <u>not</u> modify
 <code>/usr/local/etc/torrc.d/50_user.conf</code> once it is created,
 therefore the user is responsible for adding or removing specific
-configurations in this file.</p>
-</div>
+configurations in this file.</div></div>
 <p><a href="https://www.kicksecure.com/wiki/Configuration_Files#Configuration_Drop-In_Folders">Configuration Drop-In Folders</a>
 <code>/etc/torrc.d/</code> and <code>/usr/local/etc/torrc.d/</code> are
 a Whonix specific feature. (<a aria-label="technical details: Dev Tor section Tor Config Files" href="Dev/Tor#Tor_Config_Files">technical details</a>) Advanced users and packages
@@ -464,16 +461,12 @@ Those are documented <a aria-label="here: Stream Isolation section How to mitiga
 <p>Adding additional ones on top of that is usually not required.
 Setting a socks user name has the same effect of establishing stream
 isolation as mentioned on the <a href="Stream_Isolation">Stream Isolation</a> wiki page <a href="Stream_Isolation#IsolateSOCKSAuth">(<code>IsolateSOCKSAuth</code>)</a>. Otherwise:</p>
-<p class="mpa-only"><span class="manually-placed-anchor " id="Community_Support"></span></p>
-<div class="info-box community-support-info csi-chapter has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-<strong>COMMUNITY SUPPORT ONLY</strong> : <strong>THIS wiki <u>CHAPTER
-only</u></strong> is only supported by the community. Whonix developers
-are <strong>very unlikely</strong> to provide free support for this
-content. See <a href="Community_Support">Community
-Support</a> for further information, including implications and possible
-alternatives.</p>
-</div>
+<p class="mpa-only"><span class="manually-placed-anchor " id="Community_Support"></span>
+</p><div class="admonition admonition-note cs-blue community-support-info csi-chapter"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body"><strong>COMMUNITY SUPPORT ONLY</strong> : <strong>THIS wiki
+<u>CHAPTER only</u></strong> is only supported by the community. Whonix
+developers are <strong>very unlikely</strong> to provide free support
+for this content. See <a href="Community_Support">Community Support</a> for further information,
+including implications and possible alternatives.</div></div>
 <p>Adding additional Tor <code>SocksPort</code>s to
 <code>/usr/local/etc/torrc.d/50_user.conf</code> is non-intuitive.
 <sup id="cite_ref-9" class="reference"><a href="#cite_note-9"><span class="cite-bracket">[</span>9<span class="cite-bracket">]</span></a></sup></p>
@@ -742,10 +735,7 @@ blocking should be comprehensive.</p>
 However, in case of blacklisting outgoing connections to clearnet domain
 names, the blocking would be incomplete. Only DNS resolution would be
 blocked. IP based connections would still be possible.</p>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-This procedure is experimental. Testers only.</p>
-</div>
+<div class="admonition admonition-note cs-blue"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body">This procedure is experimental. Testers only.</div></div>
 <p><strong>1.</strong> Tor configuration file.</p>
 <div class="info-box ">
 <div class="intro-like">
@@ -936,9 +926,7 @@ section.</p>
 <em><span>/usr/local/etc/torrc.d/50_user.conf</span></em>,
 <u>after the ClientTransportPlugin entries</u>. Users must ensure that
 "bridge" appears at the beginning of each line.</p>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-In the <i>obfs4</i> example below:<br />
+<div class="admonition admonition-note cs-blue"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body"><p>In the <i>obfs4</i> example below:<br />
 * <u>Do not copy and paste this list of bridge entries to the
 <em><span>50_user.conf</span></em>
 file.</u> They will not work.</p>
@@ -950,7 +938,7 @@ bridges</a><sup class="ext-link-to-archive has-sibling" title="Link to archived 
 matters.</u> For example, bridges will not connect if users type
 "bridge" instead of "Bridge".</li>
 </ul>
-</div>
+</div></div>
 <p><em><span>Obfs4</span></em> example
 text to add to
 <em><span>/usr/local/etc/torrc.d/50_user.conf</span></em>.</p>
@@ -1180,9 +1168,7 @@ No error detected in your Tor configuration.
 <h3 class="hvis2" id="vanguards">vanguards<span class="heading-actions"><span class="mw-editsection"><a href="https://github.com/org-ai-assisted/whonix-wiki-backup/blob/master/Tor.mw#L855" target="_blank" rel="noopener noreferrer nofollow" aria-label="Edit the vanguards section on the wiki source" title="Edit the vanguards section"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a></span><span class="share-tooltip" data-anchor="vanguards" data-sh-direct="https://www.whonix.org/wiki/Tor#vanguards" data-sh-u="https%3A%2F%2Fwww.whonix.org%2Fwiki%2FTor%23vanguards" data-sh-t="vanguards" data-sh-aria="vanguards" data-sh-wiki="[[Tor#vanguards|vanguards]]" data-sh-md="[vanguards](https://www.whonix.org/wiki/Tor#vanguards)" data-sh-phpbb="[url=https://www.whonix.org/wiki/Tor#vanguards]vanguards[/url]"><button type="button" class="headline-anchor" aria-haspopup="dialog" aria-expanded="false" aria-label="Copy or share a link to the vanguards section"><i class="fa-solid fa-share-nodes"></i></button><span class="menu-wrapper"><button type="button" class="menu-close popover-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Tor#vanguards">https://www.whonix.org/wiki/Tor#vanguards</span></span></span></span></span></h3>
 <p>See <a href="Vanguards">Vanguards</a>.</p>
 <h3 class="hvis2" id="UDP">UDP<span class="heading-actions"><span class="mw-editsection"><a href="https://github.com/org-ai-assisted/whonix-wiki-backup/blob/master/Tor.mw#L858" target="_blank" rel="noopener noreferrer nofollow" aria-label="Edit the UDP section on the wiki source" title="Edit the UDP section"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a></span><span class="share-tooltip" data-anchor="UDP" data-sh-direct="https://www.whonix.org/wiki/Tor#UDP" data-sh-u="https%3A%2F%2Fwww.whonix.org%2Fwiki%2FTor%23UDP" data-sh-t="UDP" data-sh-aria="UDP" data-sh-wiki="[[Tor#UDP|UDP]]" data-sh-md="[UDP](https://www.whonix.org/wiki/Tor#UDP)" data-sh-phpbb="[url=https://www.whonix.org/wiki/Tor#UDP]UDP[/url]"><button type="button" class="headline-anchor" aria-haspopup="dialog" aria-expanded="false" aria-label="Copy or share a link to the UDP section"><i class="fa-solid fa-share-nodes"></i></button><span class="menu-wrapper"><button type="button" class="menu-close popover-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Tor#UDP">https://www.whonix.org/wiki/Tor#UDP</span></span></span></span></span></h3>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-The Tor software does not support UDP. The feature request <img class="link-icon" src="../brand-tor.webp" width="100" height="100" alt="" aria-hidden="true" loading="lazy" decoding="async" /> <a href="https://gitlab.torproject.org/tpo/core/tor/-/issues/7830">UDP over
+<div class="admonition admonition-note cs-blue"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body"><p>The Tor software does not support UDP. The feature request <img class="link-icon" src="../brand-tor.webp" width="100" height="100" alt="" aria-hidden="true" loading="lazy" decoding="async" /> <a href="https://gitlab.torproject.org/tpo/core/tor/-/issues/7830">UDP over
 Tor</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of gitlab.torproject.org/tpo/core/tor/-/issues/7830 on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://gitlab.torproject.org/tpo/core/tor/-/issues/7830" aria-label="Archived version of gitlab.torproject.org/tpo/core/tor/-/issues/7830 on web.archive.org"><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" aria-hidden="true" /></a></sup> was created in 2013 and <img class="link-icon" src="../brand-tor.webp" width="100" height="100" alt="" aria-hidden="true" loading="lazy" decoding="async" /> <a href="https://gitlab.torproject.org/tpo/core/tor/-/issues/7830#note_2402996">closed
 as won't fix</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of gitlab.torproject.org/tpo/core/tor/-/issues/7830#note_2402996 on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://gitlab.torproject.org/tpo/core/tor/-/issues/7830#note_2402996" aria-label="Archived version of gitlab.torproject.org/tpo/core/tor/-/issues/7830#note_2402996 on web.archive.org"><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" aria-hidden="true" /></a></sup> by upstream, The Tor Project in 2018. It is therefore
 highly unlikely that the UDP over Tor feature will ever be implemented.
@@ -1190,8 +1176,7 @@ This is <a href="Unspecific">unspecific to
 Whonix</a>.</p>
 <p>Tor provides a <code>DnsPort</code> but that is unrelated.</p>
 <p>If UDP is urgently required in Whonix, a limited workaround is
-provided. For the most secure method, see <a href="Tunnel_UDP_over_Tor">Tunnel UDP over Tor</a>.</p>
-</div>
+provided. For the most secure method, see <a href="Tunnel_UDP_over_Tor">Tunnel UDP over Tor</a>.</p></div></div>
 <h3 class="hvis2" id="ICMP">ICMP<span class="heading-actions"><span class="mw-editsection"><a href="https://github.com/org-ai-assisted/whonix-wiki-backup/blob/master/Tor.mw#L861" target="_blank" rel="noopener noreferrer nofollow" aria-label="Edit the ICMP section on the wiki source" title="Edit the ICMP section"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a></span><span class="share-tooltip" data-anchor="ICMP" data-sh-direct="https://www.whonix.org/wiki/Tor#ICMP" data-sh-u="https%3A%2F%2Fwww.whonix.org%2Fwiki%2FTor%23ICMP" data-sh-t="ICMP" data-sh-aria="ICMP" data-sh-wiki="[[Tor#ICMP|ICMP]]" data-sh-md="[ICMP](https://www.whonix.org/wiki/Tor#ICMP)" data-sh-phpbb="[url=https://www.whonix.org/wiki/Tor#ICMP]ICMP[/url]"><button type="button" class="headline-anchor" aria-haspopup="dialog" aria-expanded="false" aria-label="Copy or share a link to the ICMP section"><i class="fa-solid fa-share-nodes"></i></button><span class="menu-wrapper"><button type="button" class="menu-close popover-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Tor#ICMP">https://www.whonix.org/wiki/Tor#ICMP</span></span></span></span></span></h3>
 <p>Same as above.</p>
 <h3 class="hvis2" id="DNS">DNS<span class="heading-actions"><span class="mw-editsection"><a href="https://github.com/org-ai-assisted/whonix-wiki-backup/blob/master/Tor.mw#L864" target="_blank" rel="noopener noreferrer nofollow" aria-label="Edit the DNS section on the wiki source" title="Edit the DNS section"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a></span><span class="share-tooltip" data-anchor="DNS" data-sh-direct="https://www.whonix.org/wiki/Tor#DNS" data-sh-u="https%3A%2F%2Fwww.whonix.org%2Fwiki%2FTor%23DNS" data-sh-t="DNS" data-sh-aria="DNS" data-sh-wiki="[[Tor#DNS|DNS]]" data-sh-md="[DNS](https://www.whonix.org/wiki/Tor#DNS)" data-sh-phpbb="[url=https://www.whonix.org/wiki/Tor#DNS]DNS[/url]"><button type="button" class="headline-anchor" aria-haspopup="dialog" aria-expanded="false" aria-label="Copy or share a link to the DNS section"><i class="fa-solid fa-share-nodes"></i></button><span class="menu-wrapper"><button type="button" class="menu-close popover-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Tor#DNS">https://www.whonix.org/wiki/Tor#DNS</span></span></span></span></span></h3>
@@ -1228,13 +1213,10 @@ the Whonix-Gateway?](https://www.whonix.org/wiki/Tor#Can_I_Speed_Up_Tor_or_the_W
 the Whonix-Gateway?[/url]"><button type="button" class="headline-anchor" aria-haspopup="dialog" aria-expanded="false" aria-label="Copy or share a link to the Can I Speed Up Tor or the Whonix-Gateway? section"><i class="fa-solid fa-share-nodes"></i></button><span class="menu-wrapper"><button type="button" class="menu-close popover-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Tor#Can_I_Speed_Up_Tor_or_the_Whonix-Gateway?">https://www.whonix.org/wiki/Tor#Can_I_Speed_Up_Tor_or_the_Whonix-Gateway?</span></span></span></span></span></h3>
 <p><em>Is there a way to configure the number of nodes in a circuit and
 to allow selection according to their speeds?</em></p>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-<strong>Reminder:</strong> <a href="Self_Support_First_Policy">Whonix Reliance on Debian (and Tor)</a> - <em>"Whonix
+<div class="admonition admonition-note cs-blue"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body"><strong>Reminder:</strong> <a href="Self_Support_First_Policy">Whonix Reliance on Debian (and Tor)</a> - <em>"Whonix
 is not a stripped down version of Debian; anything possible in "vanilla"
 Debian GNU/Linux can be replicated in Whonix."</em> Tor configurations
-are not limited by using Whonix.</p>
-</div>
+are not limited by using Whonix.</div></div>
 <p>Those who already know how to configure Tor in this way on the
 command line in vanilla Debian can follow the same procedure in
 Whonix-Gateway. This is not an endorsement for making these manual Tor
@@ -1246,20 +1228,14 @@ way.</p>
 achieve this on the host, then the same procedure could simply be
 repeated in Whonix-Gateway.</p>
 <h3 class="hvis2" id="Does_Whonix_Modify_Tor?"><span id="Does_Whonix_Modify_Tor.3F"></span>Does Whonix Modify Tor?<span class="heading-actions"><span class="mw-editsection"><a href="https://github.com/org-ai-assisted/whonix-wiki-backup/blob/master/Tor.mw#L897" target="_blank" rel="noopener noreferrer nofollow" aria-label="Edit the Does Whonix Modify Tor? section on the wiki source" title="Edit the Does Whonix Modify Tor? section"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a></span><span class="share-tooltip" data-anchor="Does_Whonix_Modify_Tor?" data-sh-direct="https://www.whonix.org/wiki/Tor#Does_Whonix_Modify_Tor?" data-sh-u="https%3A%2F%2Fwww.whonix.org%2Fwiki%2FTor%23Does_Whonix_Modify_Tor%3F" data-sh-t="Does%20Whonix%20Modify%20Tor%3F" data-sh-aria="Does Whonix Modify Tor?" data-sh-wiki="[[Tor#Does_Whonix_Modify_Tor?|Does Whonix Modify Tor?]]" data-sh-md="[Does Whonix Modify Tor?](https://www.whonix.org/wiki/Tor#Does_Whonix_Modify_Tor?)" data-sh-phpbb="[url=https://www.whonix.org/wiki/Tor#Does_Whonix_Modify_Tor?]Does Whonix Modify Tor?[/url]"><button type="button" class="headline-anchor" aria-haspopup="dialog" aria-expanded="false" aria-label="Copy or share a link to the Does Whonix Modify Tor? section"><i class="fa-solid fa-share-nodes"></i></button><span class="menu-wrapper"><button type="button" class="menu-close popover-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Tor#Does_Whonix_Modify_Tor?">https://www.whonix.org/wiki/Tor#Does_Whonix_Modify_Tor?</span></span></span></span></span></h3>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-Tor is an anonymizer developed by The Tor Project. <a href="Tor_Browser">Tor Browser</a> is a web browser <img class="link-icon" src="../brand-tor.webp" width="100" height="100" alt="" aria-hidden="true" loading="lazy" decoding="async" /> <a href="https://www.torproject.org/">developed by the Tor Project</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of www.torproject.org/ on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.torproject.org/" aria-label="Archived version of www.torproject.org/ on web.archive.org"><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" aria-hidden="true" /></a></sup> <a aria-label="Onion service: 2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion" class="onion-link" target="_blank" rel="noreferrer noopener" href="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/" ><img class="link-icon" src="../brand-onion.webp" width="16" height="16" alt="Onion service" loading="lazy" decoding="async" /></a>
+<div class="admonition admonition-note cs-blue"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body"><p>Tor is an anonymizer developed by The Tor Project. <a href="Tor_Browser">Tor Browser</a> is a web browser <img class="link-icon" src="../brand-tor.webp" width="100" height="100" alt="" aria-hidden="true" loading="lazy" decoding="async" /> <a href="https://www.torproject.org/">developed by the Tor Project</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of www.torproject.org/ on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.torproject.org/" aria-label="Archived version of www.torproject.org/ on web.archive.org"><img src="../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" aria-hidden="true" /></a></sup> <a aria-label="Onion service: 2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion" class="onion-link" target="_blank" rel="noreferrer noopener" href="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/" ><img class="link-icon" src="../brand-onion.webp" width="16" height="16" alt="Onion service" loading="lazy" decoding="async" /></a>
 which is optimized for privacy. Please do not confuse
 <em><span>Tor</span></em> with
 <em><span>Tor Browser</span></em> when
 conversing about Whonix topics.</p>
 <p>For differences of Tor Browser by Tor Project compared to Tor Browser
-in Whonix see <a href="Tor_Browser#Whonix_Tor_Browser_Differences">Whonix Tor Browser Differences</a>.</p>
-</div>
-<div class="info-box has-icon">
-<p><span class="info-box-icon"><i class="fa-solid fa-circle-info cs-blue" aria-hidden="true"></i></span>
-Whonix does <u>not</u> modify the Tor package itself.</p>
-</div>
+in Whonix see <a href="Tor_Browser#Whonix_Tor_Browser_Differences">Whonix Tor Browser Differences</a>.</p></div></div>
+<div class="admonition admonition-note cs-blue"><p class="admonition-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="admonition-label">Note</span></p><div class="admonition-body">Whonix does <u>not</u> modify the Tor package itself.</div></div>
 <p>Although Whonix does not modify Tor, the Tor configuration file
 <em>has</em> been adapted for Whonix. To inspect the relevant files,
 check the following on Whonix-Gateway: <sup id="cite_ref-20" class="reference"><a href="#cite_note-20"><span class="cite-bracket">[</span>20<span class="cite-bracket">]</span></a></sup></p>
@@ -1699,8 +1675,8 @@ Guards</span></span></span></p>
 </div>
 </div>
 </section>
-<footer class="page-meta"><div class="catlinks"><span class="catlinks-label">Categories:</span> <a aria-label="Documentation: Category:Documentation" href="./Category:Documentation">Documentation</a></div><div class="page-lastmod">Last updated: <time datetime="2026-11-18">2026-11-18</time></div>
-</footer>
+<div class="page-meta"><div class="catlinks"><span class="catlinks-label">Categories:</span> <a aria-label="Documentation: Category:Documentation" href="./Category:Documentation">Documentation</a></div><div class="page-lastmod">Last updated: <time datetime="2026-11-18">2026-11-18</time></div>
+</div>
 </div><aside class="related-rail" aria-label="Related pages"><nav class="related-card" aria-label="Tor"><p class="related-card-title">Tor <span class="related-card-count">13 pages</span></p><ul><li><a class="mw-selflink selflink" aria-current="page">Tor</a></li><li><a target="_blank" href="https://www.kicksecure.com/wiki/Tor_Versioning" class="external template-extlink" rel="noreferrer noopener">Tor Versioning</a></li><li><a href="Anon_Connection_Wizard">Anon Connection
 Wizard</a></li><li><a href="Tor-control-panel">tor-control-panel</a></li><li><a href="Why_does_Whonix_use_Tor">Why does Whonix
 use Tor?</a></li><li><a href="Tor_Entry_Guards">Tor Entry
