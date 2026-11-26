@@ -1234,7 +1234,8 @@ html:not(.client-js) .site-search .search-submit { display: none; }
 /* Wikipedia-style suggestion row (desktop dropdown AND mobile popover share this): a narrow
    thumbnail, then the title (typed prefix highlighted) over a one-line summary. Scoped to the
    result options so the "search for all" footer stays a plain block link. */
-.search-results li:not(.search-all) > a { display: flex; align-items: center; gap: 0.6rem; }
+.search-results li:not(.search-all) > a,
+.search-page-results li > a { display: flex; align-items: center; gap: 0.6rem; }
 .search-thumb {
   flex: 0 0 auto; width: 64px; height: 64px;
   border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden;
@@ -1255,6 +1256,15 @@ html:not(.client-js) .site-search .search-submit { display: none; }
   display: block; margin-top: 0.1rem; color: var(--muted); font-size: 0.85rem; line-height: 1.25;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+/* Special:Search PAGE rows reuse the SAME rich suggestion row as the header dropdown (shared
+   .search-thumb / .search-row-* classes, built by one app.js row builder). Only the row's padding,
+   themed title color (--fg, not the default link blue), and hover are scoped to the page list
+   (.search-page-results, a wider column than the .search-results overlay). */
+.search-page-results { list-style: none; padding: 0; }
+.search-page-results li > a {
+  padding: 0.4rem 0.5rem; border-radius: var(--radius-sm); color: var(--fg);
+}
+.search-page-results li > a:hover { background: var(--surface-2); text-decoration: none; }
 
 /* Special:Search results page field (built by app.js setupResultsPage): a role=search row with the
    input, an inside-right clear-x shown while typing, and a trailing blue Search submit. The Codex/
@@ -1378,6 +1388,12 @@ html:not(.client-js) .site-search .search-submit { display: none; }
     opacity: 1; pointer-events: auto; visibility: visible; z-index: 50;
     box-shadow: var(--shadow-md);
   }
+  /* Match the results dropdown to the OPEN field width. Both are right-anchored to .site-search,
+     whose right edge is INSET from the viewport on mobile (the chevron + Donate heart sit to its
+     right). The base max-width:min(22rem, 100vw-2rem) assumes a viewport-right anchor, so on mobile
+     a 22rem panel runs off the LEFT viewport edge (thumbnails clipped). Pinning the panel to the
+     field's own min(80vw,16rem) keeps it exactly under the field -- on-screen, same left+right. */
+  .search-results { width: min(80vw, 16rem); max-width: none; }
   /* The mobile popover reuses the SAME blue Search submit + clear-x as desktop (their markup and
      app.js wiring are tier-agnostic; only this reveal was desktop-only). They overlay the open
      field, which hangs below the header at top: calc(100% + 0.3rem); the field is 2.4rem tall, so
@@ -3089,21 +3105,18 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   }
 }
 
-/* Page LEAD -- idiomatic lead typography. GOV.UK govuk-body-l (24px), Scottish ds_leader
-   (24/19px) and USWDS .usa-intro all present the lead as larger body text in NORMAL ink: no
-   italic, no gray, no background band. Two markups are the lead: the {{Intro}} content between
-   empty .pre-intro-p / .post-intro-p sibling markers, and the builder's synthetic-page .page-lead
-   divs (search, recent-changes, settings, snapshot notice). 20px desktop (mobile 18px below),
-   line-height 1.5, same 66ch readable char-measure as body prose -- the lead is larger so 66ch is
-   physically wider but ~the same chars/line; it rejoins the measure the old band escaped (#268).
-   Target PROSE only -- bare <p> siblings AND the DIRECT <p> children of the GoogleOff SEO wrapper,
-   matched by [data-nosnippet] (carried by BOTH the default .robots-nocontent form and the nosnippet=1
-   form -- Template:GoogleOff). Download_Security wraps its first lead paragraphs there while a later
-   paragraph is a bare sibling, and both must read as one lead. The attribute + `> p` (direct child),
-   not a class + descendant, so a nested table/list/callout <p> is left alone and the nosnippet variant
-   is still caught. A lead figure/thumbnail/table/callout box is not a lead <p> and is never matched. */
-.wiki-content .pre-intro-p ~ p:not(:where(.post-intro-p ~ *)),
-.wiki-content .pre-intro-p ~ [data-nosnippet]:not(:where(.post-intro-p ~ *)) > p,
+/* Page LEAD -- idiomatic lead typography: larger body text in NORMAL ink (no italic, no gray, no
+   background band), 20px desktop (mobile 18px below), line-height 1.5, the same 66ch readable
+   char-measure as body prose -- larger type so 66ch is physically wider but ~the same chars/line;
+   it rejoins the measure the old band escaped (#268). Two markups are the lead: the {{Intro}}
+   content between the empty .pre-intro-p / .post-intro-p markers (the generator tags its prose <p>
+   `lead-p` -- page.py _mark_lead_paragraphs), and the builder's synthetic-page .page-lead divs
+   (search, recent-changes, settings, snapshot notice). Keyed to the `lead-p` CLASS, NOT to the
+   {{GoogleOff}} [data-nosnippet] SEO attribute: the generator sees the intro region + the anchor
+   text and decides what is lead, so a GoogleOff-wrapped intro paragraph (e.g. Download_Security)
+   is lead while a nested table/list/callout <p> and an invisible mpa-only anchor are not --
+   presentation stays decoupled from the crawler directive. */
+.wiki-content .lead-p,
 .wiki-content .page-lead > p {
   font-size: 1.25rem; line-height: 1.5; color: var(--fg); max-width: 66ch;
   margin: 0 0 0.85em;
@@ -3121,9 +3134,8 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   max-width: 66ch;
 }
 @media (max-width: 600px) {
-  /* Lead steps down to 18px on small screens (GOV.UK/Scottish drop 24px->19px); body stays 16px. */
-  .wiki-content .pre-intro-p ~ p:not(:where(.post-intro-p ~ *)),
-  .wiki-content .pre-intro-p ~ [data-nosnippet]:not(:where(.post-intro-p ~ *)) > p,
+  /* Lead steps down to 18px on small screens; body stays 16px. */
+  .wiki-content .lead-p,
   .wiki-content .page-lead > p {
     font-size: 1.125rem;
   }
@@ -3141,7 +3153,7 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 .page-home .intro-like > :first-child:not(:where(.info-box, .mbox, .community-support-info, .admonition)),
 .page-home .intro-like > :last-child:not(:where(.info-box, .mbox, .community-support-info, .admonition)),
 .page-home .wiki-content .pre-intro-p ~ :not(:where(.post-intro-p, .post-intro-p ~ *, .hidden-thumbnail, .info-box, .mbox, .community-support-info, .admonition)),
-.page-home .wiki-content .pre-intro-p ~ [data-nosnippet]:not(:where(.post-intro-p ~ *)) > p {
+.page-home .wiki-content .lead-p {
   /* centered hero: no tint, no gutter bleed (margin-inline:0), full-width (max-width:none cancels
      the lead base's 66ch cap so the centered slogan spans the column). Covers BOTH the {{IntroLike}}
      div form AND the {{Intro}} pre/post-intro-p marker form -- the homepage lead uses the marker

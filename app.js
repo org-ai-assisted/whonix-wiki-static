@@ -823,10 +823,11 @@
       }
       return shardCache[name];
     }
-    // Wikipedia-style dropdown row: a narrow thumbnail, then the title (typed prefix highlighted)
-    // over a one-line summary. TT-safe: createElement + textContent + setAttribute only, never an
-    // HTML-string sink -- same discipline as the plain row. Fields come from the prebuilt index:
-    // e.img (root-relative #seo-image thumb) and e.d (the page's published one-line description).
+    // Wikipedia-style suggestion row, shared by the header dropdown AND the Special:Search results
+    // page: a narrow thumbnail, then the title (typed prefix highlighted) over a one-line summary.
+    // TT-safe: createElement + textContent + setAttribute only, never an HTML-string sink. Fields
+    // come from the prebuilt index: e.img (root-relative #seo-image thumb) and e.d (the page's
+    // published one-line description).
     function buildSuggestionRow(a, e, q) {
       var thumb = document.createElement("span");
       thumb.className = "search-thumb";
@@ -895,11 +896,10 @@
       }
       var a = document.createElement("a");
       a.setAttribute("href", href);
-      if (sink.option) {                    // dropdown: the rich thumbnail + title + summary row
-        buildSuggestionRow(a, e, sink.query);
-      } else {                              // Special:Search results page: a plain title link
-        a.textContent = e.t;
-      }
+      // ONE shared rich row (thumbnail + bold title + one-line intro) on BOTH surfaces: the header
+      // dropdown AND the Special:Search results page. Only the listbox/combobox ARIA (role=option
+      // above) is dropdown-only; the row markup is identical, so the two presentations never drift.
+      buildSuggestionRow(a, e, sink.query);
       li.appendChild(a);
       // Keep the "search for all" footer row (when present) LAST: title + async body rows insert
       // before it, so it never moves off the end of the listbox. footerNode is only ever set on a
@@ -1337,14 +1337,12 @@
       plist.id = "search-page-results";
       plist.className = "search-page-results";
       plist.setAttribute("aria-label", "Search results");
-      // Status + list layout stays CSSOM (CSP-safe, no asset-fingerprint coupling); the box and its
-      // controls above live in style.css because they need :hover/:focus states and the themed blue
-      // that CSSOM cannot express.
+      // The status margin stays CSSOM (CSP-safe, no asset-fingerprint coupling). The LIST now carries
+      // the same rich suggestion rows as the dropdown, which need :hover + a themed title color that
+      // CSSOM cannot express, so .search-page-results row layout lives in style.css (list-reset,
+      // per-row flex/padding/hover) alongside the box + controls.
       pstatus.style.margin = "0.75rem 0 0";
-      plist.style.listStyle = "none";
-      plist.style.padding = "0";
       plist.style.margin = "0.5rem 0 0";
-      plist.style.lineHeight = "1.9";
       // Box/status/list go BEFORE the <noscript> fallback so it stays last in the container.
       wrap.insertBefore(plist, wrap.firstChild);
       wrap.insertBefore(pstatus, wrap.firstChild);
