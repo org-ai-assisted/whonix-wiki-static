@@ -133,8 +133,8 @@
     sel.removeAllRanges();
     sel.addRange(range);
   }
-  // Enrich each `.code-select` into the CodeSelect widget (matches the MediaWiki
-  // gadget): an in-box copy icon + a "Click = Copy" tooltip that turns green
+  // Enrich each `.code-select` into the CodeSelect widget: an in-box copy icon + a
+  // "Click = Copy" tooltip that turns green
   // "Copied to clipboard!" on copy; clicking the code selects it. TT-safe: built
   // with createElement/textContent/classList only, no HTML-string sinks.
   function initCopyButtons() {
@@ -1880,7 +1880,7 @@
     }
   }
 
-  // Hovercards (the job of the old MediaWiki Popups): (1) reference previews --
+  // Hovercards (reference + page previews on hover): (1) reference previews --
   // hover a [n] citation to see the footnote; (2) page previews -- hover an internal
   // link to see the target's title + summary from a prebuilt index (page-previews.min.json,
   // fetched same-origin ONCE on first in-content hover; the index is the whole source, so no

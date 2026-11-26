@@ -1,5 +1,5 @@
 /* mw-static-generator clean-room stylesheet.
-   Effective CSS only (no MediaWiki/Vector base). Strict CSP: system fonts +
+   Effective CSS only (no inherited skin base). Strict CSP: system fonts +
    inline/data only, no external resources. ASCII only. No inline styles anywhere
    (everything is class-driven), so the whole look is a swappable sheet for A/B.
    Theming: light default on :root, dark via prefers-color-scheme (guarded so an
@@ -28,7 +28,7 @@
   --border-soft: #e6e9ec;
   --code-bg: #f3f4f6;
   --pre-bg: #f8f9fa;
-  --pre-fg: #1f2328;   /* near-black on #f8f9fa ~15:1 -- MediaWiki/GitHub light code block (was #595959/#ddd ~5:1) */
+  --pre-fg: #1f2328;   /* near-black on #f8f9fa ~15:1 -- light code block fg (was #595959/#ddd ~5:1) */
 
   /* syntax-highlight tokens (codeselect lang=): AA (>=4.5:1) on the WORST-CASE .code-select
      ground -- the hover state --surface-2 (#eceff2), darker than the resting --surface */
@@ -58,7 +58,7 @@
      so a (rare) link there uses this darker-but-still-blue. Clears 4.5:1 on every tint, both themes. */
   --link-on-shade: #0f4c81;
   --link-icon-size: 1.1em;   /* unified inline link-icon family (GitHub, cross-wiki, external brand icons); theme-invariant */
-  /* Redlink (target page missing): MediaWiki's redlink red. 5.9:1 on white (AA text), and
+  /* Redlink (target page missing): the conventional redlink red. 5.9:1 on white (AA text), and
      darker-yet-redder than near-black body text -- a LIGHTNESS difference, not hue alone. */
   --link-new: #ba0000;
   --accent: #14866d;
@@ -421,7 +421,7 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
 .wiki-content .toc a { text-decoration: none; }
 /* Redlink: the post-build redlink pass emits a <span class="new"> (NOT an <a>) for an internal
    link whose target page does not exist -- a static mirror has no edit action to point it at, so
-   it is deliberately non-navigable. Red (the MediaWiki convention), legible without colour vision
+   it is deliberately non-navigable. Red (the redlink convention), legible without colour vision
    (the red differs from body text in lightness; the title states the page is missing). */
 .new { color: var(--link-new); cursor: default; }
 /* Touch devices report hover:none and keep the :hover state stuck on the last-tapped
@@ -591,7 +591,7 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
    reach the .mwc-toggle axis. Uncap just this <p> so it spans the same column as the cards. */
 .wiki-content p:has(> .expand-or-collapse-all-button) { max-width: none; }
 
-/* MediaWiki Kicksecure ext .download-button-v2 / .dbutton keeps its left icon divider and
+/* The Kicksecure ext .download-button-v2 / .dbutton keeps its left icon divider and
    OS-icon cell while sharing the primary button fill and shape. */
 .download-button-v2 {
   display: inline-block; border-radius: var(--btn-radius); position: relative;
@@ -1164,7 +1164,7 @@ html:not(.client-js) .site-search .search-submit { display: none; }
      differ in width, so no single field width covers the whole nav on both sites without either
      leaving an item peeking or eating the logo. Fading depends on no width math: visibility:hidden
      keeps the nav's layout (nothing reflows, the field's right edge stays anchored) and it fades
-     back on blur. This is Wikipedia Vector's own behavior (searchToggle yields the nav when search
+     back on blur. This mirrors prod's own behavior (searchToggle yields the nav when search
      cannot share the row). :has() keys the ancestor off the field's focus-within (the nav is a
      PRECEDING sibling, so a `~` combinator cannot reach it). */
   .site-nav { transition: opacity 0.15s ease, visibility 0.15s ease; }
@@ -1227,7 +1227,7 @@ html:not(.client-js) .site-search .search-submit { display: none; }
 }
 .search-results a:hover { background: var(--surface-2); text-decoration: none; }
 /* The always-present "search for all" footer option -> Special:Search. Set apart from the page
-   hits with a top rule + italic (Wikipedia's "search for pages containing" row); keeps the normal
+   hits with a top rule + italic (a "search for pages containing" row); keeps the normal
    link color + the shared :hover / keyboard-active highlight so it reads as actionable. */
 .search-results .search-all { border-top: 1px solid var(--border); margin-top: 0.15rem; padding-top: 0.15rem; }
 .search-results .search-all a { font-style: italic; }
@@ -1313,7 +1313,7 @@ html:not(.client-js) .site-search .search-submit { display: none; }
 .search-page-submit:hover { background: var(--btn-primary-hover); }
 
 /* Compact header: collapse the nav to a hamburger and shrink the logo to a 46x34 box; the wordmark
-   + Donate text stay, the trademark mark drops. Prod (Vector legacy) does this at <=720px, but OUR
+   + Donate text stay, the trademark mark drops. Prod does this at <=720px, but OUR
    inline header is wider (logo + wordmark + full nav + search + Donate), so we collapse at <=959.98
    instead -- the inline row only fits at >=960 (operator decision); below it the full nav + Donate
    had wrapped search to a 2nd row. The compaction keeps the compact header itself on one row. */
@@ -1435,7 +1435,7 @@ html:not(.client-js) .site-search .search-submit { display: none; }
 }
 
 /* ---- content ---- */
-/* A few wiki pages embed a raw MediaWiki skin HTML dump (mw-body/vector-body/mw-parser-output)
+/* A few wiki pages embed a raw skin HTML dump (mw-body/vector-body/mw-parser-output)
    inside the content; strip its skin padding/margin/width so it does not double-pad and push
    the page a couple px past the mobile viewport. */
 .wiki-content .mw-body,
@@ -1534,7 +1534,7 @@ html:not(.client-js) .site-search .search-submit { display: none; }
 #firstHeading, .first-heading {
   max-width: 100%;
   /* Unboxed title: no panel fill, flush-left on the content-column axis (shares the
-     section-heading / body left edge). The boxed Vector-mirror panel read heavy and pushed the
+     section-heading / body left edge). The old boxed panel read heavy and pushed the
      title ~15px off that axis; unboxed is the modern idiom and matches the homepage hero. */
   padding: 0;
   /* top margin 0: the content box above sets the header->title gap. bottom 25 = title->intro gap. */
@@ -1708,7 +1708,7 @@ blockquote.quotation .blockquote-context img.author-image.logo-banner {
 /* ---- code + pre ---- */
 .wiki-content pre {
   display: block;
-  background: var(--pre-bg);   /* light near-white code block (MediaWiki/GitHub idiom): near-black text, 6px rounded */
+  background: var(--pre-bg);   /* light near-white code block: near-black text, 6px rounded */
   color: var(--pre-fg);
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -1721,7 +1721,7 @@ blockquote.quotation .blockquote-context img.author-image.logo-banner {
 }
 .wiki-content pre code { background: none; padding: 0; border: 0; font-size: inherit; }
 
-/* ---- CodeSelect widget (adopted from the MediaWiki CodeSelect.css, the canonical
+/* ---- CodeSelect widget (adopted from the upstream CodeSelect.css, the canonical
    source; production is light-only). The generator emits `.code-select` flat + a
    data-code attribute; app.js enriches it into the .cbutton/.tooltip2/.viewport/.code
    structure these rules target. ---- */
@@ -1784,7 +1784,7 @@ blockquote.quotation .blockquote-context img.author-image.logo-banner {
 }
 .code-select.copied .tooltip2::after { border-top-color: #00a400; }
 /* --- Donate page crypto panel. Production styles it via the retired kicksecure_css_page_donate
-   (MediaWiki CSS extension, dropped under strict CSP); reproduced here. Floats right of the
+   (a CSS extension, dropped under strict CSP); reproduced here. Floats right of the
    appeal text as a compact box; each coin row shows its icon, name and copyable address with
    the QR collapsed by default (prod's default view -- the address stays copyable). --- */
 /* Two-column layout (prod parity): appeal text + media float LEFT as a fluid column, the
@@ -2304,7 +2304,7 @@ code:empty { display: none; }
 .info-box :not(.info-box-icon, .info-box-icon *, .thumbframe, .thumbframe *, .mn-switcher *, .gallery-steps *) > img:not(.ia-archive-icon, .media-sized, .link-icon) { height: 46px !important; width: auto !important; max-width: 100%; }
 
 /* File: page main image is a link to its full-resolution media. Idiomatic "enlarges"
-   affordance (MediaWiki MultimediaViewer uses zoom-in), reinforced by a light CSS-only
+   affordance (the standard media-viewer zoom-in cursor), reinforced by a light CSS-only
    hover/focus cue -- no JS, CSP-clean. :focus-visible gives keyboard users the same cue. */
 .fullres-link { display: inline-block; cursor: zoom-in; }
 .fullres-link img { transition: box-shadow 0.12s ease, filter 0.12s ease; }
@@ -3251,7 +3251,7 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
      a floated thumb balloons to the caption width and crushes the intro/body text beside it at
      narrow-but-unstacked viewports. width:0 drops the caption from the figure's intrinsic-width
      calc (the figure then tracks the IMAGE); min-width:100% lays the caption out at that image
-     width so it WRAPS beneath the image instead (the MediaWiki thumb idiom). */
+     width so it WRAPS beneath the image instead (standard thumb wrapping). */
   width: 0; min-width: 100%; box-sizing: border-box;
 }
 /* Phone: a floated thumb on a narrow column crowds the text -- let it span full width. */
@@ -3304,7 +3304,7 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
   .left-right-image-text > .image { flex: 0 0 auto; max-width: 100%; }
 }
 .references, .footnotes { font-size: 0.9rem; color: var(--fg-soft); }
-/* In-text citation marker [N]: a real SUPERSCRIPT (idiomatic -- matches MediaWiki/Wikipedia's
+/* In-text citation marker [N]: a real SUPERSCRIPT (idiomatic -- matches the conventional
    sup.reference and the <sup> UA default; production ships a tiny raised mark). line-height:0
    stops the raised mark from growing the line box (the standard sup guard). */
 .reference { font-size: 0.8em; vertical-align: super; line-height: 0; }
@@ -3795,7 +3795,7 @@ sup.reference:target {
 .wiki-content .float-right table:not(.toc):not(.storage-table) td { background: var(--bg); }
 /* header row + label column: a light --surface shade, CENTERED and BOLD. Both --bg value cells and
    the --surface label column are light enough that the normal --link blue clears 4.5:1, so links
-   everywhere in the infobox use --link with NO override (modern Wikipedia drops the heavy label fill). */
+   everywhere in the infobox use --link with NO override (the modern idiom drops the heavy label fill). */
 .wiki-content .float-right table:not(.toc):not(.storage-table) th,
 .wiki-content .float-right table:not(.toc):not(.storage-table) td:first-child {
   background: var(--surface); text-align: center; font-weight: 700;
@@ -4655,7 +4655,7 @@ body.page-home { container-type: inline-size; }
 .thumb-gallery.justify-left { justify-content: flex-start; }
 .thumb-gallery.justify-center { justify-content: center; }
 .thumb-gallery.justify-right { justify-content: flex-end; }
-/* Logo grid symmetry: MediaWiki sizes each thumb to its own image (fit-content width + a
+/* Logo grid symmetry: sizing each thumb to its own image (fit-content width + a
    per-aspect-ratio height), so mixed-ratio logos (a wide Kicksecure logo, a tall Debian swirl)
    render as ragged, differently-sized boxes whose images touch the frame. Normalize to UNIFORM
    cells: one fixed width, one equal square image area, each logo scaled to fit via
@@ -5171,8 +5171,14 @@ html.client-js .tab-content-controller .tcc-title {
 html.stage-active .stage-banner { display: flex !important; }
 html.stage-active .banner-dismiss-cb:checked + .stage-banner { display: none !important; }
 /* Prod ships the dismiss checkbox too (full markup), so keep it out of the a11y tree / tab
-   order while the banner is dark -- never an orphan, unlabelled control. */
+   order while the banner is dark -- never an orphan, unlabelled control. (The checkbox also
+   carries the `hidden` attr for the no-CSS case; here CSS is applied, so this removes it.) */
 html:not(.stage-active) #stage-dismiss-cb { display: none; }
+/* On an activated stage, restore the checkbox's display so `.sr-only` presents it accessibly
+   (clipped, named by the OK label, still toggled by it). !important beats the `hidden` attr's
+   global [hidden]{display:none!important}; .sr-only itself sets no display, so this is the only
+   override needed. */
+html.stage-active #stage-dismiss-cb { display: inline !important; }
 .stage-banner strong { color: #7a1f00; }
 /* DIRTY pill -- STAGE builds off an uncommitted generator tree (MW_STATIC_DIRTY). A loud inline
    tag beside the "Staging server." label so a work-in-progress stage render is not mistaken for
