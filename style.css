@@ -2387,14 +2387,16 @@ code:empty { display: none; }
 .padded-content-icon.iconset-h2.cs-blue { background: #2f6fd0; }
 .padded-content-icon.iconset-h3.cs-yellow { background: #8f6200; color: #fff; }
 .padded-content-icon.iconset-h4.cs-gray { background: #565c64; }
-/* a bare cs-green status glyph (iconset-true -> base `color: var(--callout)`, no filled chip) is
-   ~3.5:1 as light-mode text (#1a9e3f); darken to AA, keeping the green hue. Dark mode's --c-green
-   (#57cc6a) already clears on the dark bg, so reset there. cs-red/cs-blue glyphs are ~4.9:1 (no
-   change); the filled-chip iconsets (white-on-callout) are not iconset-true, so unaffected. */
-.padded-content-icon.iconset-true:is(.cs-green, .cs-green-light) { color: #157a33; }
-:root[data-theme="dark"] .padded-content-icon.iconset-true:is(.cs-green, .cs-green-light) { color: var(--c-green); }
+/* A no-chip cs-green pci text (base `color: var(--callout)`, transparent bg) is too light for AA:
+   the bare status glyph (iconset-true) ~3.5:1, and the rounded WELL-DONE/CONGRATULATIONS banner
+   #1a9e3f is 2.99:1 on a cs-blue note tint (fails even large-text 3:1). Darken both to AA, keeping
+   the green hue. Dark mode's --c-green (#57cc6a) already clears on the dark bg, so reset there.
+   cs-red/cs-blue glyphs are ~4.9:1 (no change); the filled-chip iconsets (white-on-callout) are
+   not in this set, so unaffected. */
+.padded-content-icon:is(.iconset-true, .pci-style-rounded):is(.cs-green, .cs-green-light) { color: #157a33; }
+:root[data-theme="dark"] .padded-content-icon:is(.iconset-true, .pci-style-rounded):is(.cs-green, .cs-green-light) { color: var(--c-green); }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .padded-content-icon.iconset-true:is(.cs-green, .cs-green-light) { color: var(--c-green); }
+  :root:not([data-theme="light"]) .padded-content-icon:is(.iconset-true, .pci-style-rounded):is(.cs-green, .cs-green-light) { color: var(--c-green); }
 }
 .padded-content-icon.pci-style-circle {
   display: inline-flex; align-items: center; justify-content: center;
@@ -4776,9 +4778,10 @@ body.page-home { container-type: inline-size; }
 }
 .mininav.mn-switcher li > *:hover { color: var(--fg); }
 .mininav.mn-switcher li > *.active { color: var(--link); border-bottom-color: var(--link); font-weight: 700; }
-/* Inside a colored callout (.info-box, incl. cs-*), the bright --link active text drops below 4.5:1
-   on the tint, so use the darker --link-on-shade (the house tinted-surface link colour). */
-.info-box .mininav.mn-switcher li > *.active { color: var(--link-on-shade); border-bottom-color: var(--link-on-shade); }
+/* Inside any colored callout (.info-box / .admonition / .mbox, incl. cs-*), the bright --link
+   active text drops below 4.5:1 on the tint (e.g. 4.42:1 on a cs-blue admonition), so use the
+   darker --link-on-shade (the house tinted-surface link colour, 7.5:1+ on every tint). */
+:is(.info-box, .admonition, .mbox) .mininav.mn-switcher li > *.active { color: var(--link-on-shade); border-bottom-color: var(--link-on-shade); }
 .mininav.mn-switcher li > *:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 /* Reserve the BOLD label width in a hidden ::after copy so activating a tab (400 -> 700) never
    widens it and shifts the row (GitHub Primer UnderlineNav technique). data-label = plain text. */
