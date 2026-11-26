@@ -2394,8 +2394,13 @@ code:empty { display: none; }
    cs-red/cs-blue glyphs are ~4.9:1 (no change); the filled-chip iconsets (white-on-callout) are
    not in this set, so unaffected. */
 .padded-content-icon:is(.iconset-true, .pci-style-rounded):is(.cs-green, .cs-green-light) { color: #157a33; }
-:root[data-theme="dark"] .padded-content-icon:is(.iconset-true, .pci-style-rounded):is(.cs-green, .cs-green-light) { color: var(--c-green); }
-@media (prefers-color-scheme: dark) {
+/* The dark reset is SCREEN-scoped: @media print resets the palette to light, so an unscoped
+   dark reset would paint the bright --c-green (#1a9e3f) glyph/banner on a light print tint
+   (2.99:1). Keep both resets inside @media screen so print keeps #157a33, same as .cell-green. */
+@media screen {
+  :root[data-theme="dark"] .padded-content-icon:is(.iconset-true, .pci-style-rounded):is(.cs-green, .cs-green-light) { color: var(--c-green); }
+}
+@media screen and (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .padded-content-icon:is(.iconset-true, .pci-style-rounded):is(.cs-green, .cs-green-light) { color: var(--c-green); }
 }
 .padded-content-icon.pci-style-circle {
