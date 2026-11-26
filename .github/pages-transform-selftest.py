@@ -6,7 +6,7 @@
 # Covers: transform injects stage-active (both the no-class <html> and an existing-class one),
 # noindex, and the card-host rewrite; writes the stage robots.txt; is idempotent; and -- the
 # canaries -- verify FAILS when stage-active or noindex is absent (the guard is not a no-op).
-# stdlib only; invoked via its shebang (chmod +x). Exit 0 = all pass.
+# stdlib only; the workflow invokes it via `python3` (no execute-bit dependency). Exit 0 = all pass.
 
 import importlib.util
 import sys

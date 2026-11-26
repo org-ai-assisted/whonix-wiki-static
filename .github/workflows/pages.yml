@@ -57,7 +57,9 @@ jobs:
         # assets, which GitHub Pages cannot noindex). verify fails the deploy if a page is not
         # noindexed or robots.txt is not the policy.
         run: |
-          .github/pages-transform-selftest.py
+          # Invoked via python3 (not ./...): no execute-bit dependency, so a missed +x on the
+          # selftest can never break the whole deploy at this step.
+          python3 .github/pages-transform-selftest.py
           .github/pages-transform.py transform _site
           .github/pages-transform.py verify _site
       - name: Configure Pages
