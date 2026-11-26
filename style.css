@@ -6,7 +6,7 @@
    explicit choice wins) AND [data-theme=dark] (set flash-free by the pre-paint
    script). All color/spacing/shape is a token, redefined only for dark. */
 
-/* All text -- sans AND mono -- is a SYSTEM STACK (Vector-2022 idiom): ZERO downloaded web fonts.
+/* All text -- sans AND mono -- is a SYSTEM STACK: ZERO downloaded web fonts.
    No @font-face anywhere => no async font load => no swap => ZERO web-font layout shift (CLS) by
    construction, and nothing to fetch on any page. A bare `Roboto` in --font-sans renders from a
    LOCALLY installed face (Android system font; any desktop that has it) for brand parity, else the
@@ -112,7 +112,7 @@
   --gap: 1rem;
 
   /* fonts */
-  /* system sans stack (Vector-2022 shape); bare Roboto renders from a LOCAL face where installed
+  /* system sans stack; bare Roboto renders from a LOCAL face where installed
      (Android, some desktops) for brand parity, else the OS sans -- no @font-face, no swap, no CLS */
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", sans-serif;
   --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "Courier New", monospace;
@@ -645,7 +645,7 @@ a:hover { color: var(--link-hover); text-decoration: underline; text-underline-o
   .download-button-v2 .dbutton { white-space: normal; }
 }
 /* Verify-asset download links (Template:DownloadTableUnified + signing-key subtemplates):
-   secondary to the primary download CTA, so a quiet Qubes-style bordered box (one uniform
+   secondary to the primary download CTA, so a quiet bordered box (one uniform
    fa-download arrow + label), stacked full-width -- not the solid primary fill. */
 .download-button-v2.dlb-verify {
   display: flex; width: 100%; margin: 0 0 8px; box-shadow: none; padding-right: 0;
@@ -1231,7 +1231,7 @@ html:not(.client-js) .site-search .search-submit { display: none; }
    link color + the shared :hover / keyboard-active highlight so it reads as actionable. */
 .search-results .search-all { border-top: 1px solid var(--border); margin-top: 0.15rem; padding-top: 0.15rem; }
 .search-results .search-all a { font-style: italic; }
-/* Wikipedia-style suggestion row (desktop dropdown AND mobile popover share this): a narrow
+/* A suggestion row (desktop dropdown AND mobile popover share this): a narrow
    thumbnail, then the title (typed prefix highlighted) over a one-line summary. Scoped to the
    result options so the "search for all" footer stays a plain block link. */
 .search-results li:not(.search-all) > a,
@@ -1260,15 +1260,17 @@ html:not(.client-js) .site-search .search-submit { display: none; }
    .search-thumb / .search-row-* classes, built by one app.js row builder). Only the row's padding,
    themed title color (--fg, not the default link blue), and hover are scoped to the page list
    (.search-page-results, a wider column than the .search-results overlay). */
-.search-page-results { list-style: none; padding: 0; }
+/* Scoped under .wiki-content so `padding: 0` (0,2,0) beats `.wiki-content ul` (0,1,1), which would
+   otherwise indent the list 1.6rem -- the rows must align flush with the search field + status. */
+.wiki-content .search-page-results { list-style: none; padding: 0; }
 .search-page-results li > a {
   padding: 0.4rem 0.5rem; border-radius: var(--radius-sm); color: var(--fg);
 }
 .search-page-results li > a:hover { background: var(--surface-2); text-decoration: none; }
 
 /* Special:Search results page field (built by app.js setupResultsPage): a role=search row with the
-   input, an inside-right clear-x shown while typing, and a trailing blue Search submit. The Codex/
-   Vector cdx-search-input idiom; blue + muted X reuse the SAME tokens as the header controls so the
+   input, an inside-right clear-x shown while typing, and a trailing blue Search submit. A composed
+   search field; blue + muted X reuse the SAME tokens as the header controls so the
    two surfaces match. No <form> (CSP form-action 'none') -- app.js drives submit. */
 .search-page-box {
   display: flex;
@@ -1383,17 +1385,19 @@ html:not(.client-js) .site-search .search-submit { display: none; }
   .header-cta { order: 4; }
   /* Lens toggles the overlay open. Mobile-only (see the base note): kept out of the unscoped base
      so a stale :checked cannot leak into the desktop tier. */
+  /* Field + dropdown share ONE width so the panel sits exactly under the field. Both are
+     position:absolute right:0 on .site-search, whose right edge is INSET from the viewport (the
+     tools chevron + Donate heart sit to its right, ~5.9rem incl. header padding at the heart-only
+     <=424px layout). A right-anchored box only stays on-screen if its width <= that left-space, so
+     a plain 16rem (or the old 80vw, both 256px at 320px) spills off the LEFT edge on a 320-340px
+     phone. Clamp to min(16rem, 100vw - 7rem): 7rem (> the ~5.9rem inset) leaves the box a >=~17px
+     left gutter at every mobile width while staying 16rem wide where there is room. */
   .search-toggle:checked ~ .search-field {
-    width: min(80vw, 16rem); height: 2.4rem; padding: 0 5rem 0 0.8rem; border: 1px solid var(--border);
+    width: min(16rem, calc(100vw - 7rem)); height: 2.4rem; padding: 0 5rem 0 0.8rem; border: 1px solid var(--border);
     opacity: 1; pointer-events: auto; visibility: visible; z-index: 50;
     box-shadow: var(--shadow-md);
   }
-  /* Match the results dropdown to the OPEN field width. Both are right-anchored to .site-search,
-     whose right edge is INSET from the viewport on mobile (the chevron + Donate heart sit to its
-     right). The base max-width:min(22rem, 100vw-2rem) assumes a viewport-right anchor, so on mobile
-     a 22rem panel runs off the LEFT viewport edge (thumbnails clipped). Pinning the panel to the
-     field's own min(80vw,16rem) keeps it exactly under the field -- on-screen, same left+right. */
-  .search-results { width: min(80vw, 16rem); max-width: none; }
+  .search-results { width: min(16rem, calc(100vw - 7rem)); max-width: none; }
   /* The mobile popover reuses the SAME blue Search submit + clear-x as desktop (their markup and
      app.js wiring are tier-agnostic; only this reveal was desktop-only). They overlay the open
      field, which hangs below the header at top: calc(100% + 0.3rem); the field is 2.4rem tall, so
@@ -1455,15 +1459,14 @@ html:not(.client-js) .site-search .search-submit { display: none; }
   overflow-wrap: break-word;
 }
 /* Heading hierarchy = size + weight + ASYMMETRIC spacing, with NO rule/underline beneath any
-   heading. The modern docs idiom (GOV.UK, USWDS, MDN, GitHub Primer, Tailwind prose, Starlight,
-   Docusaurus all do this); a bottom rule is a README/Markdown-render relic, and NN/g + Opquast
-   warn a line under text reads as a link affordance. */
+   heading. The modern docs idiom; a bottom rule is a README/Markdown-render relic, and a line
+   under text reads as a link affordance. */
 .wiki-content h1, .wiki-content h2, .wiki-content h3,
 .wiki-content h4, .wiki-content h5, .wiki-content h6 {
   color: var(--heading);   /* #1b1d1f near-black == body colour: full-dark headings (the docs idiom) */
   /* semibold headings: WEIGHT (not just size) carries the hierarchy, so body-sized h4/h5/h6 read as
-     headings, not paragraphs. 600 (not 700) is the idiomatic docs heading weight -- GitHub/Starlight
-     600, and 700 reads heavy/blocky at the 30-32px title size. */
+     headings, not paragraphs. 600 (not 700) is the idiomatic docs heading weight; 700 reads
+     heavy/blocky at the 30-32px title size. */
   font-weight: 600;
   line-height: 1.3;
   margin: 1.1em 0 0.5em;
@@ -1524,7 +1527,7 @@ html:not(.client-js) .site-search .search-submit { display: none; }
 .wiki-content > .widget-headline:first-child h1 { margin-top: 0.25rem; }
 /* Page title (#firstHeading / .first-heading) -- borderless, top of the 16px-base ladder
    at 40px so the title clearly outranks the 30px section heading (.hvis1): 40/30 = 1.333, the
-   perfect-fourth top step used by Primer/Infima (32/30 = 1.06 read as the same level). The lower
+   perfect-fourth top step (32/30 = 1.06 read as the same level). The lower
    ladder (.hvis1 30 / .hvis2 24 / .hvis3 20) is already a clean 1.25/1.2 scale and is untouched;
    mobile steps the title to 36px below. Production Boilerplate.css shipped 28px. The generator
    synthesizes an <h1 id="firstHeading" class="first-heading"> for a normal page (see page.py). */
@@ -1574,7 +1577,7 @@ html:not(.client-js) .site-search .search-submit { display: none; }
    applies and the title text wraps around it at full width. */
 
 .wiki-content p { margin: 0 0 0.85em; }   /* prod paragraph spacing */
-/* Readable measure: cap prose line length at 66ch (~= Tailwind `prose` 65ch). `ch` is the '0'
+/* Readable measure: cap prose line length at 66ch. `ch` is the '0'
    advance -- wider than a mean glyph -- so on the real 16px body this renders a p90 ~64-66
    chars/line (median ~58-62), measured by tools/check-typography.py on the live stage: inside the
    45-75 ideal, under the WCAG-80 ceiling. The intro band opts out below. */
@@ -2260,8 +2263,8 @@ code:empty { display: none; }
 }
 .info-box-icon {
   /* top optically centers the 24px badge on the FIRST text line (12px pad-top +
-     (25.6px line-height - 24px)/2), level with line 1 -- the admonition idiom
-     (GitHub/MkDocs/Docusaurus), NOT centered on the whole multi-line box. */
+     (25.6px line-height - 24px)/2), level with line 1 -- the admonition idiom,
+     NOT centered on the whole multi-line box. */
   position: absolute; left: 12px; top: 13px; margin: 0;
   width: 24px; height: 24px; font-size: 0;   /* kill the inline whitespace gap */
 }
@@ -2384,7 +2387,7 @@ code:empty { display: none; }
      box brackets the cap proportionally in EVERY context -- ~16px in an 18px step heading,
      ~14.5px in 16px body sub-steps -- no per-context tuning (a fixed 16px box hung ~3.8px below
      the baseline in body text). vertical-align:middle centres it; scaling-with-text + centred is
-     the step-badge idiom (MUI Stepper, Tailwind UI, Bootstrap size the badge relative to its text). */
+     the step-badge idiom (size the badge relative to its text). */
   /* padding-top 0.04em: same optical-centering nudge as the h1 circle (the digit is ink above the
      baseline, so a line-height:1 flex centre hangs it high); drops the numeral onto the true centre
      in every context. box-sizing:border-box keeps the 1.3em box size. */
@@ -2662,7 +2665,7 @@ html.client-js .tab-content-controller .tcc-content { border-top: none; }
    pill switcher; flush bottom so the pane sits against the controller (its margin does the gap). */
 html.client-js .tab-content-controller > .tcc-content { padding-top: 0.3rem; padding-bottom: 0; }
 /* Inner pane BODY (the visible white .tcc-section box): symmetric top==bottom for optical
-   balance -- idiomatic card/note padding (Bootstrap/Primer/MkDocs all pad top==bottom). L/R
+   balance -- idiomatic card/note padding (pad top==bottom). L/R
    unchanged; the ragged word-wrap right edge is accepted. */
 html.client-js .tab-content-controller .tcc-section > .tcc-content { padding-top: 0.5rem; padding-bottom: 0.5rem; }
 /* But a pane whose LAST child is itself a padded box (the .mbox/.info-box/.community-support-info
@@ -3060,7 +3063,7 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 /* {{IntroLike}} mid-page callout (production Utility.css) -- a soft italic gray box used
    INSIDE content (e.g. Tor, Shell). Child paragraphs stack into one continuous tinted band.
    The page LEAD ({{Intro}} marker form + the builder's synthetic .page-lead) is NOT this box:
-   it gets idiomatic lead typography (see below), matching GOV.UK/Scottish/USWDS. */
+   it gets idiomatic lead typography (see below). */
 .intro-like { margin: 1.5em 0; }
 .pre-intro-p + .hidden-thumbnail { display: none; }
 /* `.wiki-content` prefix raises specificity above `.wiki-content p{margin:0 0 1rem}`
@@ -3172,7 +3175,7 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
    The global `.wiki-content p{max-width:66ch}` pins that <p> to the column's LEFT edge, so
    `text-align:center` only centers within a left-anchored box -- the button/link land well left
    of the column center. Drop the cap on homepage align wrappers so centering spans the full
-   column (matches the Whonix prod hero + the Fedora/Qubes idiom). (.hero-learn is dead code -- no
+   column (matches the Whonix prod hero). (.hero-learn is dead code -- no
    element emits that class -- so the old size rule is removed.) */
 .page-home .align-center > p,
 .page-home .align-right > p { max-width: none; margin-inline: auto; }
@@ -3184,8 +3187,8 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
 .page-home .cv-section .align-center > :is(ul, ol) { max-width: 66ch; margin-inline: auto; text-align: left; }
 /* Homepage content sections: a centered <h2> (set below) over a LEFT-anchored 66ch body reads as
    two different alignments. Put each section body in a centered max-width column, left-aligned
-   inside for readability -- the Ubuntu u-fixed-width / Qubes col-offset / Tailwind prose mx-auto
-   idiom. The Download band's body is nested in .section-download (a div, not a direct p/ul/ol/dl
+   inside for readability. The Download band's body is nested in .section-download (a div, not
+   a direct p/ul/ol/dl
    child), so the `>` combinator leaves it untouched; at phone width 66ch exceeds the viewport, so
    the cap collapses to full-width left-aligned -- no mobile change. */
 .page-home .cv-section > :is(p, ul, ol, dl) { max-width: 66ch; margin-inline: auto; }
@@ -3199,7 +3202,7 @@ body:has(.bottom-stack .stage-banner) .back-to-top { bottom: calc(4.5rem + 20px)
    .wiki-content to outrank the global img rule. */
 .wiki-content .thumbframe {
   /* Borderless: no card, no frame, no shadow -- just the image and a typographic caption (the
-     modern docs/KB idiom: Antora/Fedora, Read the Docs, MkDocs Material, Docusaurus). With no
+     modern docs/KB idiom). With no
      auto-frame, a self-framed image (a badge/seal/screenshot that already carries its own border)
      can never show a spurious SECOND border -- the structural fix for the double-border class. */
   text-align: center; font-size: 0.94rem;
@@ -3460,7 +3463,7 @@ sup.reference:target {
 .wiki-content :is(h1, h2, h3, h4, h5, h6) > .heading-actions {
   position: absolute; right: 0; top: 0; margin: 0;   /* top:0 -> first line; out of flow -> no wrap, no reserved height */
 }
-/* Hidden by default, revealed when the reader signals intent (GitHub/MkDocs/Rustdoc idiom).
+/* Hidden by default, revealed when the reader signals intent.
    pointer-events:none while hidden so a tap over the (invisible) icon zone falls through to the
    heading -- the click reveal (app.js navigates to the anchor) -- not onto an unseen glyph. opacity
    (not display) keeps the fade + the a11y box in the tab order; absolute (above), so a hidden
@@ -3630,8 +3633,8 @@ sup.reference:target {
 }
 .share-open-panel:popover-open { display: flex; }
 /* --- Idiomatic header row + close, SHARED by every share surface (confirm popover, share menu,
-   info/antispam popovers): a leading title + a trailing close + a divider (Bootstrap .modal-header
-   / Primer Dialog.Header). The close sits in its own flex cell, so it can NEVER collide with the
+   info/antispam popovers): a leading title + a trailing close + a divider. The close sits in its
+   own flex cell, so it can NEVER collide with the
    title/body text at any width. Light-dismiss (Esc / tap-outside) stays primary. --- */
 .popover-head {
   display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.1rem;
@@ -4559,7 +4562,7 @@ body.page-home { container-type: inline-size; }
 .justify-left { justify-content: left; }
 .justify-center { justify-content: center; }
 .justify-right { justify-content: right; }
-/* thumb-gallery-style = idiomatic GRID CARDS (Material for MkDocs pattern), replacing the heavy
+/* thumb-gallery-style = idiomatic GRID CARDS, replacing the heavy
    bordered + drop-shadowed "See Also" card: a responsive auto-fit grid of hairline cards, NO
    resting shadow, a soft lift on hover, the WHOLE card clickable (a stretched caption link), the
    label a plain bold title (not an underlined blue caption). */
@@ -4602,8 +4605,8 @@ body.page-home { container-type: inline-size; }
 }
 /* gallery-steps: a numbered SCREENSHOT WALKTHROUGH (e.g. the VirtualBox import flow). The bare
    icon-row crushes a landscape UI screenshot into the 8.5rem square cell; here each screenshot is
-   shown ONE PER ROW at full content width and its NATIVE aspect ratio -- the idiomatic docs pattern
-   (GitHub/GitLab/Material docs). The step number is the {{IconSet}} badge in each caption; the
+   shown ONE PER ROW at full content width and its NATIVE aspect ratio -- the idiomatic docs
+   pattern. The step number is the {{IconSet}} badge in each caption; the
    lightbox stays the optional enlarge.
    Higher specificity (.gallery.gallery-steps ...) overrides the icon-row width/aspect rules above. */
 .gallery.gallery-steps { display: block; }
@@ -4759,8 +4762,8 @@ body.page-home { container-type: inline-size; }
    left-anchored, so without this the centered text sits left-of-centre above the cloud. */
 .wiki-content .built-on-label p { max-width: none; margin: 0 auto; }
 
-/* --- tab mininav SWITCHER: left-aligned underline tabs (modern idiom: GitHub Primer
-   UnderlineNav / Material / IBM Carbon). Active tab = --link text + a 2px --link underline over a
+/* --- tab mininav SWITCHER: left-aligned underline tabs (modern idiom). Active tab = --link
+   text + a 2px --link underline over a
    full-width hairline rule, plus bold weight; inactive = --muted, normal weight. app.js keeps
    role=tablist/tab + roving tabindex; styling keys off the server/app.js `.active` class (no inline
    JS/CSS -> strict-CSP safe). A wide tab set WRAPS to rows -- every tab stays on-screen
@@ -4801,7 +4804,7 @@ body.page-home { container-type: inline-size; }
 :is(.info-box, .admonition, .mbox) .mininav.mn-switcher li > *.active { color: var(--link-on-shade); border-bottom-color: var(--link-on-shade); }
 .mininav.mn-switcher li > *:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 /* Reserve the BOLD label width in a hidden ::after copy so activating a tab (400 -> 700) never
-   widens it and shifts the row (GitHub Primer UnderlineNav technique). data-label = plain text. */
+   widens it and shifts the row. data-label = plain text. */
 .tcc-label { display: inline-block; }
 .tcc-label::after {
   content: attr(data-label); display: block; height: 0; overflow: hidden;
@@ -5137,8 +5140,7 @@ html.client-js .tab-content-controller .tcc-title {
 /* No-JS dismiss: the sr-only checkbox before a banner hides it for THIS page view; JS
    persists the choice across pages via the pre-paint hidden classes (page.py). The stage
    banner reappears next page/reload with no JS, so stage stays hard to mistake for prod. */
-.banner-dismiss-cb:checked + .consent-banner,
-.banner-dismiss-cb:checked + .stage-banner { display: none; }
+.banner-dismiss-cb:checked + .consent-banner { display: none; }
 /* Keyboard focus on the visually-hidden checkbox shows a ring on the visible OK label
    (light on the dark consent banner, dark on the yellow stage banner). */
 .banner-dismiss-cb:focus-visible + .consent-banner .consent-dismiss {
@@ -5148,17 +5150,26 @@ html.client-js .tab-content-controller .tcc-title {
   outline: 2px solid transparent; outline-offset: 2px; box-shadow: 0 0 0 2px #3a2500;
 }
 
-/* Staging notice -- STAGE builds only; loud so stage is never mistaken for production.
-   Fixed to the viewport BOTTOM so it is out of the header: the header then renders at
-   y=0 exactly like production (no top offset), keeping stage-vs-prod comparison aligned.
-   Dismissible (localStorage, like the legal banner) via the OK button. */
+/* Staging notice -- shipped (dark) in EVERY build; revealed only under html.stage-active, set
+   by a --stage generator build and by the GitHub stageify (pages-transform.py) on the served
+   stage artifact. So production (www.*) carries the inert markup but never shows it. Loud so
+   stage is never mistaken for production. Fixed to the viewport BOTTOM so it is out of the
+   header: the header then renders at y=0 exactly like production (no top offset), keeping
+   stage-vs-prod comparison aligned. Dismissible (localStorage, like the legal banner) via OK. */
 .stage-banner {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.4rem 0.9rem;
+  display: none; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.4rem 0.9rem;
   padding: 0.5rem 1rem; font-size: 0.9rem; text-align: center;
   /* Semi-transparent like the consent banner (rgba .9), not a solid fill -- still loud yellow. */
   color: #3a2500; background: rgba(255, 207, 51, 0.9);
   border-top: 2px solid #e0a800;
 }
+/* Reveal + dismiss, all gated on activation: prod (no .stage-active) stays dark, and the
+   dismiss rules deterministically outrank the reveal (higher specificity, order-independent). */
+html.stage-active .stage-banner { display: flex; }
+html.stage-active .banner-dismiss-cb:checked + .stage-banner { display: none; }
+/* Prod ships the dismiss checkbox too (full markup), so keep it out of the a11y tree / tab
+   order while the banner is dark -- never an orphan, unlabelled control. */
+html:not(.stage-active) #stage-dismiss-cb { display: none; }
 .stage-banner strong { color: #7a1f00; }
 /* DIRTY pill -- STAGE builds off an uncommitted generator tree (MW_STATIC_DIRTY). A loud inline
    tag beside the "Staging server." label so a work-in-progress stage render is not mistaken for
@@ -5185,10 +5196,11 @@ html.client-js .tab-content-controller .tcc-title {
   min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
   padding: 0.4rem 1.25rem;
 }
-/* Reserve space so the fixed bottom stack never hides the last of the footer (stage builds
-   only). The staging notice wraps to ~3 lines at phone width, plus the 44px action row. */
-body:has(.stage-banner) { padding-bottom: 4.5rem; }
-@media (max-width: 720px) { body:has(.stage-banner) { padding-bottom: 8rem; } }
+/* Reserve space so the fixed bottom stack never hides the last of the footer -- only when the
+   banner is actually shown (html.stage-active), so prod gets no dead gap. The staging notice
+   wraps to ~3 lines at phone width, plus the 44px action row. */
+html.stage-active body { padding-bottom: 4.5rem; }
+@media (max-width: 720px) { html.stage-active body { padding-bottom: 8rem; } }
 
 /* Browser-storage viewer (Special:BrowserStorage) */
 .storage-table {
@@ -5312,7 +5324,7 @@ body:has(.stage-banner) { padding-bottom: 4.5rem; }
    a previously-dismissed banner should stay hidden, so it never paints then vanishes. */
 html.sitenotice-hidden #siteNotice,
 html.legal-ack-hidden .consent-banner { display: none; }
-html.stage-notice-hidden .stage-banner { display: none; }
+html.stage-active.stage-notice-hidden .stage-banner { display: none; }
 /* No-JS notice: the pre-paint marks <html class="client-js"> when JS is on, so the
    "works without JavaScript" callout only shows to actual no-JS visitors (no flash). */
 html.client-js .show-for-nojs-only { display: none; }
@@ -5337,7 +5349,7 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
 #siteNotice + main.wiki-content > .first-heading { margin-top: 0.4rem; }
 .sitenotice { position: relative; display: inline-block; max-width: 100%; }
 .sitenotice-close {
-  /* Ghost dismiss (idiomatic Primer/Carbon icon-button): a small glyph in a transparent,
+  /* Ghost dismiss (idiomatic icon-button): a small glyph in a transparent,
      padded hit box -- never a filled square. The hit box stays >=24px CSS-px for WCAG 2.5.8;
      positive offsets only (the #89/#91 guard forbids negatives that cause mobile overflow). */
   width: var(--close-size-compact); height: var(--close-size-compact); position: absolute; top: 50%; right: 6px; z-index: 10;
@@ -5476,7 +5488,7 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
 .mini-modal .mm-close {
   position: absolute; top: 2px; right: 2px; z-index: 3; background: transparent;
   border: 0; color: inherit; font-size: 22px; cursor: pointer; line-height: 1;
-  /* >=44px hit area (WCAG 2.5.8 / Material) with the glyph centered -- the bare 22px glyph was
+  /* >=44px hit area (WCAG 2.5.8) with the glyph centered -- the bare 22px glyph was
      an under-size touch target on a phone. */
   min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
 }

@@ -327,8 +327,8 @@
   // position), so this inserts NOTHING into the layout = zero hydration CLS. We add only the ARIA
   // tabs semantics (role=tablist/tab/tabpanel + aria-* + roving tabindex) and the click/keyboard
   // behaviour -- a promise of keyboard interaction that exists only now that JS runs, so it is
-  // added HERE, never baked into the static HTML (static tab roles would lie to AT; WAI-ARIA APG +
-  // GOV.UK). No-JS keeps the pills as plain in-page anchor links to the stacked sections.
+  // added HERE, never baked into the static HTML (static tab roles would lie to AT; WAI-ARIA APG). No-JS keeps the pills as plain in-page
+  // anchor links to the stacked sections.
   // TT-safe: setAttribute/classList/addEventListener only, no HTML sink.
   function initTabs() {
     var controllers = document.querySelectorAll(".tab-content-controller");
@@ -823,7 +823,7 @@
       }
       return shardCache[name];
     }
-    // Wikipedia-style suggestion row, shared by the header dropdown AND the Special:Search results
+    // A suggestion row, shared by the header dropdown AND the Special:Search results
     // page: a narrow thumbnail, then the title (typed prefix highlighted) over a one-line summary.
     // TT-safe: createElement + textContent + setAttribute only, never an HTML-string sink. Fields
     // come from the prebuilt index: e.img (root-relative #seo-image thumb) and e.d (the page's
@@ -857,7 +857,7 @@
       text.className = "search-row-text";
       var title = document.createElement("span");
       title.className = "search-row-title";
-      // Set the typed run off inside the title (Codex idiom). q is the current (>=2 char) query,
+      // Set the typed run off inside the title. q is the current (>=2 char) query,
       // always set by renderResults before a row builds. A full-text BODY hit whose title does not
       // contain the query (indexOf -1) renders unhighlighted, which is correct.
       // A few characters lower-case to a DIFFERENT length (e.g. U+0130), so an offset found in
@@ -920,7 +920,7 @@
     }
     // The always-present LAST dropdown option: "Search for pages containing '<query>'" -> the
     // client-side Special:Search results page (#q=<raw query>). It is the one explicit route from
-    // the live dropdown to the full ranked list (Wikipedia Vector / MDN idiom), so a query is never
+    // the live dropdown to the full ranked list, so a query is never
     // a dead end when the wanted page is not a title hit. Dropdown only (the results page already IS
     // the full list). TT-safe: textContent + setAttribute only, the query is TEXT never parsed as
     // markup; same-origin internal href (navSafe) -- no <form>, no CSP/form-action change. The raw
@@ -1149,7 +1149,7 @@
       var opts = results.children, n = opts.length;
       // Arrow navigation only while the dropdown is on screen. Cycle THROUGH the input: stepping
       // past either end lands on -1 (no active option, the typed query in view), then re-enters
-      // the list -- so the user can always get back to their raw query (DocSearch/APG wrap).
+      // the list -- so the user can always get back to their raw query (APG wrap).
       if ((e.key === "ArrowDown" || e.key === "ArrowUp") && !results.hidden) {
         e.preventDefault();
         if (e.key === "ArrowDown") setActive(activeIndex + 1 >= n ? -1 : activeIndex + 1);
@@ -1157,7 +1157,7 @@
         return;
       }
       if (e.key === "Escape") {
-        // Operator-specified clear-then-close (Carbon/Apple), and the search OWNS both stages so a
+        // Operator-specified clear-then-close, and the search OWNS both stages so a
         // consumed Escape never leaks to the document-level handlers that also close the nav, tools,
         // toast and modal on Escape:
         //  1. text or an open dropdown -> clearField: empty the input, hide the clear-x, reset the
@@ -1198,11 +1198,11 @@
       // No active option: the existing bestMatch fallback -- prefer an exact/substring TITLE match,
       // else the top rendered row (may be a body-only full-text hit), so Enter is never inert while
       // results are on screen. This site has no server results page, so this is the whole no-active
-      // behaviour (DocSearch-sanctioned).
+      // behaviour.
       var q = input.value.trim().toLowerCase();
       if (q.length < 2) {
         // Empty field + Enter: activate the Search submit -> the full Special:Search page (the
-        // Wikipedia/Vector idiom for Enter on an empty search box). Reuses the submit's already-
+        // conventional Enter-on-empty-search-box behavior). Reuses the submit's already-
         // synced, navSafe-filtered href, so a click on an href-less (off-origin) submit is itself
         // inert. A 1-char query is below the 2-char match floor with no page to "go" to -> inert.
         if (input.value.trim() === "" && submitLink) submitLink.click();
@@ -1298,7 +1298,7 @@
       pinput.setAttribute("autocomplete", "off");
       pinput.setAttribute("aria-controls", "search-page-results");
       // Inside-right clear-x (shown only while the field holds text) + a trailing blue Search
-      // submit -- the Codex/Vector cdx-search-input idiom: a field wrapper holds the input plus the
+      // submit -- a composed search field: a field wrapper holds the input plus the
       // absolutely-positioned clear-x, and the submit is a sibling to its right. The box IS the
       // role=search landmark (no <form>: CSP form-action is 'none'). The X glyph matches the
       // header's #search-clear and the blue button matches the header's #search-submit (shared
