@@ -5164,9 +5164,12 @@ html.client-js .tab-content-controller .tcc-title {
   border-top: 2px solid #e0a800;
 }
 /* Reveal + dismiss, all gated on activation: prod (no .stage-active) stays dark, and the
-   dismiss rules deterministically outrank the reveal (higher specificity, order-independent). */
-html.stage-active .stage-banner { display: flex; }
-html.stage-active .banner-dismiss-cb:checked + .stage-banner { display: none; }
+   dismiss rules deterministically outrank the reveal (higher specificity, order-independent).
+   !important is required to beat the global `[hidden] { display: none !important }` (the banner
+   markup carries the `hidden` attribute so it stays dark with NO CSS -- a stylesheet failure on
+   production then never surfaces the "not the production website" text via the UA [hidden] rule). */
+html.stage-active .stage-banner { display: flex !important; }
+html.stage-active .banner-dismiss-cb:checked + .stage-banner { display: none !important; }
 /* Prod ships the dismiss checkbox too (full markup), so keep it out of the a11y tree / tab
    order while the banner is dark -- never an orphan, unlabelled control. */
 html:not(.stage-active) #stage-dismiss-cb { display: none; }
@@ -5324,7 +5327,7 @@ html.stage-active body { padding-bottom: 4.5rem; }
    a previously-dismissed banner should stay hidden, so it never paints then vanishes. */
 html.sitenotice-hidden #siteNotice,
 html.legal-ack-hidden .consent-banner { display: none; }
-html.stage-active.stage-notice-hidden .stage-banner { display: none; }
+html.stage-active.stage-notice-hidden .stage-banner { display: none !important; }
 /* No-JS notice: the pre-paint marks <html class="client-js"> when JS is on, so the
    "works without JavaScript" callout only shows to actual no-JS visitors (no flash). */
 html.client-js .show-for-nojs-only { display: none; }

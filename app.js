@@ -1436,8 +1436,8 @@
   // Fixed bottom stack (consent + stage banners) overlaps the footer, so reserve its
   // EXACT rendered height as body padding, recomputed on resize and after any dismiss so
   // the reservation collapses to 0 once every banner is gone (no leftover gap below the
-  // footer). The CSS body:has(.stage-banner) rule is the no-JS fallback -- without JS the
-  // banners are never dismissable, so a fixed reservation is always correct there.
+  // footer). The CSS html.stage-active body rule is the no-JS fallback (stage only) -- without
+  // JS the banners are never dismissable, so a fixed reservation is always correct there.
   // Measure the bottom-stack's rendered height (read), then apply it as body padding + a
   // back-to-top lift (write) -- split so the shared geometry batcher runs this read alongside
   // every other widget's read, before any write. -1 = no stack (leave body padding untouched).
