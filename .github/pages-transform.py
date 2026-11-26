@@ -2,10 +2,11 @@
 # Staging-only serve-time transform for the GitHub Pages artifact.
 #
 # WHY: the committed HTML is the pristine production (--prod) build -- real www.* canonical,
-# no robots noindex. Served unchanged on the *-stage.github.io preview domain it would get
-# indexed. This step transforms ONLY the built _site artifact in CI (never the committed HTML),
-# so the stage mirror stays out of search indexes regardless of which build mode produced the
-# commit.
+# no robots noindex, and the staging banner dark (it ships in every build but is revealed only
+# under html.stage-active). Served unchanged on the *-stage.github.io preview domain it would get
+# indexed AND look like production. This step transforms ONLY the built _site artifact in CI
+# (never the committed HTML), so the stage mirror stays out of search indexes and is clearly
+# marked as staging, regardless of which build mode produced the commit.
 #
 # Index posture: per-page noindex,nofollow meta + a deterministic, fully crawlable robots.txt
 # (STAGE_ROBOTS). noindex keeps an HTML page out of the index, and a crawler only reads it if it is
@@ -53,6 +54,14 @@ _RE_ROBOTS = re.compile(
 # The opening <head ...> tag (attributes allowed); insertion seam when no robots meta exists.
 _RE_HEAD = re.compile(r'(<head\b[^>]*>)', re.IGNORECASE)
 _RE_HTML = re.compile(r'(<html\b[^>]*>)', re.IGNORECASE)
+# The class attribute on the opening <html ...> tag, captured in group 2. The generator emits
+# NO class on <html> (only lang + an optional data-sn-id), so set_stage_active normally takes the
+# no-class branch; this stays robust if one is ever added.
+_RE_HTML_CLASS = re.compile(r'(<html\b[^>]*?\sclass=")([^"]*)(")', re.IGNORECASE)
+# The staging-banner activation class. The generator ships the banner markup + CSS in EVERY build
+# (prod included) but dark; the CSS reveals it only under html.stage-active. The committed HTML is
+# the --prod build (no class), so set_stage_active flips it ON for the served stage artifact only.
+STAGE_ACTIVE_CLASS = "stage-active"
 # The origin (scheme://host) of the content URL in an og:image / twitter:image meta. property/name
 # precede content (generator order); only the origin is rewritten, the path is kept.
 _RE_CARD_ORIGIN = re.compile(
@@ -96,6 +105,23 @@ def rewrite_card_hosts(html, host):
     return _RE_CARD_ORIGIN.sub(lambda m: m.group(1) + "https://" + host, html)
 
 
+def set_stage_active(html):
+    """Mark <html class="stage-active"> so the always-shipped, dark-by-default staging banner
+    CSS reveals it on the served stage artifact. The committed prod HTML carries no such class,
+    so real production stays dark. Idempotent."""
+    def _add(m):
+        classes = m.group(2).split()
+        if STAGE_ACTIVE_CLASS not in classes:
+            classes.append(STAGE_ACTIVE_CLASS)
+        return m.group(1) + " ".join(classes) + m.group(3)
+    new, n = _RE_HTML_CLASS.subn(_add, html, count=1)
+    if n:
+        return new
+    # No class attr on <html> (the generator's normal output): inject one before the tag close.
+    return _RE_HTML.sub(
+        lambda m: m.group(1)[:-1] + ' class="%s">' % STAGE_ACTIVE_CLASS, html, count=1)
+
+
 def write_stage_robots(root):
     """Write STAGE_ROBOTS onto the served artifact (overwriting whatever the build emitted), so
     the stage robots.txt posture is deterministic and correct for any build mode. Idempotent.
@@ -120,7 +146,7 @@ def cmd_transform(args):
     changed = 0
     for path in iter_html(root):
         original = path.read_text(encoding="utf-8")
-        out = rewrite_card_hosts(set_robots_noindex(original), host)
+        out = set_stage_active(rewrite_card_hosts(set_robots_noindex(original), host))
         if out != original:
             path.write_text(out, encoding="utf-8")
             changed += 1
@@ -138,12 +164,19 @@ def cmd_verify(args):
     total = 0
     for path in iter_html(root):
         total += 1
-        m = _RE_ROBOTS.search(path.read_text(encoding="utf-8"))
+        text = path.read_text(encoding="utf-8")
+        m = _RE_ROBOTS.search(text)
         # Exact directive token, not a substring: `noindexable` / `max-image-preview:large` must
         # NOT pass as noindex.
         tokens = {t.strip().lower() for t in (m.group(2) if m else "").split(",")}
         if "noindex" not in tokens:
             failures.append("missing noindex robots meta: %s" % path.relative_to(root))
+        # The staging banner must be activated on the served artifact: exact class token on <html>,
+        # not a substring (a page without it would render production-looking on the stage domain).
+        cm = _RE_HTML_CLASS.search(text)
+        if not cm or STAGE_ACTIVE_CLASS not in cm.group(2).split():
+            failures.append("missing html.stage-active (staging banner not activated): %s"
+                            % path.relative_to(root))
     robots = root / "robots.txt"
     # The served robots.txt must be exactly STAGE_ROBOTS (HTML crawlable so the noindex is read,
     # non-HTML assets crawl-blocked). Exact match -- transform writes it verbatim, so any drift
@@ -158,7 +191,8 @@ def cmd_verify(args):
         print("pages-transform: verify FAILED (%d issue(s), %d html checked)"
               % (len(failures), total), file=sys.stderr)
         return 1
-    print("pages-transform: verify OK (%d html noindexed, robots.txt = stage policy)" % total)
+    print("pages-transform: verify OK (%d html noindexed + stage-active, robots.txt = stage policy)"
+          % total)
     return 0
 
 
@@ -166,7 +200,7 @@ def main(argv):
     parser = argparse.ArgumentParser(
         prog="pages-transform", description="Staging-only serve-time transform of the _site artifact.")
     sub = parser.add_subparsers(dest="mode", required=True)
-    t = sub.add_parser("transform", help="inject noindex + rewrite card hosts + write stage robots.txt in <dir>")
+    t = sub.add_parser("transform", help="inject noindex + stage-active + rewrite card hosts + write stage robots.txt in <dir>")
     t.add_argument("dir", help="the built site artifact directory (e.g. _site)")
     t.add_argument("--stage-host", default=None,
                    help="override the served host (default: from GITHUB_REPOSITORY)")
