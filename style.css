@@ -317,6 +317,14 @@ img.media-figure[width][height] { contain: size; }   /* [width][height]: see .me
    intrinsic sizing (visible); same guard + reason as the .thumbframe / logo-cloud img rules. */
 img.media-sized:not(.media-figure) { overflow: hidden; display: inline-block; }
 img.media-sized:not(.media-figure)[width][height] { contain: size; }
+/* A DEFAULT-sized content image (no author |width|, so media.py tags no .media-sized, and not a
+   standalone-figure .media-figure) still carries baked [width][height] dims but renders inline --
+   where contain:size is inert, so a blocked/broken image collapses to the 300x150 broken-img
+   default (check-img-blocked-shift /wiki/Warning: a 576x317 screenshot). Make it atomic so the
+   attrs reserve the box in both states, same idiom as .media-sized above. [width][height]-gated
+   (a no-height no-ratio SVG would collapse under contain:size); :not([class]) keeps it to bare
+   content images -- icons/logos carry their own classes and keep inline flow. */
+.wiki-content img[width][height]:not([class]) { display: inline-block; overflow: hidden; contain: size; }
 /* Keep a token together across a line wrap (e.g. a project name + its trailing TM/R sup, so
    the mark never orphans onto its own line -- see render/pipeline._bind_trademarks). */
 .nowrap { white-space: nowrap; }
@@ -396,8 +404,13 @@ img.media-sized:not(.media-figure)[width][height] { contain: size; }
    Prod targets a descendant img (.img-height-N img); the generator stamps the class on the <img>
    itself -- cover both. !important + width:auto overrides any presentational width attr, so an
    SVG's arbitrary viewBox-derived width never renders the logo oversized (the About Debian logo). */
-img.img-height-20, .img-height-20 img { height: 20px !important; width: auto; }
-img.img-height-50, .img-height-50 img { height: 50px !important; width: auto; }
+/* inline-block (not inline): the height is fixed + width:auto, so the implicit attr aspect-ratio
+   reserves the width in BOTH states -- inline leaves a blocked logo collapsing to its alt-text box
+   (check-img-blocked-shift /wiki/Warning: a 650x500 height-50 logo). Still flows inline (no row
+   stacking); overflow:hidden clips the broken glyph. No contain:size -- width:auto has no definite
+   inline axis, so contain:size would collapse it (see the .media-sized note). */
+img.img-height-20, .img-height-20 img { height: 20px !important; width: auto; display: inline-block; overflow: hidden; }
+img.img-height-50, .img-height-50 img { height: 50px !important; width: auto; display: inline-block; overflow: hidden; }
 hr {
   height: 0;
   border: 0;
@@ -702,6 +715,17 @@ body.site-whonix .site-logo-img { width: auto; }
 .site-logo:hover { color: var(--link); text-decoration: none; }
 /* Shield logo: production renders the rectangle SVG at a fixed 44x44 square. */
 .site-logo-img { display: block; height: 44px; width: 44px; }
+/* Subtle lift on the logo mark on top of the colour-shift baseline above: pointer hover
+   (@media hover:hover, so a touch tap cannot leave it stuck scaled) AND keyboard focus-visible
+   get the SAME cue; reduced-motion users get neither (transform + its transition both live in
+   the no-preference blocks, so nothing moves or animates). */
+@media (prefers-reduced-motion: no-preference) {
+  .site-logo-img { transition: transform 0.15s ease; }
+  .site-logo:focus-visible .site-logo-img { transform: scale(1.03); }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .site-logo:hover .site-logo-img { transform: scale(1.03); }
+}
 .header-cta { display: flex; align-items: center; }
 /* Developer-Zone tab (Dev-namespace pages): a small cream tab hanging from the header
    column's bottom-right edge, overlapping ~11px into the bar (matches production's
@@ -1193,8 +1217,17 @@ html:not(.client-js) .site-search .search-submit { display: none; }
   text-decoration: none;
 }
 .header-donate:hover { text-decoration: none; }
-.header-donate:hover .fa-heart { transform: scale(1.18); }   /* subtle clickability cue (prod parity) */
-.header-donate .fa-heart { color: #f80000; font-size: 20px; line-height: 1; transition: transform 0.12s ease; }   /* prod Donate heart; flex-centered with the label */
+.header-donate .fa-heart { color: #f80000; font-size: 20px; line-height: 1; }   /* prod Donate heart; flex-centered with the label */
+/* Heart lift (prod-parity scale): pointer hover (@media hover:hover, so a tap cannot stick it)
+   AND keyboard focus-visible get the same clickability cue; reduced-motion users get neither
+   (transform + transition both live in the no-preference blocks). */
+@media (prefers-reduced-motion: no-preference) {
+  .header-donate .fa-heart { transition: transform 0.12s ease; }
+  .header-donate:focus-visible .fa-heart { transform: scale(1.18); }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .header-donate:hover .fa-heart { transform: scale(1.18); }
+}
 
 /* JS-created search results dropdown */
 .search-results {
@@ -2376,6 +2409,14 @@ code:empty { display: none; }
      room while a 1-digit badge stays within min-width (an exact circle). */
   padding: 0.04em 0.15em 0;
 }
+/* Emphasis LETTER badge (the fly-in trigger markers A/B: {{IconSet|h1|A border=thick shadow}})
+   -- a standalone circular LABEL the prose points at ("badge A"), not a numeric step riding a
+   heading, so it reads a notch larger than the subordinate step numeral (operator: ~0.85em
+   letter, ~18-20px circle). .pci-border-thick marks the emphasis combo; plain numeric step
+   badges ({{IconSet|h1|2}}) omit it, so they keep the compact 0.7em/1.3em step size. The
+   higher class count (4) overrides the shared .iconset-h1 font-size + .pci-style-circle circle. */
+.padded-content-icon.pci-style-circle.pci-border-thick.iconset-h1 { font-size: 0.85em; }
+.padded-content-icon.pci-style-circle.pci-border-thick.iconset-h1 { min-width: 1.4em; height: 1.4em; }
 /* IconSet h2/h3/h4 (step/section numbers, e.g. {{IconSet|h2|3}}) render as prod's filled
    rounded-square badge with a white numeral, coloured by the element's cs-* --callout --
    not a bare coloured digit. (h1 keeps its circle via pci-style-circle.) */
@@ -4475,6 +4516,11 @@ body.page-home { container-type: inline-size; }
    smaller icons. Box = theme surface (white-ish in light, like prod); icons capped to ~1.1em. */
 .video-link {
   display: inline-flex; align-items: center; gap: 0.3rem;
+  /* Wrap the platform-icon row below the text when the chip is width-constrained (narrow donor
+     cells). Unwrapped, the last icon spills past the chip's right border (check-img-overflow
+     /wiki/Donors) AND the chip's shrink-to-fit width differs loaded vs blocked, shifting layout
+     (check-img-blocked-shift). flex-wrap keeps every icon inside the box in either state. */
+  flex-wrap: wrap;
   background: var(--surface); border: 1px solid var(--border-soft); border-radius: var(--radius-sm);
   padding: 0.1rem 0.5rem;
 }
@@ -5325,7 +5371,7 @@ html.stage-active body { padding-bottom: 4.5rem; }
 .donor-card.range-s .range > div.s, .donor-card.range-m .range > div.m,
 .donor-card.range-l .range > div.l, .donor-card.range-xl .range > div.xl { display: block; }
 
-/* Site-notice banner (#siteNotice, the data-banner-id=39 donation banner) -- adapted from
+/* Site-notice banner (#siteNotice, the .sitenotice-donation banner) -- adapted from
    Sitenotice.css: shown by default (no-JS friendly), JS dismisses. Placement A: a neutral
    theme-aware surface bar -- heart icon + ask + a unified-system Donate button
    (.mw-ui-progressive), with a ghost close pinned to the right edge. */
@@ -5387,9 +5433,9 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
    the bar flex-wraps to several rows and the centred X floats mid-card. Pin it to the top-right
    corner once the bar can wrap (positive offsets only, per the #89/#91 guard). */
 @media (max-width: 600px) {
-  .sitenotice:has(.sitenotice-banner[data-banner-id="39"]) .sitenotice-close { top: 7px; transform: none; }
+  .sitenotice:has(.sitenotice-donation) .sitenotice-close { top: 7px; transform: none; }
 }
-.sitenotice-banner[data-banner-id="39"] {
+.sitenotice-banner.sitenotice-donation {
   /* Placement A neutral bar: theme-aware surface, left-aligned content, the Donate button
      right-aligned (margin-left:auto) so on a narrow phone it wraps to the RIGHT under the
      close -- never marooned at the left gutter. The right padding reserves the close gutter. */
@@ -5400,8 +5446,8 @@ html:not(.sitenotice-hidden) #siteNotice:not([hidden]) + main.wiki-content { mar
   border: 1px solid var(--border); border-radius: var(--radius-sm);
   font-size: 0.95rem; line-height: 1.35;
 }
-.sitenotice-banner[data-banner-id="39"] .sitenotice-text { flex: 1 1 10rem; min-width: 0; font-weight: 600; }
-.sitenotice-banner[data-banner-id="39"] .sitenotice-cta { flex: 0 0 auto; margin-left: auto; white-space: nowrap; }
+.sitenotice-banner.sitenotice-donation .sitenotice-text { flex: 1 1 10rem; min-width: 0; font-weight: 600; }
+.sitenotice-banner.sitenotice-donation .sitenotice-cta { flex: 0 0 auto; margin-left: auto; white-space: nowrap; }
 
 /* Fly-in donate toast (#fly-in-notification-panel) -- adapted from
    FlyInNotification.css. JS-only gadget: the [hidden] attribute keeps it hidden
