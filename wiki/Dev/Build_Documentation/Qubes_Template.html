@@ -40,7 +40,7 @@
 <meta name="apple-mobile-web-app-title" content="Whonix">
 <link rel="mw-search-index" href="../../../search-index.min.json?h=e328397e">
 <link rel="mw-page-previews" href="../../../page-previews.min.json?h=d520f6ad">
-<link rel="mw-fulltext-manifest" href="../../../search/fulltext-manifest.min.json?h=c10c9aea">
+<link rel="mw-fulltext-manifest" href="../../../search/fulltext-manifest.min.json?h=2b35275c">
 <link rel="preload" as="image" fetchpriority="high" href="../../../media/thumb/Flyin-donate-promo.jpg-600.avif?h=aa8079fb" imagesrcset="../../../media/thumb/Flyin-donate-promo.jpg-300.avif?h=aa8079fb 300w, ../../../media/thumb/Flyin-donate-promo.jpg-600.avif?h=aa8079fb 600w, ../../../media/thumb/Flyin-donate-promo.jpg-900.avif?h=aa8079fb 900w" imagesizes="300px">
 </head>
 <body class="site-whonix">
@@ -83,8 +83,8 @@ requirements.</li>
 Qubes Fedora Template version that Qubes upstream uses and/or recommends
 to build Debian can be used.</li>
 <li><strong>Wiki editors notice</strong>: The version number can be
-updated by editing
-<code>Template:version-fedora-build-qubes-template</code>.</li>
+updated by editing <a href="https://www.kicksecure.com/wiki/Template:Version-fedora-build-qubes-template">Template:version-fedora-build-qubes-template</a><sup class="ext-link-to-archive has-sibling" title="Link to archived version of www.kicksecure.com/wiki/Template:Version-fedora-build-qubes-template on web.archive.org"><a rel="noreferrer noopener" target="_blank" href="https://web.archive.org/web/https://www.kicksecure.com/wiki/Template:Version-fedora-build-qubes-template" aria-label="Archived version of www.kicksecure.com/wiki/Template:Version-fedora-build-qubes-template on web.archive.org"><img src="../../../ia-archive-logo.webp" width="14" height="16" alt="" class="ia-archive-icon" loading="lazy" decoding="async" aria-hidden="true" /></a></sup> <a class="onion-link" target="_blank" rel="noreferrer noopener" href="http://w5j6stm77zs6652pgsij4awcjeel3eco7kvipheu6mtr623eyyehj4yd.onion/wiki/Template:Version-fedora-build-qubes-template" aria-label="Onion service"><img class="link-icon" src="../../../brand-onion.webp" width="16" height="16" alt="Onion service" loading="lazy" decoding="async" /></a>
+on the Kicksecure wiki.</li>
 </ul>
 </section><section class="cv-section"><h2 id="Setting_up_qubes-builderv2">Setting up qubes-builderv2<span class="heading-actions"><span class="mw-editsection"><a href="https://github.com/org-ai-assisted/whonix-wiki-backup/blob/master/Dev%252FBuild_Documentation%252FQubes_Template.mw" target="_blank" rel="noopener noreferrer nofollow" aria-label="Edit the Setting up qubes-builderv2 section on the wiki source" title="Edit the Setting up qubes-builderv2 section"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a></span><span class="share-tooltip" data-anchor="Setting_up_qubes-builderv2" data-sh-direct="https://www.whonix.org/wiki/Dev/Build_Documentation/Qubes_Template#Setting_up_qubes-builderv2" data-sh-u="https%3A%2F%2Fwww.whonix.org%2Fwiki%2FDev%2FBuild_Documentation%2FQubes_Template%23Setting_up_qubes-builderv2" data-sh-t="Setting%20up%20qubes-builderv2" data-sh-aria="Setting up qubes-builderv2" data-sh-wiki="[[Dev/Build Documentation/Qubes Template#Setting_up_qubes-builderv2|Setting up qubes-builderv2]]" data-sh-md="[Setting up qubes-builderv2](https://www.whonix.org/wiki/Dev/Build_Documentation/Qubes_Template#Setting_up_qubes-builderv2)" data-sh-phpbb="[url=https://www.whonix.org/wiki/Dev/Build_Documentation/Qubes_Template#Setting_up_qubes-builderv2]Setting up qubes-builderv2[/url]"><button type="button" class="headline-anchor" aria-haspopup="dialog" aria-expanded="false" aria-label="Copy or share a link to the Setting up qubes-builderv2 section"><i class="fa-solid fa-share-nodes"></i></button><span class="menu-wrapper"><button type="button" class="menu-close popover-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Dev/Build_Documentation/Qubes_Template#Setting_up_qubes-builderv2">https://www.whonix.org/wiki/Dev/Build_Documentation/Qubes_Template#Setting_up_qubes-builderv2</span></span></span></span></span></h2>
 <p>It is recommended to use a Fedora-based App Qube for building the
@@ -231,9 +231,8 @@ qvm-run<span class="w"> </span>--pass-io<span class="w"> </span>work-qubesos<spa
 <p><span class="code-select code-highlighted" data-code="sudo qvm-template install --nogpgcheck ./qubes-template-whonix-gateway-18...rpm
 sudo qvm-template install --nogpgcheck ./qubes-template-whonix-workstation-18...rpm">sudo<span class="w"> </span>qvm-template<span class="w"> </span>install<span class="w"> </span>--nogpgcheck<span class="w"> </span>./qubes-template-whonix-gateway-18...rpm
 sudo<span class="w"> </span>qvm-template<span class="w"> </span>install<span class="w"> </span>--nogpgcheck<span class="w"> </span>./qubes-template-whonix-workstation-18...rpm</span></p>
-<p><strong>WARNING: This action can execute arbitrary code as root on
-dom0! Only do this if you fully trust the App Qube used to build this
-template!</strong></p>
+<div class="admonition admonition-warning cs-amber"><p class="admonition-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span class="admonition-label">Warning</span></p><div class="admonition-body">This action can execute arbitrary code as root on dom0! Only do this
+if you fully trust the App Qube used to build this template!</div></div>
 <p>3. You should now see the <code>whonix-gateway-18</code>and
 <code>whonix-workstation-18</code> templates available in the
 application menu, under the "Templates" section.</p>
