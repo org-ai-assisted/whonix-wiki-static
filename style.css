@@ -323,8 +323,14 @@ img.media-sized:not(.media-figure)[width][height] { contain: size; }
    default (check-img-blocked-shift /wiki/Warning: a 576x317 screenshot). Make it atomic so the
    attrs reserve the box in both states, same idiom as .media-sized above. [width][height]-gated
    (a no-height no-ratio SVG would collapse under contain:size); :not([class]) keeps it to bare
-   content images -- icons/logos carry their own classes and keep inline flow. */
-.wiki-content img[width][height]:not([class]) { display: inline-block; overflow: hidden; contain: size; }
+   content images -- icons/logos carry their own classes and keep inline flow.
+   :not(.thumbframe *) excludes framed images: a thumbframe <img> is classless (the class sits on
+   the figure) + carries [width][height], so it matched here and had `.thumbframe img` display:block
+   overridden to inline-block -- an inline-block baseline descender grew the floated figure ~7px and
+   shifted vertical rhythm (post-deploy rhythm-diff gate, kicksecure ARM64/About). Thumbframe imgs
+   already reserve their blocked box via `.thumbframe:not(.lead-wide):not(.lead-hero) img[width][height]`,
+   so this generic rule must not touch them. */
+.wiki-content img[width][height]:not([class]):not(.thumbframe *) { display: inline-block; overflow: hidden; contain: size; }
 /* Keep a token together across a line wrap (e.g. a project name + its trailing TM/R sup, so
    the mark never orphans onto its own line -- see render/pipeline._bind_trademarks). */
 .nowrap { white-space: nowrap; }
