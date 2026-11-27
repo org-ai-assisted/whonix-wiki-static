@@ -131,11 +131,11 @@ command:</p>
 <p>4. Shut down the template once you have completed installing all
 dependencies.</p>
 <h3 id="Prepare_App_Qube">Prepare App Qube<span class="heading-actions"><span class="mw-editsection"><a href="https://github.com/org-ai-assisted/whonix-wiki-backup/blob/master/Dev%252FBuild_Documentation%252FQubes_Template.mw" target="_blank" rel="noopener noreferrer nofollow" aria-label="Edit the Prepare App Qube section on the wiki source" title="Edit the Prepare App Qube section"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a></span><span class="share-tooltip" data-anchor="Prepare_App_Qube" data-sh-direct="https://www.whonix.org/wiki/Dev/Build_Documentation/Qubes_Template#Prepare_App_Qube" data-sh-u="https%3A%2F%2Fwww.whonix.org%2Fwiki%2FDev%2FBuild_Documentation%2FQubes_Template%23Prepare_App_Qube" data-sh-t="Prepare%20App%20Qube" data-sh-aria="Prepare App Qube" data-sh-wiki="[[Dev/Build Documentation/Qubes Template#Prepare_App_Qube|Prepare App Qube]]" data-sh-md="[Prepare App Qube](https://www.whonix.org/wiki/Dev/Build_Documentation/Qubes_Template#Prepare_App_Qube)" data-sh-phpbb="[url=https://www.whonix.org/wiki/Dev/Build_Documentation/Qubes_Template#Prepare_App_Qube]Prepare App Qube[/url]"><button type="button" class="headline-anchor" aria-haspopup="dialog" aria-expanded="false" aria-label="Copy or share a link to the Prepare App Qube section"><i class="fa-solid fa-share-nodes"></i></button><span class="menu-wrapper"><button type="button" class="menu-close popover-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button><span class="menu"><span class="menu-headline"><i class="fa-solid fa-share-nodes"></i> Copy or share this direct link!</span><span class="code-select" data-code="https://www.whonix.org/wiki/Dev/Build_Documentation/Qubes_Template#Prepare_App_Qube">https://www.whonix.org/wiki/Dev/Build_Documentation/Qubes_Template#Prepare_App_Qube</span></span></span></span></span></h3>
-<p><strong>WARNING:</strong> It is not recommended to reuse an existing
-App Qube for running the template build. You will be transferring the
-built template to dom0 and installing it when you are complete. If the
-App Qube used for running the builder is compromised, the template may
-become compromised as well.</p>
+<div class="admonition admonition-warning cs-amber"><p class="admonition-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span class="admonition-label">Warning</span></p><div class="admonition-body">It is not recommended to reuse an existing App Qube for running the
+template build. You will be transferring the built template to dom0 and
+installing it when you are complete. If the App Qube used for running
+the builder is compromised, the template may become compromised as
+well.</div></div>
 <p><strong>1.</strong> Create a new App Qube for running
 <code>qubes-builderv2</code>.</p>
 <p>You can name this qube anything you want; we will call it
